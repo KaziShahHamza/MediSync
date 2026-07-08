@@ -23,7 +23,7 @@ export default function QuickActions() {
       title: "Health Report",
       description: "Track your health records",
       icon: FaHeartbeat,
-      path: "/health-report",
+      path: "/health",
       available: true
     },
     {

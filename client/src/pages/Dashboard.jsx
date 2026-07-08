@@ -1,26 +1,15 @@
+import { useMedicines } from "../context/MedicineContext";
+
 import WelcomeCard from "../components/dashboard/WelcomeCard";
 import DashboardClock from "../components/dashboard/DashboardClock";
 import QuickActions from "../components/dashboard/QuickActions";
+import OverviewCards from "../components/dashboard/OverviewCards";
+import TodayMedicines from "../components/dashboard/TodayMedicines";
 
 export default function Dashboard() {
-  const placeholderSections = [
-    {
-      title: "Health Overview",
-      description: "View your health metrics and important information."
-    },
-    {
-      title: "Today's Medicines",
-      description: "Keep track of your scheduled medications."
-    },
-    {
-      title: "Recent Activity",
-      description: "Review your recent health-related activities."
-    },
-    {
-      title: "Health Summary",
-      description: "Get a quick summary of your current health status."
-    }
-  ];
+  const { medicines } = useMedicines();
+
+  const placeholderHealthLogs = [];
 
   return (
     <main className="container py-8 space-y-8">
@@ -42,25 +31,63 @@ export default function Dashboard() {
         <QuickActions />
       </section>
 
-      {/* Future Dashboard Sections */}
-      <section
-        aria-label="Dashboard information sections"
-        className="space-y-6"
-      >
-        {placeholderSections.map((section) => (
-          <article
-            key={section.title}
-            className="card p-6 min-h-[140px] flex flex-col justify-center"
-          >
-            <h2 className="text-xl font-semibold mb-2">
-              {section.title}
-            </h2>
+      {/* Health Overview */}
+      <section aria-labelledby="health-overview-title">
+        <h2
+          id="health-overview-title"
+          className="text-xl font-semibold mb-4"
+        >
+          Health Overview
+        </h2>
 
-            <p className="text-gray-600">
-              {section.description}
-            </p>
-          </article>
-        ))}
+        <OverviewCards
+          healthLogs={placeholderHealthLogs}
+          totalMedicines={medicines?.length || 0}
+        />
+      </section>
+
+      {/* Today's Medicines */}
+      <section aria-labelledby="today-medicines-title">
+        <h2
+          id="today-medicines-title"
+          className="text-xl font-semibold mb-4"
+        >
+          Today's Medicines
+        </h2>
+
+        <TodayMedicines />
+      </section>
+
+      {/* Recent Activity Placeholder */}
+      <section aria-labelledby="recent-activity-title">
+        <article className="card rounded-xl border shadow-sm p-6 min-h-[140px] flex flex-col justify-center">
+          <h2
+            id="recent-activity-title"
+            className="text-xl font-semibold mb-2"
+          >
+            Recent Activity
+          </h2>
+
+          <p className="text-gray-600">
+            Your recent health activities will appear here.
+          </p>
+        </article>
+      </section>
+
+      {/* Health Summary Placeholder */}
+      <section aria-labelledby="health-summary-title">
+        <article className="card rounded-xl border shadow-sm p-6 min-h-[140px] flex flex-col justify-center">
+          <h2
+            id="health-summary-title"
+            className="text-xl font-semibold mb-2"
+          >
+            Health Summary
+          </h2>
+
+          <p className="text-gray-600">
+            A summary of your health information will appear here.
+          </p>
+        </article>
       </section>
     </main>
   );
