@@ -15,6 +15,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Medicines from "./pages/Medicines";
 import Health from "./pages/Health";
+import Health2 from "./pages/Health2";
 import Prescriptions from "./pages/Prescriptions";
 import Doctors from "./pages/Doctors";
 
@@ -74,6 +75,15 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <Health />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/health2"
+              element={
+                <ProtectedRoute>
+                  <Health2 />
                 </ProtectedRoute>
               }
             />

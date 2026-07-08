@@ -1,3 +1,4 @@
+// server/models/HealthLog.js
 import mongoose from "mongoose";
 
 const healthLogSchema = new mongoose.Schema(
@@ -5,26 +6,33 @@ const healthLogSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
 
     type: {
       type: String,
-      enum: ["bp", "diabetes"],
-      required: true
+      enum: ["bp", "diabetes", "bmi"],
+      required: true,
     },
 
-    High: Number,   // BP only
-    Low: Number,  // BP only
+    // Blood Pressure
+    High: Number,
+    Low: Number,
 
-    glucose: Number,    // Diabetes only
+    // Blood Sugar
+    glucose: Number,
+
+    // BMI
+    height: Number,
+    weight: Number,
+    bmi: Number,
 
     note: String,
 
     createdAt: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );

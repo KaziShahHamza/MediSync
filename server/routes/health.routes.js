@@ -1,3 +1,4 @@
+// server/routes/health.routes.js
 import express from "express";
 import HealthLog from "../models/HealthLog.js";
 import auth from "../middleware/auth.js";
