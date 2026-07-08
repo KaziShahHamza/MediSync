@@ -1,5 +1,4 @@
-// client/src/components/Navbar.jsx
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
@@ -12,7 +11,6 @@ export default function Navbar() {
     navigate("/");
   };
 
-  // Helper to apply active class
   const isActive = (path) =>
     location.pathname === path
       ? "text-sky-600 font-semibold border-b-2 border-sky-600"
@@ -34,15 +32,34 @@ export default function Navbar() {
 
           {user && (
             <>
-
               <Link to="/" className={isActive("/")}>
                 Home
               </Link>
+
               <Link to="/dashboard" className={isActive("/dashboard")}>
-                Your Medicines
+                Dashboard
               </Link>
+
+              <Link to="/medicines" className={isActive("/medicines")}>
+                Medicines
+              </Link>
+
               <Link to="/health" className={isActive("/health")}>
                 Health Report
+              </Link>
+
+              <Link
+                to="/prescriptions"
+                className={isActive("/prescriptions")}
+              >
+                Prescriptions
+              </Link>
+
+              <Link
+                to="/doctors"
+                className={isActive("/doctors")}
+              >
+                Doctors
               </Link>
 
               <span className="ml-4 text-md text-slate-400">

@@ -11,11 +11,16 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+
 import Dashboard from "./pages/Dashboard";
+import Medicines from "./pages/Medicines";
+import Health from "./pages/Health";
+import Prescriptions from "./pages/Prescriptions";
+import Doctors from "./pages/Doctors";
+
 import TestPage from "./pages/TestPage";
 
 import useMedicineReminder from "./hooks/useMedicineReminder";
-import Health from "./pages/Health";
 
 function ReminderWrapper() {
   const { medicines } = useMedicines();
@@ -24,7 +29,6 @@ function ReminderWrapper() {
 }
 
 export default function App() {
-  // request notification permission once
   useEffect(() => {
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
@@ -37,14 +41,16 @@ export default function App() {
         <BrowserRouter>
           <Navbar />
 
-          {/* background reminder engine */}
+          {/* Background reminder engine */}
           <ReminderWrapper />
 
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 
+            {/* Protected Routes */}
             <Route
               path="/dashboard"
               element={
@@ -55,10 +61,37 @@ export default function App() {
             />
 
             <Route
+              path="/medicines"
+              element={
+                <ProtectedRoute>
+                  <Medicines />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
               path="/health"
               element={
                 <ProtectedRoute>
                   <Health />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/prescriptions"
+              element={
+                <ProtectedRoute>
+                  <Prescriptions />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/doctors"
+              element={
+                <ProtectedRoute>
+                  <Doctors />
                 </ProtectedRoute>
               }
             />

@@ -1,72 +1,14 @@
-// client/src/pages/Dashboard.jsx
-import { useEffect, useState } from "react";
-import MedicineForm from "../components/MedicineForm";
-import MedicineList from "../components/MedicineList";
-
 export default function Dashboard() {
-  const [meds, setMeds] = useState([]);
-  const [editing, setEditing] = useState(null);
-  const token = localStorage.getItem("token");
-
-  const fetchMeds = async () => {
-    const res = await fetch("http://localhost:5000/api/medicines", {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    setMeds(await res.json());
-  };
-
-  useEffect(() => {
-    fetchMeds();
-  }, []);
-
-  const saveMedicine = async (data) => {
-    if (editing) {
-      await fetch(`http://localhost:5000/api/medicines/${editing._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(data)
-      });
-      setEditing(null);
-    } else {
-      await fetch("http://localhost:5000/api/medicines", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(data)
-      });
-    }
-    fetchMeds();
-  };
-
-  const deleteMedicine = async (id) => {
-    await fetch(`http://localhost:5000/api/medicines/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    fetchMeds();
-  };
-
   return (
-    <div className="container py-8">
-      <h2 className="text-2xl font-semibold mb-6">Your Medicines</h2>
+    <div className="container py-8 space-y-6">
+      <div className="card p-6">
+        <h1 className="text-3xl font-bold text-slate-800">
+          Dashboard
+        </h1>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div>
-          <MedicineList
-            medicines={meds}
-            onEdit={setEditing}
-            onDelete={deleteMedicine}
-          />
-        </div>
-
-        <div>
-          <MedicineForm onSave={saveMedicine} editing={editing} />
-        </div>
+        <p className="mt-2 text-slate-600">
+          Your personal health dashboard is coming soon.
+        </p>
       </div>
     </div>
   );
