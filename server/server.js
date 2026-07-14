@@ -5,6 +5,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
 import medicineRoutes from "./routes/medicine.routes.js";
 import healthRoutes from "./routes/health.routes.js";
+import profileRoutes from "./routes/profile.routes.js";
 
 const app = express();
 
@@ -20,5 +21,6 @@ mongoose.connect("mongodb+srv://kazishahhamza01_db_user:7SSKHfiQiqcY53re@cluster
 app.use("/api/medicines", medicineRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/health", healthRoutes);
+app.use("/api/profile", profileRoutes);
 
 app.listen(5000, () => console.log("Server running on port 5000"));

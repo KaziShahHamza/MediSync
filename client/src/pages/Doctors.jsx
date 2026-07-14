@@ -4,7 +4,7 @@ export default function Doctors() {
       <div className="card p-6">
         <h1 className="text-2xl font-semibold">Doctors</h1>
         <p className="mt-2 text-slate-600">
-          This feature is coming soon.
+          This feature is coming soon...
         </p>
       </div>
     </div>

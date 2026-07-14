@@ -1,3 +1,4 @@
+// src/components/Navbar.jsx
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -40,6 +41,7 @@ export default function Navbar() {
                 Dashboard
               </Link>
 
+
               <Link to="/medicines" className={isActive("/medicines")}>
                 Medicines
               </Link>
@@ -60,6 +62,10 @@ export default function Navbar() {
                 className={isActive("/doctors")}
               >
                 Doctors
+              </Link>
+              
+              <Link to="/profile" className={isActive("/profile")}>
+                Profile
               </Link>
 
               <span className="ml-4 text-md text-slate-400">

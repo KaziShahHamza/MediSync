@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { AuthProvider } from "./context/AuthContext";
 import { MedicineProvider, useMedicines } from "./context/MedicineContext";
+import { ProfileProvider } from "./context/ProfileContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -12,6 +13,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
+import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import Medicines from "./pages/Medicines";
 import Health from "./pages/Health";
@@ -38,6 +40,7 @@ export default function App() {
 
   return (
     <AuthProvider>
+    <ProfileProvider>
       <MedicineProvider>
         <BrowserRouter>
           <Navbar />
@@ -114,9 +117,19 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </MedicineProvider>
+      </ProfileProvider>
     </AuthProvider>
   );
 }
