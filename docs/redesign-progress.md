@@ -12,12 +12,12 @@
 - [ done ] Dashboard Components
 
 ## Phase 3
-- [ ] Medicines
-- [ ] Medicine Components
+- [ done ] Medicines
+- [ done ] Medicine Components
 
 ## Phase 4
-- [ ] Health
-- [ ] Health Components
+- [ done ] Health
+- [ done ] Health Components
 
 ## Phase 5
 - [ ] Doctors

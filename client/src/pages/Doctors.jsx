@@ -186,189 +186,781 @@ export default function Doctors() {
 
 
 
-  return (
+return (
 
-    <div className="container py-8">
+  <div className="container page">
 
-      <h1 className="text-3xl font-bold mb-8">
+
+    {/* Header */}
+
+    <section className="mb-10">
+
+
+      <h1 className="page-title">
+
         My Doctors
+
       </h1>
 
-      <div className="grid lg:grid-cols-2 gap-8 items-start">
 
-        <section>
-          <div className="flex items-center mb-5">
-            <h2 className="text-xl font-semibold">
-              Doctor Cards
-            </h2>
-            <p className="text-sm text-slate-500">
-              {doctors.length} item{doctors.length === 1 ? "" : "s"}
-            </p>
-          </div>
+      <p className="
+        mt-3
+        text-slate-600
+      ">
 
-          {doctors.length ? (
-            <div className="grid grid-cols-1 gap-6">
-              {doctors.map((doctor) => (
-                <DoctorCard
-                  key={doctor._id}
-                  doctor={doctor}
-                  onEdit={editDoctor}
-                  onDelete={deleteDoctor}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="card p-8 text-center text-slate-500">
-              No doctors added yet.
-            </div>
-          )}
-        </section>
+        Manage your healthcare providers,
+        hospitals, and appointment information.
 
-        <aside className="card p-6 space-y-6 sticky top-24">
+      </p>
+
+
+    </section>
+
+
+
+
+
+    <div className="
+      grid
+      lg:grid-cols-[1fr_420px]
+      gap-8
+      items-start
+    ">
+
+
+
+
+      {/* Doctor List */}
+
+
+      <section>
+
+
+        <div className="
+          flex
+          items-center
+          justify-between
+          mb-5
+        ">
+
+
+
           <div>
-            <h2 className="text-xl font-semibold">
-              Doctor Form
+
+
+            <h2 className="section-title">
+
+              Doctor Records
+
             </h2>
-            <p className="text-sm text-slate-500 mt-1">
-              Add or update doctor details.
+
+
+
+            <p className="
+              text-sm
+              text-slate-500
+              mt-1
+            ">
+
+
+              {doctors.length}
+
+              {" "}
+
+              doctor
+              {doctors.length === 1 ? "" : "s"}
+
+              saved
+
+
             </p>
+
+
           </div>
 
-          <form
-            onSubmit={saveDoctor}
-            className="space-y-6"
-          >
+
+        </div>
+
+
+
+
+
+
+        {doctors.length ? (
+
+
+          <div className="
+            space-y-6
+          ">
+
+
+            {doctors.map((doctor)=>(
+
+
+              <DoctorCard
+
+                key={doctor._id}
+
+                doctor={doctor}
+
+                onEdit={editDoctor}
+
+                onDelete={deleteDoctor}
+
+              />
+
+
+            ))}
+
+
+          </div>
+
+
+
+        ) : (
+
+
+          <div className="
+            card
+            py-14
+            text-center
+          ">
+
+
+            <h3 className="
+              text-xl
+              font-semibold
+              text-slate-800
+            ">
+
+              No doctors added
+
+            </h3>
+
+
+
+            <p className="
+              mt-2
+              text-slate-500
+            ">
+
+              Add your doctors to keep
+              healthcare contacts organized.
+
+            </p>
+
+
+          </div>
+
+
+        )}
+
+
+
+      </section>
+
+
+
+
+
+
+      {/* Doctor Form */}
+
+
+      <aside className="
+        card
+        sticky
+        top-24
+      ">
+
+
+
+        <div className="mb-6">
+
+
+          <h2 className="card-title">
+
+            {editingId
+              ? "Update Doctor"
+              : "Add Doctor"
+            }
+
+
+          </h2>
+
+
+
+          <p className="
+            text-sm
+            text-slate-500
+            mt-1
+          ">
+
+            Store doctor details and visiting information.
+
+          </p>
+
+
+        </div>
+
+
+
+
+
+        <form
+
+          onSubmit={saveDoctor}
+
+          className="
+            space-y-5
+          "
+
+        >
+
+
+          {/* Doctor Name */}
+
+          <div>
+
+            <label>
+              Doctor Name
+            </label>
+
+
             <input
+
               name="name"
-              placeholder="Doctor Name"
+
+              placeholder="Enter doctor name"
+
               value={form.name}
+
               onChange={handleChange}
-              className="input w-full"
+
+              className="input"
+
             />
 
-            <div>
-              <p className="mb-2 font-medium">
-                Designation
-              </p>
+          </div>
 
-              <div className="grid gap-2">
-                {designations.map((designation) => (
-                  <label
-                    key={designation}
-                    className="flex items-center gap-2"
-                  >
-                    <input
-                      type="radio"
-                      name="designation"
-                      value={designation}
-                      checked={form.designation === designation}
-                      onChange={handleChange}
-                    />
+
+
+
+
+
+
+          {/* Designation */}
+
+
+          <div>
+
+
+            <label>
+
+              Designation
+
+            </label>
+
+
+
+            <div className="
+              grid
+              gap-2
+            ">
+
+
+              {designations.map((designation)=>(
+
+
+                <label
+
+                  key={designation}
+
+                  className={`
+                    flex
+                    items-center
+                    gap-3
+                    rounded-xl
+                    border
+                    px-4
+                    py-3
+                    cursor-pointer
+                    transition
+                    duration-150
+                    ${
+                      form.designation === designation
+
+                      ? "border-blue-600 bg-blue-50 text-blue-600"
+
+                      : "border-slate-200 hover:border-blue-300"
+                    }
+                  `}
+
+                >
+
+
+
+                  <input
+
+                    type="radio"
+
+                    name="designation"
+
+                    value={designation}
+
+                    checked={
+                      form.designation === designation
+                    }
+
+                    onChange={handleChange}
+
+                  />
+
+
+
+                  <span className="text-sm font-medium">
+
                     {designation}
-                  </label>
-                ))}
-              </div>
+
+                  </span>
+
+
+                </label>
+
+
+              ))}
+
+
             </div>
 
-            <div>
-              <p className="mb-2 font-medium">
-                Specialty
-              </p>
 
-              <div className="grid md:grid-cols-2 gap-2">
-                {specialties.map((item) => (
-                  <label
-                    key={item}
-                    className="flex items-center gap-2"
-                  >
-                    <input
-                      type="radio"
-                      checked={form.specialty === item}
-                      onChange={() => selectSpecialty(item)}
-                    />
-                    <span>{item}</span>
-                  </label>
-                ))}
-              </div>
+          </div>
+
+
+
+
+
+
+
+          {/* Specialty */}
+
+
+
+          <div>
+
+
+            <label>
+
+              Specialty
+
+            </label>
+
+
+
+
+            <div className="
+              grid
+              md:grid-cols-2
+              gap-2
+            ">
+
+
+
+              {specialties.map((item)=>(
+
+
+                <label
+
+                  key={item}
+
+                  className={`
+                    flex
+                    items-center
+                    gap-3
+                    rounded-xl
+                    border
+                    px-3
+                    py-2.5
+                    cursor-pointer
+                    transition
+                    duration-150
+                    ${
+                      form.specialty === item
+
+                      ? "border-blue-600 bg-blue-50 text-blue-600"
+
+                      : "border-slate-200 hover:border-blue-300"
+                    }
+                  `}
+
+                >
+
+
+                  <input
+
+                    type="radio"
+
+                    checked={
+                      form.specialty === item
+                    }
+
+                    onChange={() =>
+                      selectSpecialty(item)
+                    }
+
+                  />
+
+
+                  <span className="text-sm">
+
+                    {item}
+
+                  </span>
+
+
+                </label>
+
+
+              ))}
+
+
+
             </div>
+
+
+          </div>
+
+
+
+
+
+
+
+
+          {/* Hospital */}
+
+
+
+          <div>
+
+
+            <label>
+
+              Hospital
+
+            </label>
+
+
 
             <select
+
               name="hospital"
+
               value={form.hospital}
+
               onChange={handleChange}
-              className="input w-full"
+
+              className="input"
+
             >
+
+
               <option value="">
+
                 Select Hospital
+
               </option>
-              {hospitals.map((h) => (
-                <option key={h}>
-                  {h}
+
+
+
+              {hospitals.map((hospital)=>(
+
+
+                <option key={hospital}>
+
+                  {hospital}
+
                 </option>
+
+
               ))}
+
+
             </select>
 
+
+          </div>
+
+
+
+
+
+
+
+
+          {/* Chamber */}
+
+
+
+          <div>
+
+
+            <label>
+
+              Chamber Address
+
+            </label>
+
+
             <input
+
               name="chamber"
-              placeholder="Chamber Address"
+
+              placeholder="Doctor chamber location"
+
               value={form.chamber}
+
               onChange={handleChange}
-              className="input w-full"
+
+              className="input"
+
             />
 
-            <div>
-              <p className="font-medium mb-2">
-                Visiting Days
-              </p>
 
-              <div className="grid md:grid-cols-3 gap-2">
-                {days.map((day) => (
-                  <label key={day} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={form.visitingDays.includes(day)}
-                      onChange={() => toggleDay(day)}
-                    />
-                    <span>{day}</span>
-                  </label>
-                ))}
-              </div>
+          </div>
+
+
+
+
+
+
+
+
+          {/* Visiting Days */}
+
+
+
+          <div>
+
+
+            <label>
+
+              Visiting Days
+
+            </label>
+
+
+
+            <div className="
+              grid
+              grid-cols-3
+              gap-2
+            ">
+
+
+              {days.map((day)=>(
+
+
+                <label
+
+                  key={day}
+
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                    text-sm
+                    text-slate-600
+                  "
+
+                >
+
+
+                  <input
+
+                    type="checkbox"
+
+                    checked={
+                      form.visitingDays.includes(day)
+                    }
+
+                    onChange={() =>
+                      toggleDay(day)
+                    }
+
+                  />
+
+
+                  {day}
+
+
+                </label>
+
+
+              ))}
+
+
             </div>
 
-            <input
-              name="visitingTime"
-              placeholder="Visiting Time (Example: 6 PM - 9 PM)"
-              value={form.visitingTime}
-              onChange={handleChange}
-              className="input w-full"
-            />
+
+          </div>
+
+
+
+
+
+
+
+
+          {/* Visiting Time */}
+
+
+
+          <div>
+
+
+            <label>
+
+              Visiting Time
+
+            </label>
+
+
 
             <input
-              name="phone"
-              placeholder="Phone Number"
-              value={form.phone}
+
+              name="visitingTime"
+
+              placeholder="Example: 6 PM - 9 PM"
+
+              value={form.visitingTime}
+
               onChange={handleChange}
-              className="input w-full"
+
+              className="input"
+
             />
+
+
+          </div>
+
+
+
+
+
+
+
+
+          {/* Phone */}
+
+
+
+          <div>
+
+
+            <label>
+
+              Phone Number
+
+            </label>
+
+
+
+            <input
+
+              name="phone"
+
+              placeholder="Doctor phone number"
+
+              value={form.phone}
+
+              onChange={handleChange}
+
+              className="input"
+
+            />
+
+
+          </div>
+
+
+
+
+
+
+
+
+          {/* Notes */}
+
+
+
+          <div>
+
+
+            <label>
+
+              Notes
+
+            </label>
+
 
             <textarea
+
               name="notes"
-              placeholder="Notes"
+
+              placeholder="Additional notes"
+
               value={form.notes}
+
               onChange={handleChange}
-              className="input w-full"
+
+              className="
+                input
+                min-h-24
+              "
+
             />
 
-            <button className="btn-primary w-full">
-              {editingId ? "Update Doctor" : "Add Doctor"}
-            </button>
-          </form>
-        </aside>
 
-      </div>
+          </div>
+
+
+
+
+
+
+
+
+          <button
+
+            className="
+              btn-primary
+              w-full
+            "
+
+          >
+
+            {editingId
+              ? "Update Doctor"
+              : "Add Doctor"
+            }
+
+
+          </button>
+
+
+        </form>
+
+
+      </aside>
+
+
 
     </div>
 
-  );
+
+  </div>
+
+);
 
 }
