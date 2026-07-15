@@ -1,45 +1,288 @@
 @import "tailwindcss";
 
-/* App theme */
+/* =======================================================
+   MediSync Design System
+======================================================= */
+
 :root {
-  --color-primary: 14 165 233;   /* sky-500 */
-  --color-primary-dark: 2 132 199;
-  --color-bg: 248 250 252;       /* slate-50 */
+  /* Colors */
+  --color-primary: 37 99 235;         /* blue-600 */
+  --color-primary-hover: 29 78 216;   /* blue-700 */
+
+  --color-bg: 248 250 252;            /* slate-50 */
   --color-card: 255 255 255;
-  --color-text: 15 23 42;        /* slate-900 */
+
+  --color-text: 15 23 42;             /* slate-900 */
+  --color-muted: 100 116 139;         /* slate-500 */
+
+  --color-border: 226 232 240;        /* slate-200 */
+
+  --color-success: 22 163 74;
+  --color-warning: 245 158 11;
+  --color-danger: 220 38 38;
+}
+
+/* =======================================================
+   Base
+======================================================= */
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-[rgb(var(--color-bg))] text-[rgb(var(--color-text))];
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  @apply antialiased;
+  background: rgb(var(--color-bg));
+  color: rgb(var(--color-text));
+  font-family: "Inter", system-ui, sans-serif;
 }
 
-/* Reusable UI helpers */
+/* =======================================================
+   Layout
+======================================================= */
+
 .container {
-  @apply max-w-5xl mx-auto px-4;
+  @apply max-w-7xl mx-auto px-6 lg:px-8;
 }
+
+.page {
+  @apply py-10;
+}
+
+.section {
+  @apply mb-12;
+}
+
+/* =======================================================
+   Typography
+======================================================= */
+
+.page-title {
+  @apply text-4xl font-bold text-slate-900;
+}
+
+.section-title {
+  @apply text-2xl font-semibold text-slate-800;
+}
+
+.card-title {
+  @apply text-lg font-semibold text-slate-800;
+}
+
+.subtitle {
+  @apply text-slate-500;
+}
+
+.text-muted {
+  @apply text-slate-500;
+}
+
+/* =======================================================
+   Cards
+======================================================= */
 
 .card {
-  @apply bg-[rgb(var(--color-card))] rounded-xl shadow-sm border border-slate-200 p-6;
+  @apply bg-white
+         rounded-2xl
+         border
+         border-slate-200
+         shadow-sm
+         p-6
+         transition-shadow
+         duration-150
+         hover:shadow-md;
 }
+
+.stat-card {
+  @apply card flex flex-col gap-2;
+}
+
+/* =======================================================
+   Buttons
+======================================================= */
 
 .btn-primary {
-  @apply bg-[rgb(var(--color-primary))] text-white px-4 py-2 rounded-lg
-         hover:bg-[rgb(var(--color-primary-dark))] transition;
+  @apply inline-flex
+         items-center
+         justify-center
+         gap-2
+         px-5
+         py-2.5
+         rounded-xl
+         bg-blue-600
+         text-white
+         font-medium
+         transition
+         duration-150
+         hover:bg-blue-700;
 }
 
-.input {
-  @apply w-full border border-slate-300 rounded-lg px-3 py-2
-         focus:outline-none focus:ring-2 focus:ring-sky-400;
+.btn-secondary {
+  @apply inline-flex
+         items-center
+         justify-center
+         gap-2
+         px-5
+         py-2.5
+         rounded-xl
+         border
+         border-slate-300
+         bg-white
+         text-slate-700
+         font-medium
+         transition
+         duration-150
+         hover:bg-slate-100;
 }
 
-/* Ensure clickable controls show pointer cursor */
+.btn-danger {
+  @apply inline-flex
+         items-center
+         justify-center
+         gap-2
+         px-5
+         py-2.5
+         rounded-xl
+         bg-red-600
+         text-white
+         font-medium
+         transition
+         duration-150
+         hover:bg-red-700;
+}
+
+/* =======================================================
+   Forms
+======================================================= */
+
+.input,
+select,
+textarea {
+  @apply w-full
+         rounded-xl
+         border
+         border-slate-300
+         bg-white
+         px-4
+         py-2.5
+         text-slate-800
+         transition
+         duration-150
+         focus:outline-none
+         focus:ring-2
+         focus:ring-blue-500
+         focus:border-blue-500;
+}
+
+label {
+  @apply block
+         mb-2
+         font-medium
+         text-slate-700;
+}
+
+/* =======================================================
+   Badges
+======================================================= */
+
+.badge {
+  @apply inline-flex
+         items-center
+         rounded-full
+         bg-slate-100
+         px-3
+         py-1
+         text-xs
+         font-medium
+         text-slate-600;
+}
+
+.badge-success {
+  @apply bg-green-100 text-green-700;
+}
+
+.badge-warning {
+  @apply bg-amber-100 text-amber-700;
+}
+
+.badge-danger {
+  @apply bg-red-100 text-red-700;
+}
+
+/* =======================================================
+   Images
+======================================================= */
+
+.image-card {
+  @apply rounded-2xl
+         border
+         border-slate-200
+         overflow-hidden
+         object-cover;
+}
+
+/* =======================================================
+   Dashboard
+======================================================= */
+
+.dashboard-grid {
+  @apply grid gap-6 lg:grid-cols-4;
+}
+
+.summary-grid {
+  @apply grid gap-6 md:grid-cols-2 xl:grid-cols-3;
+}
+
+/* =======================================================
+   Utilities
+======================================================= */
+
+.divider {
+  @apply border-t border-slate-200;
+}
+
+.hover-card {
+  @apply transition-shadow duration-150 hover:shadow-md;
+}
+
+/* =======================================================
+   Cursor
+======================================================= */
+
 button,
-input[type="button"],
+a,
 input[type="submit"],
+input[type="button"],
 input[type="reset"],
-.btn,
 .btn-primary,
+.btn-secondary,
+.btn-danger,
 [role="button"] {
   cursor: pointer;
+}
+
+/* =======================================================
+   Scrollbar
+======================================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-border));
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-muted));
+}
+
+/* =======================================================
+   Selection
+======================================================= */
+
+::selection {
+  background: rgb(var(--color-primary));
+  color: white;
 }
