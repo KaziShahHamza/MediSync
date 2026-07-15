@@ -1,8 +1,8 @@
 # MediSync UI Redesign Progress
 
 ## Phase 0
-- [ ] index.css
-- [ ] Navbar
+- [ done ] index.css
+- [ done ] Navbar
 
 ## Phase 1
 - [ ] Home

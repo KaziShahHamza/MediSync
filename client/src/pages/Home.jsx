@@ -1,6 +1,19 @@
-// src/pages/Home.jsx
-
 import { Link } from "react-router-dom";
+import {
+  Pill,
+  HeartPulse,
+  FileText,
+  Stethoscope,
+  Brain,
+  ShieldCheck,
+  Activity,
+  Droplets,
+  Scale,
+  UserPlus,
+  ClipboardPlus,
+  TrendingUp,
+} from "lucide-react";
+
 import { useAuth } from "../context/AuthContext";
 
 
@@ -9,211 +22,213 @@ export default function Home() {
   const { user } = useAuth();
 
 
+  const features = [
+    {
+      title: "Medicine Management",
+      text: "Store medicines, manage dosage schedules, and keep your treatment plan organized.",
+      icon: Pill,
+    },
+    {
+      title: "Health Tracking",
+      text: "Monitor BMI, blood pressure, and blood sugar with clear health trends.",
+      icon: HeartPulse,
+    },
+    {
+      title: "Medical Records",
+      text: "Keep prescriptions and important medical information organized securely.",
+      icon: FileText,
+    },
+    {
+      title: "Doctor Management",
+      text: "Manage doctors, hospitals, specialties, and important contact details.",
+      icon: Stethoscope,
+    },
+    {
+      title: "Health Insights",
+      text: "Understand your health progress with personalized summaries.",
+      icon: Brain,
+    },
+    {
+      title: "Secure Records",
+      text: "Your health information stays private and connected to your account.",
+      icon: ShieldCheck,
+    },
+  ];
+
+
   return (
 
     <div className="bg-white">
 
 
-      {/* Hero Section */}
+      {/* ================= HERO ================= */}
 
-      <section className="container py-20 grid md:grid-cols-2 gap-12 items-center">
+      <section className="container page">
 
-
-        <div>
-
-          <h1 className="text-5xl font-bold text-slate-800 leading-tight">
-
-            Your Personal
-
-            <span className="text-sky-600">
-              {" "}Health Management{" "}
-            </span>
-
-            Platform
-
-          </h1>
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
 
 
+          <div>
 
-          <p className="mt-6 text-lg text-slate-600 leading-relaxed">
 
-            MediSync helps you organize medicines, track health
-            records, manage doctors, store prescriptions, and
-            understand your health progress from one place.
+            <p className="
+              inline-flex
+              items-center
+              gap-2
+              text-sm
+              font-medium
+              text-blue-600
+              bg-blue-50
+              px-4
+              py-2
+              rounded-full
+            ">
+              <HeartPulse size={16} />
 
-          </p>
+              Personal Healthcare Platform
+            </p>
 
 
 
-          <div className="mt-8 flex gap-4">
+            <h1 className="
+              mt-6
+              text-5xl
+              lg:text-6xl
+              font-bold
+              tracking-tight
+              text-slate-900
+              leading-tight
+            ">
+
+              Manage your health
+              <span className="text-blue-600">
+                {" "}with confidence
+              </span>
+
+            </h1>
 
 
-            {!user && (
 
-              <>
+            <p className="
+              mt-6
+              text-lg
+              text-slate-600
+              max-w-xl
+            ">
+
+              MediSync helps you manage medicines, track health
+              records, organize doctors, and keep your medical
+              information available in one secure platform.
+
+            </p>
+
+
+
+
+            <div className="mt-8 flex flex-wrap gap-4">
+
+
+              {!user && (
+
+                <>
+
+                  <Link
+                    to="/signup"
+                    className="btn-primary"
+                  >
+                    Create Account
+                  </Link>
+
+
+                  <Link
+                    to="/login"
+                    className="btn-secondary"
+                  >
+                    Login
+                  </Link>
+
+                </>
+
+              )}
+
+
+
+              {user && (
 
                 <Link
-                  to="/signup"
+                  to="/dashboard"
                   className="btn-primary"
                 >
-                  Get Started
+                  Go To Dashboard
                 </Link>
 
-
-                <Link
-                  to="/login"
-                  className="px-6 py-3 border border-sky-600 text-sky-600 rounded-lg hover:bg-sky-50"
-                >
-                  Login
-                </Link>
+              )}
 
 
-              </>
+            </div>
 
-            )}
-
-
-
-            {user && (
-
-              <Link
-                to="/dashboard"
-                className="btn-primary"
-              >
-                Go To Dashboard
-              </Link>
-
-            )}
 
 
           </div>
 
 
-        </div>
+
+
+          {/* Future Image Placeholder */}
+
+          <div className="
+            card
+            min-h-[420px]
+            flex
+            items-center
+            justify-center
+            bg-slate-50
+          ">
+
+
+            <div className="text-center">
+
+
+              <div className="
+                w-20
+                h-20
+                rounded-2xl
+                bg-blue-100
+                flex
+                items-center
+                justify-center
+                mx-auto
+                mb-6
+              ">
+
+                <HeartPulse
+                  size={42}
+                  className="text-blue-600"
+                />
+
+              </div>
 
 
 
+              <h3 className="
+                text-xl
+                font-semibold
+                text-slate-900
+              ">
 
-        <div className="card p-8">
-
-
-          <h2 className="text-2xl font-semibold text-slate-700">
-
-            Complete Health Overview
-
-          </h2>
-
-
-
-          <div className="mt-6 space-y-4">
-
-
-            <div className="p-4 bg-slate-50 rounded-lg">
-
-              Blood Pressure Tracking
-
-            </div>
-
-
-            <div className="p-4 bg-slate-50 rounded-lg">
-
-              Medicine Reminders
-
-            </div>
-
-
-            <div className="p-4 bg-slate-50 rounded-lg">
-
-              Doctor & Prescription Management
-
-            </div>
-
-
-            <div className="p-4 bg-slate-50 rounded-lg">
-
-              Health Trend Monitoring
-
-            </div>
-
-
-          </div>
-
-
-        </div>
-
-
-      </section>
-
-
-
-
-
-      {/* Features */}
-
-      <section className="container py-16">
-
-
-        <h2 className="text-3xl font-bold text-center text-slate-800">
-
-          Everything You Need For Better Health Management
-
-        </h2>
-
-
-
-        <div className="grid md:grid-cols-3 gap-6 mt-10">
-
-
-
-          {[
-            {
-              title:"Medicine Management",
-              text:"Store medicines, manage dosage schedules, and receive reminders."
-            },
-
-            {
-              title:"Health Tracking",
-              text:"Monitor BMI, blood pressure, and diabetes records with charts."
-            },
-
-            {
-              title:"Medical Records",
-              text:"Keep prescriptions and important health documents organized."
-            },
-
-            {
-              title:"Doctor Management",
-              text:"Save doctors, hospitals, chambers, and visiting information."
-            },
-
-            {
-              title:"Health Insights",
-              text:"Understand your health status through personalized summaries."
-            },
-
-            {
-              title:"Secure Records",
-              text:"Your personal health information stays connected to your account."
-            },
-
-          ].map((feature)=>(
-
-
-            <div
-              key={feature.title}
-              className="card p-6"
-            >
-
-              <h3 className="text-xl font-semibold text-sky-600">
-
-                {feature.title}
+                Complete Health Overview
 
               </h3>
 
 
-              <p className="mt-3 text-slate-600">
+              <p className="
+                mt-2
+                text-slate-500
+                max-w-sm
+              ">
 
-                {feature.text}
+                A centralized place for your medicines,
+                health records, and medical information.
 
               </p>
 
@@ -221,8 +236,108 @@ export default function Home() {
             </div>
 
 
-          ))}
+          </div>
 
+
+
+        </div>
+
+      </section>
+
+
+
+
+
+      {/* ================= FEATURES ================= */}
+
+
+      <section className="container section">
+
+
+        <div className="text-center max-w-3xl mx-auto">
+
+
+          <h2 className="page-title">
+
+            Everything you need for better health management
+
+          </h2>
+
+
+          <p className="
+            mt-4
+            text-slate-600
+          ">
+
+            Organize your healthcare journey with powerful
+            tools designed around your personal medical needs.
+
+          </p>
+
+
+        </div>
+
+
+
+
+        <div className="
+          mt-10
+          grid
+          md:grid-cols-2
+          xl:grid-cols-3
+          gap-6
+        ">
+
+
+          {features.map((feature)=>{
+
+
+            const Icon = feature.icon;
+
+
+            return (
+
+              <div
+                key={feature.title}
+                className="card"
+              >
+
+                <div className="
+                  icon-wrapper
+                  mb-5
+                ">
+
+                  <Icon
+                    size={22}
+                    className="text-blue-600"
+                  />
+
+                </div>
+
+
+
+                <h3 className="card-title">
+
+                  {feature.title}
+
+                </h3>
+
+
+                <p className="
+                  mt-3
+                  text-slate-600
+                ">
+
+                  {feature.text}
+
+                </p>
+
+
+              </div>
+
+            );
+
+          })}
 
 
         </div>
@@ -231,118 +346,37 @@ export default function Home() {
       </section>
 
 
+      {/* ================= HOW IT WORKS ================= */}
 
 
-
-
-      {/* How It Works */}
-
-      <section className="bg-slate-50 py-16">
+      <section className="
+        bg-slate-50
+        py-16
+      ">
 
 
         <div className="container">
 
 
-          <h2 className="text-3xl font-bold text-center text-slate-800">
-
-            How MediSync Works
-
-          </h2>
+          <div className="text-center">
 
 
+            <h2 className="page-title">
 
-          <div className="grid md:grid-cols-3 gap-8 mt-10">
-
-
-            <div className="card p-6">
-
-              <h3 className="font-semibold text-xl">
-
-                1. Create Account
-
-              </h3>
-
-              <p className="mt-3 text-slate-600">
-
-                Register and create your personal health profile.
-
-              </p>
-
-            </div>
-
-
-
-            <div className="card p-6">
-
-              <h3 className="font-semibold text-xl">
-
-                2. Add Health Data
-
-              </h3>
-
-              <p className="mt-3 text-slate-600">
-
-                Add medicines, doctors, prescriptions, and health records.
-
-              </p>
-
-            </div>
-
-
-
-            <div className="card p-6">
-
-              <h3 className="font-semibold text-xl">
-
-                3. Track Progress
-
-              </h3>
-
-              <p className="mt-3 text-slate-600">
-
-                View your dashboard and understand your health journey.
-
-              </p>
-
-            </div>
-
-
-          </div>
-
-
-        </div>
-
-
-      </section>
-
-
-
-
-
-
-
-      {/* Health Monitoring */}
-
-      <section className="container py-16">
-
-
-        <div className="grid md:grid-cols-2 gap-10">
-
-
-          <div>
-
-            <h2 className="text-3xl font-bold text-slate-800">
-
-              Monitor Your Health Trends
+              How MediSync works
 
             </h2>
 
 
-            <p className="mt-5 text-slate-600 leading-relaxed">
+            <p className="
+              mt-4
+              text-slate-600
+              max-w-2xl
+              mx-auto
+            ">
 
-              Track important health indicators like blood pressure,
-              blood sugar, and BMI over time. Keeping historical
-              records helps you and your doctor make better decisions.
+              Start organizing your health information in a few
+              simple steps.
 
             </p>
 
@@ -352,28 +386,110 @@ export default function Home() {
 
 
 
-          <div className="card p-6 space-y-4">
+          <div className="
+            mt-10
+            grid
+            md:grid-cols-3
+            gap-6
+          ">
 
 
-            <div className="p-4 bg-slate-50 rounded">
+            {[
+              {
+                number: "01",
+                title: "Create Account",
+                text: "Register and create your personal health profile.",
+                icon: UserPlus,
+              },
+              {
+                number: "02",
+                title: "Add Health Data",
+                text: "Manage medicines, doctors, prescriptions, and health records.",
+                icon: ClipboardPlus,
+              },
+              {
+                number: "03",
+                title: "Track Progress",
+                text: "Monitor your health journey through organized insights.",
+                icon: TrendingUp,
+              },
+            ].map((step)=>{
 
-              BMI Progress
 
-            </div>
-
-
-            <div className="p-4 bg-slate-50 rounded">
-
-              Blood Pressure History
-
-            </div>
+              const Icon = step.icon;
 
 
-            <div className="p-4 bg-slate-50 rounded">
+              return (
 
-              Diabetes Monitoring
+                <div
+                  key={step.title}
+                  className="card"
+                >
 
-            </div>
+
+                  <div className="
+                    flex
+                    items-center
+                    justify-between
+                  ">
+
+
+                    <div className="
+                      icon-wrapper
+                    ">
+
+                      <Icon
+                        size={22}
+                        className="text-blue-600"
+                      />
+
+                    </div>
+
+
+
+                    <span className="
+                      text-sm
+                      font-semibold
+                      text-slate-400
+                    ">
+
+                      {step.number}
+
+                    </span>
+
+
+                  </div>
+
+
+
+
+                  <h3 className="
+                    mt-6
+                    card-title
+                  ">
+
+                    {step.title}
+
+                  </h3>
+
+
+
+                  <p className="
+                    mt-3
+                    text-slate-600
+                  ">
+
+                    {step.text}
+
+                  </p>
+
+
+                </div>
+
+              );
+
+
+            })}
 
 
           </div>
@@ -390,28 +506,181 @@ export default function Home() {
 
 
 
-      {/* Privacy */}
-
-      <section className="bg-sky-50 py-16">
+      {/* ================= HEALTH MONITORING ================= */}
 
 
-        <div className="container text-center">
+      <section className="container section">
 
 
-          <h2 className="text-3xl font-bold text-slate-800">
+        <div className="
+          grid
+          lg:grid-cols-2
+          gap-10
+          items-center
+        ">
 
-            Your Health Data, Organized Securely
 
-          </h2>
+          <div>
 
 
-          <p className="mt-4 text-slate-600 max-w-3xl mx-auto">
+            <h2 className="page-title">
 
-            MediSync keeps your medical information organized in one
-            place. Manage your records, doctors, medicines, and health
-            information whenever you need them.
+              Monitor your health trends
 
-          </p>
+            </h2>
+
+
+
+            <p className="
+              mt-5
+              text-slate-600
+              leading-relaxed
+            ">
+
+              Track important health indicators over time.
+              Historical records help you understand changes
+              and make better decisions with your healthcare provider.
+
+            </p>
+
+
+
+
+            <div className="
+              mt-8
+              grid
+              sm:grid-cols-3
+              gap-4
+            ">
+
+
+              <div className="surface p-4">
+
+                <Scale
+                  size={22}
+                  className="text-blue-600"
+                />
+
+                <p className="
+                  mt-3
+                  text-sm
+                  font-medium
+                  text-slate-700
+                ">
+
+                  BMI Tracking
+
+                </p>
+
+              </div>
+
+
+
+              <div className="surface p-4">
+
+                <Activity
+                  size={22}
+                  className="text-blue-600"
+                />
+
+                <p className="
+                  mt-3
+                  text-sm
+                  font-medium
+                  text-slate-700
+                ">
+
+                  Blood Pressure
+
+                </p>
+
+              </div>
+
+
+
+
+              <div className="surface p-4">
+
+                <Droplets
+                  size={22}
+                  className="text-blue-600"
+                />
+
+                <p className="
+                  mt-3
+                  text-sm
+                  font-medium
+                  text-slate-700
+                ">
+
+                  Blood Sugar
+
+                </p>
+
+              </div>
+
+
+            </div>
+
+
+          </div>
+
+
+
+
+
+          {/* Future Chart Placeholder */}
+
+
+          <div className="
+            card
+            min-h-[320px]
+            flex
+            items-center
+            justify-center
+            bg-slate-50
+          ">
+
+
+            <div className="text-center">
+
+
+              <Activity
+                size={48}
+                className="
+                  mx-auto
+                  text-blue-600
+                "
+              />
+
+
+              <h3 className="
+                mt-5
+                text-xl
+                font-semibold
+                text-slate-900
+              ">
+
+                Health Analytics
+
+              </h3>
+
+
+              <p className="
+                mt-2
+                text-slate-500
+              ">
+
+                Charts and health trends will appear here.
+
+              </p>
+
+
+            </div>
+
+
+          </div>
+
 
 
         </div>
@@ -425,26 +694,109 @@ export default function Home() {
 
 
 
-      {/* CTA */}
+      {/* ================= PRIVACY ================= */}
+
+
+      <section className="
+        bg-slate-50
+        py-16
+      ">
+
+
+        <div className="
+          container
+          text-center
+        ">
+
+
+          <div className="
+            max-w-3xl
+            mx-auto
+          ">
+
+
+            <ShieldCheck
+              size={42}
+              className="
+                mx-auto
+                text-blue-600
+              "
+            />
+
+
+
+            <h2 className="
+              mt-5
+              page-title
+            ">
+
+              Your health data, organized securely
+
+            </h2>
+
+
+
+            <p className="
+              mt-4
+              text-slate-600
+            ">
+
+              MediSync keeps your medical information organized
+              and accessible while maintaining a secure personal
+              healthcare environment.
+
+            </p>
+
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+
+
+
+
+
+      {/* ================= CALL TO ACTION ================= */}
+
+
 
       {!user && (
 
-        <section className="container py-20 text-center">
+        <section className="
+          container
+          py-20
+          text-center
+        ">
 
 
-          <h2 className="text-4xl font-bold text-slate-800">
+          <h2 className="
+            text-4xl
+            font-bold
+            text-slate-900
+          ">
 
-            Start Managing Your Health Today
+            Start managing your health today
 
           </h2>
 
 
-          <p className="mt-4 text-slate-600">
 
-            Create your free MediSync account and keep your health
-            information organized.
+          <p className="
+            mt-4
+            text-slate-600
+          ">
+
+            Create your MediSync account and keep your
+            healthcare information organized.
 
           </p>
+
 
 
 
@@ -452,7 +804,11 @@ export default function Home() {
 
             to="/signup"
 
-            className="btn-primary inline-block mt-8"
+            className="
+              btn-primary
+              mt-8
+              inline-flex
+            "
 
           >
 
@@ -464,7 +820,6 @@ export default function Home() {
         </section>
 
       )}
-
 
 
     </div>

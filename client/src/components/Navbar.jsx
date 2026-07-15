@@ -88,7 +88,7 @@ export default function Navbar() {
         {/* Logo */}
 
         <Link
-          to={user ? "/dashboard" : "/"}
+          to={user ? "/" : "/"}
           className="
             flex
             items-center
