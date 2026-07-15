@@ -16,12 +16,13 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
 import Profile from "./pages/Profile";
-import Dashboard from "./pages/Dashboard";
+// import Dashboard from "./pages/Dashboard2";
 import Medicines from "./pages/Medicines";
 import Health from "./pages/Health";
 import Health2 from "./pages/Health2";
 import Prescriptions from "./pages/Prescriptions";
 import Doctors from "./pages/Doctors";
+import Dashboard from "./pages/Dashboard";
 
 import TestPage from "./pages/TestPage";
 

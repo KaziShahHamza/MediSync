@@ -1,3 +1,4 @@
+// src/context/ProfileContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 
 const ProfileContext = createContext();
