@@ -1,6 +1,10 @@
 // src/pages/Profile.jsx
 import { useEffect, useState } from "react";
 import { useProfile } from "../context/ProfileContext";
+import ProfileSummary from "../components/profile/ProfileSummary";
+import ProfileSection from "../components/profile/ProfileSection";
+import ProfileInput from "../components/profile/ProfileInput";
+import ProfileSelect from "../components/profile/ProfileSelect";
 
 const illnessOptions = [
   "Diabetes",
@@ -207,525 +211,481 @@ export default function Profile() {
     );
   }
 
-  return (
-    <div className="container py-10">
+return (
 
-      <h1 className="text-3xl font-bold mb-3">
-        My Profile
-      </h1>
+<div className="container py-10">
 
-      <p className="text-slate-500 mb-8">
-        Review your saved details and update your medical information.
-      </p>
 
-      <div className="grid lg:grid-cols-2 gap-8 items-start">
+  {/* HEADER */}
 
-        {/* PROFILE SUMMARY */}
+  <div className="mb-10">
 
-        <div className="bg-white rounded-xl shadow p-6 lg:p-8 h-fit sticky top-24">
+    <h1 className="text-3xl font-bold text-slate-800">
+      My Profile
+    </h1>
 
-          <div className="mb-6">
-            <h2 className="text-xl font-bold">
-              Profile Summary
-            </h2>
-            <p className="text-sm text-slate-500 mt-1">
-              A quick view of your current profile details.
-            </p>
-          </div>
 
-          <div className="grid sm:grid-cols-2 gap-4 text-sm">
+    <p className="text-slate-500 mt-2">
+      Manage your personal and medical information.
+    </p>
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-slate-500 mb-1">
-                Name
-              </p>
+  </div>
 
-              <p className="font-medium">
-                {userInfo?.name || "-"}
-              </p>
-            </div>
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-              <p className="text-slate-500 mb-1">
-                Email
-              </p>
 
-              <p className="font-medium break-all">
-                {userInfo?.email || "-"}
-              </p>
-            </div>
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-slate-500 mb-1">
-                Gender
-              </p>
 
-              <p>
-                {form.gender || "-"}
-              </p>
-            </div>
+  <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-slate-500 mb-1">
-                Height
-              </p>
 
-              <p>
-                {form.height.feet || "-"} ft {form.height.inches || "0"} in
-              </p>
-            </div>
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-slate-500 mb-1">
-                Blood Group
-              </p>
+    {/* SUMMARY */}
 
-              <p>
-                {form.bloodGroup || "-"}
-              </p>
-            </div>
+    <ProfileSummary
+      userInfo={userInfo}
+      form={form}
+    />
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-              <p className="text-slate-500 mb-2">
-                Chronic Illnesses
-              </p>
 
-              {form.chronicIllnesses.length ? (
-                <ul className="list-disc list-inside space-y-1">
-                  {form.chronicIllnesses.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>None</p>
-              )}
-            </div>
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-              <p className="text-slate-500 mb-1">
-                Allergies
-              </p>
 
-              <p>
-                {form.allergies || "None"}
-              </p>
-            </div>
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-              <p className="text-slate-500 mb-1">
-                Surgeries
-              </p>
+    {/* FORM */}
 
-              <p>
-                {form.surgeries || "None"}
-              </p>
-            </div>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-8"
+    >
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-slate-500 mb-1">
-                Smoking
-              </p>
 
-              <p>
-                {form.smoking || "-"}
-              </p>
-            </div>
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-slate-500 mb-1">
-                Alcohol
-              </p>
 
-              <p>
-                {form.alcohol || "-"}
-              </p>
-            </div>
+      <ProfileSection
+        title="Personal Information"
+        description="Basic details used for your health profile."
+      >
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-slate-500 mb-1">
-                Exercise
-              </p>
 
-              <p>
-                {form.exercise || "-"}
-              </p>
-            </div>
+        <div className="grid md:grid-cols-2 gap-5">
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-slate-500 mb-1">
-                Diet
-              </p>
 
-              <p>
-                {form.diet || "-"}
-              </p>
-            </div>
+          <ProfileInput
+            label="Name"
+            value={userInfo?.name || ""}
+            disabled
+          />
 
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
-              <p className="text-slate-500 mb-1">
-                Emergency Contact
-              </p>
 
-              <p className="font-medium">
-                {form.emergencyContact.name || "-"}
-              </p>
+          <ProfileInput
+            label="Email"
+            value={userInfo?.email || ""}
+            disabled
+          />
 
-              <p className="text-slate-600 mt-1">
-                {form.emergencyContact.phone || "-"}
-              </p>
+
+
+          <ProfileInput
+            label="Date of Birth"
+            type="date"
+            name="dob"
+            value={form.dob}
+            onChange={handleChange}
+          />
+
+
+
+          <ProfileSelect
+            label="Gender"
+            name="gender"
+            value={form.gender}
+            onChange={handleChange}
+          >
+
+            <option value="">
+              Select
+            </option>
+
+            <option>
+              Male
+            </option>
+
+            <option>
+              Female
+            </option>
+
+            <option>
+              Other
+            </option>
+
+
+          </ProfileSelect>
+
+
+
+          <div>
+
+            <label className="block text-sm font-medium mb-2">
+              Height
+            </label>
+
+
+            <div className="flex gap-3">
+
+              <input
+                type="number"
+                name="feet"
+                placeholder="Feet"
+                value={form.height.feet}
+                onChange={handleHeightChange}
+                className="input w-full"
+              />
+
+
+              <input
+                type="number"
+                name="inches"
+                placeholder="Inches"
+                value={form.height.inches}
+                onChange={handleHeightChange}
+                className="input w-full"
+              />
+
+
             </div>
 
           </div>
+
+
+
+
+          <ProfileSelect
+            label="Blood Group"
+            name="bloodGroup"
+            value={form.bloodGroup}
+            onChange={handleChange}
+          >
+
+            {bloodGroups.map(group=>(
+              <option key={group}>
+                {group || "Select"}
+              </option>
+            ))}
+
+
+          </ProfileSelect>
+
+
 
         </div>
 
-        {/* FORM */}
 
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white rounded-xl shadow p-6 lg:p-8 space-y-8"
-        >
-          {/* PERSONAL */}
+      </ProfileSection>
 
-          <section>
 
-            <h2 className="text-xl font-semibold mb-4">
-              Personal Information
-            </h2>
 
-            <div className="grid md:grid-cols-2 gap-5">
 
-              <div>
-                <label className="block mb-1">
-                  Name
-                </label>
 
-                <input
-                  value={userInfo?.name || ""}
-                  disabled
-                  className="input w-full bg-slate-100"
-                />
-              </div>
 
-              <div>
-                <label className="block mb-1">
-                  Email
-                </label>
 
-                <input
-                  value={userInfo?.email || ""}
-                  disabled
-                  className="input w-full bg-slate-100"
-                />
-              </div>
 
-              <div>
+      <ProfileSection
+        title="Medical Information"
+        description="Important medical history."
+      >
 
-                <label className="block mb-1">
-                  Date of Birth
-                </label>
 
-                <input
-                  type="date"
-                  name="dob"
-                  value={form.dob}
-                  onChange={handleChange}
-                  className="input w-full"
-                />
+        <label className="block text-sm font-medium mb-3">
+          Chronic Illnesses
+        </label>
 
-              </div>
 
-              <div>
 
-                <label className="block mb-1">
-                  Gender
-                </label>
+        <div className="grid md:grid-cols-2 gap-3">
 
-                <select
-                  name="gender"
-                  value={form.gender}
-                  onChange={handleChange}
-                  className="input w-full"
-                >
-                  <option value="">
-                    Select
-                  </option>
 
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Other</option>
+          {illnessOptions.map((item)=>(
 
-                </select>
+            <label
+              key={item}
+              className="
+                flex
+                items-center
+                gap-2
+                rounded-lg
+                border
+                border-slate-200
+                p-3
+                hover:bg-slate-50
+                cursor-pointer
+              "
+            >
 
-              </div>
+              <input
+                type="checkbox"
+                checked={
+                  form.chronicIllnesses.includes(item)
+                }
+                onChange={() =>
+                  toggleIllness(item)
+                }
+              />
 
-              <div>
 
-                <label className="block mb-1">
-                  Height
-                </label>
+              {item}
 
-                <div className="flex gap-2">
 
-                  <input
-                    type="number"
-                    name="feet"
-                    placeholder="Feet"
-                    value={form.height.feet}
-                    onChange={handleHeightChange}
-                    className="input w-full"
-                  />
-
-                  <input
-                    type="number"
-                    name="inches"
-                    placeholder="Inches"
-                    value={form.height.inches}
-                    onChange={handleHeightChange}
-                    className="input w-full"
-                  />
-
-                </div>
-
-              </div>
-
-              <div>
-
-                <label className="block mb-1">
-                  Blood Group
-                </label>
-
-                <select
-                  name="bloodGroup"
-                  value={form.bloodGroup}
-                  onChange={handleChange}
-                  className="input w-full"
-                >
-                  {bloodGroups.map((group) => (
-                    <option
-                      key={group}
-                      value={group}
-                    >
-                      {group || "Select"}
-                    </option>
-                  ))}
-                </select>
-
-              </div>
-
-            </div>
-
-          </section>
-
-          {/* MEDICAL */}
-
-          <section>
-
-            <h2 className="text-xl font-semibold mb-4">
-              Medical Information
-            </h2>
-
-            <label className="block mb-2">
-              Chronic Illnesses
             </label>
 
-            <div className="grid md:grid-cols-2 gap-2">
 
-              {illnessOptions.map((illness) => (
+          ))}
 
-                <label
-                  key={illness}
-                  className="flex items-center gap-2"
-                >
 
-                  <input
-                    type="checkbox"
-                    checked={form.chronicIllnesses.includes(illness)}
-                    onChange={() => toggleIllness(illness)}
-                  />
+        </div>
 
-                  {illness}
 
-                </label>
 
-              ))}
 
-            </div>
+        <textarea
+          rows="3"
+          name="allergies"
+          placeholder="Allergies"
+          value={form.allergies}
+          onChange={handleChange}
+          className="input w-full mt-5"
+        />
 
-            <div className="mt-5">
 
-              <label className="block mb-1">
-                Allergies
-              </label>
 
-              <textarea
-                rows={3}
-                name="allergies"
-                value={form.allergies}
-                onChange={handleChange}
-                className="input w-full"
-              />
+        <textarea
+          rows="3"
+          name="surgeries"
+          placeholder="Previous surgeries"
+          value={form.surgeries}
+          onChange={handleChange}
+          className="input w-full mt-5"
+        />
 
-            </div>
 
-            <div className="mt-5">
 
-              <label className="block mb-1">
-                Surgeries
-              </label>
+      </ProfileSection>
 
-              <textarea
-                rows={3}
-                name="surgeries"
-                value={form.surgeries}
-                onChange={handleChange}
-                className="input w-full"
-              />
 
-            </div>
 
-          </section>
 
-          {/* LIFESTYLE */}
 
-          <section>
-            <h2 className="text-xl font-semibold mb-4">
-              Lifestyle
-            </h2>
 
-            <div className="grid md:grid-cols-2 gap-5">
 
-              <div>
-                <label className="block mb-1">
-                  Smoking
-                </label>
 
-                <select
-                  name="smoking"
-                  value={form.smoking}
-                  onChange={handleChange}
-                  className="input w-full"
-                >
-                  <option value="">Select</option>
-                  <option>Never</option>
-                  <option>Former</option>
-                  <option>Current</option>
-                </select>
-              </div>
 
-              <div>
-                <label className="block mb-1">
-                  Alcohol
-                </label>
+      <ProfileSection
+        title="Lifestyle"
+        description="Daily habits and activities."
+      >
 
-                <select
-                  name="alcohol"
-                  value={form.alcohol}
-                  onChange={handleChange}
-                  className="input w-full"
-                >
-                  <option value="">Select</option>
-                  <option>Never</option>
-                  <option>Occasionally</option>
-                  <option>Frequently</option>
-                </select>
-              </div>
 
-              <div>
-                <label className="block mb-1">
-                  Exercise
-                </label>
+        <div className="grid md:grid-cols-2 gap-5">
 
-                <select
-                  name="exercise"
-                  value={form.exercise}
-                  onChange={handleChange}
-                  className="input w-full"
-                >
-                  <option value="">Select</option>
-                  <option>Never</option>
-                  <option>1-2 Days</option>
-                  <option>3-5 Days</option>
-                  <option>Daily</option>
-                </select>
-              </div>
 
-              <div>
-                <label className="block mb-1">
-                  Diet
-                </label>
-
-                <select
-                  name="diet"
-                  value={form.diet}
-                  onChange={handleChange}
-                  className="input w-full"
-                >
-                  <option value="">Select</option>
-                  <option>Mixed</option>
-                  <option>Vegetarian</option>
-                  <option>Vegan</option>
-                </select>
-              </div>
-
-            </div>
-          </section>
-
-          {/* EMERGENCY CONTACT */}
-
-          <section>
-
-            <h2 className="text-xl font-semibold mb-4">
-              Emergency Contact
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-5">
-
-              <div>
-                <label className="block mb-1">
-                  Contact Name
-                </label>
-
-                <input
-                  name="name"
-                  value={form.emergencyContact.name}
-                  onChange={handleEmergencyChange}
-                  className="input w-full"
-                />
-              </div>
-
-              <div>
-                <label className="block mb-1">
-                  Phone Number
-                </label>
-
-                <input
-                  name="phone"
-                  value={form.emergencyContact.phone}
-                  onChange={handleEmergencyChange}
-                  className="input w-full"
-                />
-              </div>
-
-            </div>
-          </section>
-
-          <button
-            type="submit"
-            disabled={saving}
-            className="btn-primary"
+          <ProfileSelect
+            label="Smoking"
+            name="smoking"
+            value={form.smoking}
+            onChange={handleChange}
           >
-            {saving
-              ? "Saving..."
-              : profile
-              ? "Update Profile"
-              : "Create Profile"}
-          </button>
+            <option value="">
+              Select
+            </option>
 
-        </form>
+            <option>
+              Never
+            </option>
 
-      </div>
+            <option>
+              Former
+            </option>
 
-    </div>
-  );
+            <option>
+              Current
+            </option>
+
+          </ProfileSelect>
+
+
+
+
+
+          <ProfileSelect
+            label="Alcohol"
+            name="alcohol"
+            value={form.alcohol}
+            onChange={handleChange}
+          >
+
+            <option value="">
+              Select
+            </option>
+
+            <option>
+              Never
+            </option>
+
+            <option>
+              Occasionally
+            </option>
+
+            <option>
+              Frequently
+            </option>
+
+          </ProfileSelect>
+
+
+
+
+
+          <ProfileSelect
+            label="Exercise"
+            name="exercise"
+            value={form.exercise}
+            onChange={handleChange}
+          >
+
+            <option value="">
+              Select
+            </option>
+
+            <option>
+              Never
+            </option>
+
+            <option>
+              1-2 Days
+            </option>
+
+            <option>
+              3-5 Days
+            </option>
+
+            <option>
+              Daily
+            </option>
+
+
+          </ProfileSelect>
+
+
+
+
+          <ProfileSelect
+            label="Diet"
+            name="diet"
+            value={form.diet}
+            onChange={handleChange}
+          >
+
+            <option value="">
+              Select
+            </option>
+
+            <option>
+              Mixed
+            </option>
+
+            <option>
+              Vegetarian
+            </option>
+
+            <option>
+              Vegan
+            </option>
+
+
+          </ProfileSelect>
+
+
+
+        </div>
+
+
+      </ProfileSection>
+
+
+
+
+
+
+
+
+      <ProfileSection
+        title="Emergency Contact"
+      >
+
+
+        <div className="grid md:grid-cols-2 gap-5">
+
+
+          <ProfileInput
+            label="Contact Name"
+            name="name"
+            value={
+              form.emergencyContact.name
+            }
+            onChange={
+              handleEmergencyChange
+            }
+          />
+
+
+
+          <ProfileInput
+            label="Phone Number"
+            name="phone"
+            value={
+              form.emergencyContact.phone
+            }
+            onChange={
+              handleEmergencyChange
+            }
+          />
+
+
+        </div>
+
+
+      </ProfileSection>
+
+
+
+
+
+
+
+      <button
+        disabled={saving}
+        className="btn-primary"
+      >
+
+        {saving
+          ? "Saving..."
+          : profile
+          ? "Update Profile"
+          : "Create Profile"}
+
+      </button>
+
+
+
+
+    </form>
+
+
+
+  </div>
+
+
+
+</div>
+
+);
+
 }

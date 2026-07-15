@@ -1,6 +1,6 @@
 import {
   ArrowRight,
-  LucideIcon,
+
 } from "lucide-react";
 
 
