@@ -84,6 +84,15 @@ export default function Dashboard() {
       </div>
 
 
+      <div className="mb-8">
+
+        <HealthSummaryCard
+          summary={data.healthSummary}
+        />
+
+      </div>
+
+
 
       {/* Health */}
 
