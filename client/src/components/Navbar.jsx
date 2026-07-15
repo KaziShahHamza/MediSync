@@ -1,6 +1,15 @@
-// src/components/Navbar.jsx
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Pill,
+  HeartPulse,
+  FileImage,
+  Stethoscope,
+  UserRound,
+  LogOut,
+  ShieldCheck,
+} from "lucide-react";
+
 import { useAuth } from "../context/AuthContext";
 
 
@@ -13,7 +22,6 @@ export default function Navbar() {
   const location = useLocation();
 
 
-
   const handleLogout = () => {
 
     logout();
@@ -23,38 +31,131 @@ export default function Navbar() {
   };
 
 
+  const isActive = (path) => 
+    location.pathname === path;
 
-  const isActive = (path) =>
-    location.pathname === path
-      ? "text-sky-600 font-semibold border-b-2 border-sky-600"
-      : "text-slate-600 hover:text-sky-600";
 
+  const navItem = (path, label, Icon) => (
+
+    <Link
+      to={path}
+      className={`nav-link ${
+        isActive(path)
+          ? "nav-link-active"
+          : ""
+      }`}
+    >
+
+      <Icon
+        size={18}
+        strokeWidth={2}
+      />
+
+      <span>
+        {label}
+      </span>
+
+    </Link>
+
+  );
 
 
   return (
 
-    <nav className="w-full bg-white shadow-md sticky top-0 z-50">
+    <header
+      className="
+        sticky
+        top-0
+        z-50
+        bg-white
+        border-b
+        border-slate-200
+        shadow-sm
+      "
+    >
 
-
-      <div className="w-full flex items-center justify-between py-4 px-10">
+      <div
+        className="
+          container
+          h-[72px]
+          flex
+          items-center
+          justify-between
+        "
+      >
 
 
         {/* Logo */}
 
         <Link
           to={user ? "/dashboard" : "/"}
-          className="font-bold text-2xl text-sky-600"
+          className="
+            flex
+            items-center
+            gap-3
+          "
         >
-          MediSync
+
+          <div
+            className="
+              w-10
+              h-10
+              rounded-xl
+              bg-blue-600
+              flex
+              items-center
+              justify-center
+            "
+          >
+
+            <ShieldCheck
+              size={22}
+              className="text-white"
+            />
+
+          </div>
+
+
+          <div>
+
+            <h1
+              className="
+                text-lg
+                font-bold
+                text-slate-900
+                leading-tight
+              "
+            >
+              MediSync
+            </h1>
+
+
+            <p
+              className="
+                text-xs
+                text-slate-500
+              "
+            >
+              Personal Health Platform
+            </p>
+
+          </div>
+
         </Link>
 
 
 
-        <div className="flex items-center gap-6">
 
+        {/* Navigation */}
 
+        <div
+          className="
+            flex
+            items-center
+            gap-2
+          "
+        >
 
-          {/* Public Navigation */}
 
           {!user && (
 
@@ -62,17 +163,30 @@ export default function Navbar() {
 
               <Link
                 to="/login"
-                className={isActive("/login")}
+                className={`
+                  nav-link
+                  ${
+                    isActive("/login")
+                      ? "nav-link-active"
+                      : ""
+                  }
+                `}
               >
+
                 Login
+
               </Link>
 
 
               <Link
                 to="/signup"
-                className="px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700 transition"
+                className="
+                  btn-primary
+                "
               >
-                Signup
+
+                Create Account
+
               </Link>
 
             </>
@@ -81,106 +195,130 @@ export default function Navbar() {
 
 
 
-
-
-
-          {/* User Navigation */}
 
           {user && (
 
             <>
 
 
-              <Link
-                to="/dashboard"
-                className={isActive("/dashboard")}
+              {navItem(
+                "/dashboard",
+                "Dashboard",
+                LayoutDashboard
+              )}
+
+
+              {navItem(
+                "/medicines",
+                "Medicines",
+                Pill
+              )}
+
+
+              {navItem(
+                "/health",
+                "Health",
+                HeartPulse
+              )}
+
+
+              {navItem(
+                "/doctors",
+                "Doctors",
+                Stethoscope
+              )}
+
+
+              {navItem(
+                "/prescriptions",
+                "Prescriptions",
+                FileImage
+              )}
+
+
+              {navItem(
+                "/profile",
+                "Profile",
+                UserRound
+              )}
+
+
+
+              <div
+                className="
+                  h-8
+                  w-px
+                  bg-slate-200
+                  mx-2
+                "
+              />
+
+
+
+              <div
+                className="
+                  hidden
+                  xl:flex
+                  flex-col
+                  mr-2
+                "
               >
-                Dashboard
-              </Link>
+
+                <span
+                  className="
+                    text-sm
+                    font-medium
+                    text-slate-800
+                  "
+                >
+
+                  {user.name || "User"}
+
+                </span>
 
 
+                <span
+                  className="
+                    text-xs
+                    text-slate-500
+                  "
+                >
 
-              <Link
-                to="/medicines"
-                className={isActive("/medicines")}
-              >
-                Medicines
-              </Link>
+                  {user.email}
 
+                </span>
 
-
-              <Link
-                to="/health"
-                className={isActive("/health")}
-              >
-                Health Report
-              </Link>
-
-
-
-              <Link
-                to="/prescriptions"
-                className={isActive("/prescriptions")}
-              >
-                Prescriptions
-              </Link>
-
-
-
-              <Link
-                to="/doctors"
-                className={isActive("/doctors")}
-              >
-                Doctors
-              </Link>
-
-
-
-              <Link
-                to="/profile"
-                className={isActive("/profile")}
-              >
-                Profile
-              </Link>
-
-
-
-
-              <span className="text-sm text-slate-400">
-
-                Welcome, {user.name || user.email}
-
-              </span>
-
+              </div>
 
 
 
               <button
-
                 onClick={handleLogout}
-
-                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-
+                className="
+                  btn-danger
+                "
               >
+
+                <LogOut
+                  size={18}
+                  strokeWidth={2}
+                />
+
 
                 Logout
 
               </button>
 
 
-
             </>
 
           )}
 
-
         </div>
-
 
       </div>
 
-
-    </nav>
+    </header>
 
   );
 

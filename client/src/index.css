@@ -1,30 +1,48 @@
 @import "tailwindcss";
 
-/* =======================================================
+/* ==========================================================
    MediSync Design System
-======================================================= */
+   Premium Healthcare SaaS UI
+========================================================== */
 
 :root {
-  /* Colors */
-  --color-primary: 37 99 235;         /* blue-600 */
-  --color-primary-hover: 29 78 216;   /* blue-700 */
+  /* Brand */
+  --color-primary: 37 99 235;
+  --color-primary-hover: 29 78 216;
+  --color-accent: 14 165 233;
 
-  --color-bg: 248 250 252;            /* slate-50 */
+  /* Background */
+  --color-bg: 248 250 252;
   --color-card: 255 255 255;
 
-  --color-text: 15 23 42;             /* slate-900 */
-  --color-muted: 100 116 139;         /* slate-500 */
+  /* Text */
+  --color-text: 15 23 42;
+  --color-secondary: 71 85 105;
+  --color-muted: 100 116 139;
 
-  --color-border: 226 232 240;        /* slate-200 */
+  /* Border */
+  --color-border: 226 232 240;
 
+  /* Status */
   --color-success: 22 163 74;
   --color-warning: 245 158 11;
   --color-danger: 220 38 38;
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-card-hover: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
-/* =======================================================
+
+/* ==========================================================
    Base
-======================================================= */
+========================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 html {
   scroll-behavior: smooth;
@@ -32,132 +50,294 @@ html {
 
 body {
   @apply antialiased;
+
   background: rgb(var(--color-bg));
   color: rgb(var(--color-text));
-  font-family: "Inter", system-ui, sans-serif;
+
+  font-family:
+    "Inter",
+    system-ui,
+    sans-serif;
+
+  line-height: 1.6;
 }
 
-/* =======================================================
+img {
+  @apply max-w-full block;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+/* ==========================================================
    Layout
-======================================================= */
+========================================================== */
 
 .container {
-  @apply max-w-7xl mx-auto px-6 lg:px-8;
+  @apply max-w-7xl mx-auto px-5 md:px-6 lg:px-8;
 }
+
 
 .page {
-  @apply py-10;
+  @apply py-10 md:py-12 lg:py-14;
 }
+
 
 .section {
-  @apply mb-12;
+  @apply mb-16;
 }
 
-/* =======================================================
+
+.page-header {
+  @apply flex flex-col gap-2 mb-10;
+}
+
+
+.page-description {
+  @apply text-base text-slate-500 max-w-3xl;
+}
+
+
+.section-header {
+  @apply flex items-center justify-between gap-4 mb-6;
+}
+
+
+.content-grid {
+  @apply grid gap-6 lg:grid-cols-2;
+}
+
+
+.stats-grid {
+  @apply grid gap-6 sm:grid-cols-2 xl:grid-cols-4;
+}
+
+
+.form-grid {
+  @apply flex flex-col gap-5;
+}
+
+
+
+/* ==========================================================
    Typography
-======================================================= */
+========================================================== */
 
 .page-title {
-  @apply text-4xl font-bold text-slate-900;
+  @apply text-4xl font-bold tracking-tight text-slate-900;
 }
+
 
 .section-title {
-  @apply text-2xl font-semibold text-slate-800;
+  @apply text-2xl font-semibold text-slate-900;
 }
+
 
 .card-title {
-  @apply text-lg font-semibold text-slate-800;
+  @apply text-xl font-semibold text-slate-900;
 }
 
+
 .subtitle {
-  @apply text-slate-500;
+  @apply text-slate-600;
 }
+
 
 .text-muted {
   @apply text-slate-500;
 }
 
-/* =======================================================
+
+.small-label {
+  @apply text-[13px] font-medium text-slate-500;
+}
+
+
+
+/* ==========================================================
    Cards
-======================================================= */
+========================================================== */
 
 .card {
+
   @apply bg-white
          rounded-2xl
          border
          border-slate-200
-         shadow-sm
          p-6
-         transition-shadow
-         duration-150
-         hover:shadow-md;
+         transition-all
+         duration-150;
+
+  box-shadow: var(--shadow-card);
 }
+
+
+.card:hover {
+
+  box-shadow: var(--shadow-card-hover);
+
+}
+
+
+
+.card-header {
+
+  @apply flex items-center justify-between gap-4 mb-6;
+
+}
+
+
+
+.card-content {
+
+  @apply space-y-5;
+
+}
+
+
 
 .stat-card {
-  @apply card flex flex-col gap-2;
+
+  @apply bg-white
+         rounded-2xl
+         border
+         border-slate-200
+         p-6
+         flex
+         flex-col
+         justify-between
+         gap-4
+         transition-all
+         duration-150;
+
+  box-shadow: var(--shadow-card);
+
 }
 
-/* =======================================================
+
+.stat-card:hover {
+
+  box-shadow: var(--shadow-card-hover);
+
+}
+
+
+
+.stat-value {
+
+  @apply text-3xl font-bold text-slate-900;
+
+}
+
+
+.stat-label {
+
+  @apply text-sm text-slate-500;
+
+}
+
+
+
+/* ==========================================================
    Buttons
-======================================================= */
+========================================================== */
+
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+
+  @apply inline-flex
+         items-center
+         justify-center
+         gap-2
+         h-11
+         px-5
+         rounded-xl
+         text-sm
+         font-medium
+         transition-all
+         duration-150
+         whitespace-nowrap;
+
+}
+
+
 
 .btn-primary {
-  @apply inline-flex
-         items-center
-         justify-center
-         gap-2
-         px-5
-         py-2.5
-         rounded-xl
-         bg-blue-600
+
+  @apply bg-blue-600
          text-white
-         font-medium
-         transition
-         duration-150
-         hover:bg-blue-700;
+         hover:bg-blue-700
+         shadow-sm;
+
 }
+
+
 
 .btn-secondary {
-  @apply inline-flex
-         items-center
-         justify-center
-         gap-2
-         px-5
-         py-2.5
-         rounded-xl
+
+  @apply bg-white
          border
          border-slate-300
-         bg-white
          text-slate-700
-         font-medium
-         transition
-         duration-150
-         hover:bg-slate-100;
+         hover:bg-slate-50;
+
 }
+
+
 
 .btn-danger {
-  @apply inline-flex
-         items-center
-         justify-center
-         gap-2
-         px-5
-         py-2.5
-         rounded-xl
-         bg-red-600
+
+  @apply bg-red-600
          text-white
-         font-medium
-         transition
-         duration-150
          hover:bg-red-700;
+
 }
 
-/* =======================================================
+
+
+.btn-icon {
+
+  @apply p-2
+         rounded-xl
+         border
+         border-slate-200
+         bg-white
+         transition
+         duration-150
+         hover:bg-slate-50;
+
+}
+
+
+
+/* ==========================================================
    Forms
-======================================================= */
+========================================================== */
+
+
+label {
+
+  @apply block
+         mb-2
+         text-sm
+         font-medium
+         text-slate-700;
+
+}
+
+
 
 .input,
 select,
 textarea {
+
   @apply w-full
          rounded-xl
          border
@@ -166,88 +346,736 @@ textarea {
          px-4
          py-2.5
          text-slate-800
-         transition
+         transition-all
          duration-150
          focus:outline-none
          focus:ring-2
          focus:ring-blue-500
          focus:border-blue-500;
+
 }
 
-label {
-  @apply block
-         mb-2
-         font-medium
-         text-slate-700;
+
+
+textarea {
+
+  @apply min-h-32 resize-y;
+
 }
 
-/* =======================================================
+
+
+input::placeholder,
+textarea::placeholder {
+
+  @apply text-slate-400;
+
+}
+
+
+
+input[type="checkbox"],
+input[type="radio"] {
+
+  accent-color: rgb(var(--color-primary));
+
+}
+
+
+
+/* ==========================================================
    Badges
-======================================================= */
+========================================================== */
+
 
 .badge {
+
   @apply inline-flex
          items-center
+         gap-1
          rounded-full
-         bg-slate-100
          px-3
          py-1
          text-xs
          font-medium
+         bg-slate-100
          text-slate-600;
+
 }
+
 
 .badge-success {
+
   @apply bg-green-100 text-green-700;
+
 }
+
 
 .badge-warning {
+
   @apply bg-amber-100 text-amber-700;
+
 }
+
 
 .badge-danger {
+
   @apply bg-red-100 text-red-700;
+
 }
 
-/* =======================================================
+/* ==========================================================
    Images
-======================================================= */
+========================================================== */
 
 .image-card {
+
   @apply rounded-2xl
          border
          border-slate-200
          overflow-hidden
-         object-cover;
+         bg-white;
+
 }
 
-/* =======================================================
+
+.image-card img {
+
+  @apply w-full
+         h-full
+         object-cover;
+
+}
+
+
+
+/* ==========================================================
    Dashboard
-======================================================= */
+========================================================== */
 
 .dashboard-grid {
-  @apply grid gap-6 lg:grid-cols-4;
+
+  @apply grid
+         gap-6
+         xl:grid-cols-4;
+
 }
+
 
 .summary-grid {
-  @apply grid gap-6 md:grid-cols-2 xl:grid-cols-3;
+
+  @apply grid
+         gap-6
+         md:grid-cols-2
+         xl:grid-cols-3;
+
 }
 
-/* =======================================================
-   Utilities
-======================================================= */
+
+.metric-grid {
+
+  @apply grid
+         gap-6
+         lg:grid-cols-3;
+
+}
+
+
+
+/* ==========================================================
+   Tables
+========================================================== */
+
+.table-container {
+
+  @apply overflow-x-auto
+         rounded-2xl
+         border
+         border-slate-200
+         bg-white;
+
+}
+
+
+.table {
+
+  @apply w-full
+         border-collapse;
+
+}
+
+
+.table thead {
+
+  @apply bg-slate-50;
+
+}
+
+
+.table th {
+
+  @apply px-6
+         py-4
+         text-left
+         text-xs
+         font-semibold
+         uppercase
+         tracking-wider
+         text-slate-500;
+
+}
+
+
+.table td {
+
+  @apply px-6
+         py-4
+         text-sm
+         text-slate-700
+         border-t
+         border-slate-200;
+
+}
+
+
+.table tbody tr {
+
+  @apply transition-colors
+         duration-150;
+
+}
+
+
+.table tbody tr:hover {
+
+  @apply bg-slate-50;
+
+}
+
+
+
+/* ==========================================================
+   Lists
+========================================================== */
+
+.list {
+
+  @apply flex
+         flex-col
+         divide-y
+         divide-slate-200;
+
+}
+
+
+.list-item {
+
+  @apply py-4
+         flex
+         items-center
+         justify-between
+         gap-4;
+
+}
+
+
+
+/* ==========================================================
+   Empty State
+========================================================== */
+
+
+.empty-state {
+
+  @apply bg-white
+         rounded-2xl
+         border
+         border-slate-200
+         flex
+         flex-col
+         items-center
+         justify-center
+         text-center
+         py-16;
+
+  box-shadow: var(--shadow-card);
+
+}
+
+
+.empty-state-icon {
+
+  @apply w-16
+         h-16
+         rounded-full
+         bg-slate-100
+         flex
+         items-center
+         justify-center
+         text-slate-400
+         mb-6;
+
+}
+
+
+.empty-state-title {
+
+  @apply text-xl
+         font-semibold
+         text-slate-900;
+
+}
+
+
+.empty-state-description {
+
+  @apply mt-2
+         max-w-md
+         text-slate-500;
+
+}
+
+
+.empty-state-actions {
+
+  @apply mt-8
+         flex
+         flex-wrap
+         justify-center
+         gap-3;
+
+}
+
+
+
+/* ==========================================================
+   Skeleton Loading
+========================================================== */
+
+
+@keyframes skeleton {
+
+  0% {
+
+    background-position: 200% 0;
+
+  }
+
+
+  100% {
+
+    background-position: -200% 0;
+
+  }
+
+}
+
+
+
+.skeleton {
+
+  background: linear-gradient(
+    90deg,
+    #f1f5f9 25%,
+    #e2e8f0 37%,
+    #f1f5f9 63%
+  );
+
+  background-size: 400% 100%;
+
+  animation: skeleton 1.4s ease infinite;
+
+  @apply rounded-xl;
+
+}
+
+
+
+.skeleton-text {
+
+  @apply h-4
+         w-full
+         rounded-xl;
+
+  background: linear-gradient(
+    90deg,
+    #f1f5f9 25%,
+    #e2e8f0 37%,
+    #f1f5f9 63%
+  );
+
+}
+
+
+
+.skeleton-title {
+
+  @apply h-6
+         w-48
+         rounded-xl;
+
+}
+
+
+
+.skeleton-avatar {
+
+  @apply w-12
+         h-12
+         rounded-full;
+
+}
+
+
+
+.skeleton-card {
+
+  @apply bg-white
+         rounded-2xl
+         border
+         border-slate-200
+         p-6;
+
+  box-shadow: var(--shadow-card);
+
+}
+
+
+
+.skeleton-button {
+
+  @apply h-11
+         w-32
+         rounded-xl;
+
+}
+
+
+
+/* ==========================================================
+   Modal
+========================================================== */
+
+
+.modal-overlay {
+
+  @apply fixed
+         inset-0
+         z-50
+         bg-slate-900/40
+         flex
+         items-center
+         justify-center
+         p-5;
+
+}
+
+
+
+.modal {
+
+  @apply w-full
+         max-w-3xl
+         bg-white
+         rounded-2xl
+         border
+         border-slate-200
+         shadow-xl;
+
+}
+
+
+
+.modal-header {
+
+  @apply flex
+         items-center
+         justify-between
+         border-b
+         border-slate-200
+         px-6
+         py-5;
+
+}
+
+
+
+.modal-body {
+
+  @apply p-6;
+
+}
+
+
+
+.modal-footer {
+
+  @apply flex
+         justify-end
+         gap-3
+         border-t
+         border-slate-200
+         px-6
+         py-5;
+
+}
+
+
+
+/* ==========================================================
+   Alerts
+========================================================== */
+
+
+.alert {
+
+  @apply rounded-2xl
+         border
+         px-5
+         py-4
+         text-sm;
+
+}
+
+
+.alert-success {
+
+  @apply border-green-200
+         bg-green-50
+         text-green-700;
+
+}
+
+
+.alert-warning {
+
+  @apply border-amber-200
+         bg-amber-50
+         text-amber-700;
+
+}
+
+
+.alert-danger {
+
+  @apply border-red-200
+         bg-red-50
+         text-red-700;
+
+}
+
+
+
+/* ==========================================================
+   Surfaces & Utilities
+========================================================== */
+
 
 .divider {
-  @apply border-t border-slate-200;
+
+  @apply border-t
+         border-slate-200;
+
 }
+
+
 
 .hover-card {
-  @apply transition-shadow duration-150 hover:shadow-md;
+
+  @apply transition-shadow
+         duration-150
+         hover:shadow-md;
+
 }
 
-/* =======================================================
-   Cursor
-======================================================= */
+
+
+.surface {
+
+  @apply bg-white
+         border
+         border-slate-200
+         rounded-2xl;
+
+}
+
+
+
+.surface-muted {
+
+  @apply bg-slate-50
+         border
+         border-slate-200
+         rounded-2xl;
+
+}
+
+
+
+.icon-wrapper {
+
+  @apply w-10
+         h-10
+         rounded-xl
+         bg-slate-100
+         flex
+         items-center
+         justify-center;
+
+}
+
+
+
+.icon-primary {
+
+  @apply text-blue-600;
+
+}
+
+
+
+.icon-success {
+
+  @apply text-green-600;
+
+}
+
+
+
+.icon-warning {
+
+  @apply text-amber-500;
+
+}
+
+
+
+.icon-danger {
+
+  @apply text-red-600;
+
+}
+
+
+
+/* ==========================================================
+   Responsive Layout Helpers
+========================================================== */
+
+
+.two-column {
+
+  @apply grid
+         gap-6
+         lg:grid-cols-2;
+
+}
+
+
+.three-column {
+
+  @apply grid
+         gap-6
+         xl:grid-cols-3;
+
+}
+
+
+.four-column {
+
+  @apply grid
+         gap-6
+         sm:grid-cols-2
+         xl:grid-cols-4;
+
+}
+
+
+
+/* ==========================================================
+   Navigation
+========================================================== */
+
+
+.nav-link {
+
+  @apply inline-flex
+         items-center
+         gap-2
+         h-10
+         px-4
+         rounded-xl
+         text-sm
+         font-medium
+         text-slate-600
+         border-b-2
+         border-transparent
+         transition-all
+         duration-150;
+
+}
+
+
+
+.nav-link svg {
+
+  @apply w-[18px]
+         h-[18px];
+
+}
+
+
+
+.nav-link:hover {
+
+  @apply text-blue-600
+         bg-blue-50;
+
+}
+
+
+
+.nav-link:hover svg {
+
+  @apply text-blue-600;
+
+}
+
+
+
+.nav-link-active {
+
+  @apply text-blue-600
+         bg-blue-50
+         border-blue-600;
+
+}
+
+
+
+.nav-link-active svg {
+
+  @apply text-blue-600;
+
+}
+
+
+
+/* ==========================================================
+   Accessibility
+========================================================== */
+
+
+:focus-visible {
+
+  @apply outline-none
+         ring-2
+         ring-blue-500
+         ring-offset-2;
+
+}
+
+
 
 button,
 a,
@@ -258,31 +1086,145 @@ input[type="reset"],
 .btn-secondary,
 .btn-danger,
 [role="button"] {
+
   cursor: pointer;
+
 }
 
-/* =======================================================
+
+
+/* ==========================================================
    Scrollbar
-======================================================= */
+========================================================== */
+
 
 ::-webkit-scrollbar {
+
   width: 8px;
+  height: 8px;
+
 }
+
+
+::-webkit-scrollbar-track {
+
+  @apply bg-slate-100;
+
+}
+
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--color-border));
-  border-radius: 9999px;
+
+  @apply bg-slate-300
+         rounded-full;
+
 }
+
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--color-muted));
+
+  @apply bg-slate-400;
+
 }
 
-/* =======================================================
+
+* {
+
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--color-border)) transparent;
+
+}
+
+
+
+/* ==========================================================
    Selection
-======================================================= */
+========================================================== */
+
 
 ::selection {
+
   background: rgb(var(--color-primary));
   color: white;
+
+}
+
+
+
+/* ==========================================================
+   Links
+========================================================== */
+
+
+a {
+
+  @apply transition-colors
+         duration-150;
+
+}
+
+
+
+/* ==========================================================
+   Animation
+========================================================== */
+
+
+.fade-in {
+
+  animation: fadeIn 180ms ease;
+
+}
+
+
+
+@keyframes fadeIn {
+
+  from {
+
+    opacity: 0;
+    transform: translateY(4px);
+
+  }
+
+
+  to {
+
+    opacity: 1;
+    transform: translateY(0);
+
+  }
+
+}
+
+
+
+/* ==========================================================
+   Print
+========================================================== */
+
+
+@media print {
+
+  body {
+
+    background: white;
+
+  }
+
+
+  .no-print {
+
+    display: none !important;
+
+  }
+
+
+  .card {
+
+    box-shadow: none;
+    border: 1px solid #ddd;
+
+  }
+
 }
