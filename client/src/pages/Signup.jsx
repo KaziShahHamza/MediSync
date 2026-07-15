@@ -1,47 +1,140 @@
 import { useNavigate, Link } from "react-router-dom";
+import AuthLayout from "../components/auth/AuthLayout";
+
 
 export default function Signup() {
+
   const navigate = useNavigate();
 
+
+
   const submit = async (e) => {
+
     e.preventDefault();
+
     const f = e.target;
 
-    await fetch("http://localhost:5000/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: f.name.value,
-        email: f.email.value,
-        password: f.password.value
-      })
-    });
+
+    await fetch(
+      "http://localhost:5000/api/auth/signup",
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+          name:f.name.value,
+          email:f.email.value,
+          password:f.password.value
+        })
+      }
+    );
+
 
     navigate("/login");
+
   };
 
+
+
+
   return (
-    <div className="container py-16 w-130">
-      <form onSubmit={submit} className="card space-y-4">
-        <h2 className="text-2xl font-semibold text-center">
-          Create account
-        </h2>
 
-        <input name="name" placeholder="Name" className="input" />
-        <input name="email" placeholder="Email" className="input" />
-        <input name="password" type="password" placeholder="Password" className="input" />
+    <AuthLayout
 
-        <button className="btn-primary w-full">
-          Signup
+      title="Create Account"
+
+      subtitle="Start managing your health with MediSync."
+
+    >
+
+
+      <form
+        onSubmit={submit}
+        className="space-y-5"
+      >
+
+
+
+        <input
+          name="name"
+          placeholder="Full Name"
+          className="input"
+          required
+        />
+
+
+
+        <input
+          name="email"
+          type="email"
+          placeholder="Email Address"
+          className="input"
+          required
+        />
+
+
+
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          className="input"
+          required
+        />
+
+
+
+        <button
+          className="
+            btn-primary
+            w-full
+            py-3
+          "
+        >
+
+          Create Account
+
         </button>
 
-        <p className="text-sm text-center text-slate-600">
-          Already have an account?{" "}
-          <Link to="/login" className="text-sky-600 hover:underline">
+
+
+
+        <p className="
+          text-sm
+          text-center
+          text-slate-600
+        ">
+
+
+          Already have an account?
+
+
+          <Link
+            to="/login"
+            className="
+              ml-1
+              text-sky-600
+              font-medium
+              hover:underline
+            "
+          >
+
             Login
+
           </Link>
+
+
         </p>
+
+
+
       </form>
-    </div>
+
+
+    </AuthLayout>
+
   );
+
 }
