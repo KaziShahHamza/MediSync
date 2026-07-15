@@ -1,3 +1,4 @@
+// src/pages/Prescriptions.jsx
 import { useState } from "react";
 import { usePrescriptions } from "../context/PrescriptionContext";
 import PrescriptionCard from "../components/PrescriptionCard";

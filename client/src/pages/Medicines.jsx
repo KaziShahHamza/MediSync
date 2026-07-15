@@ -69,7 +69,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <div className="card p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -92,7 +92,7 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

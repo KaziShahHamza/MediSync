@@ -16,12 +16,6 @@ export default function Health() {
     <div className="container py-8 space-y-10">
       <h2 className="text-3xl font-semibold">Health Report</h2>
 
-      {/* BMI */}
-      <div className="grid md:grid-cols-[30%_70%] gap-6">
-        <BMIForm onAdd={addLog} />
-        <BMIChart logs={logs} />
-      </div>
-
 
         {/* Blood Pressure */}
       <div className="grid md:grid-cols-[30%_70%] gap-6">
@@ -33,6 +27,12 @@ export default function Health() {
       <div className="grid md:grid-cols-[30%_70%] gap-6">
         <BloodSugarForm onAdd={addLog} />
         <BloodSugarChart logs={logs} />
+      </div>
+
+      {/* BMI */}
+      <div className="grid md:grid-cols-[30%_70%] gap-6">
+        <BMIForm onAdd={addLog} />
+        <BMIChart logs={logs} />
       </div>
 
 
