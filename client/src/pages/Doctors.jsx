@@ -29,6 +29,12 @@ const specialties = [
   "Medicine Specialist",
 ];
 
+const designations = [
+  "Professor",
+  "Associate Professor",
+  "Assistant Professor",
+];
+
 const days = [
   "Saturday",
   "Sunday",
@@ -188,219 +194,178 @@ export default function Doctors() {
         My Doctors
       </h1>
 
+      <div className="grid lg:grid-cols-2 gap-8 items-start">
 
-      <form
-        onSubmit={saveDoctor}
-        className="card p-6 space-y-6"
-      >
+        <section>
+          <div className="flex items-center mb-5">
+            <h2 className="text-xl font-semibold">
+              Doctor Cards
+            </h2>
+            <p className="text-sm text-slate-500">
+              {doctors.length} item{doctors.length === 1 ? "" : "s"}
+            </p>
+          </div>
 
-
-        <input
-          name="name"
-          placeholder="Doctor Name"
-          value={form.name}
-          onChange={handleChange}
-          className="input w-full"
-        />
-
-
-        <div>
-
-          <p className="mb-2 font-medium">
-            Designation
-          </p>
-
-          <label>
-            <input
-              type="radio"
-              name="designation"
-              value="Professor"
-              checked={form.designation==="Professor"}
-              onChange={handleChange}
-            />
-
-            Professor
-          </label>
-
-
-          <label className="ml-5">
-            <input
-              type="radio"
-              name="designation"
-              value="Doctor"
-              checked={form.designation==="Doctor"}
-              onChange={handleChange}
-            />
-
-            Doctor
-          </label>
-
-        </div>
-
-
-
-        <div>
-
-          <p className="mb-2 font-medium">
-            Specialty
-          </p>
-
-
-          <div className="grid md:grid-cols-2 gap-2">
-
-            {specialties.map(item=>(
-
-              <label key={item}>
-
-                <input
-                  type="radio"
-                  checked={form.specialty===item}
-                  onChange={()=>selectSpecialty(item)}
+          {doctors.length ? (
+            <div className="grid grid-cols-1 gap-6">
+              {doctors.map((doctor) => (
+                <DoctorCard
+                  key={doctor._id}
+                  doctor={doctor}
+                  onEdit={editDoctor}
+                  onDelete={deleteDoctor}
                 />
+              ))}
+            </div>
+          ) : (
+            <div className="card p-8 text-center text-slate-500">
+              No doctors added yet.
+            </div>
+          )}
+        </section>
 
-                <span className="ml-2">
-                  {item}
-                </span>
-
-              </label>
-
-            ))}
-
+        <aside className="card p-6 space-y-6 sticky top-24">
+          <div>
+            <h2 className="text-xl font-semibold">
+              Doctor Form
+            </h2>
+            <p className="text-sm text-slate-500 mt-1">
+              Add or update doctor details.
+            </p>
           </div>
 
-        </div>
+          <form
+            onSubmit={saveDoctor}
+            className="space-y-6"
+          >
+            <input
+              name="name"
+              placeholder="Doctor Name"
+              value={form.name}
+              onChange={handleChange}
+              className="input w-full"
+            />
 
+            <div>
+              <p className="mb-2 font-medium">
+                Designation
+              </p>
 
+              <div className="grid gap-2">
+                {designations.map((designation) => (
+                  <label
+                    key={designation}
+                    className="flex items-center gap-2"
+                  >
+                    <input
+                      type="radio"
+                      name="designation"
+                      value={designation}
+                      checked={form.designation === designation}
+                      onChange={handleChange}
+                    />
+                    {designation}
+                  </label>
+                ))}
+              </div>
+            </div>
 
-        <select
-          name="hospital"
-          value={form.hospital}
-          onChange={handleChange}
-          className="input w-full"
-        >
+            <div>
+              <p className="mb-2 font-medium">
+                Specialty
+              </p>
 
-          <option value="">
-            Select Hospital
-          </option>
+              <div className="grid md:grid-cols-2 gap-2">
+                {specialties.map((item) => (
+                  <label
+                    key={item}
+                    className="flex items-center gap-2"
+                  >
+                    <input
+                      type="radio"
+                      checked={form.specialty === item}
+                      onChange={() => selectSpecialty(item)}
+                    />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
 
-          {hospitals.map(h=>(
+            <select
+              name="hospital"
+              value={form.hospital}
+              onChange={handleChange}
+              className="input w-full"
+            >
+              <option value="">
+                Select Hospital
+              </option>
+              {hospitals.map((h) => (
+                <option key={h}>
+                  {h}
+                </option>
+              ))}
+            </select>
 
-            <option key={h}>
-              {h}
-            </option>
+            <input
+              name="chamber"
+              placeholder="Chamber Address"
+              value={form.chamber}
+              onChange={handleChange}
+              className="input w-full"
+            />
 
-          ))}
+            <div>
+              <p className="font-medium mb-2">
+                Visiting Days
+              </p>
 
-        </select>
+              <div className="grid md:grid-cols-3 gap-2">
+                {days.map((day) => (
+                  <label key={day} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={form.visitingDays.includes(day)}
+                      onChange={() => toggleDay(day)}
+                    />
+                    <span>{day}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
 
+            <input
+              name="visitingTime"
+              placeholder="Visiting Time (Example: 6 PM - 9 PM)"
+              value={form.visitingTime}
+              onChange={handleChange}
+              className="input w-full"
+            />
 
+            <input
+              name="phone"
+              placeholder="Phone Number"
+              value={form.phone}
+              onChange={handleChange}
+              className="input w-full"
+            />
 
-        <input
-          name="chamber"
-          placeholder="Chamber Address"
-          value={form.chamber}
-          onChange={handleChange}
-          className="input w-full"
-        />
+            <textarea
+              name="notes"
+              placeholder="Notes"
+              value={form.notes}
+              onChange={handleChange}
+              className="input w-full"
+            />
 
-
-
-        <div>
-
-          <p className="font-medium mb-2">
-            Visiting Days
-          </p>
-
-          <div className="grid md:grid-cols-3">
-
-          {days.map(day=>(
-
-            <label key={day}>
-
-              <input
-                type="checkbox"
-                checked={form.visitingDays.includes(day)}
-                onChange={()=>toggleDay(day)}
-              />
-
-              <span className="ml-2">
-                {day}
-              </span>
-
-            </label>
-
-          ))}
-
-          </div>
-
-        </div>
-
-
-
-        <input
-          name="visitingTime"
-          placeholder="Visiting Time (Example: 6 PM - 9 PM)"
-          value={form.visitingTime}
-          onChange={handleChange}
-          className="input w-full"
-        />
-
-
-
-        <input
-          name="phone"
-          placeholder="Phone Number"
-          value={form.phone}
-          onChange={handleChange}
-          className="input w-full"
-        />
-
-
-        <textarea
-          name="notes"
-          placeholder="Notes"
-          value={form.notes}
-          onChange={handleChange}
-          className="input w-full"
-        />
-
-
-
-        <button className="btn-primary">
-
-          {editingId
-            ? "Update Doctor"
-            : "Add Doctor"}
-
-        </button>
-
-
-      </form>
-
-
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-
-
-        {doctors.map(doctor=>(
-
-          <DoctorCard
-
-            key={doctor._id}
-
-            doctor={doctor}
-
-            onEdit={editDoctor}
-
-            onDelete={deleteDoctor}
-
-          />
-
-        ))}
-
+            <button className="btn-primary w-full">
+              {editingId ? "Update Doctor" : "Add Doctor"}
+            </button>
+          </form>
+        </aside>
 
       </div>
-
 
     </div>
 

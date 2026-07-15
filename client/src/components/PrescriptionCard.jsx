@@ -25,7 +25,7 @@ export default function PrescriptionCard({
 
         <button
           onClick={() => onDelete(prescription._id)}
-          className="mt-4 text-red-600 hover:text-red-700"
+          className="mt-4 text-red-600 hover:text-red-700 border border-red-400 hover:border-red-700 px-3 py-1 rounded transition"
         >
           Delete
         </button>

@@ -96,46 +96,65 @@ export default function Prescriptions() {
         Prescriptions
       </h1>
 
-      {/* Upload */}
+      <div className="grid lg:grid-cols-[minmax(0,1.7fr)_minmax(320px,0.9fr)] gap-8 items-start">
 
-      <div className="card p-6 mb-8">
+        <section>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-xl font-semibold">
+              Uploaded Prescriptions
+            </h2>
+            <p className="text-sm text-slate-500">
+              {prescriptions.length} item{prescriptions.length === 1 ? "" : "s"}
+            </p>
+          </div>
 
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="input w-full mb-4"
-        />
+          {prescriptions.length ? (
+            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {prescriptions.map((item) => (
+                <PrescriptionCard
+                  key={item._id}
+                  prescription={item}
+                  onOpen={setSelected}
+                  onDelete={deletePrescription}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="card p-8 text-center text-slate-500">
+              No prescriptions uploaded yet.
+            </div>
+          )}
+        </section>
 
-        <input
-          type="file"
-          accept="image/png,image/jpeg"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="mb-4"
-        />
+        <aside className="card p-6 sticky top-24">
+          <h2 className="text-xl font-semibold mb-4">
+            Upload Prescription
+          </h2>
 
-        <button
-          onClick={handleUpload}
-          className="btn-primary"
-        >
-          {loading ? "Uploading..." : "Upload"}
-        </button>
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="input w-full"
+            />
 
-      </div>
+            <input
+              type="file"
+              accept="image/png,image/jpeg"
+              onChange={(e) => setFile(e.target.files[0])}
+              className="inline-block max-w-full border border-slate-300 rounded-lg px-3 py-2 cursor-pointer hover:border-slate-400 hover:bg-slate-50"
+            />
 
-      {/* Grid */}
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-        {prescriptions.map((item) => (
-          <PrescriptionCard
-            key={item._id}
-            prescription={item}
-            onOpen={setSelected}
-            onDelete={deletePrescription}
-          />
-        ))}
+            <button
+              onClick={handleUpload}
+              className="btn-primary w-full"
+            >
+              {loading ? "Uploading..." : "Upload"}
+            </button>
+          </div>
+        </aside>
 
       </div>
 

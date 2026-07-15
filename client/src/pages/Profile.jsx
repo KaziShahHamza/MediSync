@@ -71,7 +71,7 @@ export default function Profile() {
   useEffect(() => {
     if (!profile) return;
 
-    setForm({
+    const nextForm = {
       dob: profile.dob
         ? new Date(profile.dob).toISOString().split("T")[0]
         : "",
@@ -103,7 +103,14 @@ export default function Profile() {
         name: profile.emergencyContact?.name || "",
         phone: profile.emergencyContact?.phone || "",
       },
-    });
+
+    };
+
+    const timer = setTimeout(() => {
+      setForm(nextForm);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [profile]);
 
   function handleChange(e) {
@@ -203,17 +210,180 @@ export default function Profile() {
   return (
     <div className="container py-10">
 
-      <h1 className="text-3xl font-bold mb-8">
+      <h1 className="text-3xl font-bold mb-3">
         My Profile
       </h1>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <p className="text-slate-500 mb-8">
+        Review your saved details and update your medical information.
+      </p>
+
+      <div className="grid lg:grid-cols-2 gap-8 items-start">
+
+        {/* PROFILE SUMMARY */}
+
+        <div className="bg-white rounded-xl shadow p-6 lg:p-8 h-fit sticky top-24">
+
+          <div className="mb-6">
+            <h2 className="text-xl font-bold">
+              Profile Summary
+            </h2>
+            <p className="text-sm text-slate-500 mt-1">
+              A quick view of your current profile details.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4 text-sm">
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="text-slate-500 mb-1">
+                Name
+              </p>
+
+              <p className="font-medium">
+                {userInfo?.name || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
+              <p className="text-slate-500 mb-1">
+                Email
+              </p>
+
+              <p className="font-medium break-all">
+                {userInfo?.email || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="text-slate-500 mb-1">
+                Gender
+              </p>
+
+              <p>
+                {form.gender || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="text-slate-500 mb-1">
+                Height
+              </p>
+
+              <p>
+                {form.height.feet || "-"} ft {form.height.inches || "0"} in
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="text-slate-500 mb-1">
+                Blood Group
+              </p>
+
+              <p>
+                {form.bloodGroup || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
+              <p className="text-slate-500 mb-2">
+                Chronic Illnesses
+              </p>
+
+              {form.chronicIllnesses.length ? (
+                <ul className="list-disc list-inside space-y-1">
+                  {form.chronicIllnesses.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>None</p>
+              )}
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
+              <p className="text-slate-500 mb-1">
+                Allergies
+              </p>
+
+              <p>
+                {form.allergies || "None"}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
+              <p className="text-slate-500 mb-1">
+                Surgeries
+              </p>
+
+              <p>
+                {form.surgeries || "None"}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="text-slate-500 mb-1">
+                Smoking
+              </p>
+
+              <p>
+                {form.smoking || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="text-slate-500 mb-1">
+                Alcohol
+              </p>
+
+              <p>
+                {form.alcohol || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="text-slate-500 mb-1">
+                Exercise
+              </p>
+
+              <p>
+                {form.exercise || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="text-slate-500 mb-1">
+                Diet
+              </p>
+
+              <p>
+                {form.diet || "-"}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:col-span-2">
+              <p className="text-slate-500 mb-1">
+                Emergency Contact
+              </p>
+
+              <p className="font-medium">
+                {form.emergencyContact.name || "-"}
+              </p>
+
+              <p className="text-slate-600 mt-1">
+                {form.emergencyContact.phone || "-"}
+              </p>
+            </div>
+
+          </div>
+
+        </div>
 
         {/* FORM */}
 
         <form
           onSubmit={handleSubmit}
-          className="lg:col-span-2 bg-white rounded-xl shadow p-8 space-y-8"
+          className="bg-white rounded-xl shadow p-6 lg:p-8 space-y-8"
         >
           {/* PERSONAL */}
 
@@ -416,7 +586,7 @@ export default function Profile() {
 
           </section>
 
-                    {/* LIFESTYLE */}
+          {/* LIFESTYLE */}
 
           <section>
             <h2 className="text-xl font-semibold mb-4">
@@ -553,161 +723,6 @@ export default function Profile() {
           </button>
 
         </form>
-
-        {/* PROFILE SUMMARY */}
-
-        <div className="bg-white rounded-xl shadow p-6 h-fit sticky top-24">
-
-          <h2 className="text-xl font-bold mb-6">
-            Profile Summary
-          </h2>
-
-          <div className="space-y-4 text-sm">
-
-            <div>
-              <p className="text-slate-500">
-                Name
-              </p>
-
-              <p className="font-medium">
-                {userInfo?.name || "-"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Email
-              </p>
-
-              <p className="font-medium break-all">
-                {userInfo?.email || "-"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Gender
-              </p>
-
-              <p>
-                {form.gender || "-"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Height
-              </p>
-
-              <p>
-                {form.height.feet || "-"} ft{" "}
-                {form.height.inches || "0"} in
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Blood Group
-              </p>
-
-              <p>
-                {form.bloodGroup || "-"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Chronic Illnesses
-              </p>
-
-              {form.chronicIllnesses.length ? (
-                <ul className="list-disc list-inside mt-1 space-y-1">
-                  {form.chronicIllnesses.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>None</p>
-              )}
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Allergies
-              </p>
-
-              <p>
-                {form.allergies || "None"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Surgeries
-              </p>
-
-              <p>
-                {form.surgeries || "None"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Smoking
-              </p>
-
-              <p>
-                {form.smoking || "-"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Alcohol
-              </p>
-
-              <p>
-                {form.alcohol || "-"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Exercise
-              </p>
-
-              <p>
-                {form.exercise || "-"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Diet
-              </p>
-
-              <p>
-                {form.diet || "-"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-slate-500">
-                Emergency Contact
-              </p>
-
-              <p>
-                {form.emergencyContact.name || "-"}
-              </p>
-
-              <p className="text-slate-600">
-                {form.emergencyContact.phone || "-"}
-              </p>
-            </div>
-
-          </div>
-
-        </div>
 
       </div>
 
