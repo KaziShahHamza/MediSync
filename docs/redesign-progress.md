@@ -5,11 +5,11 @@
 - [ done ] Navbar
 
 ## Phase 1
-- [ ] Home
+- [ done ] Home
 
 ## Phase 2
-- [ ] Dashboard
-- [ ] Dashboard Components
+- [ done ] Dashboard
+- [ done ] Dashboard Components
 
 ## Phase 3
 - [ ] Medicines
