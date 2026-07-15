@@ -7,6 +7,7 @@ import medicineRoutes from "./routes/medicine.routes.js";
 import healthRoutes from "./routes/health.routes.js";
 import profileRoutes from "./routes/profile.routes.js";
 import prescriptionRoutes from "./routes/prescription.routes.js";
+import doctorRoutes from "./routes/doctor.routes.js";
 
 const app = express();
 
@@ -24,5 +25,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/prescriptions", prescriptionRoutes);
+app.use("/api/doctors", doctorRoutes);
 
 app.listen(5000, () => console.log("Server running on port 5000"));

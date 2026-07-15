@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { MedicineProvider, useMedicines } from "./context/MedicineContext";
 import { ProfileProvider } from "./context/ProfileContext";
 import { PrescriptionProvider } from "./context/PrescriptionContext";
+import { DoctorProvider } from "./context/DoctorContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -44,6 +45,8 @@ export default function App() {
     <ProfileProvider>
       <MedicineProvider>
         <PrescriptionProvider>
+          <DoctorProvider>
+
         <BrowserRouter>
           <Navbar />
 
@@ -130,6 +133,7 @@ export default function App() {
             />
           </Routes>
         </BrowserRouter>
+          </DoctorProvider>
         </PrescriptionProvider>
       </MedicineProvider>
       </ProfileProvider>
