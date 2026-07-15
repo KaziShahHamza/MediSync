@@ -1,48 +1,184 @@
 import { useState } from "react";
+import {
+  Droplets,
+  Save,
+} from "lucide-react";
 
-export default function BloodSugarForm({ onAdd }) {
+
+export default function BloodSugarForm({
+  onAdd,
+}) {
+
+
   const [glucose, setGlucose] = useState("");
 
-  const handleSubmit = async (e) => {
+
+
+
+
+  const handleSubmit = async (e)=>{
+
+
     e.preventDefault();
+
+
 
     if (!glucose) return;
 
+
+
     await onAdd({
+
       type: "diabetes",
+
       glucose,
+
     });
 
+
+
     setGlucose("");
+
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="card">
-      <h3 className="text-xl font-semibold mb-5">
-        Blood Sugar
-      </h3>
 
-      <div className="space-y-4">
+
+
+
+
+  return (
+
+    <form
+
+      onSubmit={handleSubmit}
+
+      className="card space-y-6"
+
+    >
+
+
+
+
+      <div className="
+        flex
+        items-center
+        gap-3
+      ">
+
+
+
+        <div className="icon-wrapper">
+
+
+          <Droplets
+
+            size={22}
+
+            className="text-blue-600"
+
+          />
+
+
+        </div>
+
+
+
+
+        <h3 className="card-title">
+
+          Blood Sugar
+
+        </h3>
+
+
+      </div>
+
+
+
+
+
+
+
+      <div>
+
+
+        <label>
+
+          Blood Glucose
+
+        </label>
+
+
+
         <input
+
           type="number"
+
           step="0.1"
+
           className="input"
-          placeholder="Blood Glucose (mg/dL)"
+
+          placeholder="Example: 95"
+
           value={glucose}
-          onChange={(e) => setGlucose(e.target.value)}
+
+          onChange={
+            (e)=>setGlucose(e.target.value)
+          }
+
+
         />
 
-        <p className="text-sm text-slate-400">
-          Normal fasting: 70–99 mg/dL
-        </p>
 
-        <button
-          type="submit"
-          className="btn-primary w-full"
-        >
-          Save Blood Sugar
-        </button>
       </div>
+
+
+
+
+
+
+
+      <p className="
+        text-sm
+        text-slate-500
+      ">
+
+        Normal fasting range: 70–99 mg/dL
+
+      </p>
+
+
+
+
+
+
+
+      <button
+
+        type="submit"
+
+        className="btn-primary w-full"
+
+      >
+
+
+
+        <Save size={18}/>
+
+
+
+        Save Blood Sugar
+
+
+
+      </button>
+
+
+
+
+
     </form>
+
   );
+
 }
