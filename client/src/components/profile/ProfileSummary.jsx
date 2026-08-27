@@ -1,3 +1,5 @@
+// client/src/components/profile/ProfileSummary.jsx
+
 function InfoItem({
   label,
   value,
