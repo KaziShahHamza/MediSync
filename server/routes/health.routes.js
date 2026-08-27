@@ -10,7 +10,7 @@ router.post("/", auth, async (req, res) => {
   try {
     const log = await HealthLog.create({
       ...req.body,
-      user: req.userId // FIX
+      user: req.userId 
     });
 
     res.json(log);
@@ -22,7 +22,7 @@ router.post("/", auth, async (req, res) => {
 // get user logs
 router.get("/", auth, async (req, res) => {
   const logs = await HealthLog.find({
-    user: req.userId // FIX
+    user: req.userId 
   }).sort({ createdAt: 1 });
 
   res.json(logs);
@@ -32,7 +32,7 @@ router.get("/", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   await HealthLog.findOneAndDelete({
     _id: req.params.id,
-    user: req.userId // FIX
+    user: req.userId 
   });
 
   res.json({ success: true });

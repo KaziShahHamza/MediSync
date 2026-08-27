@@ -5,10 +5,7 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
-/*
-GET Profile
-Returns user info + profile
-*/
+// GET Profile, Returns user info + profile
 router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");
@@ -33,9 +30,7 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-/*
-Create profile
-*/
+// Create profile
 router.post("/", auth, async (req, res) => {
   try {
     const exists = await Profile.findOne({
@@ -61,9 +56,7 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-/*
-Update profile
-*/
+// Update profile
 router.put("/", auth, async (req, res) => {
   try {
     const profile = await Profile.findOneAndUpdate(
