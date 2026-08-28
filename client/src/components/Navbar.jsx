@@ -44,9 +44,11 @@ export default function Navbar() {
       <div className="container h-[72px] flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
-            <ShieldCheck size={22} className="text-white" />
-          </div>
+          <img
+            src="/assets/icon_3.png"
+            alt="MediSync"
+            className="w-15 h-15 rounded-xl object-cover"
+          />
 
           <div>
             <h1 className="text-lg font-bold text-slate-900 leading-tight">
