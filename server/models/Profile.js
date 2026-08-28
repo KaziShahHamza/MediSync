@@ -1,3 +1,5 @@
+// server/models/Profile.js
+
 import mongoose from "mongoose";
 
 const profileSchema = new mongoose.Schema(

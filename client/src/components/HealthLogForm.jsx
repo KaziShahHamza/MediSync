@@ -1,4 +1,5 @@
 // client/src/components/HealthLogForm.jsx
+
 import { useState } from "react";
 
 export default function HealthLogForm({ onAdd }) {

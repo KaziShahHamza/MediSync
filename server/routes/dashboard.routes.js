@@ -1,3 +1,5 @@
+// server/routes/dashboard.routes.js
+
 import express from "express";
 import auth from "../middleware/auth.js";
 import { getDashboardData } from "../services/dashboardService.js";

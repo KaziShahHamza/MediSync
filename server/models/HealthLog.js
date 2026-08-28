@@ -1,4 +1,5 @@
 // server/models/HealthLog.js
+
 import mongoose from "mongoose";
 
 const healthLogSchema = new mongoose.Schema(

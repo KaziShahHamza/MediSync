@@ -1,3 +1,5 @@
+// server/routes/profile.routes.js
+
 import express from "express";
 import auth from "../middleware/auth.js";
 import Profile from "../models/Profile.js";

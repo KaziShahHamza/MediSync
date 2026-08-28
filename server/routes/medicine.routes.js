@@ -1,4 +1,5 @@
 // server/routes/medicine.routes.js
+
 import express from "express";
 import Medicine from "../models/Medicine.js";
 import auth from "../middleware/auth.js";

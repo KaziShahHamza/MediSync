@@ -1,3 +1,5 @@
+// client/src/components/profile/ProfileInput.jsx
+
 export default function ProfileInput({
   label,
   ...props

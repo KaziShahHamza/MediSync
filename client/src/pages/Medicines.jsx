@@ -1,3 +1,5 @@
+// client/src/pages/Medicines.jsx
+
 import { useEffect, useState } from "react";
 import {
   Pill,

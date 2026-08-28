@@ -1,3 +1,5 @@
+// client/src/pages/Dashboard.jsx
+
 import { useEffect, useState } from "react";
 import {
   Activity,

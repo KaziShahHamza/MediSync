@@ -1,12 +1,13 @@
 # Future Features
 
+- Mobile Optimization
+- Dark Mode
 - Re-design
 - Gemini AI generate summary
 - PDF Export 
 - OCR (pic to text)
-- Mobile Optimization
-- Dark Mode
+- Modal smooth animation
 - Medical Documents
 - Temperature of current town/city
 - Notifications to email weekly
-- Settings
+- Settings page

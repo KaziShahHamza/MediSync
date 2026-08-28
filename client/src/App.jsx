@@ -1,4 +1,5 @@
 // client/src/App.jsx
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -69,6 +70,8 @@ export default function App() {
                     }
                   />
 
+  
+
                   <Route
                     path="/medicines"
                     element={
@@ -86,7 +89,8 @@ export default function App() {
                       </ProtectedRoute>
                     }
                   />
-{/* 
+
+                {/* 
                   <Route
                     path="/health2"
                     element={
@@ -113,7 +117,8 @@ export default function App() {
                       </ProtectedRoute>
                     }
                   />
-{/* 
+
+                  {/* 
                   <Route
                     path="/test"
                     element={

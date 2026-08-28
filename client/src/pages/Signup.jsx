@@ -1,3 +1,5 @@
+// client/src/pages/Signup.jsx
+
 import { useNavigate, Link } from "react-router-dom";
 import AuthLayout from "../components/auth/AuthLayout";
 

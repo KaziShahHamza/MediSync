@@ -1,3 +1,5 @@
+// server/routes/prescription.routes.js
+
 import express from "express";
 import Prescription from "../models/Prescription.js";
 import auth from "../middleware/auth.js";

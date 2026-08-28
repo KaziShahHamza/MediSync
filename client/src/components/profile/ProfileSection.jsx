@@ -1,3 +1,5 @@
+// client/src/components/profile/ProfileSection.jsx
+
 export default function ProfileSection({
   title,
   description,

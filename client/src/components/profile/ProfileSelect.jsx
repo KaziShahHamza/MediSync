@@ -1,3 +1,5 @@
+// client/src/components/profile/ProfileSelect.jsx
+
 export default function ProfileSelect({
   label,
   children,

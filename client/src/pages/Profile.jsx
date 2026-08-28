@@ -1,4 +1,5 @@
 // src/pages/Profile.jsx
+
 import { useEffect, useState } from "react";
 import { useProfile } from "../context/ProfileContext";
 import ProfileSummary from "../components/profile/ProfileSummary";
