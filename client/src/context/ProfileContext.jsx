@@ -3,12 +3,13 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const ProfileContext = createContext();
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function ProfileProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
-
 
   const fetchProfile = async () => {
     const token = localStorage.getItem("token");
@@ -19,7 +20,7 @@ export function ProfileProvider({ children }) {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/profile", {
+      const res = await fetch(`${API_URL}/api/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

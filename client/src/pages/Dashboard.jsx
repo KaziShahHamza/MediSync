@@ -16,6 +16,8 @@ import HealthSummaryCard from "../components/dashboard/HealthSummaryCard";
 import StatCard from "../components/dashboard/StatCard";
 import QuickLinkCard from "../components/dashboard/QuickLinkCard";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function Dashboard() {
   const [data, setData] = useState(null);
 
@@ -24,7 +26,7 @@ export default function Dashboard() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/dashboard`, {
+    fetch(`${API_URL}/api/dashboard`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

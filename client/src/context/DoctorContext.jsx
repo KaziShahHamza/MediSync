@@ -3,6 +3,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const DoctorContext = createContext();
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function DoctorProvider({ children }) {
   const [doctors, setDoctors] = useState([]);
 
@@ -11,7 +13,7 @@ export function DoctorProvider({ children }) {
     if (!token) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/doctors", {
+      const res = await fetch(`${API_URL}/api/doctors`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

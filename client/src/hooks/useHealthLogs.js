@@ -1,19 +1,21 @@
 // client/src/hooks/useHealthLogs.js
 import { useEffect, useState } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function useHealthLogs() {
   const [logs, setLogs] = useState([]);
   const token = localStorage.getItem("token");
 
   const fetchLogs = async () => {
-    const res = await fetch("http://localhost:5000/api/health", {
+    const res = await fetch(`${API_URL}/api/health`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setLogs(await res.json());
   };
 
   const addLog = async (data) => {
-    await fetch("http://localhost:5000/api/health", {
+    await fetch(`${API_URL}/api/health`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

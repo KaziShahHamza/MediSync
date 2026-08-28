@@ -58,6 +58,8 @@ const emptyForm = {
   notes: "",
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function Doctors() {
   const { doctors, fetchDoctors } = useDoctors();
 
@@ -104,8 +106,8 @@ export default function Doctors() {
 
     await fetch(
       editingId
-        ? `${import.meta.env.VITE_API_URL}/api/doctors/${editingId}`
-        : `${import.meta.env.VITE_API_URL}/api/doctors`,
+        ? `${API_URL}/api/doctors/${editingId}`
+        : `${API_URL}/api/doctors`,
       {
         method: editingId ? "PUT" : "POST",
         headers: {
@@ -124,7 +126,7 @@ export default function Doctors() {
   async function deleteDoctor(id) {
     const token = localStorage.getItem("token");
 
-    await fetch(`${import.meta.env.VITE_API_URL}/api/doctors/${id}`, {
+    await fetch(`${API_URL}/api/doctors/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -3,6 +3,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const PrescriptionContext = createContext();
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function PrescriptionProvider({ children }) {
   const [prescriptions, setPrescriptions] = useState([]);
 
@@ -11,7 +13,7 @@ export function PrescriptionProvider({ children }) {
     if (!token) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/prescriptions", {
+      const res = await fetch(`${API_URL}/api/prescriptions`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
