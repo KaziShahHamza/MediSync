@@ -47,14 +47,14 @@ export default function MedicineForm({ onSave, editing }) {
         <label>Medicine Name</label>
 
         <div className="relative">
-          <Pill size={18} className="absolute left-3 top-3 text-slate-400" />
+          <Pill size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
 
           <input
             type="text"
             placeholder="Enter medicine name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="input pl-10"
+            className="input !pl-10 "
             required
           />
         </div>
@@ -67,7 +67,7 @@ export default function MedicineForm({ onSave, editing }) {
         <div className="relative">
           <ImagePlus
             size={18}
-            className="absolute left-3 top-3 text-slate-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
           />
 
           <input
@@ -75,7 +75,7 @@ export default function MedicineForm({ onSave, editing }) {
             placeholder="Optional image URL"
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
-            className="input pl-10"
+            className="input !pl-10"
           />
         </div>
       </div>

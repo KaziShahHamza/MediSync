@@ -1,10 +1,6 @@
 // client/src/components/profile/ProfileSummary.jsx
 
-function InfoItem({
-  label,
-  value,
-  full = false,
-}) {
+function InfoItem({ label, value, full = false }) {
   return (
     <div
       className={`
@@ -15,28 +11,17 @@ function InfoItem({
         ${full ? "sm:col-span-2" : ""}
       `}
     >
-
-      <p className="text-xs uppercase tracking-wide text-slate-400">
-        {label}
-      </p>
+      <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
 
       <p className="mt-2 font-medium text-slate-800 break-words">
         {value || "-"}
       </p>
-
     </div>
   );
 }
 
-
-
-export default function ProfileSummary({
-  userInfo,
-  form,
-}) {
-
+export default function ProfileSummary({ userInfo, form }) {
   return (
-
     <div
       className="
         bg-white
@@ -48,46 +33,24 @@ export default function ProfileSummary({
         lg:top-24
       "
     >
-
-
       <div className="mb-6">
-
         <h2 className="text-xl font-semibold text-slate-800">
           Profile Summary
         </h2>
 
-
         <p className="text-sm text-slate-500 mt-1">
           Overview of your saved health information.
         </p>
-
       </div>
 
-
-
-
       <div className="grid sm:grid-cols-2 gap-4">
+        <InfoItem label="Name" value={form.name} />
 
+        <InfoItem label="Username" value={userInfo?.username} />
 
-        <InfoItem
-          label="Name"
-          value={userInfo?.name}
-        />
+        <InfoItem label="Email" value={userInfo?.email} full />
 
-
-        <InfoItem
-          label="Email"
-          value={userInfo?.email}
-          full
-        />
-
-
-
-        <InfoItem
-          label="Gender"
-          value={form.gender}
-        />
-
+        <InfoItem label="Gender" value={form.gender} />
 
         <InfoItem
           label="Height"
@@ -98,54 +61,19 @@ export default function ProfileSummary({
           }
         />
 
+        <InfoItem label="Blood Group" value={form.bloodGroup} />
 
+        <InfoItem label="Smoking" value={form.smoking} />
 
-        <InfoItem
-          label="Blood Group"
-          value={form.bloodGroup}
-        />
+        <InfoItem label="Alcohol" value={form.alcohol} />
 
+        <InfoItem label="Exercise" value={form.exercise} />
 
+        <InfoItem label="Diet" value={form.diet} />
 
-        <InfoItem
-          label="Smoking"
-          value={form.smoking}
-        />
+        <InfoItem label="Allergies" value={form.allergies || "None"} full />
 
-
-        <InfoItem
-          label="Alcohol"
-          value={form.alcohol}
-        />
-
-
-        <InfoItem
-          label="Exercise"
-          value={form.exercise}
-        />
-
-
-        <InfoItem
-          label="Diet"
-          value={form.diet}
-        />
-
-
-
-        <InfoItem
-          label="Allergies"
-          value={form.allergies || "None"}
-          full
-        />
-
-
-        <InfoItem
-          label="Surgeries"
-          value={form.surgeries || "None"}
-          full
-        />
-
-
+        <InfoItem label="Surgeries" value={form.surgeries || "None"} full />
 
         <InfoItem
           label="Emergency Contact"
@@ -157,8 +85,6 @@ export default function ProfileSummary({
           full
         />
 
-
-
         <div
           className="
             sm:col-span-2
@@ -169,39 +95,21 @@ export default function ProfileSummary({
             p-4
           "
         >
-
           <p className="text-xs uppercase tracking-wide text-sky-600">
             Chronic Illnesses
           </p>
 
-
           {form.chronicIllnesses.length ? (
-
             <ul className="mt-2 list-disc list-inside text-slate-700">
-
-              {form.chronicIllnesses.map((item)=>(
-                <li key={item}>
-                  {item}
-                </li>
+              {form.chronicIllnesses.map((item) => (
+                <li key={item}>{item}</li>
               ))}
-
             </ul>
-
           ) : (
-
-            <p className="mt-2 text-slate-600">
-              None
-            </p>
-
+            <p className="mt-2 text-slate-600">None</p>
           )}
-
         </div>
-
-
       </div>
-
-
     </div>
-
   );
 }

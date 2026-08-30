@@ -37,9 +37,9 @@ export function ProfileProvider({ children }) {
     setLoading(false);
   };
 
-    useEffect(() => {
+  useEffect(() => {
     fetchProfile();
-    }, [token]);
+  }, [token]);
 
   return (
     <ProfileContext.Provider

@@ -115,7 +115,7 @@ export default function Doctors() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(form),
-      }
+      },
     );
 
     setForm(emptyForm);
@@ -231,9 +231,12 @@ export default function Doctors() {
                       value={designation}
                       checked={form.designation === designation}
                       onChange={handleChange}
+                      className="shrink-0 translate-y-px"
                     />
 
-                    <span className="text-sm font-medium">{designation}</span>
+                    <span className="text-sm font-medium pl-1">
+                      {designation}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -257,9 +260,10 @@ export default function Doctors() {
                       type="radio"
                       checked={form.specialty === item}
                       onChange={() => selectSpecialty(item)}
+                      className="shrink-0 translate-y-px"
                     />
 
-                    <span className="text-sm">{item}</span>
+                    <span className="text-sm pl-1">{item}</span>
                   </label>
                 ))}
               </div>
@@ -310,9 +314,10 @@ export default function Doctors() {
                       type="checkbox"
                       checked={form.visitingDays.includes(day)}
                       onChange={() => toggleDay(day)}
+                      className="shrink-0 translate-y-px"
                     />
 
-                    {day}
+                    <span className="ml-1">{day}</span>
                   </label>
                 ))}
               </div>

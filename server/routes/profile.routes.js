@@ -35,6 +35,8 @@ router.get("/", auth, async (req, res) => {
 // Create profile
 router.post("/", auth, async (req, res) => {
   try {
+    const { name, ...profileData } = req.body;
+
     const exists = await Profile.findOne({
       user: req.userId,
     });
@@ -45,12 +47,23 @@ router.post("/", auth, async (req, res) => {
       });
     }
 
+    if (name?.trim()) {
+      await User.findByIdAndUpdate(req.userId, {
+        name: name.trim(),
+      });
+    }
+
     const profile = await Profile.create({
-      ...req.body,
+      ...profileData,
       user: req.userId,
     });
 
-    res.status(201).json(profile);
+    const user = await User.findById(req.userId).select("-password");
+
+    res.status(201).json({
+      user,
+      profile,
+    });
   } catch (err) {
     res.status(400).json({
       message: err.message,
@@ -61,15 +74,23 @@ router.post("/", auth, async (req, res) => {
 // Update profile
 router.put("/", auth, async (req, res) => {
   try {
+    const { name, ...profileData } = req.body;
+
+    if (name?.trim()) {
+      await User.findByIdAndUpdate(req.userId, {
+        name: name.trim(),
+      });
+    }
+
     const profile = await Profile.findOneAndUpdate(
       {
         user: req.userId,
       },
-      req.body,
+      profileData,
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     if (!profile) {
@@ -78,7 +99,12 @@ router.put("/", auth, async (req, res) => {
       });
     }
 
-    res.json(profile);
+    const user = await User.findById(req.userId).select("-password");
+
+    res.json({
+      user,
+      profile,
+    });
   } catch (err) {
     res.status(400).json({
       message: err.message,

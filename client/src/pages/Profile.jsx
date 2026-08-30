@@ -16,19 +16,10 @@ const illnessOptions = [
   "Thyroid",
 ];
 
-const bloodGroups = [
-  "",
-  "A+",
-  "A-",
-  "B+",
-  "B-",
-  "AB+",
-  "AB-",
-  "O+",
-  "O-",
-];
+const bloodGroups = ["", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const initialForm = {
+  name: "",
   dob: "",
   gender: "",
   height: {
@@ -52,13 +43,7 @@ const initialForm = {
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Profile() {
-  const {
-    profile,
-    userInfo,
-    fetchProfile,
-    setProfile,
-    loading,
-  } = useProfile();
+  const { profile, userInfo, fetchProfile, setProfile, loading } = useProfile();
 
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
@@ -67,9 +52,8 @@ export default function Profile() {
     if (!profile) return;
 
     const nextForm = {
-      dob: profile.dob
-        ? new Date(profile.dob).toISOString().split("T")[0]
-        : "",
+      name: userInfo?.name || "",
+      dob: profile.dob ? new Date(profile.dob).toISOString().split("T")[0] : "",
       gender: profile.gender || "",
       height: {
         feet: profile.height?.feet || "",
@@ -94,7 +78,7 @@ export default function Profile() {
     }, 0);
 
     return () => clearTimeout(timer);
-  }, [profile]);
+  }, [profile, userInfo]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -180,9 +164,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="container py-12">
-        <p className="text-center text-slate-500">
-          Loading profile...
-        </p>
+        <p className="text-center text-slate-500">Loading profile...</p>
       </div>
     );
   }
@@ -191,9 +173,7 @@ export default function Profile() {
     <div className="container py-10">
       {/* Header */}
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-slate-800">
-          My Profile
-        </h1>
+        <h1 className="text-3xl font-bold text-slate-800">My Profile</h1>
 
         <p className="text-slate-500 mt-2">
           Manage your personal and medical information.
@@ -202,10 +182,7 @@ export default function Profile() {
 
       <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
         {/* Summary */}
-        <ProfileSummary
-          userInfo={userInfo}
-          form={form}
-        />
+        <ProfileSummary userInfo={userInfo} form={form} />
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -215,8 +192,9 @@ export default function Profile() {
           >
             <div className="grid md:grid-cols-2 gap-5">
               <ProfileInput
-                label="Name"
-                value={userInfo?.name || ""}
+                label="Username"
+                value={userInfo?.username || ""}
+                className="bg-red-200"
                 disabled
               />
 
@@ -224,6 +202,13 @@ export default function Profile() {
                 label="Email"
                 value={userInfo?.email || ""}
                 disabled
+              />
+
+              <ProfileInput
+                label="Name"
+                value={form.name}
+                name="name"
+                onChange={handleChange}
               />
 
               <ProfileInput
@@ -247,9 +232,7 @@ export default function Profile() {
               </ProfileSelect>
 
               <div>
-                <label className="block text-sm font-medium mb-2">
-                  Height
-                </label>
+                <label className="block text-sm font-medium mb-2">Height</label>
 
                 <div className="flex gap-3">
                   <input
@@ -279,9 +262,7 @@ export default function Profile() {
                 onChange={handleChange}
               >
                 {bloodGroups.map((group) => (
-                  <option key={group}>
-                    {group || "Select"}
-                  </option>
+                  <option key={group}>{group || "Select"}</option>
                 ))}
               </ProfileSelect>
             </div>
@@ -305,9 +286,10 @@ export default function Profile() {
                     type="checkbox"
                     checked={form.chronicIllnesses.includes(item)}
                     onChange={() => toggleIllness(item)}
+                    className="shrink-0 translate-y-px"
                   />
-
-                  {item}
+                  <span className="ml-2">{item}</span>
+                  {/* {item} */}
                 </label>
               ))}
             </div>
@@ -409,8 +391,8 @@ export default function Profile() {
             {saving
               ? "Saving..."
               : profile
-              ? "Update Profile"
-              : "Create Profile"}
+                ? "Update Profile"
+                : "Create Profile"}
           </button>
         </form>
       </div>
