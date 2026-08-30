@@ -1,7 +1,7 @@
 # Future Features
 
-- Gemini AI generate summary
 - Modal smooth animation / large image / zooming
+- Gemini AI generate summary
 - PDF Export 
 - OCR (pic to text) (from pic to inputted data)
 - Re-design

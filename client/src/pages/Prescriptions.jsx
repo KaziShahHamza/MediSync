@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePrescriptions } from "../context/PrescriptionContext";
 import PrescriptionCard from "../components/PrescriptionCard";
 import { Upload, FileImage, X, Image as ImageIcon } from "lucide-react";
+import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -16,6 +17,20 @@ export default function Prescriptions() {
   const [file, setFile] = useState(null);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const [zoom, setZoom] = useState(1);
+
+  const zoomIn = () => {
+    setZoom((prev) => Math.min(prev + 0.25, 3));
+  };
+
+  const zoomOut = () => {
+    setZoom((prev) => Math.max(prev - 0.25, 0.5));
+  };
+
+  const resetZoom = () => {
+    setZoom(1);
+  };
 
   async function handleUpload() {
     if (!title || !file) {
@@ -35,7 +50,7 @@ export default function Prescriptions() {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const uploadData = await uploadRes.json();
@@ -140,9 +155,7 @@ export default function Prescriptions() {
             <div>
               <h2 className="card-title">Upload Prescription</h2>
 
-              <p className="text-sm text-slate-500">
-                Add a new medical record
-              </p>
+              <p className="text-sm text-slate-500">Add a new medical record</p>
             </div>
           </div>
 
@@ -191,36 +204,87 @@ export default function Prescriptions() {
       {selected && (
         <div
           className="fixed inset-0 bg-slate-900/70 flex items-center justify-center z-50 p-5"
-          onClick={() => setSelected(null)}
+          onClick={() => {
+            setSelected(null);
+            resetZoom();
+          }}
         >
           <div
-            className="bg-white/30 backdrop-blur-sm rounded-2xl max-w-5xl w-full p-6"
+            className="bg-white rounded-2xl max-w-5xl w-full p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Header */}
             <div className="flex justify-between items-center mb-5">
               <div>
                 <h2 className="text-xl font-semibold text-slate-900">
                   {selected.title}
                 </h2>
 
-                <p className="text-sm text-slate-100 mt-1">
+                <p className="text-sm text-slate-500 mt-1">
                   {new Date(selected.createdAt).toLocaleDateString()}
                 </p>
               </div>
 
-              <button
-                onClick={() => setSelected(null)}
-                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 transition"
-              >
-                <X size={22} />
-              </button>
+              <div className="flex items-center gap-2">
+                {/* Zoom Out */}
+                <button
+                  onClick={zoomOut}
+                  disabled={zoom <= 0.5}
+                  className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 disabled:opacity-40 transition"
+                  title="Zoom out"
+                >
+                  <ZoomOut size={20} />
+                </button>
+
+                {/* Zoom Percentage */}
+                <span className="text-sm text-slate-600 min-w-12 text-center">
+                  {Math.round(zoom * 100)}%
+                </span>
+
+                {/* Zoom In */}
+                <button
+                  onClick={zoomIn}
+                  disabled={zoom >= 3}
+                  className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 disabled:opacity-40 transition"
+                  title="Zoom in"
+                >
+                  <ZoomIn size={20} />
+                </button>
+
+                {/* Reset */}
+                <button
+                  onClick={resetZoom}
+                  className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 transition"
+                  title="Reset zoom"
+                >
+                  <RotateCcw size={19} />
+                </button>
+
+                {/* Close */}
+                <button
+                  onClick={() => {
+                    setSelected(null);
+                    resetZoom();
+                  }}
+                  className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-500 transition"
+                  title="Close"
+                >
+                  <X size={22} />
+                </button>
+              </div>
             </div>
 
-            <div className="flex justify-center bg-white/0 rounded-xl p-4">
+            {/* Image Preview */}
+            <div className="image-preview-scroll flex justify-center items-start bg-slate-100 rounded-xl p-4 h-[75vh] overflow-auto">
               <img
                 src={selected.imageUrl}
                 alt={selected.title}
-                className="max-h-[75vh] rounded-xl object-contain"
+                className="rounded-xl object-contain transition-all duration-200"
+                style={{
+                  width: `${zoom * 100}%`,
+                  maxWidth: "none",
+                  transformOrigin: "top center",
+                }}
               />
             </div>
           </div>
