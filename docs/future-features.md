@@ -17,9 +17,9 @@
 
 # Current Errors
 
-- Signup Error
-- Wrong password
 - password atleast 8 characters
-- Height logic
+- User already exists
+- Wrong password
 - Icon input field
+- Height logic
 - Logo

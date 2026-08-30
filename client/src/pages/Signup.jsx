@@ -52,55 +52,58 @@ try {
 };
 
 return ( <AuthLayout
-   title="Create Account"
-   subtitle="Start managing your health with MediSync."
- > <form onSubmit={submit} className="space-y-5">
-{error && ( <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
-{error} </div>
-)}
+          title="Create Account"
+          subtitle="Start managing your health with MediSync."
+         > 
+          
+          <form onSubmit={submit} className="space-y-5">
+            {error && ( <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+            {error} </div>
+          )}
 
 
-    <input
-      name="name"
-      placeholder="Full Name"
-      className="input"
-      required
-    />
+          <input
+            name="name"
+            placeholder="Username"
+            className="input"
+            required
+          />
 
-    <input
-      name="email"
-      type="email"
-      placeholder="Email Address"
-      className="input"
-      required
-    />
+          <input
+            name="email"
+            type="email"
+            placeholder="Email Address"
+            className="input"
+            required
+          />
 
-    <input
-      name="password"
-      type="password"
-      placeholder="Password"
-      className="input"
-      required
-    />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password (minimum 8 characters)"
+            className="input"
+            minLength={8}
+            required
+          />
 
-    <button
-      disabled={loading}
-      className="btn-primary w-full py-3 disabled:opacity-60"
-    >
-      {loading ? "Creating account..." : "Create Account"}
-    </button>
+          <button
+            disabled={loading}
+            className="btn-primary w-full py-3 disabled:opacity-60"
+          >
+            {loading ? "Creating account..." : "Create Account"}
+          </button>
 
-    <p className="text-sm text-center text-slate-600">
-      Already have an account?
-      <Link
-        to="/login"
-        className="ml-1 text-sky-600 font-medium hover:underline"
-      >
-        Login
-      </Link>
-    </p>
-  </form>
-</AuthLayout>
+          <p className="text-sm text-center text-slate-600">
+            Already have an account?
+            <Link
+              to="/login"
+              className="ml-1 text-sky-600 font-medium hover:underline"
+            >
+              Login
+            </Link>
+          </p>
+        </form>
+      </AuthLayout>
 
 
 );
