@@ -7,69 +7,136 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
+// =========================
+// SIGNUP
+// =========================
+
 router.post("/signup", async (req, res) => {
   try {
-    const hashed = await bcrypt.hash(req.body.password, 10);
+    const { name, username, email, password } = req.body;
 
+    // Password validation
+    if (!password || password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters long",
+      });
+    }
+
+    // Check username
+    const existingUsername = await User.findOne({
+      username: username.toLowerCase(),
+    });
+
+    if (existingUsername) {
+      return res.status(400).json({
+        message: "Username already exists",
+      });
+    }
+
+    // Check email
+    const existingEmail = await User.findOne({
+      email: email.toLowerCase(),
+    });
+
+    if (existingEmail) {
+      return res.status(400).json({
+        message: "Email already exists",
+      });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user
     const user = await User.create({
-      ...req.body,
-      password: hashed,
-  });
+      name,
+      username,
+      email,
+      password: hashedPassword,
+    });
 
-  const token = jwt.sign(
-    { id: user._id },
-    process.env.JWT_SECRET
-  );
+    // Generate JWT
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
-  res.status(201).json({
-    token,
-    user,
-  });
+    // Safe user data
+    const userData = {
+      _id: user._id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+    };
 
-
+    return res.status(201).json({
+      token,
+      user: userData,
+    });
   } catch (error) {
-      res.status(400).json({
-      message: error.message || "Signup failed",
+    console.error("Signup error:", error);
+
+    return res.status(500).json({
+      message: "Signup failed",
     });
   }
 });
 
+// =========================
+// LOGIN
+// =========================
+
 router.post("/login", async (req, res) => {
-try {
-const user = await User.findOne({
-email: req.body.email,
-});
+  try {
+    const { identifier, password } = req.body;
 
-if (!user) {
-  return res.status(401).json({
-    message: "Invalid email or password",
-  });
-}
+    let user;
 
-const ok = await bcrypt.compare(
-  req.body.password,
-  user.password
-);
+    // Check whether identifier is an email
+    const isEmail = identifier.includes("@");
 
-if (!ok) {
-  return res.status(401).json({
-    message: "Invalid email or password",
-  });
-}
+    if (isEmail) {
+      user = await User.findOne({
+        email: identifier.toLowerCase(),
+      });
+    } else {
+      user = await User.findOne({
+        username: identifier.toLowerCase(),
+      });
+    }
 
-const token = jwt.sign(
-  { id: user._id },
-  process.env.JWT_SECRET
-);
+    // User not found
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
 
-res.json({
-  token,
-  user,
-});
+    // Check password
+    const ok = await bcrypt.compare(password, user.password);
 
+    if (!ok) {
+      return res.status(401).json({
+        message: "Wrong password",
+      });
+    }
 
-} catch (error) {
-      res.status(500).json({
+    // Generate JWT
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+    // Safe user data
+    const userData = {
+      _id: user._id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+    };
+
+    return res.json({
+      token,
+      user: userData,
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+
+    return res.status(500).json({
       message: "Login failed",
     });
   }

@@ -9,12 +9,10 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Login() {
   const { login } = useAuth();
-
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
 
   const submit = async (e) => {
     e.preventDefault();
@@ -31,7 +29,7 @@ export default function Login() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: f.email.value,
+          identifier: f.identifier.value,
           password: f.password.value,
         }),
       });
@@ -56,6 +54,7 @@ export default function Login() {
       title="Welcome Back"
       subtitle="Login to access your health dashboard."
     >
+      {" "}
       <form onSubmit={submit} className="space-y-5">
         {error && (
           <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
@@ -64,9 +63,9 @@ export default function Login() {
         )}
 
         <input
-          name="email"
-          type="email"
-          placeholder="Email Address"
+          name="identifier"
+          type="text"
+          placeholder="Username or Email"
           className="input"
           required
         />

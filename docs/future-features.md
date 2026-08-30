@@ -1,25 +1,21 @@
 # Future Features
 
 - Gemini AI generate summary
-- Modal smooth animation
-- OCR (pic to text) (from pic to inputted data)
+- Modal smooth animation / large image / zooming
 - PDF Export 
-- Medical Documents
-- convert to TS
-- convert to PG
+- OCR (pic to text) (from pic to inputted data)
+- Re-design
 - Mobile Optimization
 - Dark Mode
-- Re-design
-- Temperature of current town/city
-- Notifications to email weekly
-- Settings page
+- Medical Documents
+- convert to TS
+- Time, Date, Place, AQI, Temperature of current town/city
+- Notifications to email monthly
+- Settings/profile page
 
 
 # Current Errors
 
-- password atleast 8 characters
-- User already exists
-- Wrong password
+- Logo
 - Icon input field
 - Height logic
-- Logo
