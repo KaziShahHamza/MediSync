@@ -21,12 +21,18 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
-  // console.log("Dashboard user:", data.user);
+
+  const [aiSummary, setAiSummary] = useState(null);
+  const [aiGeneratedAt, setAiGeneratedAt] = useState(null);
+  const [aiLoading, setAiLoading] = useState(true);
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [aiMessage, setAiMessage] = useState("");
 
   const [time, setTime] = useState(new Date());
 
   const { userInfo } = useProfile();
 
+  // Dashboard data
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -35,10 +41,52 @@ export default function Dashboard() {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => res.json())
-      .then((result) => setData(result));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to load dashboard");
+        }
+
+        return res.json();
+      })
+      .then((result) => {
+        setData(result);
+      })
+      .catch((err) => {
+        console.error("Dashboard loading failed:", err);
+      });
   }, []);
 
+  // AI summary
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    fetch(`${API_URL}/api/ai/summary`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to load AI summary");
+        }
+
+        return res.json();
+      })
+      .then((result) => {
+        setAiSummary(result.summary);
+        setAiGeneratedAt(result.generatedAt);
+        setAiMessage(result.message || "");
+      })
+      .catch((err) => {
+        console.error("AI summary loading failed:", err);
+        setAiMessage("Unable to load the AI health summary right now.");
+      })
+      .finally(() => {
+        setAiLoading(false);
+      });
+  }, []);
+
+  // Clock
   useEffect(() => {
     const timer = setInterval(() => {
       setTime(new Date());
@@ -47,14 +95,49 @@ export default function Dashboard() {
     return () => clearInterval(timer);
   }, []);
 
+  // Manual AI generation
+  async function handleGenerateSummary() {
+    const token = localStorage.getItem("token");
+
+    setAiGenerating(true);
+    setAiMessage("");
+
+    try {
+      const response = await fetch(`${API_URL}/api/ai/summary/generate`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to generate summary");
+      }
+
+      setAiSummary(result.summary);
+      setAiGeneratedAt(result.generatedAt);
+      setAiMessage("");
+    } catch (err) {
+      console.error("AI summary generation failed:", err);
+
+      setAiMessage(err.message || "Failed to generate AI summary.");
+    } finally {
+      setAiGenerating(false);
+    }
+  }
+
   if (!data) {
     return (
       <div className="container page">
+        {" "}
         <div className="grid gap-6 md:grid-cols-3">
-          <div className="skeleton-card h-32" />
-          <div className="skeleton-card h-32" />
-          <div className="skeleton-card h-32" />
-        </div>
+          {" "}
+          <div className="skeleton-card h-32" />{" "}
+          <div className="skeleton-card h-32" />{" "}
+          <div className="skeleton-card h-32" />{" "}
+        </div>{" "}
       </div>
     );
   }
@@ -68,20 +151,21 @@ export default function Dashboard() {
 
   return (
     <div className="container page">
-      {/* Header */}
+      {/* Header */}{" "}
       <section className="page-header">
+        {" "}
         <div className="flex items-center justify-between gap-4 flex-wrap">
+          {" "}
           <div>
+            {" "}
             <h1 className="page-title">
-              Good {greeting}, {userInfo?.name || ""}
+              Good {greeting}, {userInfo?.name || ""}{" "}
             </h1>
-
             <p className="page-description">
               Monitor your health activity and manage your healthcare
               information from one place.
             </p>
           </div>
-
           <div className="surface px-4 py-3 flex items-center gap-3">
             <CalendarClock size={20} className="text-blue-600" />
 
@@ -97,12 +181,17 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
-
       {/* AI / Health Summary */}
       <section className="section">
-        <HealthSummaryCard summary={data.healthSummary} />
+        <HealthSummaryCard
+          summary={aiSummary}
+          loading={aiLoading}
+          generating={aiGenerating}
+          generatedAt={aiGeneratedAt}
+          message={aiMessage}
+          onGenerate={handleGenerateSummary}
+        />
       </section>
-
       {/* Health Overview */}
       <section className="section">
         <div className="section-header">
@@ -140,7 +229,6 @@ export default function Dashboard() {
           />
         </div>
       </section>
-
       {/* Summary Statistics */}
       <section className="section">
         <div className="section-header">
@@ -170,7 +258,6 @@ export default function Dashboard() {
           />
         </div>
       </section>
-
       {/* Quick Actions */}
       <section className="section">
         <div className="section-header">
