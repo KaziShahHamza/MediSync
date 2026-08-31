@@ -16,6 +16,7 @@ import HealthSummaryCard from "../components/dashboard/HealthSummaryCard";
 import StatCard from "../components/dashboard/StatCard";
 import QuickLinkCard from "../components/dashboard/QuickLinkCard";
 import { useProfile } from "../context/ProfileContext";
+import { useAuth } from "../context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -30,7 +31,8 @@ export default function Dashboard() {
 
   const [time, setTime] = useState(new Date());
 
-  const { userInfo } = useProfile();
+  // const { userInfo } = useProfile();
+  const { user } = useAuth();
 
   // Dashboard data
   useEffect(() => {
@@ -159,7 +161,7 @@ export default function Dashboard() {
           <div>
             {" "}
             <h1 className="page-title">
-              Good {greeting}, {userInfo?.name || ""}{" "}
+              Good {greeting}, {user?.name || ""}{" "}
             </h1>
             <p className="page-description">
               Monitor your health activity and manage your healthcare

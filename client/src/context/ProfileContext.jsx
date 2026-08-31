@@ -1,5 +1,8 @@
 // src/context/ProfileContext.jsx
+
 import { createContext, useContext, useEffect, useState } from "react";
+
+import { useAuth } from "./AuthContext";
 
 const ProfileContext = createContext();
 
@@ -9,37 +12,52 @@ export function ProfileProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("token");
+
+  const { user } = useAuth();
 
   const fetchProfile = async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
+      setProfile(null);
+      setUserInfo(null);
       setLoading(false);
       return;
     }
 
     try {
+      setLoading(true);
+
       const res = await fetch(`${API_URL}/api/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      if (!res.ok) {
+        throw new Error("Failed to fetch profile");
+      }
+
       const data = await res.json();
 
       setUserInfo(data.user);
       setProfile(data.profile);
     } catch (err) {
-      console.error(err);
+      console.error("Profile fetch failed:", err);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   useEffect(() => {
-    fetchProfile();
-  }, [token]);
+    if (user) {
+      fetchProfile();
+    } else {
+      setProfile(null);
+      setUserInfo(null);
+      setLoading(false);
+    }
+  }, [user]);
 
   return (
     <ProfileContext.Provider
@@ -47,6 +65,7 @@ export function ProfileProvider({ children }) {
         profile,
         setProfile,
         userInfo,
+        setUserInfo,
         loading,
         fetchProfile,
       }}
