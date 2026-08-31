@@ -3,34 +3,49 @@
 import { useMemo, useState } from "react";
 import { Scale, Save, Ruler, Weight } from "lucide-react";
 import BMIResult from "./BMIResult";
+import { useProfile } from "../context/ProfileContext";
 
 export default function BMIForm({ onAdd }) {
-  const [height, setHeight] = useState("");
+  const { profile } = useProfile();
+
   const [weight, setWeight] = useState("");
 
+  const heightCm = useMemo(() => {
+    const feet = Number(profile?.height?.feet) || 0;
+    const inches = Number(profile?.height?.inches) || 0;
+
+    if (!feet && !inches) return null;
+
+    const totalInches = feet * 12 + inches;
+
+    return totalInches * 2.54;
+  }, [profile]);
+
   const bmi = useMemo(() => {
-    if (!height || !weight) return null;
+    if (!heightCm || !weight) return null;
 
-    const h = Number(height) / 100;
+    const heightMeters = heightCm / 100;
 
-    return (Number(weight) / (h * h)).toFixed(1);
-  }, [height, weight]);
+    return (Number(weight) / (heightMeters * heightMeters)).toFixed(1);
+  }, [heightCm, weight]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!height || !weight) return;
+    if (!heightCm || !weight) return;
 
     await onAdd({
-      type: "bmi",
-      height: Number(height),
+      type: "weight",
       weight: Number(weight),
-      bmi: Number(bmi),
     });
 
-    setHeight("");
     setWeight("");
   };
+
+  const heightDisplay =
+    profile?.height?.feet || profile?.height?.inches
+      ? `${profile.height.feet || 0} ft ${profile.height.inches || 0} in`
+      : "Height not set";
 
   return (
     <form onSubmit={handleSubmit} className="card space-y-6">
@@ -43,24 +58,33 @@ export default function BMIForm({ onAdd }) {
         <h3 className="card-title">BMI Calculator</h3>
       </div>
 
-      {/* Height */}
+      {/* Saved Height */}
       <div>
         <label>Height</label>
 
-        <div className="relative">
-          <Ruler
-            size={18}
-            className="absolute left-3 top-3 text-slate-400"
-          />
+        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+          <Ruler size={20} className="text-slate-400 shrink-0" />
 
-          <input
-            type="number"
-            className="input pl-10"
-            placeholder="Height in cm"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-          />
+          {heightCm ? (
+            <div>
+              <p className="text-lg font-semibold text-slate-800">
+                {heightDisplay}
+              </p>
+
+              <p className="text-xs text-slate-500">
+                Retrieved from your profile
+              </p>
+            </div>
+          ) : (
+            <p className="text-sm font-medium text-red-500">Height not set</p>
+          )}
         </div>
+
+        {!heightCm && (
+          <p className="mt-2 text-sm text-red-500">
+            Please set your height in your profile first.
+          </p>
+        )}
       </div>
 
       {/* Weight */}
@@ -70,15 +94,18 @@ export default function BMIForm({ onAdd }) {
         <div className="relative">
           <Weight
             size={18}
-            className="absolute left-3 top-3 text-slate-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
           />
 
           <input
             type="number"
-            className="input pl-10"
+            min="1"
+            step="0.1"
+            className="input !pl-10"
             placeholder="Weight in kg"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
+            required
           />
         </div>
       </div>
@@ -87,7 +114,7 @@ export default function BMIForm({ onAdd }) {
 
       <button
         type="submit"
-        disabled={!bmi}
+        disabled={!bmi || !heightCm}
         className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Save size={18} />

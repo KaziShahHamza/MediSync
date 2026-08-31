@@ -12,7 +12,7 @@ const healthLogSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["bp", "diabetes", "bmi"],
+      enum: ["bp", "diabetes", "weight"],
       required: true,
     },
 
@@ -23,10 +23,8 @@ const healthLogSchema = new mongoose.Schema(
     // Blood Sugar
     glucose: Number,
 
-    // BMI
-    height: Number,
+    // Weight
     weight: Number,
-    bmi: Number,
 
     note: String,
 

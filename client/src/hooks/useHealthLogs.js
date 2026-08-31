@@ -9,21 +9,30 @@ export default function useHealthLogs() {
 
   const fetchLogs = async () => {
     const res = await fetch(`${API_URL}/api/health`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     setLogs(await res.json());
   };
 
   const addLog = async (data) => {
-    await fetch(`${API_URL}/api/health`, {
+    const res = await fetch(`${API_URL}/api/health`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
-    fetchLogs();
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new Error(result.message || "Failed to save health log");
+    }
+
+    await fetchLogs();
+
+    return result;
   };
 
   useEffect(() => {

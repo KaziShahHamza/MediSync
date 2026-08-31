@@ -5,7 +5,7 @@ export default function BMIResult({ bmi }) {
     return (
       <div className="border-t border-slate-200 pt-5">
         <p className="text-slate-500">
-          Enter height and weight to calculate BMI.
+          Enter your weight to calculate BMI.
         </p>
 
         <p className="text-sm text-slate-400 mt-2">
@@ -36,9 +36,13 @@ export default function BMIResult({ bmi }) {
     <div className="border-t border-slate-200 pt-5">
       <p className="text-sm text-slate-500">Current BMI</p>
 
-      <h2 className={`text-5xl font-bold mt-2 ${color}`}>{bmi}</h2>
+      <h2 className={`text-5xl font-bold mt-2 ${color}`}>
+        {bmi}
+      </h2>
 
-      <p className={`mt-2 font-semibold ${color}`}>{label}</p>
+      <p className={`mt-2 font-semibold ${color}`}>
+        {label}
+      </p>
 
       <p className="text-sm text-slate-400 mt-4">
         Healthy BMI range: 18.5 – 24.9 kg/m²

@@ -14,5 +14,4 @@
 
 # Current Errors
 
-- Icon input field
 - Height logic
