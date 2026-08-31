@@ -15,13 +15,17 @@ import {
 import HealthSummaryCard from "../components/dashboard/HealthSummaryCard";
 import StatCard from "../components/dashboard/StatCard";
 import QuickLinkCard from "../components/dashboard/QuickLinkCard";
+import { useProfile } from "../context/ProfileContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
+  // console.log("Dashboard user:", data.user);
 
   const [time, setTime] = useState(new Date());
+
+  const { userInfo } = useProfile();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -69,8 +73,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h1 className="page-title">
-              Good {greeting}
-              {data.user?.name && `, ${data.user.name}`}
+              Good {greeting}, {userInfo?.name || ""}
             </h1>
 
             <p className="page-description">
