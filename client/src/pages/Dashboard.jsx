@@ -15,7 +15,7 @@ import {
 import HealthSummaryCard from "../components/dashboard/HealthSummaryCard";
 import StatCard from "../components/dashboard/StatCard";
 import QuickLinkCard from "../components/dashboard/QuickLinkCard";
-import { useProfile } from "../context/ProfileContext";
+// import { useProfile } from "../context/ProfileContext";
 import { useAuth } from "../context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL;

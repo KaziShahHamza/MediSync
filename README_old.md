@@ -147,7 +147,6 @@ medicine_2/
     │   ├── health.routes.js
     │   └── medicine.routes.js
     ├── services/          # Business logic
-    │   └── reminderScheduler.js
     ├── package.json
     └── server.js          # Server entry point
 ```

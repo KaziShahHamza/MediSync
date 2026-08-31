@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 
 import { AuthProvider } from "./context/AuthContext";
-import { MedicineProvider, useMedicines } from "./context/MedicineContext";
+import { MedicineProvider } from "./context/MedicineContext";
 import { ProfileProvider } from "./context/ProfileContext";
 import { PrescriptionProvider } from "./context/PrescriptionContext";
 import { DoctorProvider } from "./context/DoctorContext";
@@ -26,13 +26,13 @@ import Dashboard from "./pages/Dashboard";
 
 // import TestPage from "./pages/TestPage";
 
-import useMedicineReminder from "./hooks/useMedicineReminder";
+// import useMedicineReminder from "./hooks/useMedicineReminder";
 
-function ReminderWrapper() {
-  const { medicines } = useMedicines();
-  useMedicineReminder(medicines);
-  return null;
-}
+// function ReminderWrapper() {
+//   const { medicines } = useMedicines();
+//   useMedicineReminder(medicines);
+//   return null;
+// }
 
 export default function App() {
   useEffect(() => {
@@ -47,12 +47,11 @@ export default function App() {
         <MedicineProvider>
           <PrescriptionProvider>
             <DoctorProvider>
-
               <BrowserRouter>
                 <Navbar />
 
                 {/* Background reminder engine */}
-                <ReminderWrapper />
+                {/* <ReminderWrapper /> */}
 
                 <Routes>
                   {/* Public Routes */}
@@ -69,8 +68,6 @@ export default function App() {
                       </ProtectedRoute>
                     }
                   />
-
-  
 
                   <Route
                     path="/medicines"
@@ -90,7 +87,7 @@ export default function App() {
                     }
                   />
 
-                {/* 
+                  {/* 
                   <Route
                     path="/health2"
                     element={
@@ -118,8 +115,7 @@ export default function App() {
                     }
                   />
 
-                  {/* 
-                  <Route
+                  {/* <Route
                     path="/test"
                     element={
                       <ProtectedRoute>

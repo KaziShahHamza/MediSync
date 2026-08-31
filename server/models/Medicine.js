@@ -7,28 +7,43 @@ const medicineSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
 
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
 
     dosageTimes: {
       type: [String],
       enum: ["morning", "noon", "night"],
-      default: []
+      default: [],
     },
 
     imageUrl: {
       type: String,
       trim: true,
-      default: ""
-    }
+      default: "",
+    },
+
+    startDate: {
+      type: Date,
+      required: true,
+    },
+
+    endDate: {
+      type: Date,
+      default: null,
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Medicine", medicineSchema);

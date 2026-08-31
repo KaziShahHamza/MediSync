@@ -8,56 +8,100 @@ const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
   try {
-    const meds = await Medicine.find({ user: req.userId }).sort({ createdAt: -1 });
+    const meds = await Medicine.find({
+      user: req.userId,
+    }).sort({
+      isActive: -1,
+      startDate: -1,
+    });
+
     res.json(meds);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch medicines" });
+    res.status(500).json({
+      message: "Failed to fetch medicines",
+    });
   }
 });
 
 router.post("/", auth, async (req, res) => {
   try {
-    const { name, dosageTimes, imageUrl } = req.body;
+    const { name, dosageTimes, imageUrl, startDate, endDate, isActive } =
+      req.body;
 
     const med = await Medicine.create({
       name,
       dosageTimes,
       imageUrl,
-      user: req.userId
+      startDate,
+      endDate: isActive ? null : endDate,
+      isActive,
+      user: req.userId,
     });
 
     res.status(201).json(med);
   } catch (err) {
-    res.status(400).json({ message: "Failed to create medicine" });
+    res.status(400).json({
+      message: "Failed to create medicine",
+    });
   }
 });
 
 router.put("/:id", auth, async (req, res) => {
   try {
-    const { name, dosageTimes, imageUrl } = req.body;
+    const { name, dosageTimes, imageUrl, startDate, endDate, isActive } =
+      req.body;
 
-    await Medicine.findOneAndUpdate(
-      { _id: req.params.id, user: req.userId },
-      { name, dosageTimes, imageUrl },
-      { new: true }
+    const medicine = await Medicine.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        user: req.userId,
+      },
+      {
+        name,
+        dosageTimes,
+        imageUrl,
+        startDate,
+        endDate: isActive ? null : endDate,
+        isActive,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
     );
 
-    res.sendStatus(200);
+    if (!medicine) {
+      return res.status(404).json({
+        message: "Medicine not found",
+      });
+    }
+
+    res.json(medicine);
   } catch (err) {
-    res.status(400).json({ message: "Failed to update medicine" });
+    res.status(400).json({
+      message: "Failed to update medicine",
+    });
   }
 });
 
 router.delete("/:id", auth, async (req, res) => {
   try {
-    await Medicine.findOneAndDelete({
+    const medicine = await Medicine.findOneAndDelete({
       _id: req.params.id,
-      user: req.userId
+      user: req.userId,
     });
+
+    if (!medicine) {
+      return res.status(404).json({
+        message: "Medicine not found",
+      });
+    }
 
     res.sendStatus(204);
   } catch (err) {
-    res.status(400).json({ message: "Failed to delete medicine" });
+    res.status(400).json({
+      message: "Failed to delete medicine",
+    });
   }
 });
 

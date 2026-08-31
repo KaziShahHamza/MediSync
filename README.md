@@ -144,7 +144,6 @@ medicine_2/
 │   └── services/
 │       ├── dashboardService.js
 │       ├── healthSummaryService.js
-│       └── reminderScheduler.js
 │
 ├── docs/
 │   ├── architecture.md
