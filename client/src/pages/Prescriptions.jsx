@@ -98,7 +98,7 @@ export default function Prescriptions() {
     <div className="container py-10">
       {/* Header */}
       <div className="mb-10">
-        <h1 className="page-title">Prescriptions</h1>
+        <h1 className="page-title">My Prescriptions & Reports</h1>
 
         <p className="subtitle mt-2">
           Store and manage your medical prescriptions securely.
@@ -110,7 +110,7 @@ export default function Prescriptions() {
         <section>
           <div className="flex justify-between items-center mb-5">
             <div>
-              <h2 className="section-title">Prescription Gallery</h2>
+              <h2 className="section-title">Medical Records Gallery</h2>
 
               <p className="text-sm text-slate-500 mt-1">
                 {prescriptions.length} record
@@ -148,12 +148,12 @@ export default function Prescriptions() {
         {/* Upload */}
         <aside className="card sticky top-24">
           <div className="flex items-center gap-3 mb-6">
-            <div className="rounded-xl bg-blue-50 p-3 text-blue-600">
+            {/* <div className="rounded-xl bg-blue-50 p-3 text-blue-600">
               <Upload size={22} />
-            </div>
+            </div> */}
 
             <div>
-              <h2 className="card-title">Upload Prescription</h2>
+              <h2 className="card-title">Upload Prescriptions/Reports</h2>
 
               <p className="text-sm text-slate-500">Add a new medical record</p>
             </div>
@@ -161,11 +161,11 @@ export default function Prescriptions() {
 
           <div className="space-y-5">
             <div>
-              <label>Prescription Title</label>
+              <label>Prescription/Report Title</label>
 
               <input
                 type="text"
-                placeholder="Example: Blood Test Prescription"
+                placeholder="Example: Blood Test Report"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="input"
@@ -173,7 +173,7 @@ export default function Prescriptions() {
             </div>
 
             <div>
-              <label>Prescription Image</label>
+              <label>Prescription/Report Image</label>
 
               <label className="flex items-center gap-3 rounded-xl border border-dashed border-slate-300 px-4 py-4 cursor-pointer transition duration-150 hover:border-blue-500 hover:bg-blue-50">
                 <ImageIcon size={20} className="text-blue-600" />

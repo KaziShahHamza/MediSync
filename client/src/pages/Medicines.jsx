@@ -88,7 +88,7 @@ export default function Dashboard() {
         {/* Medicine List */}
         <div>
           <div className="flex items-center justify-between mb-5">
-            <h2 className="section-title">Your Medicines</h2>
+            <h2 className="section-title">My Medicines</h2>
 
             <span className="badge">{meds.length} Total</span>
           </div>
