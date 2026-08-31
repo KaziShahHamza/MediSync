@@ -1,17 +1,15 @@
 // server/routes/ai.routes.js
 
 import express from "express";
-
 import auth from "../middleware/auth.js";
 import AIReport from "../models/AIReport.js";
-
 import { getAIHealthData } from "../services/dashboardService.js";
-
 import { generateAIHealthSummary } from "../services/aiService.js";
 
 const router = express.Router();
 
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
+const GENERATE_COOLDOWN_MS = 10 * 60 * 1000;
 
 // Check if user has enough health data for AI analysis
 function hasMeaningfulHealthData(data) {
@@ -59,7 +57,6 @@ router.get("/summary", auth, async (req, res) => {
       }
     }
 
-    // Get latest health data
     const healthData = await getAIHealthData(req.userId);
 
     // Don't call Gemini if user has no meaningful data
@@ -97,6 +94,12 @@ router.get("/summary", auth, async (req, res) => {
   } catch (error) {
     console.error("Failed to get AI health summary:", error);
 
+    if (error.status === 429) {
+      return res.status(429).json({
+        message: "AI request limit reached. Please try again later.",
+      });
+    }
+
     res.status(500).json({
       message: "Failed to generate AI health summary.",
     });
@@ -106,6 +109,30 @@ router.get("/summary", auth, async (req, res) => {
 // POST manually generate a fresh summary
 router.post("/summary/generate", auth, async (req, res) => {
   try {
+    // Check existing report before generating
+    const existingReport = await AIReport.findOne({
+      user: req.userId,
+    });
+
+    // Prevent repeated manual AI requests within 10 minutes
+    if (existingReport?.generatedAt) {
+      const generatedAt = new Date(existingReport.generatedAt).getTime();
+
+      const cooldownEndsAt = generatedAt + GENERATE_COOLDOWN_MS;
+
+      const remainingTime = cooldownEndsAt - Date.now();
+
+      if (remainingTime > 0) {
+        const remainingSeconds = Math.ceil(remainingTime / 1000);
+
+        return res.status(429).json({
+          message: "Please wait before generating another AI summary.",
+          remainingSeconds,
+          cooldownEndsAt: new Date(cooldownEndsAt).toISOString(),
+        });
+      }
+    }
+
     const healthData = await getAIHealthData(req.userId);
 
     // Don't call Gemini if user has no meaningful data
