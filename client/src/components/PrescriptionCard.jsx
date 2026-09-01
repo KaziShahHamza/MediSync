@@ -36,6 +36,7 @@ export default function PrescriptionCard({
 
         <div className="flex items-center gap-2 mt-2 text-sm text-slate-500">
           <CalendarDays size={16} />
+          <p>Uploaded: </p>
           {new Date(prescription.createdAt).toLocaleDateString()}
         </div>
 

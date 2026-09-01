@@ -3,6 +3,25 @@
 import PDFDocument from "pdfkit";
 import axios from "axios";
 
+function calculateAge(dob) {
+  if (!dob) return null;
+
+  const birthDate = new Date(dob);
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  const dayDifference = today.getDate() - birthDate.getDate();
+
+  // Birthday has not occurred yet this year
+  if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+    age--;
+  }
+
+  return age;
+}
+
 function formatDate(date) {
   if (!date) return "Not available";
 
@@ -40,6 +59,34 @@ export async function generateHealthReport(res, data) {
     size: "A4",
   });
 
+  doc.on("error", (error) => {
+    console.error("PDF generation error:", error);
+
+    if (!res.headersSent) {
+      res.status(500).json({
+        message: "Failed to generate PDF.",
+      });
+    }
+  });
+
+  function formatExportDateTime(date = new Date()) {
+    const day = date.getDate();
+
+    const month = date.toLocaleString("en-US", {
+      month: "long",
+    });
+
+    const year = date.getFullYear();
+
+    const time = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return `${day} ${month}, ${year} at ${time}`;
+  }
+
   doc.pipe(res);
 
   const { user, profile, health, medicines, doctors, prescriptions, aiReport } =
@@ -55,8 +102,7 @@ export async function generateHealthReport(res, data) {
     .moveDown(0.5)
     .fontSize(10)
     .fillColor("#64748b")
-    .text(`Generated on ${new Date().toLocaleString()}`);
-
+    .text(`PDF generated on ${formatExportDateTime()}.`);
   doc.moveDown(2);
 
   // ==============================
@@ -73,7 +119,11 @@ export async function generateHealthReport(res, data) {
   doc.text(`Email: ${formatValue(user?.email)}`);
 
   if (profile) {
-    doc.text(`Date of Birth: ${formatDate(profile.dob)}`);
+    const age = calculateAge(profile.dob);
+
+    if (age !== null) {
+      doc.text(`Age: ${age} years`);
+    }
 
     doc.text(`Gender: ${formatValue(profile.gender)}`);
 
@@ -93,7 +143,10 @@ export async function generateHealthReport(res, data) {
   // AI SUMMARY
   // ==============================
 
-  doc.fontSize(16).fillColor("#0f172a").text("AI Health Summary");
+  doc
+    .fontSize(16)
+    .fillColor("#0f172a")
+    .text("Latest Health Summary (AI Generated)");
 
   doc.moveDown(0.7);
 
@@ -217,10 +270,10 @@ export async function generateHealthReport(res, data) {
   doc.moveDown(1.5);
 
   // ==============================
-  // MEDICINES
+  // ACTIVE MEDICINES
   // ==============================
 
-  doc.fontSize(16).fillColor("#0f172a").text("Medicines");
+  doc.fontSize(16).fillColor("#0f172a").text("Active Medicines");
 
   doc.moveDown(0.7);
 
@@ -231,13 +284,26 @@ export async function generateHealthReport(res, data) {
           ? medicine.dosageTimes.join(", ")
           : "No schedule";
 
+      const startMonth = medicine.startDate
+        ? new Date(medicine.startDate).toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          })
+        : "Unknown";
+
+      // Medicine name and dosage schedule
       doc
         .fontSize(11)
         .fillColor("#334155")
         .text(`${index + 1}. ${medicine.name} — ${schedule}`);
+
+      // Treatment timeframe
+      doc.fontSize(9).fillColor("#64748b").text(`   ${startMonth} – Present`);
+
+      doc.moveDown(0.5);
     });
   } else {
-    doc.fontSize(11).fillColor("#64748b").text("No medicines recorded.");
+    doc.fontSize(11).fillColor("#64748b").text("No active medicines recorded.");
   }
 
   doc.moveDown(1.5);
@@ -246,7 +312,7 @@ export async function generateHealthReport(res, data) {
   // DOCTORS
   // ==============================
 
-  doc.fontSize(16).fillColor("#0f172a").text("Healthcare Providers");
+  doc.fontSize(16).fillColor("#0f172a").text("Doctors");
 
   doc.moveDown(0.7);
 
@@ -278,13 +344,16 @@ export async function generateHealthReport(res, data) {
   // ==============================
   // PRESCRIPTIONS / REPORT IMAGES
   // ==============================
-
   if (prescriptions?.length > 0) {
     for (let index = 0; index < prescriptions.length; index++) {
       const prescription = prescriptions[index];
 
       // Each prescription gets its own page
       doc.addPage();
+
+      // ==============================
+      // RECORD HEADER
+      // ==============================
 
       doc
         .fontSize(18)
@@ -293,27 +362,77 @@ export async function generateHealthReport(res, data) {
 
       doc.moveDown(0.5);
 
-      doc.fontSize(12).fillColor("#334155").text(prescription.title);
+      doc.fontSize(13).fillColor("#334155").text(prescription.title);
 
-      doc
-        .moveDown(0.3)
-        .fontSize(9)
-        .fillColor("#64748b")
-        .text(`Uploaded: ${formatDate(prescription.createdAt)}`);
+      // doc
+      //   .moveDown(0.3)
+      //   .fontSize(9)
+      //   .fillColor("#64748b")
+      //   .text(`Uploaded: ${formatDate(prescription.createdAt)}`);
 
       doc.moveDown(1);
+
+      // ==============================
+      // AI SUMMARY
+      // ==============================
+
+      // doc.fontSize(14).fillColor("#0f172a").text("AI Document Summary");
+
+      doc.moveDown(0.4);
+
+      if (prescription.aiSummary) {
+        doc.fontSize(10).fillColor("#334155").text(prescription.aiSummary, {
+          align: "left",
+          lineGap: 3,
+        });
+
+        if (prescription.aiAnalyzedAt) {
+          doc.moveDown(0.4);
+
+          // doc
+          //   .fontSize(8)
+          //   .fillColor("#64748b")
+          //   .text(`AI analyzed: ${formatDate(prescription.aiAnalyzedAt)}`);
+        }
+      } else {
+        doc
+          .fontSize(10)
+          .fillColor("#64748b")
+          .text("No AI summary is available for this medical record.");
+      }
+
+      doc.moveDown(1);
+
+      // ==============================
+      // DOCUMENT IMAGE
+      // ==============================
 
       const imageBuffer = await getImageBuffer(prescription.imageUrl);
 
       if (imageBuffer) {
         try {
-          // A4 page size ≈ 595 x 842 points
-          // With margins we have roughly:
-          // Width = 495
-          // Height = 650
+          // A4 dimensions:
+          // 595 x 842 points
+          //
+          // Page margins:
+          // 50 points
+          //
+          // Available width:
+          // 495 points
 
           const maxWidth = 495;
-          const maxHeight = 650;
+
+          // Leave room for:
+          // Header
+          // Title
+          // Upload date
+          // AI summary
+          //
+          // Prevent image from overflowing the page.
+
+          const remainingHeight = doc.page.height - doc.y - 70;
+
+          const maxHeight = Math.min(remainingHeight, 430);
 
           const x = 50;
           const y = doc.y;

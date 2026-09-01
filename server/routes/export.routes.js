@@ -55,8 +55,8 @@ router.get("/health-report", auth, async (req, res) => {
     // Medicines
     const medicines = await Medicine.find({
       user: userId,
+      isActive: true,
     }).sort({
-      isActive: -1,
       startDate: -1,
     });
 
@@ -138,7 +138,7 @@ router.get("/health-report", auth, async (req, res) => {
   } catch (error) {
     console.error("Failed to generate health report:", error);
 
-    if (!res.headersSent) {
+    if (!res.headersSent && !res.writableEnded) {
       res.status(500).json({
         message: "Failed to generate health report.",
       });

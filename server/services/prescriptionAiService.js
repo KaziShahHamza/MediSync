@@ -37,6 +37,7 @@ export async function generatePrescriptionSummary(imageUrl) {
 
     IMPORTANT OUTPUT RULES:
 
+    * Give a name to the document type (e.g., Prescription, Lab Report) with date extracted from the image. ex: "Lab Report Date: 15-Mar-2024"
     * Return only the summary text.
     * Do not use headings or titles.
     * Do not start with phrases like "This document shows".

@@ -394,15 +394,15 @@ export default function Prescriptions() {
 
                   <div>
                     <h3 className="font-semibold text-slate-900">
-                      AI Document Summary
+                      AI Summary
                     </h3>
 
-                    {selected.aiAnalyzedAt && (
+                    {/* {selected.aiAnalyzedAt && (
                       <p className="text-xs text-slate-400 mt-0.5">
                         Analyzed{" "}
                         {new Date(selected.aiAnalyzedAt).toLocaleDateString()}
                       </p>
-                    )}
+                    )} */}
                   </div>
                 </div>
 
