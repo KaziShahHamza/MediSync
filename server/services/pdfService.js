@@ -1,6 +1,7 @@
 // server/services/pdfService.js
 
 import PDFDocument from "pdfkit";
+import axios from "axios";
 
 function formatDate(date) {
   if (!date) return "Not available";
@@ -18,7 +19,22 @@ function formatValue(value, fallback = "Not available") {
     : fallback;
 }
 
-export function generateHealthReport(res, data) {
+// Download image from Cloudinary
+async function getImageBuffer(imageUrl) {
+  try {
+    const response = await axios.get(imageUrl, {
+      responseType: "arraybuffer",
+    });
+
+    return Buffer.from(response.data);
+  } catch (error) {
+    console.error("Failed to download prescription image:", imageUrl);
+
+    return null;
+  }
+}
+
+export async function generateHealthReport(res, data) {
   const doc = new PDFDocument({
     margin: 50,
     size: "A4",
@@ -26,9 +42,13 @@ export function generateHealthReport(res, data) {
 
   doc.pipe(res);
 
-  const { user, profile, health, medicines, doctors, aiReport } = data;
+  const { user, profile, health, medicines, doctors, prescriptions, aiReport } =
+    data;
 
-  // Header
+  // ==============================
+  // HEADER
+  // ==============================
+
   doc.fontSize(24).fillColor("#2563eb").text("MediSync Health Report");
 
   doc
@@ -39,7 +59,10 @@ export function generateHealthReport(res, data) {
 
   doc.moveDown(2);
 
-  // Personal Information
+  // ==============================
+  // PERSONAL INFORMATION
+  // ==============================
+
   doc.fontSize(16).fillColor("#0f172a").text("Personal Information");
 
   doc.moveDown(0.7);
@@ -66,7 +89,10 @@ export function generateHealthReport(res, data) {
 
   doc.moveDown(1.5);
 
-  // AI Summary
+  // ==============================
+  // AI SUMMARY
+  // ==============================
+
   doc.fontSize(16).fillColor("#0f172a").text("AI Health Summary");
 
   doc.moveDown(0.7);
@@ -94,7 +120,10 @@ export function generateHealthReport(res, data) {
 
   doc.moveDown(1.5);
 
-  // Latest Health Records
+  // ==============================
+  // LATEST HEALTH RECORDS
+  // ==============================
+
   doc.fontSize(16).fillColor("#0f172a").text("Latest Health Records");
 
   doc.moveDown(0.7);
@@ -102,6 +131,7 @@ export function generateHealthReport(res, data) {
   doc.fontSize(11).fillColor("#334155");
 
   // Blood Pressure
+
   doc.font("Helvetica-Bold").text("Blood Pressure");
 
   doc.font("Helvetica");
@@ -122,6 +152,7 @@ export function generateHealthReport(res, data) {
   doc.moveDown();
 
   // Blood Sugar
+
   doc.font("Helvetica-Bold").text("Blood Sugar");
 
   doc.font("Helvetica");
@@ -142,6 +173,7 @@ export function generateHealthReport(res, data) {
   doc.moveDown();
 
   // Weight
+
   doc.font("Helvetica-Bold").text("Latest Weight");
 
   doc.font("Helvetica");
@@ -162,6 +194,7 @@ export function generateHealthReport(res, data) {
   doc.moveDown();
 
   // BMI
+
   doc.font("Helvetica-Bold").text("BMI");
 
   doc.font("Helvetica");
@@ -183,7 +216,10 @@ export function generateHealthReport(res, data) {
 
   doc.moveDown(1.5);
 
-  // Medicines
+  // ==============================
+  // MEDICINES
+  // ==============================
+
   doc.fontSize(16).fillColor("#0f172a").text("Medicines");
 
   doc.moveDown(0.7);
@@ -206,7 +242,10 @@ export function generateHealthReport(res, data) {
 
   doc.moveDown(1.5);
 
-  // Doctors
+  // ==============================
+  // DOCTORS
+  // ==============================
+
   doc.fontSize(16).fillColor("#0f172a").text("Healthcare Providers");
 
   doc.moveDown(0.7);
@@ -236,8 +275,76 @@ export function generateHealthReport(res, data) {
     doc.fontSize(11).fillColor("#64748b").text("No doctors recorded.");
   }
 
-  // Footer
-  doc.moveDown(2);
+  // ==============================
+  // PRESCRIPTIONS / REPORT IMAGES
+  // ==============================
+
+  if (prescriptions?.length > 0) {
+    for (let index = 0; index < prescriptions.length; index++) {
+      const prescription = prescriptions[index];
+
+      // Each prescription gets its own page
+      doc.addPage();
+
+      doc
+        .fontSize(18)
+        .fillColor("#0f172a")
+        .text(`Medical Record ${index + 1}`);
+
+      doc.moveDown(0.5);
+
+      doc.fontSize(12).fillColor("#334155").text(prescription.title);
+
+      doc
+        .moveDown(0.3)
+        .fontSize(9)
+        .fillColor("#64748b")
+        .text(`Uploaded: ${formatDate(prescription.createdAt)}`);
+
+      doc.moveDown(1);
+
+      const imageBuffer = await getImageBuffer(prescription.imageUrl);
+
+      if (imageBuffer) {
+        try {
+          // A4 page size ≈ 595 x 842 points
+          // With margins we have roughly:
+          // Width = 495
+          // Height = 650
+
+          const maxWidth = 495;
+          const maxHeight = 650;
+
+          const x = 50;
+          const y = doc.y;
+
+          doc.image(imageBuffer, x, y, {
+            fit: [maxWidth, maxHeight],
+            align: "center",
+            valign: "center",
+          });
+        } catch (error) {
+          console.error("Failed to insert prescription image:", error);
+
+          doc
+            .fontSize(11)
+            .fillColor("#dc2626")
+            .text("Unable to display this medical record image.");
+        }
+      } else {
+        doc
+          .fontSize(11)
+          .fillColor("#dc2626")
+          .text("Unable to download this medical record image.");
+      }
+    }
+  }
+
+  // ==============================
+  // FOOTER
+  // ==============================
+
+  doc.addPage();
 
   doc
     .fontSize(9)

@@ -10,6 +10,7 @@ import Medicine from "../models/Medicine.js";
 import HealthLog from "../models/HealthLog.js";
 import Doctor from "../models/Doctor.js";
 import AIReport from "../models/AIReport.js";
+import Prescription from "../models/Prescription.js";
 
 import { calculateBMI, getBMICategory } from "../utils/healthCalculations.js";
 
@@ -66,6 +67,13 @@ router.get("/health-report", auth, async (req, res) => {
       createdAt: -1,
     });
 
+    // Prescriptions
+    const prescriptions = await Prescription.find({
+      user: userId,
+    }).sort({
+      createdAt: -1,
+    });
+
     // AI report
     const aiReport = await AIReport.findOne({
       user: userId,
@@ -115,6 +123,7 @@ router.get("/health-report", auth, async (req, res) => {
 
       medicines,
       doctors,
+      prescriptions,
       aiReport,
     };
 
@@ -125,7 +134,7 @@ router.get("/health-report", auth, async (req, res) => {
 
     res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
 
-    generateHealthReport(res, reportData);
+    await generateHealthReport(res, reportData);
   } catch (error) {
     console.error("Failed to generate health report:", error);
 

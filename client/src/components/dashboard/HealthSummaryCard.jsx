@@ -60,7 +60,7 @@ export default function HealthSummaryCard({
               <HeartPulse size={22} className="text-blue-600" />
             </div>
 
-            <h3 className="card-title">AI Health Summary</h3>
+            <h3 className="card-title">AI Weekly Health Summary</h3>
           </div>
 
           {summary ? (
