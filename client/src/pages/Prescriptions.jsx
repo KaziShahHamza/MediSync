@@ -1,9 +1,16 @@
-// client/src/pages/Prescriptions.jsx
-
 import { useState } from "react";
 import { usePrescriptions } from "../context/PrescriptionContext";
 import PrescriptionCard from "../components/PrescriptionCard";
-import { Upload, FileImage, X, Image as ImageIcon } from "lucide-react";
+
+import {
+  Upload,
+  FileImage,
+  X,
+  Image as ImageIcon,
+  Sparkles,
+  AlertCircle,
+} from "lucide-react";
+
 import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -16,7 +23,9 @@ export default function Prescriptions() {
   const [title, setTitle] = useState("");
   const [file, setFile] = useState(null);
   const [selected, setSelected] = useState(null);
+
   const [loading, setLoading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState("");
 
   const [zoom, setZoom] = useState(1);
 
@@ -34,14 +43,17 @@ export default function Prescriptions() {
 
   async function handleUpload() {
     if (!title || !file) {
-      alert("Select image and title.");
+      alert("Select an image and enter a title.");
       return;
     }
 
     setLoading(true);
+    setUploadStatus("Uploading image...");
 
     try {
+      // 1. Upload image to Cloudinary
       const formData = new FormData();
+
       formData.append("file", file);
       formData.append("upload_preset", UPLOAD_PRESET);
 
@@ -53,10 +65,18 @@ export default function Prescriptions() {
         },
       );
 
+      if (!uploadRes.ok) {
+        throw new Error("Failed to upload image.");
+      }
+
       const uploadData = await uploadRes.json();
+
       const token = localStorage.getItem("token");
 
-      await fetch(`${API_URL}/api/prescriptions`, {
+      // 2. Save prescription in MongoDB
+      setUploadStatus("Saving medical record...");
+
+      const prescriptionRes = await fetch(`${API_URL}/api/prescriptions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,15 +88,52 @@ export default function Prescriptions() {
         }),
       });
 
+      const prescription = await prescriptionRes.json();
+
+      if (!prescriptionRes.ok) {
+        throw new Error(prescription.message || "Failed to save prescription.");
+      }
+
+      // 3. Automatically analyze with Gemini
+      setUploadStatus("Analyzing document with AI...");
+
+      try {
+        const analyzeRes = await fetch(
+          `${API_URL}/api/prescriptions/${prescription._id}/analyze`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (!analyzeRes.ok) {
+          const errorData = await analyzeRes.json();
+
+          console.error(
+            "AI analysis failed:",
+            errorData.message || "Unknown error",
+          );
+        }
+      } catch (analysisError) {
+        console.error("AI analysis failed:", analysisError);
+      }
+
+      // Reset form
       setTitle("");
       setFile(null);
-      fetchPrescriptions();
+      setUploadStatus("");
+
+      // Refresh prescription list
+      await fetchPrescriptions();
     } catch (err) {
       console.error(err);
-      alert("Upload failed.");
+      alert(err.message || "Upload failed.");
+    } finally {
+      setLoading(false);
+      setUploadStatus("");
     }
-
-    setLoading(false);
   }
 
   async function deletePrescription(id) {
@@ -84,27 +141,40 @@ export default function Prescriptions() {
 
     const token = localStorage.getItem("token");
 
-    await fetch(`${API_URL}/api/prescriptions/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      await fetch(`${API_URL}/api/prescriptions/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    fetchPrescriptions();
+      if (selected?._id === id) {
+        setSelected(null);
+        resetZoom();
+      }
+
+      fetchPrescriptions();
+    } catch (err) {
+      console.error("Failed to delete prescription:", err);
+    }
   }
+
+  const closeModal = () => {
+    setSelected(null);
+    resetZoom();
+  };
 
   return (
     <div className="container py-10">
-      {/* Header */}
+      {/* Header */}{" "}
       <div className="mb-10">
+        {" "}
         <h1 className="page-title">My Prescriptions & Reports</h1>
-
         <p className="subtitle mt-2">
           Store and manage your medical prescriptions securely.
         </p>
       </div>
-
       <div className="grid lg:grid-cols-[1.7fr_0.8fr] gap-8 items-start">
         {/* Gallery */}
         <section>
@@ -139,7 +209,8 @@ export default function Prescriptions() {
               </h3>
 
               <p className="mt-2 text-sm text-slate-500">
-                Upload your first prescription to keep records organized.
+                Upload your first prescription or medical report to keep your
+                records organized.
               </p>
             </div>
           )}
@@ -148,10 +219,6 @@ export default function Prescriptions() {
         {/* Upload */}
         <aside className="card sticky top-24">
           <div className="flex items-center gap-3 mb-6">
-            {/* <div className="rounded-xl bg-blue-50 p-3 text-blue-600">
-              <Upload size={22} />
-            </div> */}
-
             <div>
               <h2 className="card-title">Upload Prescriptions/Reports</h2>
 
@@ -160,6 +227,7 @@ export default function Prescriptions() {
           </div>
 
           <div className="space-y-5">
+            {/* Title */}
             <div>
               <label>Prescription/Report Title</label>
 
@@ -167,54 +235,84 @@ export default function Prescriptions() {
                 type="text"
                 placeholder="Example: Blood Test Report"
                 value={title}
+                disabled={loading}
                 onChange={(e) => setTitle(e.target.value)}
                 className="input"
               />
             </div>
 
+            {/* Image */}
             <div>
               <label>Prescription/Report Image</label>
 
-              <label className="flex items-center gap-3 rounded-xl border border-dashed border-slate-300 px-4 py-4 cursor-pointer transition duration-150 hover:border-blue-500 hover:bg-blue-50">
+              <label
+                className={`flex items-center gap-3 rounded-xl border border-dashed border-slate-300 px-4 py-4 transition duration-150 ${
+                  loading
+                    ? "cursor-not-allowed opacity-60"
+                    : "cursor-pointer hover:border-blue-500 hover:bg-blue-50"
+                }`}
+              >
                 <ImageIcon size={20} className="text-blue-600" />
 
-                <span className="text-sm text-slate-600">
+                <span className="text-sm text-slate-600 truncate">
                   {file ? file.name : "Choose prescription image"}
                 </span>
 
                 <input
                   type="file"
-                  accept="image/png,image/jpeg"
+                  accept="image/png,image/jpeg,image/jpg"
                   className="hidden"
+                  disabled={loading}
                   onChange={(e) => setFile(e.target.files[0])}
                 />
               </label>
             </div>
 
-            <button onClick={handleUpload} className="btn-primary w-full">
+            {/* AI processing status */}
+            {loading && uploadStatus && (
+              <div className="flex items-center gap-3 rounded-xl bg-blue-50 border border-blue-100 px-4 py-3">
+                <Sparkles
+                  size={18}
+                  className="text-blue-600 animate-pulse shrink-0"
+                />
+
+                <p className="text-sm text-blue-700">{uploadStatus}</p>
+              </div>
+            )}
+
+            {/* Upload button */}
+            <button
+              onClick={handleUpload}
+              disabled={loading}
+              className="btn-primary w-full disabled:opacity-60 disabled:cursor-not-allowed"
+            >
               <Upload size={18} />
 
-              {loading ? "Uploading..." : "Upload Prescription"}
+              {loading
+                ? uploadStatus || "Processing..."
+                : "Upload Prescription"}
             </button>
+
+            <p className="text-xs text-slate-400 leading-relaxed">
+              After upload, MediSync will automatically generate a short AI
+              summary of the document.
+            </p>
           </div>
         </aside>
       </div>
-
+      
       {/* Preview Modal */}
       {selected && (
         <div
           className="fixed inset-0 bg-slate-900/70 flex items-center justify-center z-50 p-5"
-          onClick={() => {
-            setSelected(null);
-            resetZoom();
-          }}
+          onClick={closeModal}
         >
           <div
-            className="bg-white rounded-2xl max-w-5xl w-full p-6 shadow-2xl"
+            className="bg-white rounded-2xl max-w-7xl w-full max-h-[92vh] p-6 shadow-2xl flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex justify-between items-center mb-5 shrink-0">
               <div>
                 <h2 className="text-xl font-semibold text-slate-900">
                   {selected.title}
@@ -225,7 +323,7 @@ export default function Prescriptions() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 {/* Zoom Out */}
                 <button
                   onClick={zoomOut}
@@ -262,10 +360,7 @@ export default function Prescriptions() {
 
                 {/* Close */}
                 <button
-                  onClick={() => {
-                    setSelected(null);
-                    resetZoom();
-                  }}
+                  onClick={closeModal}
                   className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-500 transition"
                   title="Close"
                 >
@@ -274,18 +369,75 @@ export default function Prescriptions() {
               </div>
             </div>
 
-            {/* Image Preview */}
-            <div className="image-preview-scroll flex justify-center items-start bg-slate-100 rounded-xl p-4 h-[75vh] overflow-auto">
-              <img
-                src={selected.imageUrl}
-                alt={selected.title}
-                className="rounded-xl object-contain transition-all duration-200"
-                style={{
-                  width: `${zoom * 100}%`,
-                  maxWidth: "none",
-                  transformOrigin: "top center",
-                }}
-              />
+            {/* Content */}
+            <div className="grid lg:grid-cols-[1fr_320px] gap-6 min-h-0 flex-1">
+              {/* Image Preview */}
+              <div className="image-preview-scroll flex justify-center items-start bg-slate-100 rounded-xl p-4 min-h-[50vh] lg:h-[70vh] overflow-auto">
+                <img
+                  src={selected.imageUrl}
+                  alt={selected.title}
+                  className="rounded-xl object-contain transition-all duration-200"
+                  style={{
+                    width: `${zoom * 100}%`,
+                    maxWidth: "none",
+                    transformOrigin: "top center",
+                  }}
+                />
+              </div>
+
+              {/* AI Summary */}
+              <aside className="rounded-xl border border-slate-200 bg-slate-50 p-5 overflow-auto">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="rounded-lg bg-blue-50 p-2">
+                    <Sparkles size={18} className="text-blue-600" />
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-slate-900">
+                      AI Document Summary
+                    </h3>
+
+                    {selected.aiAnalyzedAt && (
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Analyzed{" "}
+                        {new Date(selected.aiAnalyzedAt).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {selected.aiSummary ? (
+                  <p className="text-sm leading-7 text-slate-700 whitespace-pre-line">
+                    {selected.aiSummary}
+                  </p>
+                ) : (
+                  <div className="flex gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                    <AlertCircle
+                      size={18}
+                      className="text-amber-600 shrink-0 mt-0.5"
+                    />
+
+                    <div>
+                      <p className="text-sm font-medium text-amber-800">
+                        AI summary unavailable
+                      </p>
+
+                      <p className="text-xs text-amber-700 mt-1 leading-5">
+                        This document was uploaded successfully, but its AI
+                        analysis could not be completed.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-6 pt-4 border-t border-slate-200">
+                  <p className="text-xs leading-5 text-slate-400">
+                    AI-generated summaries are for informational purposes and
+                    may not accurately interpret all medical information. Always
+                    consult a qualified healthcare professional.
+                  </p>
+                </div>
+              </aside>
             </div>
           </div>
         </div>

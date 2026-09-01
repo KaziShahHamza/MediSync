@@ -21,8 +21,19 @@ const prescriptionSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
+    aiSummary: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    aiAnalyzedAt: {
+      type: Date,
+      default: null,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Prescription", prescriptionSchema);
