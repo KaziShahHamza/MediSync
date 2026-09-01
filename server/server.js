@@ -14,6 +14,7 @@ import prescriptionRoutes from "./routes/prescription.routes.js";
 import doctorRoutes from "./routes/doctor.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
+import exportRoutes from "./routes/export.routes.js";
 
 const app = express();
 
@@ -35,6 +36,7 @@ connectDB();
 
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/export", exportRoutes);
 
 app.use("/api/medicines", medicineRoutes);
 app.use("/api/auth", authRoutes);

@@ -1,6 +1,7 @@
 // client/src/pages/Dashboard.jsx
 
 import { useEffect, useState } from "react";
+
 import {
   Activity,
   Droplets,
@@ -10,12 +11,12 @@ import {
   FileImage,
   UserRound,
   CalendarClock,
+  Download,
 } from "lucide-react";
 
 import HealthSummaryCard from "../components/dashboard/HealthSummaryCard";
 import StatCard from "../components/dashboard/StatCard";
 import QuickLinkCard from "../components/dashboard/QuickLinkCard";
-// import { useProfile } from "../context/ProfileContext";
 import { useAuth } from "../context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -29,9 +30,10 @@ export default function Dashboard() {
   const [aiGenerating, setAiGenerating] = useState(false);
   const [aiMessage, setAiMessage] = useState("");
 
+  const [pdfLoading, setPdfLoading] = useState(false);
+
   const [time, setTime] = useState(new Date());
 
-  // const { userInfo } = useProfile();
   const { user } = useAuth();
 
   // Dashboard data
@@ -81,6 +83,7 @@ export default function Dashboard() {
       })
       .catch((err) => {
         console.error("AI summary loading failed:", err);
+
         setAiMessage("Unable to load the AI health summary right now.");
       })
       .finally(() => {
@@ -130,16 +133,63 @@ export default function Dashboard() {
     }
   }
 
+  // Export health report as PDF
+  async function handleExportPDF() {
+    const token = localStorage.getItem("token");
+
+    setPdfLoading(true);
+
+    try {
+      const response = await fetch(`${API_URL}/api/export/health-report`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const result = await response.json().catch(() => null);
+
+        throw new Error(result?.message || "Failed to generate PDF report");
+      }
+
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+
+      link.download = `MediSync-Health-Report-${
+        new Date().toISOString().split("T")[0]
+      }.pdf`;
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("PDF export failed:", err);
+
+      alert(err.message || "Failed to export health report. Please try again.");
+    } finally {
+      setPdfLoading(false);
+    }
+  }
+
   if (!data) {
     return (
       <div className="container page">
         {" "}
         <div className="grid gap-6 md:grid-cols-3">
           {" "}
-          <div className="skeleton-card h-32" />{" "}
-          <div className="skeleton-card h-32" />{" "}
-          <div className="skeleton-card h-32" />{" "}
-        </div>{" "}
+          <div className="skeleton-card h-32" />
+          <div className="skeleton-card h-32" />
+          <div className="skeleton-card h-32" />
+        </div>
       </div>
     );
   }
@@ -168,17 +218,31 @@ export default function Dashboard() {
               information from one place.
             </p>
           </div>
-          <div className="surface px-4 py-3 flex items-center gap-3">
-            <CalendarClock size={20} className="text-blue-600" />
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Export PDF */}
+            <button
+              onClick={handleExportPDF}
+              disabled={pdfLoading}
+              className="btn-primary inline-flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              <Download size={18} />
 
-            <div>
-              <p className="text-sm font-medium text-slate-700">
-                {time.toLocaleDateString()}
-              </p>
+              {pdfLoading ? "Generating Report..." : "Export Health Report"}
+            </button>
 
-              <p className="text-xs text-slate-500">
-                {time.toLocaleTimeString()}
-              </p>
+            {/* Date & Time */}
+            <div className="surface px-4 py-3 flex items-center gap-3">
+              <CalendarClock size={20} className="text-blue-600" />
+
+              <div>
+                <p className="text-sm font-medium text-slate-700">
+                  {time.toLocaleDateString()}
+                </p>
+
+                <p className="text-xs text-slate-500">
+                  {time.toLocaleTimeString()}
+                </p>
+              </div>
             </div>
           </div>
         </div>
