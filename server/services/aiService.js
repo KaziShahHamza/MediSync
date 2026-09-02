@@ -7,7 +7,7 @@ const ai = new GoogleGenAI({
 export async function generateAIHealthSummary(data) {
   const prompt = `
 You are an AI health information assistant for a personal health management application.
-
+This is for bangladeshi users, so use easy english.
 Create a concise and helpful health summary based ONLY on the provided user data.
 
 IMPORTANT OUTPUT RULES:

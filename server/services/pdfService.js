@@ -321,26 +321,109 @@ export async function generateHealthReport(res, data) {
       doc
         .fontSize(11)
         .fillColor("#334155")
-        .text(`${index + 1}. ${doctor.name}`);
+        .text(`${index + 1}. ${doctor.name || "Unnamed Doctor"}`);
 
-      if (doctor.specialty) {
-        doc.text(`   Specialty: ${doctor.specialty}`);
+      // BMDC Registration
+      if (doctor.bmdcRegNo) {
+        doc.text(`   BMDC Reg. No: ${doctor.bmdcRegNo}`);
       }
 
-      if (doctor.hospital) {
-        doc.text(`   Hospital: ${doctor.hospital}`);
+      // Designation
+      if (doctor.designation) {
+        doc.text(`   Designation: ${doctor.designation}`);
       }
 
-      if (doctor.phone) {
-        doc.text(`   Phone: ${doctor.phone}`);
+      // Degrees
+      if (doctor.degrees?.length > 0) {
+        doc.text(`   Degrees: ${doctor.degrees.join(", ")}`);
       }
 
-      doc.moveDown(0.5);
+      // Specialities
+      if (doctor.specialities?.length > 0) {
+        doc.text(`   Specialities: ${doctor.specialities.join(", ")}`);
+      }
+
+      // Primary Hospital
+      if (doctor.primaryHospital) {
+        doc.text(`   Primary Hospital: ${doctor.primaryHospital}`);
+      }
+
+      // Chambers
+      if (doctor.chambers?.length > 0) {
+        doc.moveDown(0.2);
+
+        doc.fontSize(10).fillColor("#475569").text("   Chambers:");
+
+        doctor.chambers.forEach((chamber, chamberIndex) => {
+          doc
+            .fontSize(10)
+            .fillColor("#475569")
+            .text(`      ${chamberIndex + 1}. ${chamber.name || "Chamber"}`);
+
+          if (chamber.address) {
+            doc.text(`         Address: ${chamber.address}`);
+          }
+
+          if (chamber.phone) {
+            doc.text(`         Phone: ${chamber.phone}`);
+          }
+
+          if (chamber.serialNumber) {
+            doc.text(`         Serial: ${chamber.serialNumber}`);
+          }
+
+          if (chamber.visitingDays?.length > 0) {
+            doc.text(
+              `         Visiting Days: ${chamber.visitingDays.join(", ")}`,
+            );
+          }
+
+          if (chamber.visitingTime) {
+            doc.text(`         Visiting Time: ${chamber.visitingTime}`);
+          }
+        });
+      }
+
+      // Contact Information
+      if (doctor.contactInfo) {
+        const contact = doctor.contactInfo;
+
+        doc.moveDown(0.2);
+
+        doc.fontSize(10).fillColor("#475569").text("   Contact Information:");
+
+        if (contact.phones?.length > 0) {
+          doc.text(`      Phone: ${contact.phones.join(", ")}`);
+        }
+
+        if (contact.emails?.length > 0) {
+          doc.text(`      Email: ${contact.emails.join(", ")}`);
+        }
+
+        if (contact.website) {
+          doc.text(`      Website: ${contact.website}`);
+        }
+
+        if (contact.facebook) {
+          doc.text(`      Facebook: ${contact.facebook}`);
+        }
+
+        if (contact.linkedin) {
+          doc.text(`      LinkedIn: ${contact.linkedin}`);
+        }
+      }
+
+      // Notes
+      if (doctor.notes) {
+        doc.moveDown(0.2);
+        doc.text(`   Notes: ${doctor.notes}`);
+      }
+
+      doc.moveDown(0.6);
     });
   } else {
     doc.fontSize(11).fillColor("#64748b").text("No doctors recorded.");
   }
-
   // ==============================
   // PRESCRIPTIONS / REPORT IMAGES
   // ==============================

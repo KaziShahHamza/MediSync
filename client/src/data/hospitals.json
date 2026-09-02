@@ -1,0 +1,247 @@
+[
+  {
+    "name": "Dhaka Medical College Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Sir Salimullah Medical College Mitford Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Shaheed Suhrawardy Medical College Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Bangladesh Medical College Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Holy Family Red Crescent Medical College Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "BSMMU",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "National Institute of Neurosciences & Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "National Institute of Cardiovascular Diseases",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "National Institute of Kidney Diseases & Urology",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "National Institute of Ophthalmology",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "National Institute of ENT",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Institute of Child and Mother Health",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Square Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Evercare Hospital Dhaka",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "United Hospital Limited",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Labaid Specialized Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Popular Medical College Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Ibn Sina Specialized Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Anwer Khan Modern Medical College Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "BIRDEM General Hospital",
+    "city": "Dhaka",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Rajshahi Medical College Hospital",
+    "city": "Rajshahi",
+    "division": "Rajshahi"
+  },
+  {
+    "name": "Rajshahi General Hospital",
+    "city": "Rajshahi",
+    "division": "Rajshahi"
+  },
+  {
+    "name": "Shaheed Ziaur Rahman Medical College Hospital",
+    "city": "Bogura",
+    "division": "Rajshahi"
+  },
+  {
+    "name": "Bogura 250 Bed Mohammad Ali Hospital",
+    "city": "Bogura",
+    "division": "Rajshahi"
+  },
+  {
+    "name": "Pabna Medical College Hospital",
+    "city": "Pabna",
+    "division": "Rajshahi"
+  },
+  {
+    "name": "Chattogram Medical College Hospital",
+    "city": "Chattogram",
+    "division": "Chattogram"
+  },
+  {
+    "name": "Chattogram Maa-O-Shishu Hospital Medical College",
+    "city": "Chattogram",
+    "division": "Chattogram"
+  },
+  {
+    "name": "Imperial Hospital Limited",
+    "city": "Chattogram",
+    "division": "Chattogram"
+  },
+  {
+    "name": "Evercare Hospital Chattogram",
+    "city": "Chattogram",
+    "division": "Chattogram"
+  },
+  {
+    "name": "National Hospital Chattogram",
+    "city": "Chattogram",
+    "division": "Chattogram"
+  },
+  {
+    "name": "Cumilla Medical College Hospital",
+    "city": "Cumilla",
+    "division": "Chattogram"
+  },
+  {
+    "name": "Noakhali Medical College Hospital",
+    "city": "Noakhali",
+    "division": "Chattogram"
+  },
+  {
+    "name": "Sylhet MAG Osmani Medical College Hospital",
+    "city": "Sylhet",
+    "division": "Sylhet"
+  },
+  {
+    "name": "North East Medical College Hospital",
+    "city": "Sylhet",
+    "division": "Sylhet"
+  },
+  {
+    "name": "Jalalabad Ragib-Rabeya Medical College Hospital",
+    "city": "Sylhet",
+    "division": "Sylhet"
+  },
+  {
+    "name": "Khulna Medical College Hospital",
+    "city": "Khulna",
+    "division": "Khulna"
+  },
+  {
+    "name": "Khulna Specialized Hospital",
+    "city": "Khulna",
+    "division": "Khulna"
+  },
+  {
+    "name": "Ad-din Akij Medical College Hospital",
+    "city": "Khulna",
+    "division": "Khulna"
+  },
+  {
+    "name": "Jashore 250 Bed General Hospital",
+    "city": "Jashore",
+    "division": "Khulna"
+  },
+  {
+    "name": "Mymensingh Medical College Hospital",
+    "city": "Mymensingh",
+    "division": "Mymensingh"
+  },
+  {
+    "name": "Community Based Medical College Hospital",
+    "city": "Mymensingh",
+    "division": "Mymensingh"
+  },
+  {
+    "name": "Rangpur Medical College Hospital",
+    "city": "Rangpur",
+    "division": "Rangpur"
+  },
+  {
+    "name": "Prime Medical College Hospital",
+    "city": "Rangpur",
+    "division": "Rangpur"
+  },
+  {
+    "name": "Dinajpur Medical College Hospital",
+    "city": "Dinajpur",
+    "division": "Rangpur"
+  },
+  {
+    "name": "Sher-e-Bangla Medical College Hospital",
+    "city": "Barishal",
+    "division": "Barishal"
+  },
+  {
+    "name": "Barishal General Hospital",
+    "city": "Barishal",
+    "division": "Barishal"
+  },
+  {
+    "name": "Faridpur Medical College Hospital",
+    "city": "Faridpur",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Gopalganj Medical College Hospital",
+    "city": "Gopalganj",
+    "division": "Dhaka"
+  },
+  {
+    "name": "Kushtia Medical College Hospital",
+    "city": "Kushtia",
+    "division": "Khulna"
+  }
+]

@@ -45,6 +45,9 @@ export async function generatePrescriptionSummary(imageUrl) {
     * Use simple and clear language suitable for a Bangladeshi audience.
     * Use bullet points only if they improve clarity.
     * Focus only on the most important findings.
+    * give important findings, values, and instructions.
+    * dont need to write down the medicine names, dosages, and tests if they are not clearly readable.
+    * This is for bangladeshi users, so use very easy english.
 
     INCLUDE ONLY INFORMATION THAT IS CLEARLY READABLE:
 
