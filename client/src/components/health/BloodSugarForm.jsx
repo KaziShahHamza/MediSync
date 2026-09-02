@@ -1,4 +1,4 @@
-// client/src/components/BloodSugarForm.jsx
+// client/src/components/health/BloodSugarForm.jsx
 
 import { useState } from "react";
 import { Droplets, Save } from "lucide-react";

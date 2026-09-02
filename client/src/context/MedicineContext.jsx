@@ -1,4 +1,5 @@
-// client/src/context/MedicineContext.jsx
+// client/src/context/MedicineContext.
+
 import { createContext, useContext, useEffect, useState } from "react";
 
 const MedicineContext = createContext();

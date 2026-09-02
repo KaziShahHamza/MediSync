@@ -1,4 +1,4 @@
-// client/src/components/BMIChart.jsx
+// client/src/components/health/BMIChart.jsx
 
 import {
   Chart as ChartJS,

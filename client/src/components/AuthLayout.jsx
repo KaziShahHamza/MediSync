@@ -1,4 +1,4 @@
-// client/src/components/auth/AuthLayout.jsx
+// client/src/components/AuthLayout.jsx
 
 export default function AuthLayout({
   title,

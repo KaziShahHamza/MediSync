@@ -4,14 +4,14 @@ import { Activity, HeartPulse, Droplets, Scale } from "lucide-react";
 import useHealthLogs from "../hooks/useHealthLogs";
 import { useProfile } from "../context/ProfileContext";
 
-import BMIForm from "../components/BMIForm";
-import BMIChart from "../components/BMIChart";
+import BMIForm from "../components/health/BMIForm";
+import BMIChart from "../components/health/BMIChart";
 
-import BloodPressureForm from "../components/BloodPressureForm";
-import BloodPressureChart from "../components/BloodPressureChart";
+import BloodPressureForm from "../components/health/BloodPressureForm";
+import BloodPressureChart from "../components/health/BloodPressureChart";
 
-import BloodSugarForm from "../components/BloodSugarForm";
-import BloodSugarChart from "../components/BloodSugarChart";
+import BloodSugarForm from "../components/health/BloodSugarForm";
+import BloodSugarChart from "../components/health/BloodSugarChart";
 
 export default function Health() {
   const { logs, addLog } = useHealthLogs();
@@ -19,7 +19,6 @@ export default function Health() {
 
   return (
     <div className="container page">
-
       {/* Header */}
       <section className="page-header">
         <div>
@@ -40,7 +39,6 @@ export default function Health() {
 
       {/* Health Metrics */}
       <section className="space-y-12">
-
         {/* Blood Pressure */}
         <div>
           <div className="flex items-center gap-3 mb-5">
@@ -77,13 +75,9 @@ export default function Health() {
           <div className="grid lg:grid-cols-[360px_1fr] gap-6">
             <BMIForm onAdd={addLog} />
 
-            <BMIChart
-              logs={logs}
-              height={profile?.height}
-            />
+            <BMIChart logs={logs} height={profile?.height} />
           </div>
         </div>
-
       </section>
     </div>
   );

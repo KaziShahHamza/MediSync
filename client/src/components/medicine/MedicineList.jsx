@@ -1,4 +1,4 @@
-// client/src/components/MedicineList.jsx
+// client/src/components/medicine/MedicineList.jsx
 
 import {
   Pill,

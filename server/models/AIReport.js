@@ -1,3 +1,5 @@
+// server/models/AIReport.js
+
 import mongoose from "mongoose";
 
 const aiReportSchema = new mongoose.Schema(

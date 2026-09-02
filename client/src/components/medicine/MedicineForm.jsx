@@ -1,4 +1,4 @@
-// client/src/components/MedicineForm.jsx
+// client/src/components/medicine/MedicineForm.jsx
 
 import { useEffect, useState } from "react";
 import { Pill, ImagePlus, Clock3, Save, CalendarDays } from "lucide-react";

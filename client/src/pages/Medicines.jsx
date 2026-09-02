@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { Pill, PlusCircle } from "lucide-react";
 
-import MedicineForm from "../components/MedicineForm";
-import MedicineList from "../components/MedicineList";
+import MedicineForm from "../components/medicine/MedicineForm";
+import MedicineList from "../components/medicine/MedicineList";
 
 export default function Dashboard() {
   const [meds, setMeds] = useState([]);

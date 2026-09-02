@@ -1,3 +1,5 @@
+// server/services/prescriptionAiService.js
+
 import axios from "axios";
 import { GoogleGenAI } from "@google/genai";
 

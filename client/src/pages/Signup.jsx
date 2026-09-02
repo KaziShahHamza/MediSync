@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import AuthLayout from "../components/auth/AuthLayout";
+import AuthLayout from "../components/AuthLayout";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
