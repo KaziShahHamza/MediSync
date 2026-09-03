@@ -1,132 +1,98 @@
-// server/services/pdfService.js
-
 import PDFDocument from "pdfkit";
 
 import { formatExportDateTime } from "./pdf/pdfHelpers.js";
-
 import { PDF_COLORS } from "./pdf/pdfStyles.js";
 
 import { renderPersonalSection } from "./pdf/sections/personalSection.js";
-
 import { renderAISummarySection } from "./pdf/sections/aiSummarySection.js";
-
 import { renderHealthSection } from "./pdf/sections/healthSection.js";
-
 import { renderMedicinesSection } from "./pdf/sections/medicinesSection.js";
-
 import { renderDoctorsSection } from "./pdf/sections/doctorsSection.js";
-
 import { renderPrescriptionsSection } from "./pdf/sections/prescriptionsSection.js";
-
 import { renderFooterPage } from "./pdf/sections/footerSection.js";
 
 function renderDocumentHeader(doc) {
   const x = doc.page.margins.left;
 
-  /*
-   * Brand accent.
-   */
-
-  doc.roundedRect(x, 50, 6, 46, 3).fill(PDF_COLORS.primary);
-
-  /*
-   * Main title.
-   */
+  doc.roundedRect(x, 40, 5, 42, 2.5).fill(PDF_COLORS.primary);
 
   doc
     .font("Helvetica-Bold")
     .fontSize(23)
     .fillColor(PDF_COLORS.text)
-    .text("MediSync", x + 16, 50);
+    .text("MediSync", x + 14, 40);
 
   doc
     .font("Helvetica")
-    .fontSize(10)
+    .fontSize(13)
     .fillColor(PDF_COLORS.textMuted)
-    .text("Personal Health Report", x + 17, 78);
-
-  /*
-   * Generated timestamp.
-   */
+    .text("Personal Health Report", x + 15, 66);
 
   const rightX = doc.page.width - doc.page.margins.right - 170;
 
   doc
-    .font("Helvetica")
-    .fontSize(8.5)
+    .font("Helvetica-Bold")
+    .fontSize(11)
     .fillColor(PDF_COLORS.textMuted)
-    .text("REPORT GENERATED", rightX, 54, {
+    .text("REPORT GENERATED", rightX, 42, {
       width: 170,
       align: "right",
     });
 
   doc
     .font("Helvetica")
-    .fontSize(9)
+    .fontSize(12)
     .fillColor(PDF_COLORS.textSecondary)
-    .text(formatExportDateTime(), rightX, 69, {
+    .text(formatExportDateTime(), rightX, 55, {
       width: 170,
       align: "right",
     });
 
-  /*
-   * Header separator.
-   */
-
   doc
-    .moveTo(doc.page.margins.left, 112)
-    .lineTo(doc.page.width - doc.page.margins.right, 112)
+    .moveTo(doc.page.margins.left, 95)
+    .lineTo(doc.page.width - doc.page.margins.right, 95)
     .strokeColor(PDF_COLORS.border)
     .lineWidth(1)
     .stroke();
 
-  doc.y = 132;
+  doc.y = 115;
 }
 
-function renderPageNumber(doc) {
-  const pageNumber = doc.bufferedPageRange().count;
+// function renderPageNumbers(doc) {
+//   const range = doc.bufferedPageRange();
+//   const totalPages = range.count;
 
-  const footerY = doc.page.height - 28;
+//   for (let i = 0; i < totalPages; i++) {
+//     doc.switchToPage(i);
 
-  doc
-    .font("Helvetica")
-    .fontSize(7.5)
-    .fillColor(PDF_COLORS.textLight)
-    .text(
-      `MediSync Health Report  •  Page ${pageNumber}`,
-      doc.page.margins.left,
-      footerY,
-      {
-        width: doc.page.width - doc.page.margins.left - doc.page.margins.right,
-        align: "center",
-      },
-    );
-}
+//     const footerY = doc.page.height - 30;
 
-function renderPageNumbers(doc) {
-  const range = doc.bufferedPageRange();
-
-  for (let index = range.start; index < range.start + range.count; index++) {
-    doc.switchToPage(index);
-
-    renderPageNumber(doc);
-  }
-
-  doc.switchToPage(range.start + range.count - 1);
-}
+//     doc
+//       .font("Helvetica")
+//       .fontSize(7.5)
+//       .fillColor(PDF_COLORS.textLight)
+//       .text(
+//         `MediSync Health Report  •  Page ${i + 1} of ${totalPages}`,
+//         doc.page.margins.left,
+//         footerY,
+//         {
+//           width: doc.page.width - doc.page.margins.left - doc.page.margins.right,
+//           align: "center",
+//         }
+//       );
+//   }
+// }
 
 export async function generateHealthReport(res, data) {
   const doc = new PDFDocument({
     size: "A4",
     margins: {
-      top: 50,
-      bottom: 50,
-      left: 50,
-      right: 50,
+      top: 45,
+      bottom: 45,
+      left: 45,
+      right: 45,
     },
-
     bufferPages: true,
-
     info: {
       Title: "MediSync Health Report",
       Author: "MediSync",
@@ -147,89 +113,19 @@ export async function generateHealthReport(res, data) {
 
   doc.pipe(res);
 
-  const { user, profile, health, medicines, doctors, prescriptions, aiReport } =
-    data;
-
-  /*
-   * ==========================================
-   * REPORT HEADER
-   * ==========================================
-   */
+  const { user, profile, health, medicines, doctors, prescriptions, aiReport } = data;
 
   renderDocumentHeader(doc);
-
-  /*
-   * ==========================================
-   * PERSONAL INFORMATION
-   * ==========================================
-   */
-
-  renderPersonalSection(doc, {
-    user,
-    profile,
-  });
-
-  /*
-   * ==========================================
-   * AI SUMMARY
-   * ==========================================
-   */
-
+  renderPersonalSection(doc, { user, profile });
   renderAISummarySection(doc, aiReport);
-
-  /*
-   * ==========================================
-   * HEALTH
-   * ==========================================
-   */
-
   renderHealthSection(doc, health);
-
-  /*
-   * ==========================================
-   * MEDICINES
-   * ==========================================
-   */
-
   renderMedicinesSection(doc, medicines);
-
-  /*
-   * ==========================================
-   * DOCTORS
-   * ==========================================
-   */
-
   renderDoctorsSection(doc, doctors);
-
-  /*
-   * ==========================================
-   * PRESCRIPTIONS
-   * ==========================================
-   */
-
   await renderPrescriptionsSection(doc, prescriptions);
-
-  /*
-   * ==========================================
-   * FINAL PAGE
-   * ==========================================
-   */
-
   renderFooterPage(doc);
 
-  /*
-   * ==========================================
-   * PAGE NUMBERS
-   * ==========================================
-   */
-
-  renderPageNumbers(doc);
-
-  /*
-   * ==========================================
-   * FINISH
-   * ==========================================
-   */
+  // Correct footer page loop rendering
+  // renderPageNumbers(doc);
 
   doc.end();
 }

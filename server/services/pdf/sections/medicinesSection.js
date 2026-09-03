@@ -1,87 +1,71 @@
-// server/services/pdf/sections/medicinesSection.js
-
-import {
-  formatMonthYear,
-} from "../pdfHelpers.js";
-
-import {
-  drawSectionHeader,
-  PDF_COLORS,
-} from "../pdfStyles.js";
+import { formatMonthYear, ensureSpace } from "../pdfHelpers.js";
+import { drawSectionHeader, PDF_COLORS } from "../pdfStyles.js";
 
 export function renderMedicinesSection(doc, medicines = []) {
+  ensureSpace(doc, 100);
+
   drawSectionHeader(
     doc,
     "Active Medicines",
-    "Medicines currently marked as active in MediSync.",
+    "Medicines currently marked as active in MediSync."
   );
 
   if (!medicines.length) {
     doc
       .font("Helvetica")
-      .fontSize(10)
+      .fontSize(12)
       .fillColor(PDF_COLORS.textMuted)
       .text("No active medicines recorded.");
 
     doc.moveDown(1);
-
     return;
   }
 
   medicines.forEach((medicine, index) => {
+    ensureSpace(doc, 55);
+
     const schedule =
       medicine.dosageTimes?.length > 0
         ? medicine.dosageTimes.join(", ")
         : "No schedule";
 
-    const startMonth = formatMonthYear(
-      medicine.startDate,
-    );
+    const startMonth = formatMonthYear(medicine.startDate);
 
     const x = doc.page.margins.left;
     const width =
-      doc.page.width -
-      doc.page.margins.left -
-      doc.page.margins.right;
-
+      doc.page.width - doc.page.margins.left - doc.page.margins.right;
     const y = doc.y;
 
     doc
       .save()
-      .roundedRect(x, y, width, 55, 6)
-      .fillAndStroke(
-        PDF_COLORS.surfaceMuted,
-        PDF_COLORS.border,
-      )
+      .roundedRect(x, y, width, 50, 6)
+      .fillAndStroke(PDF_COLORS.surfaceMuted, PDF_COLORS.border)
       .restore();
 
     doc
       .font("Helvetica-Bold")
-      .fontSize(10.5)
+      .fontSize(12)
       .fillColor(PDF_COLORS.text)
-      .text(
-        `${index + 1}. ${medicine.name || "Unnamed Medicine"}`,
-        x + 12,
-        y + 10,
-        {
-          width: width - 24,
-        },
-      );
-
-    doc
-      .font("Helvetica")
-      .fontSize(9)
-      .fillColor(PDF_COLORS.textSecondary)
-      .text(`Schedule: ${schedule}`, x + 12, y + 26, {
-        width: width - 24,
+      .text(`${index + 1}. ${medicine.name || "Unnamed Medicine"}`, x + 10, y + 8, {
+        width: width - 20,
       });
 
     doc
       .font("Helvetica")
-      .fontSize(8.5)
-      .fillColor(PDF_COLORS.textMuted)
-      .text(`${startMonth} – Present`, x + 12, y + 41);
+      .fontSize(11)
+      .fillColor(PDF_COLORS.textSecondary)
+      .text(`Time: ${schedule}`, x + 10, y + 22, {
+        width: width - 20,
+      });
 
-    doc.y = y + 66;
+    doc
+      .font("Helvetica")
+      .fontSize(10)
+      .fillColor(PDF_COLORS.textMuted)
+      .text(`${startMonth} – Present`, x + 10, y + 35);
+
+    doc.y = y + 58;
   });
+
+  doc.moveDown(0.5);
 }

@@ -1,5 +1,3 @@
-// server/services/pdf/pdfStyles.js
-
 export const PDF_COLORS = {
   primary: "#2563eb",
   primaryDark: "#1d4ed8",
@@ -21,99 +19,62 @@ export const PDF_COLORS = {
   danger: "#dc2626",
 };
 
-export const PDF_LAYOUT = {
-  pageMargin: 50,
-  headerHeight: 72,
-
-  sectionSpacing: 22,
-
-  prescriptionImageWidthRatio: 0.8,
-  prescriptionImageHeightRatio: 0.8,
-};
-
-export function applyBodyStyle(doc) {
-  doc.font("Helvetica").fontSize(10.5).fillColor(PDF_COLORS.textSecondary);
-}
-
-export function applyHeadingStyle(doc) {
-  doc.font("Helvetica-Bold").fontSize(15).fillColor(PDF_COLORS.text);
-}
-
-export function applySubheadingStyle(doc) {
-  doc.font("Helvetica-Bold").fontSize(11).fillColor(PDF_COLORS.text);
-}
-
-export function applyMutedStyle(doc) {
-  doc.font("Helvetica").fontSize(9).fillColor(PDF_COLORS.textMuted);
-}
-
-export function applyLabelStyle(doc) {
-  doc.font("Helvetica-Bold").fontSize(10).fillColor(PDF_COLORS.text);
-}
-
 export function drawSectionHeader(doc, title, subtitle = null) {
+  const leftX = doc.page.margins.left;
+
   doc
     .font("Helvetica-Bold")
-    .fontSize(15)
+    .fontSize(17)
     .fillColor(PDF_COLORS.text)
-    .text(title);
+    .text(title, leftX, doc.y);
 
   if (subtitle) {
     doc
       .moveDown(0.2)
       .font("Helvetica")
-      .fontSize(9)
+      .fontSize(12)
       .fillColor(PDF_COLORS.textMuted)
-      .text(subtitle);
+      .text(subtitle, leftX, doc.y);
   }
 
-  doc.moveDown(0.55);
+  doc.moveDown(0.4);
 
   doc
     .save()
     .strokeColor(PDF_COLORS.border)
     .lineWidth(1)
-    .moveTo(doc.page.margins.left, doc.y)
+    .moveTo(leftX, doc.y)
     .lineTo(doc.page.width - doc.page.margins.right, doc.y)
     .stroke()
     .restore();
 
-  doc.moveDown(0.7);
+  doc.moveDown(0.6);
 }
 
-export function drawMetricCard(
-  doc,
-  { x, y, width, height, label, value, detail },
-) {
+export function drawMetricCard(doc, { x, y, width, height, label, value, detail }) {
   doc
     .save()
-    .roundedRect(x, y, width, height, 7)
+    .roundedRect(x, y, width, height, 6)
     .fillAndStroke(PDF_COLORS.surfaceMuted, PDF_COLORS.border);
 
   doc
-    .font("Helvetica")
-    .fontSize(8)
+    .font("Helvetica-Bold")
+    .fontSize(11)
     .fillColor(PDF_COLORS.textMuted)
-    .text(label.toUpperCase(), x + 12, y + 10, {
-      width: width - 24,
-    });
+    .text(label.toUpperCase(), x + 10, y + 8, { width: width - 20 });
 
   doc
     .font("Helvetica-Bold")
-    .fontSize(14)
+    .fontSize(16)
     .fillColor(PDF_COLORS.text)
-    .text(String(value), x + 12, y + 25, {
-      width: width - 24,
-    });
+    .text(String(value), x + 10, y + 22, { width: width - 20 });
 
   if (detail) {
     doc
       .font("Helvetica")
-      .fontSize(8)
+      .fontSize(11)
       .fillColor(PDF_COLORS.textMuted)
-      .text(detail, x + 12, y + height - 17, {
-        width: width - 24,
-      });
+      .text(detail, x + 10, y + height - 16, { width: width - 20 });
   }
 
   doc.restore();

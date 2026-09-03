@@ -1,275 +1,161 @@
-// server/services/pdf/sections/prescriptionsSection.js
-
 import axios from "axios";
-
-import {
-  formatDate,
-} from "../pdfHelpers.js";
-
-import {
-  PDF_COLORS,
-} from "../pdfStyles.js";
+import { formatDate } from "../pdfHelpers.js";
+import { PDF_COLORS } from "../pdfStyles.js";
 
 async function getImageBuffer(imageUrl) {
-  if (!imageUrl) {
-    return null;
-  }
+  if (!imageUrl) return null;
 
   try {
     const response = await axios.get(imageUrl, {
       responseType: "arraybuffer",
       timeout: 20000,
     });
-
     return Buffer.from(response.data);
   } catch (error) {
-    console.error(
-      "Failed to download medical record image:",
-      imageUrl,
-      error.message,
-    );
-
+    console.error("Failed to download image:", imageUrl, error.message);
     return null;
   }
 }
 
 function renderPrescriptionHeader(doc, prescription, index) {
-  doc
-    .font("Helvetica-Bold")
-    .fontSize(19)
-    .fillColor(PDF_COLORS.text)
-    .text(`Medical Record ${index + 1}`);
+  // doc
+  //   .font("Helvetica-Bold")
+  //   .fontSize(17)
+  //   .fillColor(PDF_COLORS.text)
+  //   .text(`Medical Record ${index + 1}`);
 
-  doc.moveDown(0.3);
+  // doc.moveDown(0.2);
 
   doc
     .font("Helvetica")
-    .fontSize(11)
+    .fontSize(13)
     .fillColor(PDF_COLORS.textSecondary)
     .text(prescription.title || "Medical Record");
 
-  doc.moveDown(0.35);
+  // if (prescription.createdAt) {
+  //   doc
+  //     .moveDown(0.2)
+  //     .font("Helvetica")
+  //     .fontSize(8)
+  //     .fillColor(PDF_COLORS.textMuted)
+  //     .text(`Uploaded: ${formatDate(prescription.createdAt)}`);
+  // }
 
-  if (prescription.createdAt) {
-    doc
-      .font("Helvetica")
-      .fontSize(8.5)
-      .fillColor(PDF_COLORS.textMuted)
-      .text(`Uploaded: ${formatDate(prescription.createdAt)}`);
-  }
-
-  doc.moveDown(0.7);
+  doc.moveDown(0.2);
 
   doc
     .moveTo(doc.page.margins.left, doc.y)
-    .lineTo(
-      doc.page.width - doc.page.margins.right,
-      doc.y,
-    )
+    .lineTo(doc.page.width - doc.page.margins.right, doc.y)
     .strokeColor(PDF_COLORS.border)
-    .lineWidth(1)
+    .lineWidth(1.5)
     .stroke();
 
-  doc.moveDown(0.8);
+  doc.moveDown(0.2);
 }
 
 function renderPrescriptionSummary(doc, prescription) {
-  if (!prescription.aiSummary) {
-    return;
-  }
+  if (!prescription.aiSummary) return;
 
   doc
     .font("Helvetica-Bold")
-    .fontSize(10)
+    .fontSize(13)
     .fillColor(PDF_COLORS.text)
     .text("AI Summary");
 
-  doc.moveDown(0.25);
+  doc.moveDown(0.2);
 
   doc
     .font("Helvetica")
-    .fontSize(9.5)
+    .fontSize(12)
     .fillColor(PDF_COLORS.textSecondary)
     .text(prescription.aiSummary, {
-      lineGap: 3,
-      width:
-        doc.page.width -
-        doc.page.margins.left -
-        doc.page.margins.right,
+      lineGap: 2.5,
+      width: doc.page.width - doc.page.margins.left - doc.page.margins.right,
     });
 
-  doc.moveDown(0.8);
+  doc.moveDown(0.6);
 }
 
 function renderImagePlaceholder(doc, message) {
   const width =
-    doc.page.width -
-    doc.page.margins.left -
-    doc.page.margins.right;
-
-  const height = 100;
+    doc.page.width - doc.page.margins.left - doc.page.margins.right;
+  const height = 80;
   const x = doc.page.margins.left;
   const y = doc.y;
 
   doc
     .save()
     .roundedRect(x, y, width, height, 6)
-    .fillAndStroke(
-      PDF_COLORS.surfaceMuted,
-      PDF_COLORS.border,
-    )
+    .fillAndStroke(PDF_COLORS.surfaceMuted, PDF_COLORS.border)
     .restore();
 
   doc
     .font("Helvetica")
-    .fontSize(10)
+    .fontSize(12)
     .fillColor(PDF_COLORS.danger)
-    .text(message, x + 20, y + 42, {
+    .text(message, x + 20, y + 32, {
       width: width - 40,
       align: "center",
     });
 
-  doc.y = y + height + 15;
+  doc.y = y + height + 10;
 }
 
-export async function renderPrescriptionsSection(
-  doc,
-  prescriptions = [],
-) {
-  if (!prescriptions.length) {
-    return;
-  }
+export async function renderPrescriptionsSection(doc, prescriptions = []) {
+  if (!prescriptions.length) return;
 
   for (let index = 0; index < prescriptions.length; index++) {
     const prescription = prescriptions[index];
 
-    // Every medical record gets its own page.
     doc.addPage();
 
-    renderPrescriptionHeader(
-      doc,
-      prescription,
-      index,
-    );
+    renderPrescriptionHeader(doc, prescription, index);
+    renderPrescriptionSummary(doc, prescription);
 
-    renderPrescriptionSummary(
-      doc,
-      prescription,
-    );
-
-    const imageBuffer = await getImageBuffer(
-      prescription.imageUrl,
-    );
+    const imageBuffer = await getImageBuffer(prescription.imageUrl);
 
     if (!imageBuffer) {
       renderImagePlaceholder(
         doc,
-        "Unable to display this medical record image.",
+        "Unable to display this medical record image."
       );
-
       continue;
     }
 
     try {
-      /*
-       * A4:
-       *
-       * 595 x 842 points
-       *
-       * With 50pt margins:
-       *
-       * usable width  = 495
-       * usable height = 742
-       *
-       * We use approximately 80% of the usable area.
-       */
-
       const usableWidth =
-        doc.page.width -
-        doc.page.margins.left -
-        doc.page.margins.right;
-
-      const usableHeight =
-        doc.page.height -
-        doc.page.margins.top -
-        doc.page.margins.bottom;
-
-      const maxWidth = usableWidth * 0.8;
-      const maxHeight = usableHeight * 0.8;
-
-      /*
-       * Center the image horizontally.
-       *
-       * PDFKit's fit option preserves the original
-       * aspect ratio and prevents distortion.
-       */
-
-      const x =
-        doc.page.margins.left +
-        (usableWidth - maxWidth) / 2;
+        doc.page.width - doc.page.margins.left - doc.page.margins.right;
 
       const remainingHeight =
-        doc.page.height -
-        doc.y -
-        doc.page.margins.bottom;
+        doc.page.height - doc.y - doc.page.margins.bottom - 20;
 
-      const imageHeight = Math.min(
-        maxHeight,
-        remainingHeight,
-      );
+      const maxWidth = usableWidth;
+      const maxHeight = Math.max(150, remainingHeight);
 
       const y = doc.y;
 
-      if (imageHeight < 100) {
-        doc.addPage();
-
-        renderPrescriptionHeader(
-          doc,
-          prescription,
-          index,
-        );
-      }
-
-      const actualRemainingHeight =
-        doc.page.height -
-        doc.y -
-        doc.page.margins.bottom;
-
-      const finalMaxHeight = Math.min(
-        maxHeight,
-        actualRemainingHeight,
-      );
-
-      const finalY = doc.y;
-
-      doc.image(imageBuffer, x, finalY, {
-        fit: [maxWidth, finalMaxHeight],
+      doc.image(imageBuffer, doc.page.margins.left, y, {
+        fit: [maxWidth, maxHeight],
         align: "center",
-        valign: "center",
+        valign: "top",
       });
 
-      doc.y = finalY + finalMaxHeight + 15;
+      doc.y = y + maxHeight + 10;
 
-      if (prescription.aiAnalyzedAt) {
-        doc
-          .font("Helvetica")
-          .fontSize(8)
-          .fillColor(PDF_COLORS.textMuted)
-          .text(
-            `AI analysis: ${formatDate(
-              prescription.aiAnalyzedAt,
-            )}`,
-          );
-      }
+      // if (prescription.aiAnalyzedAt) {
+      //   doc
+      //     .font("Helvetica")
+      //     .fontSize(8)
+      //     .fillColor(PDF_COLORS.textMuted)
+      //     .text(
+      //       `AI analysis: ${formatDate(prescription.aiAnalyzedAt)}`
+      //     );
+      // }
     } catch (error) {
-      console.error(
-        "Failed to insert medical record image:",
-        error,
-      );
-
+      console.error("Failed to insert image:", error);
       renderImagePlaceholder(
         doc,
-        "Unable to display this medical record image.",
+        "Unable to display this medical record image."
       );
     }
   }
