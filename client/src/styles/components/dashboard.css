@@ -1,0 +1,549 @@
+/* =========================================================
+   MEDISYNC — DASHBOARD
+   ========================================================= */
+
+.ms-dashboard-page {
+  --ms-dashboard-card-min-height: 100%;
+}
+
+/* ---------------------------------------------------------
+   HEADER
+   --------------------------------------------------------- */
+
+.ms-dashboard-header {
+  padding-bottom: var(--ms-space-2);
+}
+
+.ms-dashboard-header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--ms-space-8);
+}
+
+.ms-dashboard-heading {
+  min-width: 0;
+  max-width: 760px;
+}
+
+.ms-dashboard-eyebrow,
+.ms-dashboard-section-eyebrow,
+.ms-dashboard-card-eyebrow {
+  display: block;
+  margin-bottom: var(--ms-space-2);
+  color: var(--ms-primary);
+  font-size: var(--ms-font-size-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  letter-spacing: var(--ms-tracking-wide);
+  line-height: var(--ms-leading-normal);
+  text-transform: uppercase;
+}
+
+.ms-dashboard-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ms-space-3);
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.ms-dashboard-export-btn {
+  min-height: 46px;
+}
+
+.ms-dashboard-clock {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+  min-height: 46px;
+  padding: var(--ms-space-2) var(--ms-space-4);
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-xl);
+  box-shadow: var(--ms-shadow-sm);
+}
+
+.ms-dashboard-clock-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+  border-radius: var(--ms-radius-lg);
+}
+
+.ms-dashboard-clock-content {
+  min-width: 0;
+}
+
+.ms-dashboard-clock-date,
+.ms-dashboard-clock-time {
+  margin: 0;
+}
+
+.ms-dashboard-clock-date {
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+.ms-dashboard-clock-time {
+  margin-top: 2px;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+}
+
+/* ---------------------------------------------------------
+   SECTIONS
+   --------------------------------------------------------- */
+
+.ms-dashboard-section {
+  margin-top: var(--ms-section-gap);
+}
+
+.ms-dashboard-section .ms-section-header {
+  margin-bottom: var(--ms-space-5);
+}
+
+.ms-dashboard-section-eyebrow {
+  margin-bottom: var(--ms-space-1);
+}
+
+/* ---------------------------------------------------------
+   HEALTH OVERVIEW
+   --------------------------------------------------------- */
+
+.ms-dashboard-health-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ms-dashboard-health-card {
+  height: var(--ms-dashboard-card-min-height);
+}
+
+.ms-dashboard-health-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+}
+
+.ms-dashboard-health-content {
+  min-width: 0;
+}
+
+.ms-dashboard-health-label {
+  margin: 0;
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+.ms-dashboard-health-value {
+  margin: var(--ms-space-3) 0 0;
+  color: var(--ms-text);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: var(--ms-font-weight-bold);
+  letter-spacing: var(--ms-tracking-tight);
+  line-height: var(--ms-leading-tight);
+}
+
+.ms-dashboard-health-subtitle {
+  margin: var(--ms-space-4) 0 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-sm);
+}
+
+.ms-dashboard-health-icon,
+.ms-dashboard-stat-icon,
+.ms-dashboard-quick-icon {
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+}
+
+/* ---------------------------------------------------------
+   STATISTICS
+   --------------------------------------------------------- */
+
+.ms-dashboard-stat-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ms-dashboard-stat-card {
+  display: flex;
+  min-height: 190px;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ms-dashboard-stat-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+}
+
+.ms-dashboard-stat-label {
+  margin: 0;
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+.ms-dashboard-stat-value {
+  margin: var(--ms-space-3) 0 0;
+  color: var(--ms-text);
+  font-size: 2.5rem;
+  font-weight: var(--ms-font-weight-bold);
+  letter-spacing: var(--ms-tracking-tight);
+  line-height: 1;
+}
+
+.ms-dashboard-stat-action {
+  align-self: flex-start;
+  min-height: 38px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.ms-dashboard-stat-action:hover {
+  background: transparent;
+}
+
+/* ---------------------------------------------------------
+   QUICK ACTIONS
+   --------------------------------------------------------- */
+
+.ms-dashboard-quick-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ms-dashboard-quick-card {
+  display: flex;
+  min-height: 190px;
+  flex-direction: column;
+  justify-content: space-between;
+  text-decoration: none;
+}
+
+.ms-dashboard-quick-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+}
+
+.ms-dashboard-quick-icon {
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.ms-dashboard-quick-arrow {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: var(--ms-text-muted);
+  border-radius: var(--ms-radius-full);
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.ms-dashboard-quick-content {
+  margin-top: var(--ms-space-6);
+}
+
+.ms-dashboard-quick-title {
+  transition: color 150ms ease;
+}
+
+.ms-dashboard-quick-description {
+  margin: var(--ms-space-2) 0 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-dashboard-quick-card:hover .ms-dashboard-quick-icon {
+  transform: translateY(-2px);
+}
+
+.ms-dashboard-quick-card:hover .ms-dashboard-quick-arrow {
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+  transform: translateX(2px);
+}
+
+.ms-dashboard-quick-card:hover .ms-dashboard-quick-title {
+  color: var(--ms-primary);
+}
+
+/* ---------------------------------------------------------
+   AI SUMMARY
+   --------------------------------------------------------- */
+
+.ms-dashboard-ai-card {
+  overflow: hidden;
+  border-color: var(--ms-primary-soft-strong);
+}
+
+.ms-dashboard-ai-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+}
+
+.ms-dashboard-ai-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+  min-width: 0;
+}
+
+.ms-dashboard-ai-icon {
+  flex-shrink: 0;
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+}
+
+.ms-dashboard-ai-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 26px;
+  padding: 0 var(--ms-space-2);
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+  border-radius: var(--ms-radius-full);
+  font-size: var(--ms-font-size-xs);
+  font-weight: var(--ms-font-weight-bold);
+  letter-spacing: var(--ms-tracking-wide);
+}
+
+.ms-dashboard-ai-body {
+  margin-top: var(--ms-space-6);
+}
+
+.ms-dashboard-ai-summary,
+.ms-dashboard-ai-empty {
+  max-width: 900px;
+  margin: 0;
+  font-size: var(--ms-font-size-base);
+  line-height: var(--ms-leading-relaxed);
+  white-space: pre-line;
+}
+
+.ms-dashboard-ai-summary {
+  color: var(--ms-text);
+}
+
+.ms-dashboard-ai-empty {
+  color: var(--ms-text-secondary);
+}
+
+.ms-dashboard-ai-generated {
+  margin: var(--ms-space-4) 0 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+}
+
+.ms-dashboard-ai-footer {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ms-space-4);
+  margin-top: var(--ms-space-6);
+  padding-top: var(--ms-space-5);
+  border-top: 1px solid var(--ms-border);
+}
+
+.ms-dashboard-ai-button {
+  flex-shrink: 0;
+}
+
+.ms-dashboard-ai-cooldown {
+  max-width: 520px;
+}
+
+.ms-dashboard-ai-cooldown p {
+  margin: 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-dashboard-ai-cooldown p + p {
+  margin-top: var(--ms-space-1);
+}
+
+.ms-dashboard-ai-alert {
+  margin-top: var(--ms-space-4);
+}
+
+.ms-icon-spin {
+  animation: ms-dashboard-spin 900ms linear infinite;
+}
+
+@keyframes ms-dashboard-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------
+   LOADING
+   --------------------------------------------------------- */
+
+.ms-dashboard-loading {
+  padding-top: var(--ms-space-4);
+}
+
+.ms-dashboard-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ms-grid-gap);
+}
+
+.ms-dashboard-skeleton-card {
+  height: 150px;
+  border-radius: var(--ms-radius-xl);
+}
+
+/* AI skeleton */
+
+.ms-dashboard-ai-loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-3);
+}
+
+.ms-dashboard-ai-skeleton-line,
+.ms-dashboard-ai-skeleton-line-short {
+  display: block;
+  height: 16px;
+  border-radius: var(--ms-radius-full);
+}
+
+.ms-dashboard-ai-skeleton-line {
+  width: 100%;
+}
+
+.ms-dashboard-ai-skeleton-line-short {
+  width: 58%;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  .ms-dashboard-header-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ms-dashboard-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .ms-dashboard-health-grid,
+  .ms-dashboard-stat-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ms-dashboard-quick-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ms-dashboard-skeleton-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .ms-dashboard-header-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ms-dashboard-export-btn,
+  .ms-dashboard-clock {
+    width: 100%;
+  }
+
+  .ms-dashboard-clock {
+    justify-content: flex-start;
+  }
+
+  .ms-dashboard-health-grid,
+  .ms-dashboard-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-dashboard-quick-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-dashboard-ai-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ms-dashboard-ai-button {
+    width: 100%;
+  }
+
+  .ms-dashboard-skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 639px) {
+  .ms-dashboard-header {
+    padding-bottom: 0;
+  }
+
+  .ms-dashboard-heading .ms-page-title {
+    font-size: 1.75rem;
+  }
+
+  .ms-dashboard-health-value {
+    font-size: 2rem;
+  }
+
+  .ms-dashboard-stat-value {
+    font-size: 2.25rem;
+  }
+
+  .ms-dashboard-ai-heading {
+    align-items: flex-start;
+  }
+
+  .ms-dashboard-ai-badge {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 374px) {
+  .ms-dashboard-ai-header {
+    align-items: flex-start;
+  }
+
+  .ms-dashboard-ai-badge {
+    min-width: 32px;
+    padding-inline: var(--ms-space-1);
+  }
+
+  .ms-dashboard-clock {
+    padding-inline: var(--ms-space-3);
+  }
+}

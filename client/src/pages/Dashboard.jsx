@@ -1,17 +1,15 @@
-// client/src/pages/Dashboard.jsx
-
 import { useEffect, useState } from "react";
 
 import {
   Activity,
+  CalendarClock,
+  Download,
   Droplets,
+  FileImage,
   HeartPulse,
   Pill,
   Stethoscope,
-  FileImage,
   UserRound,
-  CalendarClock,
-  Download,
 } from "lucide-react";
 
 import HealthSummaryCard from "../components/dashboard/HealthSummaryCard";
@@ -153,7 +151,6 @@ export default function Dashboard() {
       }
 
       const blob = await response.blob();
-
       const url = window.URL.createObjectURL(blob);
 
       const link = document.createElement("a");
@@ -182,15 +179,17 @@ export default function Dashboard() {
 
   if (!data) {
     return (
-      <div className="container page">
-        {" "}
-        <div className="grid gap-6 md:grid-cols-3">
-          {" "}
-          <div className="skeleton-card h-32" />
-          <div className="skeleton-card h-32" />
-          <div className="skeleton-card h-32" />
+      <main className="ms-page ms-dashboard-page">
+        <div className="ms-container">
+          <div className="ms-dashboard-loading">
+            <div className="ms-dashboard-skeleton-grid">
+              <div className="ms-skeleton ms-dashboard-skeleton-card" />
+              <div className="ms-skeleton ms-dashboard-skeleton-card" />
+              <div className="ms-skeleton ms-dashboard-skeleton-card" />
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
     );
   }
 
@@ -202,171 +201,199 @@ export default function Dashboard() {
         : "Evening";
 
   return (
-    <div className="container page">
-      {/* Header */}{" "}
-      <section className="page-header">
-        {" "}
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          {" "}
-          <div>
-            {" "}
-            <h1 className="page-title">
-              Good {greeting}, {user?.name || ""}{" "}
-            </h1>
-            <p className="page-description">
-              Monitor your health activity and manage your healthcare
-              information from one place.
-            </p>
-          </div>
-          <div className="flex items-center gap-3 flex-wrap">
-            {/* Export PDF */}
-            <button
-              onClick={handleExportPDF}
-              disabled={pdfLoading}
-              className="btn-primary inline-flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              <Download size={18} />
+    <main className="ms-page ms-dashboard-page">
+      <div className="ms-container">
+        {/* Dashboard Header */}
+        <section className="ms-page-header ms-dashboard-header">
+          <div className="ms-dashboard-header-row">
+            <div className="ms-dashboard-heading">
+              <span className="ms-dashboard-eyebrow">
+                Personal Health Dashboard
+              </span>
 
-              {pdfLoading ? "Generating Report..." : "Export Health Report"}
-            </button>
+              <h1 className="ms-page-title">
+                Good {greeting}, {user?.name || ""}
+              </h1>
 
-            {/* Date & Time */}
-            <div className="surface px-4 py-3 flex items-center gap-3">
-              <CalendarClock size={20} className="text-blue-600" />
+              <p className="ms-page-subtitle">
+                Monitor your health activity and manage your healthcare
+                information from one place.
+              </p>
+            </div>
 
-              <div>
-                <p className="text-sm font-medium text-slate-700">
-                  {time.toLocaleDateString()}
-                </p>
+            <div className="ms-dashboard-header-actions">
+              <button
+                type="button"
+                onClick={handleExportPDF}
+                disabled={pdfLoading}
+                className="ms-btn ms-btn-primary ms-dashboard-export-btn"
+              >
+                <Download size={18} aria-hidden="true" />
 
-                <p className="text-xs text-slate-500">
-                  {time.toLocaleTimeString()}
-                </p>
+                <span>
+                  {pdfLoading ? "Generating Report..." : "Export Health Report"}
+                </span>
+              </button>
+
+              <div className="ms-dashboard-clock">
+                <div className="ms-dashboard-clock-icon" aria-hidden="true">
+                  <CalendarClock size={20} />
+                </div>
+
+                <div className="ms-dashboard-clock-content">
+                  <p className="ms-dashboard-clock-date">
+                    {time.toLocaleDateString()}
+                  </p>
+
+                  <p className="ms-dashboard-clock-time">
+                    {time.toLocaleTimeString()}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-      {/* AI / Health Summary */}
-      <section className="section">
-        <HealthSummaryCard
-          summary={aiSummary}
-          loading={aiLoading}
-          generating={aiGenerating}
-          generatedAt={aiGeneratedAt}
-          message={aiMessage}
-          onGenerate={handleGenerateSummary}
-        />
-      </section>
-      {/* Health Overview */}
-      <section className="section">
-        <div className="section-header">
-          <h2 className="section-title">Health Overview</h2>
-        </div>
+        </section>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        {/* AI / Health Summary */}
+        <section className="ms-section ms-dashboard-section">
           <HealthSummaryCard
-            title="Blood Pressure"
-            value={
-              data.health.bloodPressure
-                ? `${data.health.bloodPressure.high}/${data.health.bloodPressure.low}`
-                : null
-            }
-            subtitle="Latest reading"
-            icon={HeartPulse}
+            summary={aiSummary}
+            loading={aiLoading}
+            generating={aiGenerating}
+            generatedAt={aiGeneratedAt}
+            message={aiMessage}
+            onGenerate={handleGenerateSummary}
           />
+        </section>
 
-          <HealthSummaryCard
-            title="Blood Sugar"
-            value={
-              data.health.diabetes
-                ? `${data.health.diabetes.glucose} mmol/L`
-                : null
-            }
-            subtitle="Latest glucose level"
-            icon={Droplets}
-          />
+        {/* Health Overview */}
+        <section className="ms-section ms-dashboard-section">
+          <div className="ms-section-header">
+            <div>
+              <span className="ms-dashboard-section-eyebrow">
+                Latest measurements
+              </span>
 
-          <HealthSummaryCard
-            title="BMI"
-            value={data.health.bmi ? data.health.bmi.value : null}
-            subtitle="Latest BMI"
-            icon={Activity}
-          />
-        </div>
-      </section>
-      {/* Summary Statistics */}
-      <section className="section">
-        <div className="section-header">
-          <h2 className="section-title">Health Records Summary</h2>
-        </div>
+              <h2 className="ms-section-title">Health Overview</h2>
+            </div>
+          </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <StatCard
-            title="Medicines"
-            count={data.summary.medicines}
-            linkText="View Medicines"
-            icon={Pill}
-          />
+          <div className="ms-grid ms-dashboard-health-grid">
+            <HealthSummaryCard
+              title="Blood Pressure"
+              value={
+                data.health.bloodPressure
+                  ? `${data.health.bloodPressure.high}/${data.health.bloodPressure.low}`
+                  : null
+              }
+              subtitle="Latest reading"
+              icon={HeartPulse}
+            />
 
-          <StatCard
-            title="Doctors"
-            count={data.summary.doctors}
-            linkText="View Doctors"
-            icon={Stethoscope}
-          />
+            <HealthSummaryCard
+              title="Blood Sugar"
+              value={
+                data.health.diabetes
+                  ? `${data.health.diabetes.glucose} mmol/L`
+                  : null
+              }
+              subtitle="Latest glucose level"
+              icon={Droplets}
+            />
 
-          <StatCard
-            title="Prescriptions"
-            count={data.summary.prescriptions}
-            linkText="View Prescriptions"
-            icon={FileImage}
-          />
-        </div>
-      </section>
-      {/* Quick Actions */}
-      <section className="section">
-        <div className="section-header">
-          <h2 className="section-title">Quick Actions</h2>
-        </div>
+            <HealthSummaryCard
+              title="BMI"
+              value={data.health.bmi ? data.health.bmi.value : null}
+              subtitle="Latest BMI"
+              icon={Activity}
+            />
+          </div>
+        </section>
 
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <QuickLinkCard
-            title="Medicines"
-            description="Manage medicines and dosage schedules"
-            path="/medicines"
-            icon={Pill}
-          />
+        {/* Summary Statistics */}
+        <section className="ms-section ms-dashboard-section">
+          <div className="ms-section-header">
+            <div>
+              <span className="ms-dashboard-section-eyebrow">Your records</span>
 
-          <QuickLinkCard
-            title="Health Charts"
-            description="Review health history and trends"
-            path="/health"
-            icon={Activity}
-          />
+              <h2 className="ms-section-title">Health Records Summary</h2>
+            </div>
+          </div>
 
-          <QuickLinkCard
-            title="Doctors"
-            description="Manage your healthcare providers"
-            path="/doctors"
-            icon={Stethoscope}
-          />
+          <div className="ms-grid ms-dashboard-stat-grid">
+            <StatCard
+              title="Medicines"
+              count={data.summary.medicines}
+              linkText="View Medicines"
+              icon={Pill}
+            />
 
-          <QuickLinkCard
-            title="Prescriptions"
-            description="View uploaded medical records"
-            path="/prescriptions"
-            icon={FileImage}
-          />
+            <StatCard
+              title="Doctors"
+              count={data.summary.doctors}
+              linkText="View Doctors"
+              icon={Stethoscope}
+            />
 
-          <QuickLinkCard
-            title="Profile"
-            description="Update personal health information"
-            path="/profile"
-            icon={UserRound}
-          />
-        </div>
-      </section>
-    </div>
+            <StatCard
+              title="Prescriptions"
+              count={data.summary.prescriptions}
+              linkText="View Prescriptions"
+              icon={FileImage}
+            />
+          </div>
+        </section>
+
+        {/* Quick Actions */}
+        <section className="ms-section ms-dashboard-section">
+          <div className="ms-section-header">
+            <div>
+              <span className="ms-dashboard-section-eyebrow">
+                Manage your records
+              </span>
+
+              <h2 className="ms-section-title">Quick Actions</h2>
+            </div>
+          </div>
+
+          <div className="ms-grid ms-dashboard-quick-grid">
+            <QuickLinkCard
+              title="Medicines"
+              description="Manage medicines and dosage schedules"
+              path="/medicines"
+              icon={Pill}
+            />
+
+            <QuickLinkCard
+              title="Health Charts"
+              description="Review health history and trends"
+              path="/health"
+              icon={Activity}
+            />
+
+            <QuickLinkCard
+              title="Doctors"
+              description="Manage your healthcare providers"
+              path="/doctors"
+              icon={Stethoscope}
+            />
+
+            <QuickLinkCard
+              title="Prescriptions"
+              description="View uploaded medical records"
+              path="/prescriptions"
+              icon={FileImage}
+            />
+
+            <QuickLinkCard
+              title="Profile"
+              description="Update personal health information"
+              path="/profile"
+              icon={UserRound}
+            />
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }

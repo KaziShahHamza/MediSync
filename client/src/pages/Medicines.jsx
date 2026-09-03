@@ -1,12 +1,10 @@
-// client/src/pages/Medicines.jsx
-
 import { useEffect, useState } from "react";
 import { Pill, PlusCircle } from "lucide-react";
 
 import MedicineForm from "../components/medicine/MedicineForm";
 import MedicineList from "../components/medicine/MedicineList";
 
-export default function Dashboard() {
+export default function Medicines() {
   const [meds, setMeds] = useState([]);
   const [editing, setEditing] = useState(null);
 
@@ -65,54 +63,80 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container page">
-      {/* Header */}
-      <section className="page-header">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="icon-wrapper">
-              <Pill size={24} className="text-blue-600" />
+    <main className="ms-page ms-medicines-page">
+      <div className="ms-container">
+        {/* Header */}
+        <section className="ms-page-header ms-medicines-header">
+          <div className="ms-medicines-heading">
+            <div className="ms-medicines-title-row">
+              <div className="ms-icon-box ms-medicines-page-icon">
+                <Pill size={24} aria-hidden="true" />
+              </div>
+
+              <div>
+                <span className="ms-medicines-eyebrow">
+                  Medication management
+                </span>
+
+                <h1 className="ms-page-title">Medicines</h1>
+              </div>
             </div>
 
-            <h1 className="page-title">Medicines</h1>
+            <p className="ms-page-subtitle">
+              Manage your medications, dosage schedules, and treatment
+              information.
+            </p>
+          </div>
+        </section>
+
+        {/* Content */}
+        <section className="ms-medicines-layout">
+          {/* Medicine List */}
+          <div className="ms-medicines-list-column">
+            <div className="ms-medicines-section-header">
+              <div>
+                <span className="ms-medicines-section-eyebrow">
+                  Medication records
+                </span>
+
+                <h2 className="ms-section-title">My Medicines</h2>
+              </div>
+
+              <span className="ms-badge ms-medicines-count">
+                {meds.length} {meds.length === 1 ? "Medicine" : "Total"}
+              </span>
+            </div>
+
+            <MedicineList
+              medicines={meds}
+              onEdit={setEditing}
+              onDelete={deleteMedicine}
+            />
           </div>
 
-          <p className="mt-3 text-slate-600">
-            Manage your medications, dosage schedules, and treatment information.
-          </p>
-        </div>
-      </section>
+          {/* Form */}
+          <div className="ms-medicines-form-column">
+            <div className="ms-medicines-form-header">
+              <div className="ms-icon-box ms-medicines-form-icon">
+                <PlusCircle size={22} aria-hidden="true" />
+              </div>
 
-      {/* Content */}
-      <section className="grid lg:grid-cols-2 gap-8 items-start">
-        {/* Medicine List */}
-        <div>
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="section-title">My Medicines</h2>
+              <div>
+                <span className="ms-medicines-section-eyebrow">
+                  Medication details
+                </span>
 
-            <span className="badge">{meds.length} Total</span>
+                <h2 className="ms-section-title">
+                  {editing ? "Edit Medicine" : "Add Medicine"}
+                </h2>
+              </div>
+            </div>
+
+            <MedicineForm onSave={saveMedicine} editing={editing} />
           </div>
-
-          <MedicineList
-            medicines={meds}
-            onEdit={setEditing}
-            onDelete={deleteMedicine}
-          />
-        </div>
-
-        {/* Form */}
-        <div>
-          <div className="flex items-center gap-2 mb-5">
-            <PlusCircle size={22} className="text-blue-600" />
-
-            <h2 className="section-title">
-              {editing ? "Edit Medicine" : "Add Medicine"}
-            </h2>
-          </div>
-
-          <MedicineForm onSave={saveMedicine} editing={editing} />
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </main>
   );
 }
+

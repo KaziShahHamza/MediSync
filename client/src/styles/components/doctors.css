@@ -1,0 +1,757 @@
+ /* =========================================================
+    MEDISYNC — DOCTORS
+    ========================================================= */
+
+
+/* ---------------------------------------------------------
+   PAGE HEADER
+   --------------------------------------------------------- */
+
+.ms-doctors-header {
+  margin-bottom: var(--ms-space-10);
+}
+
+.ms-doctors-heading {
+  max-width: 760px;
+}
+
+.ms-doctors-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+}
+
+.ms-doctors-page-icon {
+  flex: 0 0 auto;
+}
+
+.ms-doctors-eyebrow,
+.ms-doctors-section-eyebrow {
+  display: block;
+  margin-bottom: var(--ms-space-1);
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  letter-spacing: var(--ms-tracking-wide);
+  line-height: var(--ms-leading-tight);
+  text-transform: uppercase;
+}
+
+.ms-doctors-header .ms-page-subtitle {
+  margin-top: var(--ms-space-3);
+  max-width: 700px;
+}
+
+
+/* ---------------------------------------------------------
+   MAIN LAYOUT
+   --------------------------------------------------------- */
+
+.ms-doctors-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(360px, 420px);
+  align-items: start;
+  gap: var(--ms-space-8);
+}
+
+.ms-doctors-list-column {
+  min-width: 0;
+}
+
+.ms-doctors-list-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+  margin-bottom: var(--ms-space-5);
+}
+
+.ms-doctors-list-description {
+  margin: var(--ms-space-1) 0 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-sm);
+}
+
+.ms-doctors-count {
+  flex: 0 0 auto;
+}
+
+.ms-doctors-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-6);
+}
+
+
+/* ---------------------------------------------------------
+   EMPTY STATE
+   --------------------------------------------------------- */
+
+.ms-doctors-empty {
+  min-height: 300px;
+  padding: var(--ms-space-10);
+}
+
+.ms-doctors-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  margin-bottom: var(--ms-space-5);
+  border-radius: var(--ms-radius-full);
+  background: var(--ms-primary-soft);
+  color: var(--ms-primary);
+}
+
+.ms-doctors-empty-title {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-xl);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-doctors-empty-text {
+  max-width: 400px;
+  margin: var(--ms-space-2) auto 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+
+/* ---------------------------------------------------------
+   FORM CARD
+   --------------------------------------------------------- */
+
+.ms-doctor-form-card {
+  position: sticky;
+  top: 6rem;
+  min-width: 0;
+}
+
+.ms-doctor-form-header {
+  padding-bottom: var(--ms-space-6);
+  margin-bottom: var(--ms-space-6);
+  border-bottom: 1px solid var(--ms-border);
+}
+
+.ms-doctor-form-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+}
+
+.ms-doctor-form-icon {
+  flex: 0 0 auto;
+}
+
+.ms-doctor-form-title-row .ms-card-title {
+  margin: 0;
+}
+
+.ms-doctor-form-description {
+  margin: var(--ms-space-3) 0 0;
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+
+/* ---------------------------------------------------------
+   FORM SECTIONS
+   --------------------------------------------------------- */
+
+.ms-doctor-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-8);
+}
+
+.ms-doctor-form-section {
+  padding: 0;
+  border: 0;
+}
+
+.ms-doctor-form-section-header {
+  margin-bottom: var(--ms-space-4);
+}
+
+.ms-doctor-form-section-title {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-base);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-doctor-form-section-description {
+  margin: var(--ms-space-1) 0 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-stack-md {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-4);
+}
+
+.ms-stack-lg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-6);
+}
+
+
+/* ---------------------------------------------------------
+   MULTI SELECT
+   --------------------------------------------------------- */
+
+.ms-select-multiple {
+  min-height: 150px;
+  padding-block: var(--ms-space-2);
+}
+
+.ms-select-multiple option {
+  padding: var(--ms-space-2);
+}
+
+
+/* ---------------------------------------------------------
+   CHAMBERS
+   --------------------------------------------------------- */
+
+.ms-doctor-chambers-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+}
+
+.ms-doctor-add-button {
+  flex: 0 0 auto;
+}
+
+.ms-doctor-chambers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-4);
+}
+
+.ms-doctor-chamber {
+  padding: var(--ms-space-4);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-xl);
+  background: var(--ms-surface-muted);
+}
+
+.ms-doctor-chamber-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-3);
+  padding-bottom: var(--ms-space-4);
+  margin-bottom: var(--ms-space-4);
+  border-bottom: 1px solid var(--ms-border);
+}
+
+.ms-doctor-chamber-number {
+  display: block;
+  margin-bottom: var(--ms-space-1);
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  letter-spacing: var(--ms-tracking-wide);
+  text-transform: uppercase;
+}
+
+.ms-doctor-chamber-title {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-doctor-remove-button {
+  flex: 0 0 auto;
+}
+
+
+/* ---------------------------------------------------------
+   CONTACT FIELDS
+   --------------------------------------------------------- */
+
+.ms-doctor-contact-group {
+  min-width: 0;
+}
+
+.ms-doctor-contact-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ms-space-3);
+  margin-bottom: var(--ms-space-2);
+}
+
+.ms-doctor-contact-header .ms-label {
+  margin: 0;
+}
+
+.ms-doctor-contact-add {
+  min-height: 32px;
+  padding: 0.35rem 0.6rem;
+  font-size: var(--ms-font-size-xs);
+}
+
+.ms-doctor-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-2);
+}
+
+.ms-doctor-array-field {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-2);
+}
+
+.ms-doctor-array-field .ms-input {
+  flex: 1;
+  min-width: 0;
+}
+
+
+/* ---------------------------------------------------------
+   FORM ACTIONS
+   --------------------------------------------------------- */
+
+.ms-doctor-form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-3);
+  padding-top: var(--ms-space-2);
+}
+
+
+/* ---------------------------------------------------------
+   DOCTOR CARD
+   --------------------------------------------------------- */
+
+.ms-doctor-card {
+  min-width: 0;
+}
+
+.ms-doctor-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-5);
+}
+
+.ms-doctor-card-identity {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--ms-space-3);
+}
+
+.ms-doctor-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--ms-radius-xl);
+  background: var(--ms-primary-soft);
+  color: var(--ms-primary);
+}
+
+.ms-doctor-card-name-group {
+  min-width: 0;
+}
+
+.ms-doctor-card-name {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-xl);
+  font-weight: var(--ms-font-weight-semibold);
+  line-height: var(--ms-leading-tight);
+  overflow-wrap: anywhere;
+}
+
+.ms-doctor-card-designation {
+  margin: var(--ms-space-1) 0 0;
+  color: var(--ms-primary);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+.ms-doctor-specialities {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--ms-space-2);
+  max-width: 50%;
+}
+
+.ms-doctor-speciality {
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+}
+
+
+/* ---------------------------------------------------------
+   DOCTOR INFORMATION
+   --------------------------------------------------------- */
+
+.ms-doctor-info-section {
+  padding-top: var(--ms-space-6);
+  margin-top: var(--ms-space-6);
+  border-top: 1px solid var(--ms-border);
+}
+
+.ms-doctor-subsection-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-2);
+  margin-bottom: var(--ms-space-3);
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-doctor-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ms-space-3);
+}
+
+.ms-doctor-info-item {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  gap: var(--ms-space-3);
+  padding: var(--ms-space-3);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface-muted);
+}
+
+.ms-doctor-info-icon {
+  flex: 0 0 auto;
+  padding-top: 2px;
+  color: var(--ms-primary);
+}
+
+.ms-doctor-info-content {
+  min-width: 0;
+}
+
+.ms-doctor-info-label {
+  margin: 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+}
+
+.ms-doctor-info-value {
+  margin: var(--ms-space-1) 0 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-medium);
+  line-height: var(--ms-leading-relaxed);
+  overflow-wrap: anywhere;
+}
+
+
+/* ---------------------------------------------------------
+   CARD CHAMBERS
+   --------------------------------------------------------- */
+
+.ms-doctor-chamber-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-3);
+}
+
+.ms-doctor-card-chamber {
+  padding: var(--ms-space-4);
+  border-radius: var(--ms-radius-xl);
+  background: var(--ms-surface-muted);
+}
+
+.ms-doctor-card-chamber-label {
+  display: block;
+  margin-bottom: var(--ms-space-1);
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--ms-tracking-wide);
+}
+
+.ms-doctor-card-chamber-name {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-doctor-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ms-space-2);
+  margin-top: var(--ms-space-3);
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-doctor-detail-row svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--ms-primary);
+}
+
+
+/* ---------------------------------------------------------
+   CONTACT CARD
+   --------------------------------------------------------- */
+
+.ms-doctor-contact-list-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-2);
+}
+
+.ms-doctor-contact-item {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--ms-space-3);
+  padding: var(--ms-space-3);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface-muted);
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+}
+
+.ms-doctor-contact-item svg {
+  flex: 0 0 auto;
+  color: var(--ms-primary);
+}
+
+.ms-break-word {
+  overflow-wrap: anywhere;
+}
+
+
+/* ---------------------------------------------------------
+   SOCIAL LINKS
+   --------------------------------------------------------- */
+
+.ms-doctor-social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ms-space-2);
+  padding-top: var(--ms-space-4);
+  margin-top: var(--ms-space-5);
+  border-top: 1px solid var(--ms-border);
+}
+
+.ms-doctor-social-item {
+  padding: 0.45rem 0.7rem;
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface-muted);
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-xs);
+}
+
+
+/* ---------------------------------------------------------
+   NOTES
+   --------------------------------------------------------- */
+
+.ms-doctor-notes {
+  padding: var(--ms-space-4);
+  margin-top: var(--ms-space-5);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-xl);
+  background: var(--ms-surface-muted);
+}
+
+.ms-doctor-notes-label {
+  display: block;
+  margin-bottom: var(--ms-space-1);
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  letter-spacing: var(--ms-tracking-wide);
+  text-transform: uppercase;
+}
+
+.ms-doctor-notes p {
+  margin: 0;
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-relaxed);
+  white-space: pre-wrap;
+}
+
+
+/* ---------------------------------------------------------
+   CARD ACTIONS
+   --------------------------------------------------------- */
+
+.ms-doctor-card-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ms-space-3);
+  padding-top: var(--ms-space-6);
+  margin-top: var(--ms-space-6);
+  border-top: 1px solid var(--ms-border);
+}
+
+.ms-doctor-action-button {
+  justify-content: center;
+}
+
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .ms-doctors-layout {
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(330px, 380px);
+    gap: var(--ms-space-6);
+  }
+
+  .ms-doctor-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 900px) {
+  .ms-doctors-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-doctor-form-card {
+    position: static;
+  }
+
+  .ms-doctors-list-column {
+    order: 1;
+  }
+
+  .ms-doctor-form-card {
+    order: 2;
+  }
+}
+
+
+@media (max-width: 639px) {
+  .ms-doctors-header {
+    margin-bottom: var(--ms-space-8);
+  }
+
+  .ms-doctors-title-row {
+    align-items: flex-start;
+  }
+
+  .ms-doctors-page-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .ms-doctors-list-header {
+    align-items: flex-start;
+  }
+
+  .ms-doctors-count-label {
+    display: none;
+  }
+
+  .ms-doctor-card-header {
+    flex-direction: column;
+    gap: var(--ms-space-4);
+  }
+
+  .ms-doctor-specialities {
+    justify-content: flex-start;
+    max-width: none;
+  }
+
+  .ms-doctor-chambers-header {
+    flex-direction: column;
+  }
+
+  .ms-doctor-add-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ms-doctor-card-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .ms-doctor-card,
+  .ms-doctor-form-card {
+    padding: var(--ms-space-5);
+  }
+
+  .ms-doctor-card-identity {
+    align-items: flex-start;
+  }
+
+  .ms-doctor-avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  .ms-doctor-card-name {
+    font-size: var(--ms-font-size-lg);
+  }
+
+  .ms-doctor-array-field {
+    align-items: stretch;
+  }
+
+  .ms-doctor-array-field .ms-btn-icon {
+    flex: 0 0 auto;
+  }
+}
+
+
+@media (max-width: 374px) {
+  .ms-doctors-title-row {
+    gap: var(--ms-space-2);
+  }
+
+  .ms-doctor-card,
+  .ms-doctor-form-card {
+    padding: var(--ms-space-4);
+  }
+
+  .ms-doctor-card-header {
+    gap: var(--ms-space-3);
+  }
+
+  .ms-doctor-speciality {
+    font-size: var(--ms-font-size-xs);
+  }
+
+  .ms-doctor-chamber {
+    padding: var(--ms-space-3);
+  }
+}

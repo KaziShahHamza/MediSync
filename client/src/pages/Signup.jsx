@@ -1,4 +1,4 @@
-//client/src/pages/Signup.jsx
+// client/src/pages/Signup.jsx
 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -56,56 +56,96 @@ export default function Signup() {
       title="Create Account"
       subtitle="Start managing your health with MediSync."
     >
-      {" "}
-      <form onSubmit={submit} className="space-y-5">
+      <form onSubmit={submit} className="ms-form">
         {error && (
-          <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+          <div className="ms-alert ms-alert-danger" role="alert">
             {error}
           </div>
         )}
 
-        <input name="name" placeholder="Full Name" className="input" required />
+        <div className="ms-field">
+          <label htmlFor="signup-name" className="ms-label">
+            Full Name
+          </label>
 
-        <input
-          name="username"
-          type="text"
-          placeholder="Username"
-          className="input"
-          required
-        />
+          <input
+            id="signup-name"
+            name="name"
+            type="text"
+            className="ms-input"
+            placeholder="Full Name"
+            autoComplete="name"
+            required
+          />
+        </div>
 
-        <input
-          name="email"
-          type="email"
-          placeholder="Email Address"
-          className="input"
-          required
-        />
+        <div className="ms-field">
+          <label htmlFor="signup-username" className="ms-label">
+            Username
+          </label>
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password (minimum 8 characters)"
-          className="input"
-          minLength={8}
-          required
-        />
+          <input
+            id="signup-username"
+            name="username"
+            type="text"
+            className="ms-input"
+            placeholder="Username"
+            autoComplete="username"
+            required
+          />
+        </div>
+
+        <div className="ms-field">
+          <label htmlFor="signup-email" className="ms-label">
+            Email Address
+          </label>
+
+          <input
+            id="signup-email"
+            name="email"
+            type="email"
+            className="ms-input"
+            placeholder="Email Address"
+            autoComplete="email"
+            required
+          />
+        </div>
+
+        <div className="ms-field">
+          <label htmlFor="signup-password" className="ms-label">
+            Password
+          </label>
+
+          <input
+            id="signup-password"
+            name="password"
+            type="password"
+            className="ms-input"
+            placeholder="Password (minimum 8 characters)"
+            autoComplete="new-password"
+            minLength={8}
+            required
+          />
+
+          <p className="ms-help-text">
+            Password must contain at least 8 characters.
+          </p>
+        </div>
 
         <button
+          type="submit"
           disabled={loading}
-          className="btn-primary w-full py-3 disabled:opacity-60"
+          className={`ms-btn ms-btn-primary ms-btn-lg ms-btn-full ${
+            loading ? "ms-btn-loading" : ""
+          }`}
         >
-          {loading ? "Creating account..." : "Create Account"}
+          <span>{loading ? "Creating account..." : "Create Account"}</span>
         </button>
 
-        <p className="text-sm text-center text-slate-600">
-          Already have an account?
-          <Link
-            to="/login"
-            className="ml-1 text-sky-600 font-medium hover:underline"
-          >
-            Login
-          </Link>
+        <p className="ms-auth-switch">
+          <span>Already have an account?</span>
+
+          <Link to="/login">Login</Link>
         </p>
       </form>
     </AuthLayout>

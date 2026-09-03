@@ -1,0 +1,578 @@
+/* =========================================================
+   MEDISYNC — PUBLIC PAGES
+   ========================================================= */
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.ms-public-page {
+  min-width: 0;
+}
+
+.ms-public-hero {
+  padding: clamp(
+    var(--ms-space-12),
+    7vw,
+    var(--ms-space-20)
+  ) 0;
+
+  background: var(--ms-bg);
+}
+
+.ms-public-hero-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.05fr)
+    minmax(360px, 0.95fr);
+
+  align-items: center;
+  gap: clamp(
+    var(--ms-space-10),
+    6vw,
+    var(--ms-space-16)
+  );
+}
+
+.ms-public-hero-content {
+  min-width: 0;
+}
+
+.ms-public-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ms-space-2);
+
+  min-height: 34px;
+  padding: 0 13px;
+
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+
+  border: 1px solid var(--ms-primary-soft-strong);
+  border-radius: var(--ms-radius-full);
+
+  font-size: var(--ms-font-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+.ms-public-hero-title {
+  max-width: 720px;
+
+  margin: var(--ms-space-6) 0 0;
+
+  color: var(--ms-text);
+
+  font-size: clamp(
+    2.5rem,
+    5vw,
+    4.25rem
+  );
+
+  font-weight: var(--ms-font-weight-bold);
+  line-height: 1.06;
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+.ms-public-hero-title span {
+  color: var(--ms-primary);
+}
+
+.ms-public-hero-description {
+  max-width: 650px;
+
+  margin: var(--ms-space-6) 0 0;
+
+  color: var(--ms-text-secondary);
+
+  font-size: clamp(
+    var(--ms-font-base),
+    1.7vw,
+    var(--ms-font-lg)
+  );
+
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-public-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ms-space-3);
+
+  margin-top: var(--ms-space-8);
+}
+
+.ms-public-hero-visual {
+  min-width: 0;
+}
+
+.ms-public-placeholder {
+  min-height: 420px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--ms-space-10);
+
+  text-align: center;
+
+  background: var(--ms-surface-muted);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-2xl);
+  box-shadow: var(--ms-shadow-sm);
+}
+
+.ms-public-placeholder-icon {
+  width: 80px;
+  height: 80px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: var(--ms-space-6);
+
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+
+  border-radius: var(--ms-radius-xl);
+}
+
+.ms-public-placeholder-title {
+  margin: 0;
+
+  color: var(--ms-text);
+  font-size: var(--ms-font-xl);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-public-placeholder-text {
+  max-width: 400px;
+
+  margin: var(--ms-space-2) 0 0;
+
+  color: var(--ms-text-secondary);
+  line-height: var(--ms-leading-relaxed);
+}
+
+/* =========================================================
+   PUBLIC SECTION
+   ========================================================= */
+
+.ms-public-section {
+  padding-top: clamp(
+    var(--ms-space-12),
+    7vw,
+    var(--ms-space-20)
+  );
+
+  padding-bottom: clamp(
+    var(--ms-space-12),
+    7vw,
+    var(--ms-space-20)
+  );
+}
+
+.ms-public-section-heading {
+  max-width: 760px;
+
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.ms-public-section-heading .ms-page-title {
+  margin: 0;
+}
+
+.ms-public-section-description {
+  margin: var(--ms-space-4) auto 0;
+
+  color: var(--ms-text-secondary);
+
+  font-size: var(--ms-font-base);
+  line-height: var(--ms-leading-relaxed);
+}
+
+/* =========================================================
+   FEATURE CARDS
+   ========================================================= */
+
+.ms-public-feature-grid {
+  margin-top: var(--ms-space-10);
+}
+
+.ms-public-feature-card {
+  min-height: 220px;
+
+  padding: var(--ms-space-6);
+}
+
+.ms-public-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: var(--ms-space-5);
+
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+
+  border-radius: var(--ms-radius-md);
+}
+
+.ms-public-card-text {
+  margin: var(--ms-space-3) 0 0;
+
+  color: var(--ms-text-secondary);
+
+  font-size: var(--ms-font-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+/* =========================================================
+   MUTED SECTIONS
+   ========================================================= */
+
+.ms-public-muted-section {
+  padding: clamp(
+    var(--ms-space-12),
+    7vw,
+    var(--ms-space-20)
+  ) 0;
+
+  background: var(--ms-surface-muted);
+
+  border-top: 1px solid var(--ms-border);
+  border-bottom: 1px solid var(--ms-border);
+}
+
+/* =========================================================
+   HOW IT WORKS
+   ========================================================= */
+
+.ms-public-step-grid {
+  margin-top: var(--ms-space-10);
+}
+
+.ms-public-step-card {
+  padding: var(--ms-space-6);
+}
+
+.ms-public-step-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+}
+
+.ms-public-step-top .ms-public-icon {
+  margin-bottom: 0;
+}
+
+.ms-public-step-number {
+  color: var(--ms-text-muted);
+
+  font-size: var(--ms-font-sm);
+  font-weight: var(--ms-font-weight-semibold);
+  letter-spacing: var(--ms-tracking-wide);
+}
+
+/* =========================================================
+   HEALTH MONITORING
+   ========================================================= */
+
+.ms-public-monitor-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(360px, 0.9fr);
+
+  align-items: center;
+
+  gap: clamp(
+    var(--ms-space-10),
+    6vw,
+    var(--ms-space-16)
+  );
+}
+
+.ms-public-monitor-content {
+  min-width: 0;
+}
+
+.ms-public-monitor-description {
+  max-width: 650px;
+
+  margin: var(--ms-space-5) 0 0;
+
+  color: var(--ms-text-secondary);
+
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-public-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: var(--ms-space-3);
+
+  margin-top: var(--ms-space-8);
+}
+
+.ms-public-metric {
+  padding: var(--ms-space-4);
+
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-md);
+
+  box-shadow: var(--ms-shadow-sm);
+}
+
+.ms-public-metric svg {
+  color: var(--ms-primary);
+}
+
+.ms-public-metric p {
+  margin: var(--ms-space-3) 0 0;
+
+  color: var(--ms-text);
+
+  font-size: var(--ms-font-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+.ms-public-chart-placeholder {
+  min-height: 320px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--ms-space-8);
+
+  text-align: center;
+
+  background: var(--ms-surface-muted);
+}
+
+.ms-public-chart-placeholder > svg {
+  color: var(--ms-primary);
+}
+
+/* =========================================================
+   PRIVACY
+   ========================================================= */
+
+.ms-public-privacy {
+  max-width: 720px;
+
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.ms-public-privacy-icon {
+  display: flex;
+  justify-content: center;
+
+  color: var(--ms-primary);
+}
+
+.ms-public-privacy .ms-page-title {
+  margin-top: var(--ms-space-5);
+}
+
+.ms-public-privacy p {
+  margin: var(--ms-space-4) auto 0;
+
+  color: var(--ms-text-secondary);
+
+  line-height: var(--ms-leading-relaxed);
+}
+
+/* =========================================================
+   CALL TO ACTION
+   ========================================================= */
+
+.ms-public-cta {
+  padding: clamp(
+    var(--ms-space-12),
+    8vw,
+    var(--ms-space-20)
+  ) 0;
+
+  background: var(--ms-bg);
+}
+
+.ms-public-cta-content {
+  max-width: 760px;
+
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.ms-public-cta h2 {
+  margin: 0;
+
+  color: var(--ms-text);
+
+  font-size: clamp(
+    2rem,
+    4vw,
+    2.75rem
+  );
+
+  font-weight: var(--ms-font-weight-bold);
+  line-height: var(--ms-leading-tight);
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+.ms-public-cta p {
+  margin: var(--ms-space-4) auto 0;
+
+  color: var(--ms-text-secondary);
+
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-public-cta .ms-btn {
+  margin-top: var(--ms-space-8);
+}
+
+/* =========================================================
+   AUTH PAGE SWITCH
+   ========================================================= */
+
+.ms-auth-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+
+  margin: 0;
+
+  color: var(--ms-text-secondary);
+
+  font-size: var(--ms-font-sm);
+  line-height: var(--ms-leading-relaxed);
+  text-align: center;
+}
+
+.ms-auth-switch a {
+  color: var(--ms-primary);
+  font-weight: var(--ms-font-weight-medium);
+  text-decoration: none;
+}
+
+.ms-auth-switch a:hover {
+  color: var(--ms-primary-hover);
+  text-decoration: underline;
+}
+
+.ms-auth-switch a:focus-visible {
+  outline: 2px solid var(--ms-primary);
+  outline-offset: 2px;
+  border-radius: var(--ms-radius-sm);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1023px) {
+  .ms-public-hero-grid,
+  .ms-public-monitor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-public-hero-content {
+    max-width: 760px;
+  }
+
+  .ms-public-hero-visual {
+    max-width: 700px;
+  }
+
+  .ms-public-placeholder {
+    min-height: 340px;
+  }
+
+  .ms-public-monitor-content {
+    max-width: 760px;
+  }
+
+  .ms-public-chart-placeholder {
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 639px) {
+  .ms-public-hero {
+    padding-top: var(--ms-space-8);
+    padding-bottom: var(--ms-space-10);
+  }
+
+  .ms-public-hero-title {
+    margin-top: var(--ms-space-5);
+  }
+
+  .ms-public-hero-description {
+    margin-top: var(--ms-space-5);
+  }
+
+  .ms-public-hero-actions {
+    flex-direction: column;
+  }
+
+  .ms-public-hero-actions .ms-btn {
+    width: 100%;
+  }
+
+  .ms-public-placeholder {
+    min-height: 280px;
+    padding: var(--ms-space-6);
+    border-radius: var(--ms-radius-xl);
+  }
+
+  .ms-public-placeholder-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .ms-public-feature-card,
+  .ms-public-step-card {
+    padding: var(--ms-space-5);
+  }
+
+  .ms-public-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-public-chart-placeholder {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 374px) {
+  .ms-public-eyebrow {
+    font-size: 11px;
+  }
+
+  .ms-public-hero-title {
+    font-size: 2.25rem;
+  }
+
+  .ms-public-section-heading .ms-page-title {
+    font-size: var(--ms-font-xl);
+  }
+}

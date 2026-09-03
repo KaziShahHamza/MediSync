@@ -54,45 +54,59 @@ export default function Login() {
       title="Welcome Back"
       subtitle="Login to access your health dashboard."
     >
-      {" "}
-      <form onSubmit={submit} className="space-y-5">
+      <form onSubmit={submit} className="ms-form">
         {error && (
-          <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+          <div className="ms-alert ms-alert-danger" role="alert">
             {error}
           </div>
         )}
 
-        <input
-          name="identifier"
-          type="text"
-          placeholder="Username or Email"
-          className="input"
-          required
-        />
+        <div className="ms-field">
+          <label htmlFor="login-identifier" className="ms-label">
+            Username or Email
+          </label>
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          className="input"
-          required
-        />
+          <input
+            id="login-identifier"
+            name="identifier"
+            type="text"
+            className="ms-input"
+            placeholder="Username or Email"
+            autoComplete="username"
+            required
+          />
+        </div>
+
+        <div className="ms-field">
+          <label htmlFor="login-password" className="ms-label">
+            Password
+          </label>
+
+          <input
+            id="login-password"
+            name="password"
+            type="password"
+            className="ms-input"
+            placeholder="Password"
+            autoComplete="current-password"
+            required
+          />
+        </div>
 
         <button
+          type="submit"
           disabled={loading}
-          className="btn-primary w-full py-3 disabled:opacity-60"
+          className={`ms-btn ms-btn-primary ms-btn-lg ms-btn-full ${
+            loading ? "ms-btn-loading" : ""
+          }`}
         >
-          {loading ? "Logging in..." : "Login"}
+          <span>{loading ? "Logging in..." : "Login"}</span>
         </button>
 
-        <p className="text-sm text-center text-slate-600">
-          Don't have an account?
-          <Link
-            to="/signup"
-            className="ml-1 text-sky-600 font-medium hover:underline"
-          >
-            Create account
-          </Link>
+        <p className="ms-auth-switch">
+          <span>Don't have an account?</span>
+
+          <Link to="/signup">Create account</Link>
         </p>
       </form>
     </AuthLayout>

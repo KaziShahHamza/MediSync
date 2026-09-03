@@ -1,7 +1,7 @@
 // client/src/components/health/BMIForm.jsx
 
 import { useMemo, useState } from "react";
-import { Scale, Save, Ruler, Weight } from "lucide-react";
+import { Ruler, Save, Scale, Weight } from "lucide-react";
 import BMIResult from "./BMIResult";
 import { useProfile } from "../../context/ProfileContext";
 
@@ -48,76 +48,91 @@ export default function BMIForm({ onAdd }) {
       : "Height not set";
 
   return (
-    <form onSubmit={handleSubmit} className="card space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="icon-wrapper">
-          <Scale size={22} className="text-blue-600" />
+    <form onSubmit={handleSubmit} className="ms-card ms-form ms-health-form">
+      <div className="ms-health-form-header">
+        <div className="ms-icon-box ms-health-form-icon">
+          <Scale size={21} aria-hidden="true" />
         </div>
 
-        <h3 className="card-title">BMI Calculator</h3>
+        <div>
+          <span className="ms-health-form-eyebrow">Body composition</span>
+
+          <h3 className="ms-card-title">BMI Calculator</h3>
+        </div>
       </div>
 
       {/* Saved Height */}
-      <div>
-        <label>Height</label>
+      <div className="ms-field">
+        <label htmlFor="bmi-height" className="ms-label">
+          Height
+        </label>
 
-        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-          <Ruler size={20} className="text-slate-400 shrink-0" />
+        <div
+          id="bmi-height"
+          className={`ms-health-profile-value ${
+            !heightCm ? "ms-health-profile-value-error" : ""
+          }`}
+        >
+          <Ruler
+            size={19}
+            className="ms-health-profile-icon"
+            aria-hidden="true"
+          />
 
           {heightCm ? (
-            <div>
-              <p className="text-lg font-semibold text-slate-800">
-                {heightDisplay}
-              </p>
+            <div className="ms-health-profile-content">
+              <p className="ms-health-profile-main">{heightDisplay}</p>
 
-              <p className="text-xs text-slate-500">
-                Retrieved from your profile
-              </p>
+              <p className="ms-help-text">Retrieved from your profile</p>
             </div>
           ) : (
-            <p className="text-sm font-medium text-red-500">Height not set</p>
+            <p className="ms-health-profile-error">Height not set</p>
           )}
         </div>
 
         {!heightCm && (
-          <p className="mt-2 text-sm text-red-500">
+          <p className="ms-error">
             Please set your height in your profile first.
           </p>
         )}
       </div>
 
       {/* Weight */}
-      <div>
-        <label>Weight</label>
+      <div className="ms-field">
+        <label htmlFor="bmi-weight" className="ms-label">
+          Weight
+        </label>
 
-        <div className="relative">
-          <Weight
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-          />
+        <div className="ms-input-with-icon">
+          <Weight size={18} className="ms-input-icon" aria-hidden="true" />
 
           <input
+            id="bmi-weight"
             type="number"
             min="1"
             step="0.1"
-            className="input !pl-10"
+            className="ms-input ms-input-with-leading-icon"
             placeholder="Weight in kg"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
             required
           />
         </div>
+
+        <p className="ms-help-text">Enter your current weight in kilograms.</p>
       </div>
 
-      <BMIResult bmi={bmi} />
+      {/* Result */}
+      <div className="ms-health-bmi-result">
+        <BMIResult bmi={bmi} />
+      </div>
 
       <button
         type="submit"
         disabled={!bmi || !heightCm}
-        className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+        className="ms-btn ms-btn-primary ms-btn-full ms-health-submit"
       >
-        <Save size={18} />
+        <Save size={18} aria-hidden="true" />
         Save BMI
       </button>
     </form>

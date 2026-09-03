@@ -1,18 +1,16 @@
-// client/src/components/DoctorCard.jsx
-
 import {
-  Pencil,
-  Trash2,
-  Building2,
-  Phone,
-  Clock,
-  Stethoscope,
-  GraduationCap,
   BadgeCheck,
-  MapPin,
+  Building2,
+  Clock,
+  Globe,
+  GraduationCap,
   Hash,
   Mail,
-  Globe,
+  MapPin,
+  Pencil,
+  Phone,
+  Stethoscope,
+  Trash2,
 } from "lucide-react";
 
 export default function DoctorCard({ doctor, onEdit, onDelete }) {
@@ -24,26 +22,27 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
   const emails = doctor.contactInfo?.emails || [];
 
   return (
-    <div className="card">
+    <article className="ms-card ms-doctor-card">
       {/* Header */}
-      <div className="flex justify-between gap-4">
-        <div className="min-w-0">
-          <h3 className="text-xl font-semibold text-slate-900">
-            {doctor.name}
-          </h3>
+      <div className="ms-doctor-card-header">
+        <div className="ms-doctor-card-identity">
+          <div className="ms-doctor-avatar">
+            <Stethoscope size={24} aria-hidden="true" />
+          </div>
 
-          <p className="mt-1 text-blue-600 font-medium">
-            {doctor.designation || "Doctor"}
-          </p>
+          <div className="ms-doctor-card-name-group">
+            <h3 className="ms-doctor-card-name">{doctor.name}</h3>
+
+            <p className="ms-doctor-card-designation">
+              {doctor.designation || "Doctor"}
+            </p>
+          </div>
         </div>
 
         {specialities.length > 0 && (
-          <div className="flex h-fit max-w-[50%] flex-wrap justify-end gap-2">
+          <div className="ms-doctor-specialities">
             {specialities.map((speciality) => (
-              <span
-                key={speciality}
-                className="rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-600 font-medium"
-              >
+              <span key={speciality} className="ms-badge ms-doctor-speciality">
                 {speciality}
               </span>
             ))}
@@ -53,169 +52,156 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
 
       {/* Professional Information */}
       {(degrees.length > 0 || doctor.bmdcRegNo || doctor.primaryHospital) && (
-        <div className="mt-6 grid gap-4">
-          {/* Degrees */}
-          {degrees.length > 0 && (
-            <Info
-              icon={<GraduationCap size={18} />}
-              label="Degrees"
-              value={degrees.join(", ")}
-            />
-          )}
+        <section className="ms-doctor-info-section">
+          <div className="ms-doctor-subsection-heading">
+            <span>Professional Information</span>
+          </div>
 
-          {/* BMDC Registration */}
-          {doctor.bmdcRegNo && (
-            <Info
-              icon={<BadgeCheck size={18} />}
-              label="BMDC Registration"
-              value={doctor.bmdcRegNo}
-            />
-          )}
+          <div className="ms-doctor-info-grid">
+            {degrees.length > 0 && (
+              <Info
+                icon={<GraduationCap size={18} />}
+                label="Degrees"
+                value={degrees.join(", ")}
+              />
+            )}
 
-          {/* Primary Hospital */}
-          {doctor.primaryHospital && (
-            <Info
-              icon={<Building2 size={18} />}
-              label="Primary Hospital"
-              value={doctor.primaryHospital}
-            />
-          )}
-        </div>
+            {doctor.bmdcRegNo && (
+              <Info
+                icon={<BadgeCheck size={18} />}
+                label="BMDC Registration"
+                value={doctor.bmdcRegNo}
+              />
+            )}
+
+            {doctor.primaryHospital && (
+              <Info
+                icon={<Building2 size={18} />}
+                label="Primary Hospital"
+                value={doctor.primaryHospital}
+              />
+            )}
+          </div>
+        </section>
       )}
 
       {/* Chambers */}
       {chambers.length > 0 && (
-        <div className="mt-6">
-          <div className="mb-3 flex items-center gap-2">
-            <Stethoscope size={18} className="text-blue-600" />
-
-            <h4 className="font-semibold text-slate-800">
-              Chambers
-            </h4>
+        <section className="ms-doctor-info-section">
+          <div className="ms-doctor-subsection-heading">
+            <Stethoscope size={18} aria-hidden="true" />
+            <span>Chambers</span>
           </div>
 
-          <div className="space-y-3">
+          <div className="ms-doctor-chamber-list">
             {chambers.map((chamber, index) => (
               <div
                 key={chamber._id || index}
-                className="rounded-xl bg-slate-50 p-4"
+                className="ms-doctor-card-chamber"
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="ms-doctor-card-chamber-header">
                   <div>
-                    <p className="font-semibold text-slate-800">
+                    <span className="ms-doctor-card-chamber-label">
+                      Chamber {index + 1}
+                    </span>
+
+                    <p className="ms-doctor-card-chamber-name">
                       {chamber.name || `Chamber ${index + 1}`}
                     </p>
-
-                    {chamber.address && (
-                      <div className="mt-2 flex gap-2 text-sm text-slate-600">
-                        <MapPin
-                          size={16}
-                          className="mt-0.5 shrink-0 text-blue-600"
-                        />
-
-                        <span>{chamber.address}</span>
-                      </div>
-                    )}
                   </div>
                 </div>
 
+                {chamber.address && (
+                  <div className="ms-doctor-detail-row">
+                    <MapPin size={16} aria-hidden="true" />
+
+                    <span>{chamber.address}</span>
+                  </div>
+                )}
+
                 {chamber.phone && (
-                  <div className="mt-3 flex items-center gap-2 text-sm text-slate-600">
-                    <Phone size={16} className="text-blue-600" />
+                  <div className="ms-doctor-detail-row">
+                    <Phone size={16} aria-hidden="true" />
+
                     <span>{chamber.phone}</span>
                   </div>
                 )}
 
                 {chamber.serialNumber && (
-                  <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
-                    <Hash size={16} className="text-blue-600" />
-                    <span>
-                      Serial: {chamber.serialNumber}
-                    </span>
+                  <div className="ms-doctor-detail-row">
+                    <Hash size={16} aria-hidden="true" />
+
+                    <span>Serial: {chamber.serialNumber}</span>
                   </div>
                 )}
 
-                {(chamber.visitingDays?.length > 0 ||
-                  chamber.visitingTime) && (
-                  <div className="mt-3 flex gap-2 text-sm text-slate-600">
-                    <Clock
-                      size={16}
-                      className="mt-0.5 shrink-0 text-blue-600"
-                    />
+                {(chamber.visitingDays?.length > 0 || chamber.visitingTime) && (
+                  <div className="ms-doctor-detail-row">
+                    <Clock size={16} aria-hidden="true" />
 
                     <span>
                       {chamber.visitingDays?.join(", ") || "-"}
-                      {chamber.visitingTime
-                        ? ` • ${chamber.visitingTime}`
-                        : ""}
+
+                      {chamber.visitingTime ? ` • ${chamber.visitingTime}` : ""}
                     </span>
                   </div>
                 )}
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Contact Information */}
+      {/* Contact */}
       {(phones.length > 0 ||
         emails.length > 0 ||
         doctor.contactInfo?.website) && (
-        <div className="mt-6">
-          <h4 className="mb-3 font-semibold text-slate-800">
-            Contact Information
-          </h4>
+        <section className="ms-doctor-info-section">
+          <div className="ms-doctor-subsection-heading">
+            <span>Contact Information</span>
+          </div>
 
-          <div className="space-y-2">
+          <div className="ms-doctor-contact-list-card">
             {phones.map((phone) => (
-              <div
-                key={phone}
-                className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 text-sm"
-              >
-                <Phone size={17} className="text-blue-600" />
-                <span className="font-medium text-slate-700">
-                  {phone}
-                </span>
+              <div key={phone} className="ms-doctor-contact-item">
+                <Phone size={17} aria-hidden="true" />
+
+                <span>{phone}</span>
               </div>
             ))}
 
             {emails.map((email) => (
-              <div
-                key={email}
-                className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 text-sm"
-              >
-                <Mail size={17} className="text-blue-600" />
-                <span className="font-medium text-slate-700">
-                  {email}
-                </span>
+              <div key={email} className="ms-doctor-contact-item">
+                <Mail size={17} aria-hidden="true" />
+
+                <span>{email}</span>
               </div>
             ))}
 
             {doctor.contactInfo?.website && (
-              <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 text-sm">
-                <Globe size={17} className="text-blue-600" />
+              <div className="ms-doctor-contact-item">
+                <Globe size={17} aria-hidden="true" />
 
-                <span className="font-medium text-slate-700 break-all">
+                <span className="ms-break-word">
                   {doctor.contactInfo.website}
                 </span>
               </div>
             )}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Social Links */}
-      {(doctor.contactInfo?.facebook ||
-        doctor.contactInfo?.linkedin) && (
-        <div className="mt-4 flex flex-wrap gap-3 text-sm">
+      {(doctor.contactInfo?.facebook || doctor.contactInfo?.linkedin) && (
+        <div className="ms-doctor-social-links">
           {doctor.contactInfo.facebook && (
-            <span className="rounded-lg bg-slate-100 px-3 py-2 text-slate-600">
+            <span className="ms-doctor-social-item">
               Facebook: {doctor.contactInfo.facebook}
             </span>
           )}
 
           {doctor.contactInfo.linkedin && (
-            <span className="rounded-lg bg-slate-100 px-3 py-2 text-slate-600">
+            <span className="ms-doctor-social-item">
               LinkedIn: {doctor.contactInfo.linkedin}
             </span>
           )}
@@ -224,48 +210,52 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
 
       {/* Notes */}
       {doctor.notes && (
-        <div className="mt-5 rounded-xl bg-slate-50 p-4 text-sm text-slate-600">
-          {doctor.notes}
+        <div className="ms-doctor-notes">
+          <span className="ms-doctor-notes-label">Notes</span>
+
+          <p>{doctor.notes}</p>
         </div>
       )}
 
       {/* Actions */}
-      <div className="mt-6 flex gap-3">
-        <button
-          onClick={() => onEdit(doctor)}
-          className="btn-secondary flex-1 flex items-center justify-center gap-2"
-        >
-          <Pencil size={16} />
-          Edit
-        </button>
+      {(onEdit || onDelete) && (
+        <div className="ms-doctor-card-actions">
+          {onEdit && (
+            <button
+              type="button"
+              onClick={() => onEdit(doctor)}
+              className="ms-btn ms-btn-secondary ms-doctor-action-button"
+            >
+              <Pencil size={16} aria-hidden="true" />
+              Edit
+            </button>
+          )}
 
-        <button
-          onClick={() => onDelete(doctor._id)}
-          className="btn-danger flex-1 flex items-center justify-center gap-2"
-        >
-          <Trash2 size={16} />
-          Delete
-        </button>
-      </div>
-    </div>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={() => onDelete(doctor._id)}
+              className="ms-btn ms-btn-danger ms-doctor-action-button"
+            >
+              <Trash2 size={16} aria-hidden="true" />
+              Delete
+            </button>
+          )}
+        </div>
+      )}
+    </article>
   );
 }
 
 function Info({ icon, label, value }) {
   return (
-    <div className="flex gap-3 rounded-xl bg-slate-50 p-3">
-      <div className="mt-1 text-blue-600">
-        {icon}
-      </div>
+    <div className="ms-doctor-info-item">
+      <div className="ms-doctor-info-icon">{icon}</div>
 
-      <div className="min-w-0">
-        <p className="text-xs text-slate-500">
-          {label}
-        </p>
+      <div className="ms-doctor-info-content">
+        <p className="ms-doctor-info-label">{label}</p>
 
-        <p className="mt-1 font-medium text-slate-800 break-words">
-          {value || "-"}
-        </p>
+        <p className="ms-doctor-info-value">{value || "-"}</p>
       </div>
     </div>
   );

@@ -1,5 +1,3 @@
-// client/src/components/medicine/MedicineList.jsx
-
 import {
   Pill,
   Pencil,
@@ -24,31 +22,42 @@ export default function MedicineList({ medicines, onEdit, onDelete }) {
   const pastMedicines = medicines.filter((med) => !med.isActive);
 
   const renderMedicine = (med) => (
-    <div key={med._id} className="card">
-      {" "}
-      <div className="flex gap-5 items-center">
-        {/* Medicine Image */}{" "}
-        <div className="w-24 h-24 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center shrink-0">
+    <article key={med._id} className="ms-card ms-medicine-card">
+      <div className="ms-medicine-card-main">
+        {/* Medicine Image */}
+        <div className="ms-medicine-image">
           {med.imageUrl ? (
             <img
               src={med.imageUrl}
               alt={med.name}
-              className="w-full h-full object-cover"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
             />
           ) : (
-            <ImageOff size={28} className="text-slate-400" />
-          )}{" "}
+            <ImageOff size={28} aria-hidden="true" />
+          )}
         </div>
+
         {/* Medicine Details */}
-        <div className="flex-1 min-w-0">
-          <h3 className="text-xl font-semibold text-slate-900">{med.name}</h3>
+        <div className="ms-medicine-details">
+          <div className="ms-medicine-name-row">
+            <h3 className="ms-medicine-name">{med.name}</h3>
+
+            <span
+              className={`ms-badge ${
+                med.isActive
+                  ? "ms-medicine-status-active"
+                  : "ms-medicine-status-past"
+              }`}
+            >
+              {med.isActive ? "Active" : "Past"}
+            </span>
+          </div>
 
           {/* Medicine Duration */}
-          <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
-            <CalendarDays size={16} />
+          <div className="ms-medicine-meta">
+            <CalendarDays size={16} aria-hidden="true" />
 
             <span>
               {formatMonthYear(med.startDate)} –{" "}
@@ -58,8 +67,8 @@ export default function MedicineList({ medicines, onEdit, onDelete }) {
 
           {/* Dosage Schedule */}
           {med.dosageTimes?.length > 0 && (
-            <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
-              <Clock3 size={16} />
+            <div className="ms-medicine-meta">
+              <Clock3 size={16} aria-hidden="true" />
 
               <span>
                 {med.dosageTimes
@@ -69,40 +78,43 @@ export default function MedicineList({ medicines, onEdit, onDelete }) {
             </div>
           )}
         </div>
+
         {/* Actions */}
-        <div className="flex flex-col gap-2 shrink-0">
+        <div className="ms-medicine-actions">
           <button
+            type="button"
             onClick={() => onEdit(med)}
-            className="btn-secondary px-3 py-2 text-sm"
+            className="ms-btn ms-btn-secondary ms-medicine-action"
+            aria-label={`Edit ${med.name}`}
           >
-            <Pencil size={16} />
-            Edit
+            <Pencil size={16} aria-hidden="true" />
+            <span>Edit</span>
           </button>
 
           <button
+            type="button"
             onClick={() => onDelete(med._id)}
-            className="btn-danger px-3 py-2 text-sm"
+            className="ms-btn ms-btn-danger ms-medicine-action"
+            aria-label={`Delete ${med.name}`}
           >
-            <Trash2 size={16} />
-            Delete
+            <Trash2 size={16} aria-hidden="true" />
+            <span>Delete</span>
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 
   if (!medicines.length) {
     return (
-      <div className="card text-center py-12">
-        {" "}
-        <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto">
-          {" "}
-          <Pill size={32} className="text-blue-600" />{" "}
+      <div className="ms-card ms-empty-state ms-medicine-empty-state">
+        <div className="ms-medicine-empty-icon">
+          <Pill size={32} aria-hidden="true" />
         </div>
-        <h3 className="mt-5 text-xl font-semibold text-slate-900">
-          No medicines added
-        </h3>
-        <p className="mt-2 text-slate-500">
+
+        <h3 className="ms-medicine-empty-title">No medicines added</h3>
+
+        <p className="ms-medicine-empty-description">
           Add your medicines to keep track of your medication history.
         </p>
       </div>
@@ -110,51 +122,58 @@ export default function MedicineList({ medicines, onEdit, onDelete }) {
   }
 
   return (
-    <div className="space-y-10">
+    <div className="ms-medicine-sections">
       {/* Active Medicines */}
       {activeMedicines.length > 0 && (
-        <section>
-          {" "}
-          <div className="flex items-center gap-3 mb-5">
-            {" "}
-            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-              {" "}
-              <Pill size={20} className="text-blue-600" />{" "}
+        <section className="ms-medicine-group">
+          <div className="ms-medicine-group-header">
+            <div className="ms-icon-box ms-medicine-group-icon ms-medicine-group-icon-active">
+              <Pill size={20} aria-hidden="true" />
             </div>
-            <div>
-              <h2 className="text-xl font-semibold text-slate-900">
-                Active Medicines
-              </h2>
 
-              <p className="text-sm text-slate-500">
+            <div>
+              <h2 className="ms-medicine-group-title">Active Medicines</h2>
+
+              <p className="ms-medicine-group-description">
                 Medicines you are currently taking
               </p>
             </div>
+
+            <span className="ms-badge ms-medicine-group-count">
+              {activeMedicines.length}
+            </span>
           </div>
-          <div className="space-y-5">{activeMedicines.map(renderMedicine)}</div>
+
+          <div className="ms-medicine-items">
+            {activeMedicines.map(renderMedicine)}
+          </div>
         </section>
       )}
 
       {/* Medicine History */}
       {pastMedicines.length > 0 && (
-        <section>
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
-              <History size={20} className="text-slate-600" />
+        <section className="ms-medicine-group">
+          <div className="ms-medicine-group-header">
+            <div className="ms-icon-box ms-medicine-group-icon ms-medicine-group-icon-history">
+              <History size={20} aria-hidden="true" />
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold text-slate-900">
-                Past Medicines
-              </h2>
+              <h2 className="ms-medicine-group-title">Past Medicines</h2>
 
-              <p className="text-sm text-slate-500">
+              <p className="ms-medicine-group-description">
                 Medicines you have taken in the past
               </p>
             </div>
+
+            <span className="ms-badge ms-medicine-group-count">
+              {pastMedicines.length}
+            </span>
           </div>
 
-          <div className="space-y-5">{pastMedicines.map(renderMedicine)}</div>
+          <div className="ms-medicine-items">
+            {pastMedicines.map(renderMedicine)}
+          </div>
         </section>
       )}
     </div>

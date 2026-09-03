@@ -1,5 +1,3 @@
-// client/src/components/medicine/MedicineForm.jsx
-
 import { useEffect, useState } from "react";
 import { Pill, ImagePlus, Clock3, Save, CalendarDays } from "lucide-react";
 
@@ -69,141 +67,160 @@ export default function MedicineForm({ onSave, editing }) {
   };
 
   return (
-    <form onSubmit={submit} className="card space-y-6">
-      {/* Medicine Name */}{" "}
-      <div>
-        {" "}
-        <label>Medicine Name</label>
-        <div className="relative">
-          <Pill
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-          />
+    <form onSubmit={submit} className="ms-card ms-form ms-medicine-form">
+      {/* Medicine Name */}
+      <div className="ms-field">
+        <label htmlFor="medicine-name" className="ms-label">
+          Medicine Name
+        </label>
+
+        <div className="ms-input-with-icon">
+          <Pill size={18} aria-hidden="true" />
 
           <input
+            id="medicine-name"
             type="text"
             placeholder="Enter medicine name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="input !pl-10"
+            className="ms-input"
             required
           />
         </div>
       </div>
-      {/* Medicine Image */}
-      <div>
-        <label>Medicine Image URL</label>
 
-        <div className="relative">
-          <ImagePlus
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-          />
+      {/* Medicine Image */}
+      <div className="ms-field">
+        <label htmlFor="medicine-image" className="ms-label">
+          Medicine Image URL
+        </label>
+
+        <div className="ms-input-with-icon">
+          <ImagePlus size={18} aria-hidden="true" />
 
           <input
-            type="text"
+            id="medicine-image"
+            type="url"
             placeholder="Optional image URL"
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
-            className="input !pl-10"
+            className="ms-input"
           />
         </div>
+
+        <p className="ms-help-text">
+          Optional. Add an image URL to help identify the medicine.
+        </p>
       </div>
+
       {/* Dosage Schedule */}
-      <div>
-        <label>Dosage Schedule</label>
+      <fieldset className="ms-form-section ms-medicine-dosage-section">
+        <legend className="ms-label">Dosage Schedule</legend>
 
-        <div className="grid grid-cols-3 gap-3 mt-3">
-          {TIMES.map((time) => (
-            <label
-              key={time}
-              className={`flex items-center justify-center gap-2 border rounded-xl px-3 py-3 cursor-pointer transition duration-150 ${
-                dosageTimes.includes(time)
-                  ? "border-blue-600 bg-blue-50 text-blue-600"
-                  : "border-slate-200 text-slate-600 hover:border-blue-300"
-              }`}
-            >
-              <input
-                type="checkbox"
-                checked={dosageTimes.includes(time)}
-                onChange={() => toggleTime(time)}
-                className="hidden"
-              />
+        <div className="ms-medicine-time-grid">
+          {TIMES.map((time) => {
+            const selected = dosageTimes.includes(time);
 
-              <Clock3 size={16} />
+            return (
+              <label
+                key={time}
+                className={`ms-medicine-time-option ${
+                  selected ? "ms-medicine-time-option-selected" : ""
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={selected}
+                  onChange={() => toggleTime(time)}
+                />
 
-              <span className="text-sm font-medium">
-                {time.charAt(0).toUpperCase() + time.slice(1)}
-              </span>
-            </label>
-          ))}
+                <span className="ms-medicine-time-check">
+                  <Clock3 size={16} aria-hidden="true" />
+                </span>
+
+                <span className="ms-medicine-time-label">
+                  {time.charAt(0).toUpperCase() + time.slice(1)}
+                </span>
+              </label>
+            );
+          })}
         </div>
-      </div>
-      {/* Start Month */}
-      <div>
-        <label>Start Month</label>
+      </fieldset>
 
-        <div className="relative">
-          <CalendarDays
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-          />
+      {/* Start Month */}
+      <div className="ms-field">
+        <label htmlFor="medicine-start-date" className="ms-label">
+          Start Month
+        </label>
+
+        <div className="ms-input-with-icon">
+          <CalendarDays size={18} aria-hidden="true" />
 
           <input
+            id="medicine-start-date"
             type="month"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="input !pl-10"
+            className="ms-input"
             required
           />
         </div>
       </div>
+
       {/* Currently Taking */}
-      <label className="flex items-center gap-3 cursor-pointer">
-        <input
-          type="checkbox"
-          checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
-          className="w-4 h-4 accent-blue-600"
-        />
+      <div className="ms-medicine-active-option">
+        <label className="ms-checkbox-control">
+          <input
+            type="checkbox"
+            checked={isActive}
+            onChange={(e) => setIsActive(e.target.checked)}
+          />
 
-        <div>
-          <p className="font-medium text-slate-800">
-            Currently taking this medicine
-          </p>
+          <span className="ms-checkbox-indicator" aria-hidden="true" />
 
-          <p className="text-sm text-slate-500">
-            Uncheck if this is a past medicine.
-          </p>
-        </div>
-      </label>
+          <span className="ms-checkbox-content">
+            <span className="ms-checkbox-title">
+              Currently taking this medicine
+            </span>
+
+            <span className="ms-checkbox-description">
+              Uncheck if this is a past medicine.
+            </span>
+          </span>
+        </label>
+      </div>
+
       {/* End Month */}
       {!isActive && (
-        <div>
-          <label>End Month</label>
+        <div className="ms-field">
+          <label htmlFor="medicine-end-date" className="ms-label">
+            End Month
+          </label>
 
-          <div className="relative">
-            <CalendarDays
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-            />
+          <div className="ms-input-with-icon">
+            <CalendarDays size={18} aria-hidden="true" />
 
             <input
+              id="medicine-end-date"
               type="month"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               min={startDate}
-              className="input !pl-10"
+              className="ms-input"
               required
             />
           </div>
         </div>
       )}
-      {/* Submit */}
-      <button type="submit" className="btn-primary w-full">
-        <Save size={18} />
 
-        {editing ? "Update Medicine" : "Add Medicine"}
+      {/* Submit */}
+      <button
+        type="submit"
+        className="ms-btn ms-btn-primary ms-btn-full ms-medicine-submit"
+      >
+        <Save size={18} aria-hidden="true" />
+
+        <span>{editing ? "Update Medicine" : "Add Medicine"}</span>
       </button>
     </form>
   );

@@ -1,5 +1,3 @@
-// client/src/components/dashboard/StatCard.jsx
-
 import { ArrowRight } from "lucide-react";
 
 export default function StatCard({
@@ -10,28 +8,30 @@ export default function StatCard({
   icon: Icon,
 }) {
   return (
-    <div className="card">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-slate-500">{title}</p>
+    <div className="ms-card ms-dashboard-stat-card">
+      <div className="ms-dashboard-stat-top">
+        <div className="ms-dashboard-stat-content">
+          <p className="ms-dashboard-stat-label">{title}</p>
 
-          <p className="text-4xl font-bold text-slate-900 mt-3">{count}</p>
+          <p className="ms-dashboard-stat-value">{count}</p>
         </div>
 
         {Icon && (
-          <div className="icon-wrapper">
-            <Icon size={22} className="text-blue-600" />
+          <div className="ms-icon-box ms-dashboard-stat-icon">
+            <Icon size={22} aria-hidden="true" />
           </div>
         )}
       </div>
 
       <button
+        type="button"
         onClick={onClick}
-        className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition duration-150"
+        className="ms-btn ms-btn-ghost ms-dashboard-stat-action"
       >
-        {linkText || "View"}
-        <ArrowRight size={16} />
+        <span>{linkText || "View"}</span>
+        <ArrowRight size={16} aria-hidden="true" />
       </button>
     </div>
   );
 }
+

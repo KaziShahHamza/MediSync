@@ -11,7 +11,11 @@ export function DoctorProvider({ children }) {
 
   async function fetchDoctors() {
     const token = localStorage.getItem("token");
-    if (!token) return;
+
+    if (!token) {
+      setDoctors([]);
+      return;
+    }
 
     try {
       const res = await fetch(`${API_URL}/api/doctors`, {
@@ -20,10 +24,15 @@ export function DoctorProvider({ children }) {
         },
       });
 
+      if (!res.ok) {
+        throw new Error("Failed to fetch doctors.");
+      }
+
       const data = await res.json();
-      setDoctors(data);
+
+      setDoctors(Array.isArray(data) ? data : []);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to fetch doctors:", err);
     }
   }
 
@@ -47,3 +56,4 @@ export function DoctorProvider({ children }) {
 export function useDoctors() {
   return useContext(DoctorContext);
 }
+

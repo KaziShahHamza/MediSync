@@ -20,34 +20,51 @@ export default function BloodSugarForm({ onAdd }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="card space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="icon-wrapper">
-          <Droplets size={22} className="text-blue-600" />
+    <form onSubmit={handleSubmit} className="ms-card ms-form ms-health-form">
+      <div className="ms-health-form-header">
+        <div className="ms-icon-box ms-health-form-icon">
+          <Droplets size={21} aria-hidden="true" />
         </div>
 
-        <h3 className="card-title">Blood Sugar</h3>
+        <div>
+          <span className="ms-health-form-eyebrow">Glucose monitoring</span>
+
+          <h3 className="ms-card-title">Blood Sugar</h3>
+        </div>
       </div>
 
-      <div>
-        <label>Blood Glucose</label>
+      <div className="ms-field">
+        <label htmlFor="blood-sugar-glucose" className="ms-label">
+          Blood Glucose
+        </label>
 
         <input
+          id="blood-sugar-glucose"
           type="number"
           step="0.1"
-          className="input"
+          className="ms-input"
           placeholder="Example: 95"
           value={glucose}
           onChange={(e) => setGlucose(e.target.value)}
+          required
         />
+
+        <p className="ms-help-text">
+          Enter your blood glucose reading in mg/dL.
+        </p>
       </div>
 
-      <p className="text-sm text-slate-500">
-        Normal fasting range: 70–99 mg/dL
-      </p>
+      <div className="ms-health-reference">
+        <span className="ms-health-reference-label">Reference</span>
 
-      <button type="submit" className="btn-primary w-full">
-        <Save size={18} />
+        <p>Normal fasting range: 70–99 mg/dL</p>
+      </div>
+
+      <button
+        type="submit"
+        className="ms-btn ms-btn-primary ms-btn-full ms-health-submit"
+      >
+        <Save size={18} aria-hidden="true" />
         Save Blood Sugar
       </button>
     </form>

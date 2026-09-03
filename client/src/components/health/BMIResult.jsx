@@ -1,14 +1,12 @@
-// client/src/components/health/BMIResult.jsx
-
 export default function BMIResult({ bmi }) {
   if (!bmi) {
     return (
-      <div className="border-t border-slate-200 pt-5">
-        <p className="text-slate-500">
+      <div className="ms-bmi-result ms-bmi-result-empty">
+        <p className="ms-bmi-result-message">
           Enter your weight to calculate BMI.
         </p>
 
-        <p className="text-sm text-slate-400 mt-2">
+        <p className="ms-bmi-result-help">
           Healthy BMI range: 18.5 – 24.9 kg/m²
         </p>
       </div>
@@ -16,37 +14,35 @@ export default function BMIResult({ bmi }) {
   }
 
   let label = "";
-  let color = "text-slate-700";
+  let statusClass = "ms-bmi-status-neutral";
 
   if (bmi < 18.5) {
     label = "Underweight";
-    color = "text-amber-600";
+    statusClass = "ms-bmi-status-warning";
   } else if (bmi < 25) {
     label = "Normal";
-    color = "text-green-600";
+    statusClass = "ms-bmi-status-success";
   } else if (bmi < 30) {
     label = "Overweight";
-    color = "text-amber-600";
+    statusClass = "ms-bmi-status-warning";
   } else {
     label = "Obese";
-    color = "text-red-600";
+    statusClass = "ms-bmi-status-danger";
   }
 
   return (
-    <div className="border-t border-slate-200 pt-5">
-      <p className="text-sm text-slate-500">Current BMI</p>
+    <div className={`ms-bmi-result ${statusClass}`}>
+      <div className="ms-bmi-result-heading">
+        <p className="ms-bmi-result-label">Current BMI</p>
 
-      <h2 className={`text-5xl font-bold mt-2 ${color}`}>
-        {bmi}
-      </h2>
+        <span className="ms-bmi-result-status">{label}</span>
+      </div>
 
-      <p className={`mt-2 font-semibold ${color}`}>
-        {label}
-      </p>
+      <h2 className="ms-bmi-result-value">{bmi}</h2>
 
-      <p className="text-sm text-slate-400 mt-4">
-        Healthy BMI range: 18.5 – 24.9 kg/m²
-      </p>
+      <p className="ms-bmi-result-category">{label}</p>
+
+      <p className="ms-bmi-result-help">Healthy BMI range: 18.5 – 24.9 kg/m²</p>
     </div>
   );
 }

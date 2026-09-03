@@ -23,45 +23,70 @@ export default function BloodPressureForm({ onAdd }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="card space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="icon-wrapper">
-          <HeartPulse size={22} className="text-blue-600" />
+    <form onSubmit={handleSubmit} className="ms-card ms-form ms-health-form">
+      <div className="ms-health-form-header">
+        <div className="ms-icon-box ms-health-form-icon">
+          <HeartPulse size={21} aria-hidden="true" />
         </div>
 
-        <h3 className="card-title">Blood Pressure</h3>
+        <div>
+          <span className="ms-health-form-eyebrow">Cardiovascular</span>
+
+          <h3 className="ms-card-title">Blood Pressure</h3>
+        </div>
       </div>
 
-      <div>
-        <label>Systolic Pressure</label>
+      <div className="ms-field">
+        <label htmlFor="blood-pressure-systolic" className="ms-label">
+          Systolic Pressure
+        </label>
 
         <input
+          id="blood-pressure-systolic"
           type="number"
-          className="input"
+          className="ms-input"
           placeholder="Example: 120"
           value={high}
           onChange={(e) => setHigh(e.target.value)}
+          required
         />
+
+        <p className="ms-help-text">
+          The upper number in your blood pressure reading.
+        </p>
       </div>
 
-      <div>
-        <label>Diastolic Pressure</label>
+      <div className="ms-field">
+        <label htmlFor="blood-pressure-diastolic" className="ms-label">
+          Diastolic Pressure
+        </label>
 
         <input
+          id="blood-pressure-diastolic"
           type="number"
-          className="input"
+          className="ms-input"
           placeholder="Example: 80"
           value={low}
           onChange={(e) => setLow(e.target.value)}
+          required
         />
+
+        <p className="ms-help-text">
+          The lower number in your blood pressure reading.
+        </p>
       </div>
 
-      <p className="text-sm text-slate-500">
-        Normal range: below 120 / 80 mmHg
-      </p>
+      <div className="ms-health-reference">
+        <span className="ms-health-reference-label">Reference</span>
 
-      <button type="submit" className="btn-primary w-full">
-        <Save size={18} />
+        <p>Normal range: below 120 / 80 mmHg</p>
+      </div>
+
+      <button
+        type="submit"
+        className="ms-btn ms-btn-primary ms-btn-full ms-health-submit"
+      >
+        <Save size={18} aria-hidden="true" />
         Save Blood Pressure
       </button>
     </form>

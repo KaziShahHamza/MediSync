@@ -1,0 +1,632 @@
+/* =========================================================
+   MEDISYNC — MEDICINES
+   ========================================================= */
+
+.ms-medicines-page {
+  --ms-medicine-image-size: 96px;
+}
+
+/* ---------------------------------------------------------
+   PAGE HEADER
+   --------------------------------------------------------- */
+
+.ms-medicines-header {
+  padding-bottom: var(--ms-space-2);
+}
+
+.ms-medicines-heading {
+  max-width: 760px;
+}
+
+.ms-medicines-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+}
+
+.ms-medicines-page-icon {
+  flex-shrink: 0;
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+}
+
+.ms-medicines-eyebrow,
+.ms-medicines-section-eyebrow {
+  display: block;
+  margin-bottom: var(--ms-space-1);
+  color: var(--ms-primary);
+  font-size: var(--ms-font-size-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  letter-spacing: var(--ms-tracking-wide);
+  line-height: var(--ms-leading-normal);
+  text-transform: uppercase;
+}
+
+.ms-medicines-heading .ms-page-title {
+  margin: 0;
+}
+
+.ms-medicines-heading .ms-page-subtitle {
+  margin-top: var(--ms-space-3);
+}
+
+/* ---------------------------------------------------------
+   PAGE LAYOUT
+   --------------------------------------------------------- */
+
+.ms-medicines-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.8fr);
+  align-items: start;
+  gap: var(--ms-space-8);
+  margin-top: var(--ms-section-gap);
+}
+
+.ms-medicines-list-column,
+.ms-medicines-form-column {
+  min-width: 0;
+}
+
+.ms-medicines-form-column {
+  position: sticky;
+  top: var(--ms-space-6);
+}
+
+/* ---------------------------------------------------------
+   SECTION HEADERS
+   --------------------------------------------------------- */
+
+.ms-medicines-section-header,
+.ms-medicines-form-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+}
+
+.ms-medicines-section-header {
+  justify-content: space-between;
+  margin-bottom: var(--ms-space-5);
+}
+
+.ms-medicines-section-header > div {
+  min-width: 0;
+}
+
+.ms-medicines-form-header {
+  margin-bottom: var(--ms-space-5);
+}
+
+.ms-medicines-form-icon {
+  flex-shrink: 0;
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+}
+
+.ms-medicines-count {
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------
+   MEDICINE GROUPS
+   --------------------------------------------------------- */
+
+.ms-medicine-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-10);
+}
+
+.ms-medicine-group {
+  min-width: 0;
+}
+
+.ms-medicine-group-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+  margin-bottom: var(--ms-space-5);
+}
+
+.ms-medicine-group-icon {
+  flex-shrink: 0;
+}
+
+.ms-medicine-group-icon-active {
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+}
+
+.ms-medicine-group-icon-history {
+  color: var(--ms-text-secondary);
+  background: var(--ms-surface-muted);
+}
+
+.ms-medicine-group-title {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-lg);
+  font-weight: var(--ms-font-weight-semibold);
+  line-height: var(--ms-leading-tight);
+}
+
+.ms-medicine-group-description {
+  margin: var(--ms-space-1) 0 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-normal);
+}
+
+.ms-medicine-group-count {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.ms-medicine-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-4);
+}
+
+/* ---------------------------------------------------------
+   MEDICINE CARD
+   --------------------------------------------------------- */
+
+.ms-medicine-card {
+  padding: var(--ms-space-5);
+}
+
+.ms-medicine-card-main {
+  display: grid;
+  grid-template-columns: var(--ms-medicine-image-size) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--ms-space-5);
+}
+
+.ms-medicine-image {
+  display: flex;
+  width: var(--ms-medicine-image-size);
+  height: var(--ms-medicine-image-size);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  color: var(--ms-text-muted);
+  background: var(--ms-surface-muted);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-xl);
+}
+
+.ms-medicine-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ms-medicine-details {
+  min-width: 0;
+}
+
+.ms-medicine-name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-2);
+  flex-wrap: wrap;
+}
+
+.ms-medicine-name {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-lg);
+  font-weight: var(--ms-font-weight-semibold);
+  line-height: var(--ms-leading-tight);
+  overflow-wrap: anywhere;
+}
+
+.ms-medicine-status-active,
+.ms-medicine-status-past {
+  flex-shrink: 0;
+}
+
+.ms-medicine-status-active {
+  color: var(--ms-success);
+  background: var(--ms-success-soft);
+}
+
+.ms-medicine-status-past {
+  color: var(--ms-text-secondary);
+  background: var(--ms-surface-muted);
+}
+
+.ms-medicine-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-2);
+  margin-top: var(--ms-space-2);
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-normal);
+}
+
+.ms-medicine-meta svg {
+  flex-shrink: 0;
+}
+
+.ms-medicine-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-2);
+  flex-shrink: 0;
+}
+
+.ms-medicine-action {
+  min-width: 92px;
+}
+
+/* ---------------------------------------------------------
+   EMPTY STATE
+   --------------------------------------------------------- */
+
+.ms-medicine-empty-state {
+  min-height: 300px;
+  padding: var(--ms-space-10) var(--ms-space-6);
+  text-align: center;
+}
+
+.ms-medicine-empty-icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  place-items: center;
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+  border-radius: var(--ms-radius-2xl);
+}
+
+.ms-medicine-empty-title {
+  margin: var(--ms-space-5) 0 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-xl);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-medicine-empty-description {
+  max-width: 420px;
+  margin: var(--ms-space-2) auto 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+/* ---------------------------------------------------------
+   FORM
+   --------------------------------------------------------- */
+
+.ms-medicine-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-5);
+}
+
+.ms-input-with-icon {
+  position: relative;
+}
+
+.ms-input-with-icon > svg {
+  position: absolute;
+  top: 50%;
+  left: var(--ms-space-3);
+  z-index: 1;
+  color: var(--ms-text-muted);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.ms-input-with-icon .ms-input {
+  padding-left: 42px;
+}
+
+.ms-medicine-form .ms-field {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------
+   DOSAGE TIME OPTIONS
+   --------------------------------------------------------- */
+
+.ms-medicine-dosage-section {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ms-medicine-dosage-section legend {
+  width: 100%;
+  margin-bottom: var(--ms-space-3);
+}
+
+.ms-medicine-time-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ms-space-3);
+}
+
+.ms-medicine-time-option {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ms-space-2);
+  padding: var(--ms-space-3);
+  color: var(--ms-text-secondary);
+  background: var(--ms-surface);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-xl);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.ms-medicine-time-option:hover {
+  border-color: var(--ms-primary-soft-strong);
+  background: var(--ms-primary-soft);
+}
+
+.ms-medicine-time-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ms-medicine-time-option input:focus-visible + .ms-medicine-time-check {
+  outline: 3px solid var(--ms-focus-ring);
+  outline-offset: 2px;
+}
+
+.ms-medicine-time-option-selected {
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+  border-color: var(--ms-primary);
+}
+
+.ms-medicine-time-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ms-medicine-time-label {
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+/* ---------------------------------------------------------
+   ACTIVE CHECKBOX
+   --------------------------------------------------------- */
+
+.ms-medicine-active-option {
+  padding: var(--ms-space-4);
+  background: var(--ms-surface-muted);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-xl);
+}
+
+.ms-checkbox-control {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ms-space-3);
+  cursor: pointer;
+}
+
+.ms-checkbox-control input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ms-checkbox-indicator {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  background: var(--ms-surface);
+  border: 1.5px solid var(--ms-border-strong);
+  border-radius: var(--ms-radius-sm);
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.ms-checkbox-indicator::after {
+  width: 9px;
+  height: 5px;
+  content: "";
+  border-bottom: 2px solid transparent;
+  border-left: 2px solid transparent;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
+.ms-checkbox-control input:checked + .ms-checkbox-indicator {
+  background: var(--ms-primary);
+  border-color: var(--ms-primary);
+}
+
+.ms-checkbox-control input:checked + .ms-checkbox-indicator::after {
+  border-color: var(--ms-on-primary);
+}
+
+.ms-checkbox-control input:focus-visible + .ms-checkbox-indicator {
+  outline: 3px solid var(--ms-focus-ring);
+  outline-offset: 2px;
+}
+
+.ms-checkbox-content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--ms-space-1);
+}
+
+.ms-checkbox-title {
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-medium);
+  line-height: var(--ms-leading-normal);
+}
+
+.ms-checkbox-description {
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+  line-height: var(--ms-leading-relaxed);
+}
+
+/* ---------------------------------------------------------
+   SUBMIT
+   --------------------------------------------------------- */
+
+.ms-medicine-submit {
+  margin-top: var(--ms-space-1);
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .ms-medicines-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 0.8fr);
+    gap: var(--ms-space-6);
+  }
+
+  .ms-medicine-card-main {
+    grid-template-columns: 80px minmax(0, 1fr) auto;
+    gap: var(--ms-space-4);
+  }
+
+  .ms-medicine-image {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 900px) {
+  .ms-medicines-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-medicines-form-column {
+    position: static;
+  }
+}
+
+@media (max-width: 639px) {
+  .ms-medicines-title-row {
+    align-items: flex-start;
+  }
+
+  .ms-medicines-layout {
+    margin-top: var(--ms-space-8);
+  }
+
+  .ms-medicine-card {
+    padding: var(--ms-space-4);
+  }
+
+  .ms-medicine-card-main {
+    grid-template-columns: 72px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .ms-medicine-image {
+    width: 72px;
+    height: 72px;
+  }
+
+  .ms-medicine-actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .ms-medicine-action {
+    width: 100%;
+  }
+
+  .ms-medicine-group-header {
+    align-items: flex-start;
+  }
+
+  .ms-medicine-group-count {
+    margin-left: auto;
+  }
+
+  .ms-medicine-time-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-medicine-time-option {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .ms-medicines-section-header {
+    align-items: flex-start;
+  }
+
+  .ms-medicines-count {
+    white-space: nowrap;
+  }
+
+  .ms-medicine-name-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--ms-space-2);
+  }
+
+  .ms-medicine-meta {
+    align-items: flex-start;
+  }
+
+  .ms-medicine-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-medicine-group-header {
+    gap: var(--ms-space-2);
+  }
+}
+
+@media (max-width: 374px) {
+  .ms-medicine-card-main {
+    grid-template-columns: 60px minmax(0, 1fr);
+  }
+
+  .ms-medicine-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .ms-medicine-name {
+    font-size: var(--ms-font-size-base);
+  }
+
+  .ms-medicine-meta {
+    font-size: var(--ms-font-size-xs);
+  }
+}

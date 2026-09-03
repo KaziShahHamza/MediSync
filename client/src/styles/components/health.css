@@ -1,0 +1,568 @@
+/* =========================================================
+   MEDISYNC — HEALTH
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   PAGE HEADER
+   --------------------------------------------------------- */
+
+.ms-health-header {
+  margin-bottom: var(--ms-space-10);
+}
+
+.ms-health-heading {
+  max-width: 760px;
+}
+
+.ms-health-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+}
+
+.ms-health-page-icon {
+  flex: 0 0 auto;
+}
+
+.ms-health-eyebrow,
+.ms-health-section-eyebrow,
+.ms-health-form-eyebrow,
+.ms-health-chart-eyebrow {
+  display: block;
+  margin-bottom: var(--ms-space-1);
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  letter-spacing: var(--ms-tracking-wide);
+  line-height: var(--ms-leading-tight);
+  text-transform: uppercase;
+}
+
+.ms-health-header .ms-page-subtitle {
+  margin-top: var(--ms-space-3);
+  max-width: 680px;
+}
+
+
+/* ---------------------------------------------------------
+   HEALTH SECTIONS
+   --------------------------------------------------------- */
+
+.ms-health-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-12);
+}
+
+.ms-health-section {
+  margin: 0;
+}
+
+.ms-health-section-header {
+  margin-bottom: var(--ms-space-5);
+}
+
+.ms-health-section-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ms-space-3);
+}
+
+.ms-health-section-icon {
+  flex: 0 0 auto;
+}
+
+.ms-health-section-heading .ms-section-title {
+  margin: 0;
+}
+
+.ms-health-section-description {
+  max-width: 680px;
+  margin: var(--ms-space-2) 0 0;
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+
+/* ---------------------------------------------------------
+   METRIC LAYOUT
+   --------------------------------------------------------- */
+
+.ms-health-metric-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 360px) minmax(0, 1fr);
+  align-items: stretch;
+  gap: var(--ms-space-6);
+}
+
+
+/* ---------------------------------------------------------
+   HEALTH FORMS
+   --------------------------------------------------------- */
+
+.ms-health-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-6);
+  min-width: 0;
+}
+
+.ms-health-form-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+}
+
+.ms-health-form-header .ms-card-title {
+  margin: 0;
+}
+
+.ms-health-form-icon,
+.ms-health-chart-icon {
+  flex: 0 0 auto;
+}
+
+.ms-health-form .ms-field {
+  margin: 0;
+}
+
+.ms-health-form .ms-help-text {
+  margin-top: var(--ms-space-2);
+}
+
+.ms-health-form .ms-error {
+  margin-top: var(--ms-space-2);
+}
+
+
+/* ---------------------------------------------------------
+   PROFILE VALUE / SAVED HEIGHT
+   --------------------------------------------------------- */
+
+.ms-health-profile-value {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+  min-height: 68px;
+  padding: var(--ms-space-3) var(--ms-space-4);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-xl);
+  background: var(--ms-surface-muted);
+}
+
+.ms-health-profile-value-error {
+  border-color: var(--ms-danger);
+}
+
+.ms-health-profile-icon {
+  flex: 0 0 auto;
+  color: var(--ms-text-muted);
+}
+
+.ms-health-profile-content {
+  min-width: 0;
+}
+
+.ms-health-profile-main {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-lg);
+  font-weight: var(--ms-font-weight-semibold);
+  line-height: var(--ms-leading-tight);
+}
+
+.ms-health-profile-content .ms-help-text {
+  margin: var(--ms-space-1) 0 0;
+}
+
+.ms-health-profile-error {
+  margin: 0;
+  color: var(--ms-danger);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+
+/* ---------------------------------------------------------
+   INPUT WITH ICON
+   --------------------------------------------------------- */
+
+.ms-input-with-icon {
+  position: relative;
+}
+
+.ms-input-icon {
+  position: absolute;
+  top: 50%;
+  left: var(--ms-space-3);
+  z-index: 1;
+  color: var(--ms-text-muted);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.ms-input-with-leading-icon {
+  padding-left: 2.6rem;
+}
+
+
+/* ---------------------------------------------------------
+   BMI RESULT
+   --------------------------------------------------------- */
+
+.ms-health-bmi-result {
+  min-width: 0;
+}
+
+
+/* ---------------------------------------------------------
+   REFERENCE INFORMATION
+   --------------------------------------------------------- */
+
+.ms-health-reference {
+  padding: var(--ms-space-3) var(--ms-space-4);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface-muted);
+}
+
+.ms-health-reference-label {
+  display: block;
+  margin-bottom: var(--ms-space-1);
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  letter-spacing: var(--ms-tracking-wide);
+  text-transform: uppercase;
+}
+
+.ms-health-reference p {
+  margin: 0;
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-health-submit {
+  margin-top: auto;
+}
+
+
+/* ---------------------------------------------------------
+   CHART CARD
+   --------------------------------------------------------- */
+
+.ms-health-chart-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 380px;
+}
+
+.ms-health-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+  margin-bottom: var(--ms-space-6);
+}
+
+.ms-health-chart-title-group {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--ms-space-3);
+}
+
+.ms-health-chart-title-group .ms-card-title {
+  margin: 0;
+}
+
+.ms-health-chart-count {
+  flex: 0 0 auto;
+}
+
+.ms-health-chart {
+  position: relative;
+  flex: 1;
+  min-height: 280px;
+}
+
+
+/* ---------------------------------------------------------
+   EMPTY CHART STATE
+   --------------------------------------------------------- */
+
+.ms-health-chart-empty {
+  flex: 1;
+  min-height: 280px;
+  padding: var(--ms-space-6);
+  border: 0;
+  background: transparent;
+}
+
+.ms-health-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--ms-space-4);
+  border-radius: var(--ms-radius-full);
+  background: var(--ms-surface-muted);
+  color: var(--ms-text-muted);
+}
+
+.ms-health-empty-title {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-base);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-health-empty-text {
+  max-width: 360px;
+  margin: var(--ms-space-2) auto 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+
+/* ---------------------------------------------------------
+   CHART.JS CANVAS
+   --------------------------------------------------------- */
+
+.ms-health-chart canvas {
+  max-width: 100%;
+}
+
+
+/* ---------------------------------------------------------
+   TABLET
+   --------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  .ms-health-sections {
+    gap: var(--ms-space-10);
+  }
+
+  .ms-health-metric-layout {
+    grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+    gap: var(--ms-space-5);
+  }
+
+  .ms-health-chart-card {
+    min-height: 360px;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   SMALL TABLET / LARGE MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 820px) {
+  .ms-health-metric-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-health-form {
+    width: 100%;
+  }
+
+  .ms-health-chart-card {
+    min-height: 380px;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 639px) {
+  .ms-health-header {
+    margin-bottom: var(--ms-space-8);
+  }
+
+  .ms-health-title-row {
+    align-items: flex-start;
+  }
+
+  .ms-health-page-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .ms-health-sections {
+    gap: var(--ms-space-8);
+  }
+
+  .ms-health-section-header {
+    margin-bottom: var(--ms-space-4);
+  }
+
+  .ms-health-section-heading {
+    gap: var(--ms-space-2);
+  }
+
+  .ms-health-section-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .ms-health-section-description {
+    font-size: var(--ms-font-size-sm);
+  }
+
+  .ms-health-form,
+  .ms-health-chart-card {
+    padding: var(--ms-space-5);
+  }
+
+  .ms-health-chart-header {
+    align-items: flex-start;
+  }
+
+  .ms-health-chart-title-group {
+    align-items: flex-start;
+  }
+
+  .ms-health-chart {
+    min-height: 250px;
+  }
+
+  .ms-health-chart-empty {
+    min-height: 250px;
+    padding: var(--ms-space-4);
+  }
+}
+
+
+/* ---------------------------------------------------------
+   VERY SMALL MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 374px) {
+  .ms-health-section-heading {
+    align-items: flex-start;
+  }
+
+  .ms-health-section-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .ms-health-form,
+  .ms-health-chart-card {
+    padding: var(--ms-space-4);
+  }
+
+  .ms-health-profile-value {
+    padding: var(--ms-space-3);
+  }
+
+  .ms-health-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ---------------------------------------------------------
+   BMI RESULT
+   --------------------------------------------------------- */
+
+.ms-bmi-result {
+  padding-top: var(--ms-space-5);
+  border-top: 1px solid var(--ms-border);
+}
+
+.ms-bmi-result-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ms-space-3);
+}
+
+.ms-bmi-result-label {
+  margin: 0;
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+.ms-bmi-result-status {
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--ms-radius-full);
+  font-size: var(--ms-font-size-xs);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-bmi-result-value {
+  margin: var(--ms-space-2) 0 0;
+  color: var(--ms-text);
+  font-size: var(--ms-font-size-4xl);
+  font-weight: var(--ms-font-weight-bold);
+  line-height: 1;
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+.ms-bmi-result-category {
+  margin: var(--ms-space-2) 0 0;
+  font-size: var(--ms-font-size-sm);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-bmi-result-help {
+  margin: var(--ms-space-4) 0 0;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-size-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-bmi-result-empty .ms-bmi-result-message {
+  margin: 0;
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-size-sm);
+}
+
+.ms-bmi-result-empty .ms-bmi-result-help {
+  margin-top: var(--ms-space-2);
+}
+
+
+/* BMI STATUS COLORS */
+
+.ms-bmi-status-neutral .ms-bmi-result-status,
+.ms-bmi-status-neutral .ms-bmi-result-category {
+  color: var(--ms-text-secondary);
+}
+
+.ms-bmi-status-success .ms-bmi-result-status,
+.ms-bmi-status-success .ms-bmi-result-category {
+  color: var(--ms-success);
+}
+
+.ms-bmi-status-success .ms-bmi-result-status {
+  background: var(--ms-success-soft);
+}
+
+.ms-bmi-status-warning .ms-bmi-result-status,
+.ms-bmi-status-warning .ms-bmi-result-category {
+  color: var(--ms-warning);
+}
+
+.ms-bmi-status-warning .ms-bmi-result-status {
+  background: var(--ms-warning-soft);
+}
+
+.ms-bmi-status-danger .ms-bmi-result-status,
+.ms-bmi-status-danger .ms-bmi-result-category {
+  color: var(--ms-danger);
+}
+
+.ms-bmi-status-danger .ms-bmi-result-status {
+  background: var(--ms-danger-soft);
+}

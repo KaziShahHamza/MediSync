@@ -1,0 +1,55 @@
+/* =========================================================
+   MEDISYNC — GLOBAL APPLICATION SHELL
+   ========================================================= */
+
+.ms-app-shell {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  color: var(--ms-text);
+  background: var(--ms-bg);
+}
+
+.ms-main {
+  flex: 1 1 auto;
+  min-width: 0;
+
+  width: 100%;
+}
+
+/*
+ * Prevent accidental horizontal overflow from individual
+ * feature sections or responsive content.
+ */
+
+.ms-main,
+.ms-main > * {
+  min-width: 0;
+}
+
+/*
+ * Route content should remain visually separated from
+ * the sticky navigation.
+ */
+
+.ms-main {
+  position: relative;
+}
+
+/*
+ * Accessibility:
+ * Respect reduced-motion preferences throughout the shell.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-app-shell *,
+  .ms-app-shell *::before,
+  .ms-app-shell *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

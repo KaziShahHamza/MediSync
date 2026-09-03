@@ -9,8 +9,9 @@ import {
   Legend,
   Tooltip,
 } from "chart.js";
+
 import { Line } from "react-chartjs-2";
-import { Droplets, Activity } from "lucide-react";
+import { Activity, Droplets } from "lucide-react";
 
 ChartJS.register(
   CategoryScale,
@@ -18,46 +19,75 @@ ChartJS.register(
   PointElement,
   LineElement,
   Legend,
-  Tooltip
+  Tooltip,
 );
 
 export default function BloodSugarChart({ logs }) {
-  const sugarLogs = logs
-    .filter((log) => log.type === "diabetes")
-    .slice(-7);
+  const sugarLogs = logs.filter((log) => log.type === "diabetes").slice(-7);
 
   return (
-    <div className="card min-h-[380px]">
-      <div className="flex items-center gap-3 mb-6">
-        <Droplets size={22} className="text-blue-600" />
+    <div className="ms-card ms-health-chart-card">
+      <div className="ms-health-chart-header">
+        <div className="ms-health-chart-title-group">
+          <div className="ms-icon-box ms-health-chart-icon">
+            <Droplets size={20} aria-hidden="true" />
+          </div>
 
-        <h3 className="card-title">Blood Sugar History</h3>
+          <div>
+            <span className="ms-health-chart-eyebrow">Recent readings</span>
+
+            <h3 className="ms-card-title">Blood Sugar History</h3>
+          </div>
+        </div>
+
+        {sugarLogs.length > 0 && (
+          <span className="ms-badge ms-health-chart-count">
+            Last {sugarLogs.length}
+          </span>
+        )}
       </div>
 
       {sugarLogs.length === 0 ? (
-        <div className="h-72 flex flex-col items-center justify-center text-center">
-          <Activity size={40} className="text-slate-300" />
+        <div className="ms-empty-state ms-health-chart-empty">
+          <div className="ms-health-empty-icon">
+            <Activity size={36} aria-hidden="true" />
+          </div>
 
-          <p className="mt-4 text-slate-500">
-            No blood sugar records available.
+          <h4 className="ms-health-empty-title">No blood sugar records</h4>
+
+          <p className="ms-health-empty-text">
+            Add your first blood sugar reading to start tracking your trend.
           </p>
         </div>
       ) : (
-        <Line
-          data={{
-            labels: sugarLogs.map((log) =>
-              new Date(log.createdAt).toLocaleDateString()
-            ),
-            datasets: [
-              {
-                label: "Blood Glucose",
-                data: sugarLogs.map((log) => log.glucose),
-                borderColor: "#2563EB",
-                backgroundColor: "#2563EB33",
+        <div className="ms-health-chart">
+          <Line
+            data={{
+              labels: sugarLogs.map((log) =>
+                new Date(log.createdAt).toLocaleDateString(),
+              ),
+
+              datasets: [
+                {
+                  label: "Blood Glucose",
+                  data: sugarLogs.map((log) => log.glucose),
+                  borderColor: "var(--ms-primary)",
+                  backgroundColor: "var(--ms-primary-soft)",
+                  tension: 0.3,
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                },
               },
-            ],
-          }}
-        />
+            }}
+          />
+        </div>
       )}
     </div>
   );

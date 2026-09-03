@@ -36,6 +36,8 @@
 @import "./layout/page.css";
 @import "./layout/grid.css";
 @import "./layout/responsive.css";
+@import "./layout/shell.css";
+
 
 /* -------------------------
    COMPONENTS
@@ -49,6 +51,10 @@
 @import "./components/feedback.css";
 @import "./components/modal.css";
 @import "./components/auth.css";
-
+@import "./components/public.css";
+@import "./components/dashboard.css";
+@import "./components/medicines.css";
+@import "./components/health.css";
+@import "./components/doctors.css";
 
 

@@ -1,6 +1,6 @@
 // client/src/pages/Health.jsx
 
-import { Activity, HeartPulse, Droplets, Scale } from "lucide-react";
+import { Droplets, HeartPulse, Scale } from "lucide-react";
 import useHealthLogs from "../hooks/useHealthLogs";
 import { useProfile } from "../context/ProfileContext";
 
@@ -18,67 +18,119 @@ export default function Health() {
   const { profile } = useProfile();
 
   return (
-    <div className="container page">
-      {/* Header */}
-      <section className="page-header">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="icon-wrapper">
-              <HeartPulse size={24} className="text-blue-600" />
+    <main className="ms-page ms-health-page">
+      <div className="ms-container">
+        {/* Page Header */}
+        <section className="ms-page-header ms-health-header">
+          <div className="ms-health-heading">
+            <div className="ms-health-title-row">
+              <div className="ms-icon-box ms-health-page-icon">
+                <HeartPulse size={24} aria-hidden="true" />
+              </div>
+
+              <div>
+                <span className="ms-health-eyebrow">Health monitoring</span>
+
+                <h1 className="ms-page-title">Health Report</h1>
+              </div>
             </div>
 
-            <h1 className="page-title">Health Report</h1>
+            <p className="ms-page-subtitle">
+              Track your health metrics, review trends, and maintain your
+              personal health history.
+            </p>
           </div>
+        </section>
 
-          <p className="mt-3 text-slate-600">
-            Track your health metrics, review trends, and maintain your personal
-            health history.
-          </p>
-        </div>
-      </section>
+        {/* Health Metrics */}
+        <section className="ms-health-sections">
+          {/* Blood Pressure */}
+          <section className="ms-section ms-health-section">
+            <div className="ms-health-section-header">
+              <div className="ms-health-section-heading">
+                <div className="ms-icon-box ms-health-section-icon">
+                  <HeartPulse size={21} aria-hidden="true" />
+                </div>
 
-      {/* Health Metrics */}
-      <section className="space-y-12">
-        {/* Blood Pressure */}
-        <div>
-          <div className="flex items-center gap-3 mb-5">
-            <HeartPulse size={22} className="text-blue-600" />
-            <h2 className="section-title">Blood Pressure</h2>
-          </div>
+                <div>
+                  <span className="ms-health-section-eyebrow">
+                    Cardiovascular
+                  </span>
 
-          <div className="grid lg:grid-cols-[360px_1fr] gap-6">
-            <BloodPressureForm onAdd={addLog} />
-            <BloodPressureChart logs={logs} />
-          </div>
-        </div>
+                  <h2 className="ms-section-title">Blood Pressure</h2>
 
-        {/* Blood Sugar */}
-        <div>
-          <div className="flex items-center gap-3 mb-5">
-            <Droplets size={22} className="text-blue-600" />
-            <h2 className="section-title">Blood Sugar</h2>
-          </div>
+                  <p className="ms-health-section-description">
+                    Record systolic and diastolic pressure and monitor recent
+                    readings.
+                  </p>
+                </div>
+              </div>
+            </div>
 
-          <div className="grid lg:grid-cols-[360px_1fr] gap-6">
-            <BloodSugarForm onAdd={addLog} />
-            <BloodSugarChart logs={logs} />
-          </div>
-        </div>
+            <div className="ms-health-metric-layout">
+              <BloodPressureForm onAdd={addLog} />
+              <BloodPressureChart logs={logs} />
+            </div>
+          </section>
 
-        {/* BMI */}
-        <div>
-          <div className="flex items-center gap-3 mb-5">
-            <Scale size={22} className="text-blue-600" />
-            <h2 className="section-title">BMI Tracking</h2>
-          </div>
+          {/* Blood Sugar */}
+          <section className="ms-section ms-health-section">
+            <div className="ms-health-section-header">
+              <div className="ms-health-section-heading">
+                <div className="ms-icon-box ms-health-section-icon">
+                  <Droplets size={21} aria-hidden="true" />
+                </div>
 
-          <div className="grid lg:grid-cols-[360px_1fr] gap-6">
-            <BMIForm onAdd={addLog} />
+                <div>
+                  <span className="ms-health-section-eyebrow">
+                    Glucose monitoring
+                  </span>
 
-            <BMIChart logs={logs} height={profile?.height} />
-          </div>
-        </div>
-      </section>
-    </div>
+                  <h2 className="ms-section-title">Blood Sugar</h2>
+
+                  <p className="ms-health-section-description">
+                    Record blood glucose readings and follow changes over time.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="ms-health-metric-layout">
+              <BloodSugarForm onAdd={addLog} />
+              <BloodSugarChart logs={logs} />
+            </div>
+          </section>
+
+          {/* BMI */}
+          <section className="ms-section ms-health-section">
+            <div className="ms-health-section-header">
+              <div className="ms-health-section-heading">
+                <div className="ms-icon-box ms-health-section-icon">
+                  <Scale size={21} aria-hidden="true" />
+                </div>
+
+                <div>
+                  <span className="ms-health-section-eyebrow">
+                    Body composition
+                  </span>
+
+                  <h2 className="ms-section-title">BMI Tracking</h2>
+
+                  <p className="ms-health-section-description">
+                    Use your saved profile height and weight records to track
+                    BMI over time.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="ms-health-metric-layout">
+              <BMIForm onAdd={addLog} />
+              <BMIChart logs={logs} height={profile?.height} />
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
   );
 }
