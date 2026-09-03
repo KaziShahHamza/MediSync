@@ -1,19 +1,15 @@
-// client/src/components/profile/ProfileSummary.jsx
+// src/components/profile/ProfileSummary.jsx
 
 function InfoItem({ label, value, full = false }) {
   return (
     <div
-      className={`
-        rounded-xl 
-        border border-slate-200
-        bg-slate-50
-        p-4
-        ${full ? "sm:col-span-2" : ""}
-      `}
+      className={`ms-profile-info-item ${
+        full ? "ms-profile-info-item-full" : ""
+      }`}
     >
-      <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
+      <p className="ms-profile-info-label">{label}</p>
 
-      <p className="mt-2 font-medium text-slate-800 break-words">
+      <p className="ms-profile-info-value">
         {value || "-"}
       </p>
     </div>
@@ -22,94 +18,140 @@ function InfoItem({ label, value, full = false }) {
 
 export default function ProfileSummary({ userInfo, form }) {
   return (
-    <div
-      className="
-        bg-white
-        rounded-2xl
-        border border-slate-200
-        p-6
-        lg:p-8
-        lg:sticky
-        lg:top-24
-      "
-    >
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-slate-800">
-          Profile Summary
-        </h2>
+    <aside className="ms-card ms-profile-summary">
+      <div className="ms-profile-summary-header">
+        <div>
+          <p className="ms-profile-summary-eyebrow">
+            Overview
+          </p>
 
-        <p className="text-sm text-slate-500 mt-1">
-          Overview of your saved health information.
-        </p>
+          <h2>Profile Summary</h2>
+
+          <p>
+            A quick overview of your saved personal and health
+            information.
+          </p>
+        </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        <InfoItem label="Name" value={form.name} />
-
-        <InfoItem label="Username" value={userInfo?.username} />
-
-        <InfoItem label="Email" value={userInfo?.email} full />
-
-        <InfoItem label="Gender" value={form.gender} />
+      <div className="ms-profile-info-grid">
+        <InfoItem
+          label="Name"
+          value={form.name}
+        />
 
         <InfoItem
-          label="Height"
+          label="Username"
+          value={userInfo?.username}
+        />
+
+        <InfoItem
+          label="Email"
+          value={userInfo?.email}
+          full
+        />
+
+        <InfoItem
+          label="Date of Birth"
           value={
-            form.height.feet
-              ? `${form.height.feet} ft ${form.height.inches || 0} in`
+            form.dob
+              ? new Date(form.dob).toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })
               : "-"
           }
         />
 
-        <InfoItem label="Blood Group" value={form.bloodGroup} />
+        <InfoItem
+          label="Gender"
+          value={form.gender}
+        />
 
-        <InfoItem label="Smoking" value={form.smoking} />
+        <InfoItem
+          label="Height"
+          value={
+            form.height.feet !== ""
+              ? `${form.height.feet} ft ${
+                  form.height.inches || 0
+                } in`
+              : "-"
+          }
+        />
 
-        <InfoItem label="Alcohol" value={form.alcohol} />
+        <InfoItem
+          label="Blood Group"
+          value={form.bloodGroup}
+        />
 
-        <InfoItem label="Exercise" value={form.exercise} />
+        <InfoItem
+          label="Smoking"
+          value={form.smoking}
+        />
 
-        <InfoItem label="Diet" value={form.diet} />
+        <InfoItem
+          label="Alcohol"
+          value={form.alcohol}
+        />
 
-        <InfoItem label="Allergies" value={form.allergies || "None"} full />
+        <InfoItem
+          label="Exercise"
+          value={form.exercise}
+        />
 
-        <InfoItem label="Surgeries" value={form.surgeries || "None"} full />
+        <InfoItem
+          label="Diet"
+          value={form.diet}
+        />
+
+        <InfoItem
+          label="Allergies"
+          value={form.allergies || "None"}
+          full
+        />
+
+        <InfoItem
+          label="Surgeries"
+          value={form.surgeries || "None"}
+          full
+        />
 
         <InfoItem
           label="Emergency Contact"
           value={
             form.emergencyContact.name
-              ? `${form.emergencyContact.name} - ${form.emergencyContact.phone}`
+              ? `${form.emergencyContact.name}${
+                  form.emergencyContact.phone
+                    ? ` — ${form.emergencyContact.phone}`
+                    : ""
+                }`
               : "-"
           }
           full
         />
 
-        <div
-          className="
-            sm:col-span-2
-            rounded-xl
-            bg-sky-50
-            border
-            border-sky-100
-            p-4
-          "
-        >
-          <p className="text-xs uppercase tracking-wide text-sky-600">
+        <div className="ms-profile-illness-summary">
+          <p className="ms-profile-info-label">
             Chronic Illnesses
           </p>
 
-          {form.chronicIllnesses.length ? (
-            <ul className="mt-2 list-disc list-inside text-slate-700">
+          {form.chronicIllnesses.length > 0 ? (
+            <div className="ms-profile-illness-list">
               {form.chronicIllnesses.map((item) => (
-                <li key={item}>{item}</li>
+                <span
+                  className="ms-badge ms-badge-neutral"
+                  key={item}
+                >
+                  {item}
+                </span>
               ))}
-            </ul>
+            </div>
           ) : (
-            <p className="mt-2 text-slate-600">None</p>
+            <p className="ms-profile-none-text">None reported</p>
           )}
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

@@ -1,0 +1,498 @@
+/* =========================================================
+   PROFILE PAGE
+   ========================================================= */
+
+.ms-profile-page {
+  min-height: 100%;
+}
+
+.ms-profile-header {
+  margin-bottom: 2rem;
+}
+
+.ms-profile-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.ms-profile-heading-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.7rem;
+  height: 2.7rem;
+  flex: 0 0 auto;
+  border: 1px solid var(--ms-border);
+  border-radius: 0.8rem;
+  background: var(--ms-surface);
+  color: var(--ms-primary);
+}
+
+.ms-profile-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.15fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.ms-profile-form {
+  min-width: 0;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.ms-loading-state {
+  display: flex;
+  min-height: 300px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  color: var(--ms-text-muted);
+}
+
+.ms-loading-state p {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+/* =========================================================
+   PROFILE SUMMARY
+   ========================================================= */
+
+.ms-profile-summary {
+  position: sticky;
+  top: 5.5rem;
+  padding: 1.35rem;
+}
+
+.ms-profile-summary-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--ms-border);
+}
+
+.ms-profile-summary-eyebrow {
+  margin: 0 0 0.25rem;
+  color: var(--ms-primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ms-profile-summary-header h2 {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.ms-profile-summary-header p:last-child {
+  margin: 0.35rem 0 0;
+  color: var(--ms-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.ms-profile-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  padding-top: 1rem;
+}
+
+.ms-profile-info-item {
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--ms-border);
+  border-radius: 0.7rem;
+  background: var(--ms-bg);
+}
+
+.ms-profile-info-item-full {
+  grid-column: span 2;
+}
+
+.ms-profile-info-label {
+  margin: 0;
+  color: var(--ms-text-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ms-profile-info-value {
+  margin: 0.3rem 0 0;
+  overflow-wrap: anywhere;
+  color: var(--ms-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.ms-profile-illness-summary {
+  grid-column: span 2;
+  padding: 0.8rem;
+  border: 1px solid color-mix(
+    in srgb,
+    var(--ms-primary) 18%,
+    var(--ms-border)
+  );
+  border-radius: 0.7rem;
+  background: color-mix(
+    in srgb,
+    var(--ms-primary) 5%,
+    var(--ms-surface)
+  );
+}
+
+.ms-profile-illness-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+}
+
+.ms-profile-none-text {
+  margin: 0.4rem 0 0;
+  color: var(--ms-text-muted);
+  font-size: 0.78rem;
+}
+
+/* =========================================================
+   PROFILE SECTIONS
+   ========================================================= */
+
+.ms-profile-section {
+  padding: 1.35rem;
+}
+
+.ms-profile-section-header {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--ms-border);
+}
+
+.ms-profile-section-header h2 {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.ms-profile-section-header p {
+  max-width: 650px;
+  margin: 0.35rem 0 0;
+  color: var(--ms-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.ms-profile-section-content {
+  min-width: 0;
+}
+
+.ms-profile-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.ms-profile-textareas {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* =========================================================
+   FORM ELEMENTS
+   ========================================================= */
+
+.ms-field {
+  min-width: 0;
+}
+
+.ms-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--ms-text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.ms-input,
+.ms-select {
+  width: 100%;
+  min-height: 42px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--ms-border);
+  border-radius: 0.65rem;
+  outline: none;
+  background: var(--ms-surface);
+  color: var(--ms-text);
+  font: inherit;
+  font-size: 0.82rem;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.ms-input::placeholder {
+  color: var(--ms-text-muted);
+}
+
+.ms-input:hover,
+.ms-select:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--ms-primary) 45%,
+    var(--ms-border)
+  );
+}
+
+.ms-input:focus,
+.ms-select:focus {
+  border-color: var(--ms-primary);
+  box-shadow: 0 0 0 3px color-mix(
+    in srgb,
+    var(--ms-primary) 12%,
+    transparent
+  );
+}
+
+.ms-input-disabled {
+  cursor: not-allowed;
+  background: var(--ms-bg);
+  color: var(--ms-text-muted);
+}
+
+.ms-input:disabled {
+  cursor: not-allowed;
+  background: var(--ms-bg);
+  color: var(--ms-text-muted);
+}
+
+.ms-textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.ms-select {
+  cursor: pointer;
+}
+
+.ms-select:disabled {
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   HEIGHT
+   ========================================================= */
+
+.ms-height-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.ms-height-field {
+  position: relative;
+}
+
+.ms-height-field .ms-input {
+  padding-right: 2rem;
+}
+
+.ms-height-field > span {
+  position: absolute;
+  top: 50%;
+  right: 0.7rem;
+  transform: translateY(-50%);
+  color: var(--ms-text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* =========================================================
+   CHRONIC ILLNESSES
+   ========================================================= */
+
+.ms-illness-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.ms-illness-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 46px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--ms-border);
+  border-radius: 0.7rem;
+  background: var(--ms-surface);
+  color: var(--ms-text-secondary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.ms-illness-option:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--ms-primary) 45%,
+    var(--ms-border)
+  );
+  background: var(--ms-bg);
+}
+
+.ms-illness-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.ms-custom-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  border: 1.5px solid var(--ms-border);
+  border-radius: 0.3rem;
+  background: var(--ms-surface);
+}
+
+.ms-custom-checkbox span {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 0.12rem;
+  background: transparent;
+}
+
+.ms-illness-option.is-selected {
+  border-color: color-mix(
+    in srgb,
+    var(--ms-primary) 45%,
+    var(--ms-border)
+  );
+  background: color-mix(
+    in srgb,
+    var(--ms-primary) 6%,
+    var(--ms-surface)
+  );
+  color: var(--ms-text);
+}
+
+.ms-illness-option.is-selected .ms-custom-checkbox {
+  border-color: var(--ms-primary);
+  background: var(--ms-primary);
+}
+
+.ms-illness-option.is-selected .ms-custom-checkbox span {
+  background: #fff;
+}
+
+.ms-illness-option:focus-within {
+  outline: 3px solid color-mix(
+    in srgb,
+    var(--ms-primary) 14%,
+    transparent
+  );
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   SUBMIT
+   ========================================================= */
+
+.ms-profile-submit-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 1rem;
+}
+
+.ms-profile-submit-row .ms-btn {
+  min-width: 145px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .ms-profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-profile-summary {
+    position: static;
+  }
+
+  .ms-profile-form {
+    order: 2;
+  }
+
+  .ms-profile-summary {
+    order: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .ms-profile-header {
+    margin-bottom: 1.4rem;
+  }
+
+  .ms-profile-heading {
+    gap: 0.7rem;
+  }
+
+  .ms-profile-heading-icon {
+    width: 2.35rem;
+    height: 2.35rem;
+  }
+
+  .ms-profile-section,
+  .ms-profile-summary {
+    padding: 1rem;
+  }
+
+  .ms-profile-fields-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-profile-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-profile-info-item-full,
+  .ms-profile-illness-summary {
+    grid-column: auto;
+  }
+
+  .ms-illness-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-profile-submit-row {
+    justify-content: stretch;
+  }
+
+  .ms-profile-submit-row .ms-btn {
+    width: 100%;
+  }
+}

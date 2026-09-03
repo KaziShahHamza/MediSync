@@ -1,4 +1,4 @@
-// client/src/components/profile/ProfileSection.jsx
+// src/components/profile/ProfileSection.jsx
 
 export default function ProfileSection({
   title,
@@ -6,22 +6,16 @@ export default function ProfileSection({
   children,
 }) {
   return (
-    <section className="bg-white rounded-2xl border border-slate-200 p-6">
+    <section className="ms-card ms-profile-section">
+      <header className="ms-profile-section-header">
+        <h2>{title}</h2>
 
-      <div className="mb-5">
-        <h2 className="text-xl font-semibold text-slate-800">
-          {title}
-        </h2>
+        {description && <p>{description}</p>}
+      </header>
 
-        {description && (
-          <p className="text-sm text-slate-500 mt-1">
-            {description}
-          </p>
-        )}
+      <div className="ms-profile-section-content">
+        {children}
       </div>
-
-      {children}
-
     </section>
   );
 }

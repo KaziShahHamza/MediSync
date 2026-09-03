@@ -252,3 +252,153 @@
     margin-left: auto;
   }
 }
+
+/* =========================================================
+   THEME TOGGLE
+   ========================================================= */
+
+.ms-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  min-height: 40px;
+  padding: 0 10px;
+
+  color: var(--ms-text-secondary);
+  background: transparent;
+
+  border: 1px solid transparent;
+  border-radius: var(--ms-radius-md);
+
+  font-family: inherit;
+  font-size: var(--ms-font-sm);
+  font-weight: var(--ms-font-weight-medium);
+
+  cursor: pointer;
+
+  transition:
+    color var(--ms-transition-fast),
+    background-color var(--ms-transition-fast),
+    border-color var(--ms-transition-fast);
+}
+
+.ms-theme-toggle:hover {
+  color: var(--ms-text);
+  background: var(--ms-surface-muted);
+  border-color: var(--ms-border);
+}
+
+.ms-theme-toggle:focus-visible {
+  outline: 2px solid var(--ms-primary);
+  outline-offset: 2px;
+}
+
+.ms-theme-toggle svg {
+  flex: 0 0 auto;
+}
+
+/* Mobile theme row */
+
+.ms-navbar-mobile-theme {
+  display: none;
+}
+
+.ms-theme-toggle-mobile {
+  width: 100%;
+  justify-content: flex-start;
+}
+```
+
+Then update your existing responsive section:
+
+```css
+@media (max-width: 1023px) {
+  .ms-navbar-inner {
+    gap: var(--ms-space-3);
+  }
+
+  .ms-navbar-actions {
+    gap: 2px;
+  }
+
+  .ms-nav-link {
+    padding: 0 8px;
+  }
+
+  .ms-nav-link span {
+    display: none;
+  }
+
+  .ms-nav-link svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .ms-theme-toggle {
+    width: 40px;
+    padding: 0;
+  }
+
+  .ms-theme-toggle span {
+    display: none;
+  }
+
+  .ms-navbar-divider {
+    margin: 0 4px;
+  }
+
+  .ms-btn-danger span {
+    display: none;
+  }
+
+  .ms-btn-danger {
+    width: 40px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 639px) {
+  .ms-navbar-inner {
+    min-height: 64px;
+  }
+
+  .ms-brand-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .ms-brand-tagline {
+    display: none;
+  }
+
+  .ms-brand-name {
+    font-size: var(--ms-font-base);
+  }
+
+  .ms-nav-link {
+    min-width: 38px;
+    min-height: 38px;
+  }
+
+  .ms-theme-toggle {
+    min-width: 38px;
+    min-height: 38px;
+  }
+
+  .ms-btn-danger {
+    min-width: 38px;
+    min-height: 38px;
+  }
+}
+
+@media (max-width: 479px) {
+  .ms-brand-content {
+    display: none;
+  }
+
+  .ms-navbar-actions {
+    margin-left: auto;
+  }
+}

@@ -9,11 +9,15 @@ import {
   Stethoscope,
   UserRound,
   LogOut,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,6 +46,27 @@ export default function Navbar() {
     );
   };
 
+  const themeLabel =
+    theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+
+  const ThemeToggle = ({ mobile = false }) => (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className={`ms-theme-toggle ${mobile ? "ms-theme-toggle-mobile" : ""}`}
+      aria-label={themeLabel}
+      title={themeLabel}
+    >
+      {theme === "dark" ? (
+        <Sun size={18} strokeWidth={2} aria-hidden="true" />
+      ) : (
+        <Moon size={18} strokeWidth={2} aria-hidden="true" />
+      )}
+
+      <span>{mobile ? "Appearance" : theme === "dark" ? "Light" : "Dark"}</span>
+    </button>
+  );
+
   return (
     <header className="ms-navbar">
       <div className="ms-container ms-navbar-inner">
@@ -64,6 +89,8 @@ export default function Navbar() {
         <nav className="ms-navbar-navigation" aria-label="Main navigation">
           {!user && (
             <div className="ms-navbar-actions">
+              <ThemeToggle />
+
               <Link
                 to="/login"
                 className={`ms-nav-link ${
@@ -96,10 +123,10 @@ export default function Navbar() {
 
               <div className="ms-navbar-divider" aria-hidden="true" />
 
-              <div
-                className="ms-navbar-user"
-                aria-label={`Signed in as ${user.name || "User"}`}
-              >
+              {/* Desktop Theme Toggle */}
+              <ThemeToggle />
+
+              <div className="ms-navbar-user">
                 <span className="ms-navbar-user-name">
                   {user.name || "User"}
                 </span>
@@ -120,6 +147,13 @@ export default function Navbar() {
             </div>
           )}
         </nav>
+      </div>
+
+      {/* Mobile Theme Control */}
+      <div className="ms-navbar-mobile-theme">
+        <div className="ms-container">
+          <ThemeToggle mobile />
+        </div>
       </div>
     </header>
   );

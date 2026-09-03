@@ -8,6 +8,7 @@ import { MedicineProvider } from "./context/MedicineContext";
 import { ProfileProvider } from "./context/ProfileContext";
 import { PrescriptionProvider } from "./context/PrescriptionContext";
 import { DoctorProvider } from "./context/DoctorContext";
+import { ThemeProvider } from "./context/ThemeContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -39,91 +40,93 @@ export default function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <ProfileProvider>
-        <MedicineProvider>
-          <PrescriptionProvider>
-            <DoctorProvider>
-              <BrowserRouter>
-                <div className="ms-app-shell">
-                  <Navbar />
+    <ThemeProvider>
+      <AuthProvider>
+        <ProfileProvider>
+          <MedicineProvider>
+            <PrescriptionProvider>
+              <DoctorProvider>
+                <BrowserRouter>
+                  <div className="ms-app-shell">
+                    <Navbar />
 
-                  {/* Background reminder engine */}
-                  {/* <ReminderWrapper /> */}
+                    {/* Background reminder engine */}
+                    {/* <ReminderWrapper /> */}
 
-                  <main className="ms-main">
-                    <Routes>
-                      {/* Public Routes */}
+                    <main className="ms-main">
+                      <Routes>
+                        {/* Public Routes */}
 
-                      <Route path="/" element={<Home />} />
+                        <Route path="/" element={<Home />} />
 
-                      <Route path="/login" element={<Login />} />
+                        <Route path="/login" element={<Login />} />
 
-                      <Route path="/signup" element={<Signup />} />
+                        <Route path="/signup" element={<Signup />} />
 
-                      {/* Protected Routes */}
+                        {/* Protected Routes */}
 
-                      <Route
-                        path="/dashboard"
-                        element={
-                          <ProtectedRoute>
-                            <Dashboard />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/dashboard"
+                          element={
+                            <ProtectedRoute>
+                              <Dashboard />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/medicines"
-                        element={
-                          <ProtectedRoute>
-                            <Medicines />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/medicines"
+                          element={
+                            <ProtectedRoute>
+                              <Medicines />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/health"
-                        element={
-                          <ProtectedRoute>
-                            <Health />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/health"
+                          element={
+                            <ProtectedRoute>
+                              <Health />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/prescriptions"
-                        element={
-                          <ProtectedRoute>
-                            <Prescriptions />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/prescriptions"
+                          element={
+                            <ProtectedRoute>
+                              <Prescriptions />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/doctors"
-                        element={
-                          <ProtectedRoute>
-                            <Doctors />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/doctors"
+                          element={
+                            <ProtectedRoute>
+                              <Doctors />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/profile"
-                        element={
-                          <ProtectedRoute>
-                            <Profile />
-                          </ProtectedRoute>
-                        }
-                      />
-                    </Routes>
-                  </main>
-                </div>
-              </BrowserRouter>
-            </DoctorProvider>
-          </PrescriptionProvider>
-        </MedicineProvider>
-      </ProfileProvider>
-    </AuthProvider>
+                        <Route
+                          path="/profile"
+                          element={
+                            <ProtectedRoute>
+                              <Profile />
+                            </ProtectedRoute>
+                          }
+                        />
+                      </Routes>
+                    </main>
+                  </div>
+                </BrowserRouter>
+              </DoctorProvider>
+            </PrescriptionProvider>
+          </MedicineProvider>
+        </ProfileProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

@@ -38,7 +38,6 @@
 @import "./layout/responsive.css";
 @import "./layout/shell.css";
 
-
 /* -------------------------
    COMPONENTS
    ------------------------- */
@@ -56,5 +55,5 @@
 @import "./components/medicines.css";
 @import "./components/health.css";
 @import "./components/doctors.css";
-
-
+@import "./components/prescriptions.css";
+@import "./components/profile.css";

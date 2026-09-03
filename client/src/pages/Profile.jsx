@@ -1,6 +1,6 @@
-// src/pages/Profile.jsx
-
 import { useEffect, useState } from "react";
+import { UserRound } from "lucide-react";
+
 import { useProfile } from "../context/ProfileContext";
 import ProfileSummary from "../components/profile/ProfileSummary";
 import ProfileSection from "../components/profile/ProfileSection";
@@ -120,7 +120,7 @@ export default function Profile() {
       return {
         ...prev,
         chronicIllnesses: exists
-          ? prev.chronicIllnesses.filter((i) => i !== name)
+          ? prev.chronicIllnesses.filter((item) => item !== name)
           : [...prev.chronicIllnesses, name],
       };
     });
@@ -148,254 +148,326 @@ export default function Profile() {
 
       if (res.ok) {
         setProfile(data);
-        fetchProfile();
-        alert("Profile saved successfully.");
+        await fetchProfile();
+        window.alert("Profile saved successfully.");
       } else {
-        alert(data.message);
+        window.alert(data.message || "Failed to save profile.");
       }
     } catch (err) {
       console.error(err);
-      alert("Something went wrong.");
+      window.alert("Something went wrong.");
+    } finally {
+      setSaving(false);
     }
-
-    setSaving(false);
   }
 
   if (loading) {
     return (
-      <div className="container py-12">
-        <p className="text-center text-slate-500">Loading profile...</p>
-      </div>
+      <main className="ms-page ms-profile-page">
+        <div className="ms-container">
+          <div className="ms-loading-state">
+            <span className="ms-spinner" />
+            <p>Loading profile...</p>
+          </div>
+        </div>
+      </main>
     );
   }
 
   return (
-    <div className="container py-10">
-      {/* Header */}
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold text-slate-800">My Profile</h1>
+    <main className="ms-page ms-profile-page">
+      <div className="ms-container">
+        <header className="ms-page-header ms-profile-header">
+          <div className="ms-profile-heading">
+            <div className="ms-profile-heading-icon">
+              <UserRound size={22} strokeWidth={1.8} />
+            </div>
 
-        <p className="text-slate-500 mt-2">
-          Manage your personal and medical information.
-        </p>
-      </div>
+            <div>
+              <p className="ms-page-eyebrow">Personal health record</p>
 
-      <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
-        {/* Summary */}
-        <ProfileSummary userInfo={userInfo} form={form} />
+              <h1 className="ms-page-title">My Profile</h1>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <ProfileSection
-            title="Personal Information"
-            description="Basic details used for your health profile."
-          >
-            <div className="grid md:grid-cols-2 gap-5">
-              <ProfileInput
-                label="Username"
-                value={userInfo?.username || ""}
-                className="bg-red-200"
-                disabled
-              />
+              <p className="ms-page-subtitle">
+                Manage your personal, medical, lifestyle, and emergency
+                information.
+              </p>
+            </div>
+          </div>
+        </header>
 
-              <ProfileInput
-                label="Email"
-                value={userInfo?.email || ""}
-                disabled
-              />
+        <div className="ms-profile-layout">
+          <ProfileSummary userInfo={userInfo} form={form} />
 
-              <ProfileInput
-                label="Name"
-                value={form.name}
-                name="name"
-                onChange={handleChange}
-              />
+          <form className="ms-form ms-profile-form" onSubmit={handleSubmit}>
+            <ProfileSection
+              title="Personal Information"
+              description="Basic details used for your health profile."
+            >
+              <div className="ms-profile-fields-grid">
+                <ProfileInput
+                  label="Username"
+                  value={userInfo?.username || ""}
+                  disabled
+                />
 
-              <ProfileInput
-                label="Date of Birth"
-                type="date"
-                name="dob"
-                value={form.dob}
-                onChange={handleChange}
-              />
+                <ProfileInput
+                  label="Email"
+                  value={userInfo?.email || ""}
+                  disabled
+                />
 
-              <ProfileSelect
-                label="Gender"
-                name="gender"
-                value={form.gender}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-              </ProfileSelect>
+                <ProfileInput
+                  label="Name"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                />
 
-              <div>
-                <label className="block text-sm font-medium mb-2">Height</label>
+                <ProfileInput
+                  label="Date of Birth"
+                  type="date"
+                  name="dob"
+                  value={form.dob}
+                  onChange={handleChange}
+                />
 
-                <div className="flex gap-3">
-                  <input
-                    type="number"
-                    name="feet"
-                    placeholder="Feet"
-                    value={form.height.feet}
-                    onChange={handleHeightChange}
-                    className="input w-full"
-                  />
+                <ProfileSelect
+                  label="Gender"
+                  name="gender"
+                  value={form.gender}
+                  onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </ProfileSelect>
 
-                  <input
-                    type="number"
-                    name="inches"
-                    placeholder="Inches"
-                    value={form.height.inches}
-                    onChange={handleHeightChange}
-                    className="input w-full"
-                  />
+                <div className="ms-field">
+                  <label className="ms-label" htmlFor="profile-height-feet">
+                    Height
+                  </label>
+
+                  <div className="ms-height-fields">
+                    <div className="ms-height-field">
+                      <input
+                        id="profile-height-feet"
+                        className="ms-input"
+                        type="number"
+                        name="feet"
+                        min="0"
+                        max="8"
+                        placeholder="Feet"
+                        value={form.height.feet}
+                        onChange={handleHeightChange}
+                      />
+
+                      <span>ft</span>
+                    </div>
+
+                    <div className="ms-height-field">
+                      <input
+                        id="profile-height-inches"
+                        className="ms-input"
+                        type="number"
+                        name="inches"
+                        min="0"
+                        max="11"
+                        placeholder="Inches"
+                        value={form.height.inches}
+                        onChange={handleHeightChange}
+                      />
+
+                      <span>in</span>
+                    </div>
+                  </div>
+                </div>
+
+                <ProfileSelect
+                  label="Blood Group"
+                  name="bloodGroup"
+                  value={form.bloodGroup}
+                  onChange={handleChange}
+                >
+                  {bloodGroups.map((group) => (
+                    <option key={group} value={group}>
+                      {group || "Select"}
+                    </option>
+                  ))}
+                </ProfileSelect>
+              </div>
+            </ProfileSection>
+
+            <ProfileSection
+              title="Medical Information"
+              description="Important medical history that can help provide better health context."
+            >
+              <div className="ms-field">
+                <span className="ms-label">Chronic Illnesses</span>
+
+                <div className="ms-illness-grid">
+                  {illnessOptions.map((item) => {
+                    const checked = form.chronicIllnesses.includes(item);
+
+                    return (
+                      <label
+                        key={item}
+                        className={`ms-illness-option ${
+                          checked ? "is-selected" : ""
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleIllness(item)}
+                        />
+
+                        <span className="ms-custom-checkbox">
+                          <span />
+                        </span>
+
+                        <span>{item}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
 
-              <ProfileSelect
-                label="Blood Group"
-                name="bloodGroup"
-                value={form.bloodGroup}
-                onChange={handleChange}
-              >
-                {bloodGroups.map((group) => (
-                  <option key={group}>{group || "Select"}</option>
-                ))}
-              </ProfileSelect>
-            </div>
-          </ProfileSection>
+              <div className="ms-profile-textareas">
+                <div className="ms-field">
+                  <label className="ms-label" htmlFor="profile-allergies">
+                    Allergies
+                  </label>
 
-          <ProfileSection
-            title="Medical Information"
-            description="Important medical history."
-          >
-            <label className="block text-sm font-medium mb-3">
-              Chronic Illnesses
-            </label>
-
-            <div className="grid md:grid-cols-2 gap-3">
-              {illnessOptions.map((item) => (
-                <label
-                  key={item}
-                  className="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50 cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={form.chronicIllnesses.includes(item)}
-                    onChange={() => toggleIllness(item)}
-                    className="shrink-0 translate-y-px"
+                  <textarea
+                    id="profile-allergies"
+                    className="ms-input ms-textarea"
+                    rows="3"
+                    name="allergies"
+                    placeholder="List any known allergies"
+                    value={form.allergies}
+                    onChange={handleChange}
                   />
-                  <span className="ml-2">{item}</span>
-                  {/* {item} */}
-                </label>
-              ))}
+                </div>
+
+                <div className="ms-field">
+                  <label className="ms-label" htmlFor="profile-surgeries">
+                    Previous Surgeries
+                  </label>
+
+                  <textarea
+                    id="profile-surgeries"
+                    className="ms-input ms-textarea"
+                    rows="3"
+                    name="surgeries"
+                    placeholder="List any previous surgeries"
+                    value={form.surgeries}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+            </ProfileSection>
+
+            <ProfileSection
+              title="Lifestyle"
+              description="Daily habits and activities that form part of your health profile."
+            >
+              <div className="ms-profile-fields-grid">
+                <ProfileSelect
+                  label="Smoking"
+                  name="smoking"
+                  value={form.smoking}
+                  onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="Never">Never</option>
+                  <option value="Former">Former</option>
+                  <option value="Current">Current</option>
+                </ProfileSelect>
+
+                <ProfileSelect
+                  label="Alcohol"
+                  name="alcohol"
+                  value={form.alcohol}
+                  onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="Never">Never</option>
+                  <option value="Occasionally">Occasionally</option>
+                  <option value="Frequently">Frequently</option>
+                </ProfileSelect>
+
+                <ProfileSelect
+                  label="Exercise"
+                  name="exercise"
+                  value={form.exercise}
+                  onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="Never">Never</option>
+                  <option value="1-2 Days">1-2 Days</option>
+                  <option value="3-5 Days">3-5 Days</option>
+                  <option value="Daily">Daily</option>
+                </ProfileSelect>
+
+                <ProfileSelect
+                  label="Diet"
+                  name="diet"
+                  value={form.diet}
+                  onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="Mixed">Mixed</option>
+                  <option value="Vegetarian">Vegetarian</option>
+                  <option value="Vegan">Vegan</option>
+                </ProfileSelect>
+              </div>
+            </ProfileSection>
+
+            <ProfileSection
+              title="Emergency Contact"
+              description="Someone who can be contacted in case of an emergency."
+            >
+              <div className="ms-profile-fields-grid">
+                <ProfileInput
+                  label="Contact Name"
+                  name="name"
+                  value={form.emergencyContact.name}
+                  onChange={handleEmergencyChange}
+                />
+
+                <ProfileInput
+                  label="Phone Number"
+                  type="tel"
+                  name="phone"
+                  value={form.emergencyContact.phone}
+                  onChange={handleEmergencyChange}
+                />
+              </div>
+            </ProfileSection>
+
+            <div className="ms-profile-submit-row">
+              <button
+                type="submit"
+                className="ms-btn ms-btn-primary"
+                disabled={saving}
+              >
+                {saving ? (
+                  <>
+                    <span className="ms-spinner" />
+                    Saving...
+                  </>
+                ) : profile ? (
+                  "Update Profile"
+                ) : (
+                  "Create Profile"
+                )}
+              </button>
             </div>
-
-            <textarea
-              rows="3"
-              name="allergies"
-              placeholder="Allergies"
-              value={form.allergies}
-              onChange={handleChange}
-              className="input w-full mt-5"
-            />
-
-            <textarea
-              rows="3"
-              name="surgeries"
-              placeholder="Previous surgeries"
-              value={form.surgeries}
-              onChange={handleChange}
-              className="input w-full mt-5"
-            />
-          </ProfileSection>
-
-          <ProfileSection
-            title="Lifestyle"
-            description="Daily habits and activities."
-          >
-            <div className="grid md:grid-cols-2 gap-5">
-              <ProfileSelect
-                label="Smoking"
-                name="smoking"
-                value={form.smoking}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                <option>Never</option>
-                <option>Former</option>
-                <option>Current</option>
-              </ProfileSelect>
-
-              <ProfileSelect
-                label="Alcohol"
-                name="alcohol"
-                value={form.alcohol}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                <option>Never</option>
-                <option>Occasionally</option>
-                <option>Frequently</option>
-              </ProfileSelect>
-
-              <ProfileSelect
-                label="Exercise"
-                name="exercise"
-                value={form.exercise}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                <option>Never</option>
-                <option>1-2 Days</option>
-                <option>3-5 Days</option>
-                <option>Daily</option>
-              </ProfileSelect>
-
-              <ProfileSelect
-                label="Diet"
-                name="diet"
-                value={form.diet}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                <option>Mixed</option>
-                <option>Vegetarian</option>
-                <option>Vegan</option>
-              </ProfileSelect>
-            </div>
-          </ProfileSection>
-
-          <ProfileSection title="Emergency Contact">
-            <div className="grid md:grid-cols-2 gap-5">
-              <ProfileInput
-                label="Contact Name"
-                name="name"
-                value={form.emergencyContact.name}
-                onChange={handleEmergencyChange}
-              />
-
-              <ProfileInput
-                label="Phone Number"
-                name="phone"
-                value={form.emergencyContact.phone}
-                onChange={handleEmergencyChange}
-              />
-            </div>
-          </ProfileSection>
-
-          <button disabled={saving} className="btn-primary">
-            {saving
-              ? "Saving..."
-              : profile
-                ? "Update Profile"
-                : "Create Profile"}
-          </button>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

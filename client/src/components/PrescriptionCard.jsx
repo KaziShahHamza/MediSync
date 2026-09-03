@@ -1,53 +1,62 @@
-// client/src/components/PrescriptionCard.jsx
+// src/components/PrescriptionCard.jsx
 
-import { Eye, Trash2, CalendarDays } from "lucide-react";
+import { CalendarDays, Eye, Trash2 } from "lucide-react";
 
-export default function PrescriptionCard({
-  prescription,
-  onOpen,
-  onDelete,
-}) {
+function PrescriptionCard({ prescription, onOpen, onDelete }) {
+  const createdDate = prescription.createdAt
+    ? new Date(prescription.createdAt).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : "Unknown date";
+
   return (
-    <div className="card overflow-hidden p-0">
-      {/* Image */}
-      <div
-        className="relative h-52 bg-slate-100 cursor-pointer"
+    <article className="ms-card ms-prescription-card">
+      <button
+        type="button"
+        className="ms-prescription-card-image-button"
         onClick={() => onOpen(prescription)}
+        aria-label={`View ${prescription.title}`}
       >
-        <img
-          src={prescription.imageUrl}
-          alt={prescription.title}
-          className="w-full h-full object-cover"
-        />
-
-        <div className="absolute inset-0 bg-slate-900/0 hover:bg-slate-900/20 transition duration-150 flex items-center justify-center">
-          <Eye
-            size={30}
-            className="text-white opacity-0 hover:opacity-100 transition"
+        <div className="ms-prescription-card-image">
+          <img
+            src={prescription.imageUrl}
+            alt={prescription.title}
+            loading="lazy"
           />
+
+          <span className="ms-prescription-card-overlay">
+            <Eye size={21} strokeWidth={1.8} />
+            <span>View</span>
+          </span>
         </div>
-      </div>
+      </button>
 
-      {/* Content */}
-      <div className="p-5">
-        <h3 className="font-semibold text-slate-900 truncate">
-          {prescription.title}
-        </h3>
+      <div className="ms-prescription-card-content">
+        <div className="ms-prescription-card-main">
+          <h3 className="ms-prescription-card-title" title={prescription.title}>
+            {prescription.title}
+          </h3>
 
-        <div className="flex items-center gap-2 mt-2 text-sm text-slate-500">
-          <CalendarDays size={16} />
-          <p>Uploaded: </p>
-          {new Date(prescription.createdAt).toLocaleDateString()}
+          <div className="ms-prescription-card-meta">
+            <CalendarDays size={15} strokeWidth={1.8} />
+            <span>{createdDate}</span>
+          </div>
         </div>
 
         <button
+          type="button"
+          className="ms-icon-button ms-prescription-card-delete"
           onClick={() => onDelete(prescription._id)}
-          className="mt-5 inline-flex items-center justify-center gap-2 w-full rounded-xl border border-red-200 text-red-600 py-2.5 font-medium transition duration-150 hover:bg-red-50"
+          aria-label={`Delete ${prescription.title}`}
+          title="Delete prescription"
         >
-          <Trash2 size={17} />
-          Delete
+          <Trash2 size={17} strokeWidth={1.8} />
         </button>
       </div>
-    </div>
+    </article>
   );
 }
+
+export default PrescriptionCard;

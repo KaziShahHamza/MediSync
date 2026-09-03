@@ -1,25 +1,30 @@
-// client/src/components/profile/ProfileInput.jsx
+// src/components/profile/ProfileInput.jsx
 
 export default function ProfileInput({
   label,
-  className = "",
   disabled = false,
   ...props
 }) {
+  const inputId =
+    props.id ||
+    (props.name ? `profile-${props.name}` : undefined);
+
   return (
-    <div>
-      <label className="block text-sm font-medium text-slate-700 mb-2">
+    <div className="ms-field">
+      <label
+        className="ms-label"
+        htmlFor={inputId}
+      >
         {label}
       </label>
 
       <input
         {...props}
+        id={inputId}
         disabled={disabled}
-        className={`input w-full ${
-          disabled
-            ? "!bg-gray-100 !text-slate-500 cursor-not-allowed"
-            : ""
-        } ${className}`}
+        className={`ms-input ${
+          disabled ? "ms-input-disabled" : ""
+        }`}
       />
     </div>
   );

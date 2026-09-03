@@ -1,0 +1,684 @@
+/* =========================================================
+   PRESCRIPTIONS
+   ========================================================= */
+
+.ms-prescriptions-page {
+  min-height: 100%;
+}
+
+.ms-prescriptions-header {
+  margin-bottom: 2rem;
+}
+
+.ms-page-eyebrow {
+  margin: 0 0 0.4rem;
+  color: var(--ms-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ms-prescriptions-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.ms-prescriptions-gallery {
+  min-width: 0;
+}
+
+.ms-prescriptions-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ms-section-title {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.ms-section-subtitle {
+  margin: 0.3rem 0 0;
+  color: var(--ms-text-muted);
+  font-size: 0.86rem;
+}
+
+.ms-prescriptions-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--ms-border);
+  border-radius: 999px;
+  background: var(--ms-surface);
+  color: var(--ms-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.ms-prescriptions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* =========================================================
+   PRESCRIPTION CARD
+   ========================================================= */
+
+.ms-prescription-card {
+  overflow: hidden;
+  padding: 0;
+  min-width: 0;
+}
+
+.ms-prescription-card-image-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ms-prescription-card-image {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+  background: var(--ms-bg);
+}
+
+.ms-prescription-card-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 180ms ease;
+}
+
+.ms-prescription-card-image-button:hover img,
+.ms-prescription-card-image-button:focus-visible img {
+  transform: scale(1.025);
+}
+
+.ms-prescription-card-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  background: rgba(15, 23, 42, 0.58);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.ms-prescription-card-image-button:hover
+  .ms-prescription-card-overlay,
+.ms-prescription-card-image-button:focus-visible
+  .ms-prescription-card-overlay {
+  opacity: 1;
+}
+
+.ms-prescription-card-image-button:focus-visible {
+  outline: 3px solid color-mix(
+    in srgb,
+    var(--ms-primary) 30%,
+    transparent
+  );
+  outline-offset: -3px;
+}
+
+.ms-prescription-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.ms-prescription-card-main {
+  min-width: 0;
+}
+
+.ms-prescription-card-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--ms-text);
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ms-prescription-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.45rem;
+  color: var(--ms-text-muted);
+  font-size: 0.78rem;
+}
+
+.ms-prescription-card-delete {
+  flex: 0 0 auto;
+}
+
+/* =========================================================
+   UPLOAD CARD
+   ========================================================= */
+
+.ms-prescriptions-upload-column {
+  position: sticky;
+  top: 1.25rem;
+}
+
+.ms-prescription-upload-card {
+  padding: 1.35rem;
+}
+
+.ms-prescription-upload-header {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  margin-bottom: 1.4rem;
+}
+
+.ms-prescription-upload-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  border: 1px solid var(--ms-border);
+  border-radius: 0.75rem;
+  background: var(--ms-bg);
+  color: var(--ms-primary);
+}
+
+.ms-prescription-upload-header h2 {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.ms-prescription-upload-header p {
+  margin: 0.35rem 0 0;
+  color: var(--ms-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.ms-prescription-upload-form {
+  gap: 1rem;
+}
+
+.ms-prescription-file-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 76px;
+  padding: 0.85rem;
+  border: 1px dashed var(--ms-border);
+  border-radius: 0.75rem;
+  background: var(--ms-bg);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.ms-prescription-file-picker:hover {
+  border-color: var(--ms-primary);
+}
+
+.ms-prescription-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ms-prescription-file-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  border-radius: 0.65rem;
+  background: var(--ms-surface);
+  color: var(--ms-primary);
+}
+
+.ms-prescription-file-content {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.ms-prescription-file-content strong {
+  overflow: hidden;
+  color: var(--ms-text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ms-prescription-file-content small {
+  color: var(--ms-text-muted);
+  font-size: 0.73rem;
+}
+
+.ms-prescription-ai-info {
+  display: flex;
+  gap: 0.7rem;
+  padding: 0.85rem;
+  border: 1px solid var(--ms-border);
+  border-radius: 0.75rem;
+  background: var(--ms-bg);
+}
+
+.ms-prescription-ai-info-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: var(--ms-primary);
+}
+
+.ms-prescription-ai-info strong {
+  display: block;
+  color: var(--ms-text);
+  font-size: 0.78rem;
+}
+
+.ms-prescription-ai-info p {
+  margin: 0.25rem 0 0;
+  color: var(--ms-text-muted);
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+.ms-prescription-upload-button {
+  width: 100%;
+}
+
+.ms-prescription-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.75rem 0.8rem;
+  border-radius: 0.65rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.ms-prescription-status-processing {
+  background: color-mix(
+    in srgb,
+    var(--ms-primary) 8%,
+    var(--ms-surface)
+  );
+  color: var(--ms-primary);
+}
+
+.ms-prescription-status-success {
+  background: color-mix(
+    in srgb,
+    var(--ms-success) 9%,
+    var(--ms-surface)
+  );
+  color: var(--ms-success);
+}
+
+.ms-prescription-status-error {
+  background: color-mix(
+    in srgb,
+    var(--ms-danger) 8%,
+    var(--ms-surface)
+  );
+  color: var(--ms-danger);
+}
+
+.ms-prescription-disclaimer {
+  margin: 0;
+  color: var(--ms-text-muted);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.ms-prescriptions-empty {
+  min-height: 300px;
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.ms-prescription-modal-backdrop {
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.ms-prescription-preview-modal {
+  display: flex;
+  width: min(1180px, 100%);
+  max-height: min(900px, calc(100vh - 2rem));
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ms-prescription-modal-heading {
+  min-width: 0;
+}
+
+.ms-modal-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--ms-text);
+  font-size: 1rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ms-modal-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+  color: var(--ms-text-muted);
+  font-size: 0.76rem;
+}
+
+.ms-prescription-preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-top: 1px solid var(--ms-border);
+  border-bottom: 1px solid var(--ms-border);
+  background: var(--ms-bg);
+}
+
+.ms-prescription-zoom-value {
+  min-width: 3.3rem;
+  color: var(--ms-text-muted);
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.ms-prescription-zoom-controls {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.ms-prescription-preview-layout {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) 350px;
+}
+
+.ms-prescription-image-panel {
+  min-width: 0;
+  min-height: 0;
+  background: #0f172a;
+}
+
+.ms-prescription-image-scroll {
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.ms-prescription-image {
+  display: block;
+  max-width: none;
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
+  transition: width 120ms ease;
+}
+
+.ms-prescription-ai-panel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 1.25rem;
+  border-left: 1px solid var(--ms-border);
+  background: var(--ms-surface);
+}
+
+.ms-prescription-ai-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--ms-border);
+}
+
+.ms-prescription-ai-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  flex: 0 0 auto;
+  border-radius: 0.7rem;
+  background: color-mix(
+    in srgb,
+    var(--ms-primary) 9%,
+    var(--ms-surface)
+  );
+  color: var(--ms-primary);
+}
+
+.ms-prescription-ai-header h3 {
+  margin: 0;
+  color: var(--ms-text);
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.ms-prescription-ai-header p {
+  margin: 0.25rem 0 0;
+  color: var(--ms-text-muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.ms-prescription-ai-summary {
+  padding: 1rem 0;
+  color: var(--ms-text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.ms-prescription-ai-warning {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border-radius: 0.7rem;
+  background: color-mix(
+    in srgb,
+    var(--ms-warning) 8%,
+    var(--ms-surface)
+  );
+  color: var(--ms-warning);
+}
+
+.ms-prescription-ai-warning strong {
+  display: block;
+  color: var(--ms-text);
+  font-size: 0.78rem;
+}
+
+.ms-prescription-ai-warning p {
+  margin: 0.25rem 0 0;
+  color: var(--ms-text-secondary);
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+.ms-prescription-ai-disclaimer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ms-border);
+}
+
+.ms-prescription-ai-disclaimer strong {
+  display: block;
+  color: var(--ms-text);
+  font-size: 0.72rem;
+}
+
+.ms-prescription-ai-disclaimer p {
+  margin: 0.3rem 0 0;
+  color: var(--ms-text-muted);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SPINNER
+   ========================================================= */
+
+.ms-spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ms-spin 700ms linear infinite;
+}
+
+@keyframes ms-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1024px) {
+  .ms-prescriptions-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-prescriptions-upload-column {
+    position: static;
+  }
+
+  .ms-prescription-upload-card {
+    max-width: none;
+  }
+
+  .ms-prescription-preview-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+
+@media (max-width: 760px) {
+  .ms-prescriptions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ms-prescription-preview-modal {
+    max-height: calc(100vh - 1rem);
+  }
+
+  .ms-prescription-preview-layout {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .ms-prescription-image-panel {
+    min-height: 55vh;
+  }
+
+  .ms-prescription-image-scroll {
+    min-height: 55vh;
+  }
+
+  .ms-prescription-ai-panel {
+    border-top: 1px solid var(--ms-border);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .ms-prescriptions-header {
+    margin-bottom: 1.4rem;
+  }
+
+  .ms-prescriptions-list-header {
+    margin-bottom: 0.8rem;
+  }
+
+  .ms-prescription-card-image {
+    height: 260px;
+  }
+
+  .ms-prescription-preview-toolbar {
+    justify-content: space-between;
+  }
+
+  .ms-prescription-modal-backdrop {
+    padding: 0.5rem;
+  }
+
+  .ms-prescription-preview-modal {
+    max-height: calc(100vh - 1rem);
+  }
+
+  .ms-modal-header {
+    padding: 0.9rem;
+  }
+
+  .ms-prescription-preview-toolbar {
+    padding: 0.55rem 0.75rem;
+  }
+
+  .ms-prescription-ai-panel {
+    padding: 1rem;
+  }
+}
