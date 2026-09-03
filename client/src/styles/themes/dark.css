@@ -1,0 +1,101 @@
+/*
+ * ==========================================================
+ * MediSync Dark Theme
+ * ==========================================================
+ *
+ * Dark mode is controlled through semantic variables.
+ *
+ * Components should not need separate dark-mode classes.
+ */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Backgrounds */
+  --ms-bg: var(--ms-slate-950);
+  --ms-surface: var(--ms-slate-900);
+  --ms-surface-raised: var(--ms-slate-800);
+  --ms-surface-muted: var(--ms-slate-800);
+  --ms-surface-subtle: #172033;
+
+  /* Text */
+  --ms-text: var(--ms-slate-50);
+  --ms-text-secondary: var(--ms-slate-300);
+  --ms-text-muted: var(--ms-slate-400);
+  --ms-text-disabled: var(--ms-slate-500);
+  --ms-text-inverse: var(--ms-slate-950);
+
+  /* Borders */
+  --ms-border: var(--ms-slate-700);
+  --ms-border-strong: var(--ms-slate-600);
+  --ms-border-subtle: var(--ms-slate-800);
+
+  /* Brand */
+  --ms-primary: var(--ms-blue-500);
+  --ms-primary-hover: var(--ms-blue-400);
+  --ms-primary-active: var(--ms-blue-300);
+  --ms-primary-soft: rgba(37, 99, 235, 0.16);
+  --ms-primary-soft-border: rgba(96, 165, 250, 0.3);
+
+  --ms-accent: var(--ms-sky-500);
+  --ms-accent-soft: rgba(14, 165, 233, 0.14);
+
+  /* Status */
+  --ms-success: var(--ms-green-500);
+  --ms-success-hover: var(--ms-green-400);
+  --ms-success-soft: rgba(34, 197, 94, 0.13);
+  --ms-success-border: rgba(74, 222, 128, 0.3);
+  --ms-success-text: #86efac;
+
+  --ms-warning: var(--ms-amber-500);
+  --ms-warning-hover: var(--ms-amber-400);
+  --ms-warning-soft: rgba(245, 158, 11, 0.13);
+  --ms-warning-border: rgba(251, 191, 36, 0.3);
+  --ms-warning-text: #fcd34d;
+
+  --ms-danger: var(--ms-red-500);
+  --ms-danger-hover: var(--ms-red-400);
+  --ms-danger-soft: rgba(239, 68, 68, 0.13);
+  --ms-danger-border: rgba(248, 113, 113, 0.3);
+  --ms-danger-text: #fca5a5;
+
+  --ms-info: var(--ms-blue-500);
+  --ms-info-soft: rgba(59, 130, 246, 0.13);
+  --ms-info-border: rgba(96, 165, 250, 0.3);
+  --ms-info-text: #93c5fd;
+
+  /* Overlay */
+  --ms-overlay: rgba(2, 6, 23, 0.72);
+
+  /* Focus */
+  --ms-focus: var(--ms-blue-400);
+  --ms-focus-ring: rgba(96, 165, 250, 0.3);
+
+  /* Form */
+  --ms-input-bg: var(--ms-slate-900);
+  --ms-input-border: var(--ms-slate-600);
+  --ms-input-border-focus: var(--ms-blue-400);
+  --ms-input-placeholder: var(--ms-slate-500);
+
+  /* Navigation */
+  --ms-nav-bg: var(--ms-slate-900);
+  --ms-nav-border: var(--ms-slate-700);
+  --ms-nav-text: var(--ms-slate-300);
+  --ms-nav-text-hover: var(--ms-blue-400);
+  --ms-nav-active-bg: rgba(37, 99, 235, 0.14);
+  --ms-nav-active-text: var(--ms-blue-400);
+
+  /* Selection */
+  --ms-selection-bg: var(--ms-blue-500);
+  --ms-selection-text: #ffffff;
+
+  /* Scrollbar */
+  --ms-scrollbar-track: var(--ms-slate-900);
+  --ms-scrollbar-thumb: var(--ms-slate-600);
+  --ms-scrollbar-thumb-hover: var(--ms-slate-500);
+
+  /* Skeleton */
+  --ms-skeleton-start: var(--ms-slate-800);
+  --ms-skeleton-middle: var(--ms-slate-700);
+  --ms-skeleton-end: var(--ms-slate-800);
+}

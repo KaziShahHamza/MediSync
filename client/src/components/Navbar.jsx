@@ -9,7 +9,6 @@ import {
   Stethoscope,
   UserRound,
   LogOut,
-  ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -17,12 +16,10 @@ export default function Navbar() {
   const { user, logout } = useAuth();
 
   const navigate = useNavigate();
-
   const location = useLocation();
 
   const handleLogout = () => {
     logout();
-
     navigate("/");
   };
 
@@ -31,85 +28,137 @@ export default function Navbar() {
   const navItem = (path, label, Icon) => (
     <Link
       to={path}
-      className={`nav-link ${isActive(path) ? "nav-link-active" : ""}`}
+      className={`ms-nav-link ${
+        isActive(path) ? "ms-nav-link-active" : ""
+      }`}
+      aria-current={isActive(path) ? "page" : undefined}
     >
-      <Icon size={18} strokeWidth={2} />
-
+      <Icon size={18} strokeWidth={2} aria-hidden="true" />
       <span>{label}</span>
     </Link>
   );
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-      <div className="container h-[72px] flex items-center justify-between">
+    <header className="ms-navbar">
+      <div className="ms-container ms-navbar-inner">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" className="ms-brand">
           <img
             src="/assets/icon_3.png"
             alt="MediSync"
-            className="w-13 h-13 rounded-xl object-cover"
+            className="ms-brand-logo"
           />
 
-          {/* <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center">
-            <ShieldCheck size={30} className="text-white" />
-          </div> */}
-
-          <div>
-            <h1 className="text-lg font-bold text-slate-900 leading-tight">
+          <div className="ms-brand-content">
+            <h1 className="ms-brand-name">
               MediSync
             </h1>
 
-            <p className="text-xs text-slate-500">
+            <p className="ms-brand-tagline">
               Personal Health Platform
             </p>
           </div>
         </Link>
 
         {/* Navigation */}
-        <div className="flex items-center gap-2">
+        <nav
+          className="ms-navbar-navigation"
+          aria-label="Main navigation"
+        >
           {!user && (
-            <>
+            <div className="ms-navbar-actions">
               <Link
                 to="/login"
-                className={`nav-link ${isActive("/login") ? "nav-link-active" : ""}`}
+                className={`ms-nav-link ${
+                  isActive("/login")
+                    ? "ms-nav-link-active"
+                    : ""
+                }`}
+                aria-current={
+                  isActive("/login") ? "page" : undefined
+                }
               >
                 Login
               </Link>
 
-              <Link to="/signup" className="btn-primary">
+              <Link
+                to="/signup"
+                className="ms-btn ms-btn-primary"
+              >
                 Create Account
               </Link>
-            </>
+            </div>
           )}
 
           {user && (
-            <>
-              {navItem("/dashboard", "Dashboard", LayoutDashboard)}
-              {navItem("/medicines", "Medicines", Pill)}
-              {navItem("/health", "Health", HeartPulse)}
-              {navItem("/doctors", "Doctors", Stethoscope)}
-              {navItem("/prescriptions", "Prescriptions", FileImage)}
-              {navItem("/profile", "Profile", UserRound)}
+            <div className="ms-navbar-actions">
+              {navItem(
+                "/dashboard",
+                "Dashboard",
+                LayoutDashboard
+              )}
 
-              <div className="h-8 w-px bg-slate-200 mx-2" />
+              {navItem(
+                "/medicines",
+                "Medicines",
+                Pill
+              )}
 
-              <div className="hidden xl:flex flex-col mr-2">
-                <span className="text-sm font-medium text-slate-800">
+              {navItem(
+                "/health",
+                "Health",
+                HeartPulse
+              )}
+
+              {navItem(
+                "/doctors",
+                "Doctors",
+                Stethoscope
+              )}
+
+              {navItem(
+                "/prescriptions",
+                "Prescriptions",
+                FileImage
+              )}
+
+              {navItem(
+                "/profile",
+                "Profile",
+                UserRound
+              )}
+
+              <div
+                className="ms-navbar-divider"
+                aria-hidden="true"
+              />
+
+              <div className="ms-navbar-user">
+                <span className="ms-navbar-user-name">
                   {user.name || "User"}
                 </span>
 
-                <span className="text-xs text-slate-500">
+                <span className="ms-navbar-user-email">
                   {user.email}
                 </span>
               </div>
 
-              <button onClick={handleLogout} className="btn-danger">
-                <LogOut size={18} strokeWidth={2} />
-                Logout
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="ms-btn ms-btn-danger"
+              >
+                <LogOut
+                  size={18}
+                  strokeWidth={2}
+                  aria-hidden="true"
+                />
+
+                <span>Logout</span>
               </button>
-            </>
+            </div>
           )}
-        </div>
+        </nav>
       </div>
     </header>
   );

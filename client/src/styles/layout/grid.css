@@ -1,0 +1,203 @@
+/*
+ * ==========================================================
+ * MediSync Grid System
+ * ==========================================================
+ */
+
+.ms-grid {
+  display: grid;
+  width: 100%;
+  gap: var(--ms-grid-gap);
+}
+
+/*
+ * Auto-fit grid.
+ *
+ * Useful when the content should determine how many
+ * columns can comfortably fit.
+ */
+
+.ms-grid-auto {
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 16rem), 1fr)
+  );
+}
+
+/*
+ * Two-column grid.
+ */
+
+.ms-grid-2 {
+  grid-template-columns: 1fr;
+}
+
+/*
+ * Three-column grid.
+ */
+
+.ms-grid-3 {
+  grid-template-columns: 1fr;
+}
+
+/*
+ * Four-column grid.
+ */
+
+.ms-grid-4 {
+  grid-template-columns: 1fr;
+}
+
+/*
+ * Five-column grid.
+ */
+
+.ms-grid-5 {
+  grid-template-columns: 1fr;
+}
+
+/*
+ * Six-column grid.
+ */
+
+.ms-grid-6 {
+  grid-template-columns: 1fr;
+}
+
+/*
+ * Equal flexible columns.
+ */
+
+.ms-grid-equal {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+/*
+ * Sidebar + content.
+ */
+
+.ms-grid-sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-grid-gap);
+}
+
+/*
+ * Content + sidebar.
+ */
+
+.ms-grid-content-sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-grid-gap);
+}
+
+/*
+ * Wide content + narrow side panel.
+ */
+
+.ms-grid-main-aside {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-grid-gap);
+}
+
+/*
+ * Form layout.
+ *
+ * Two equal fields on larger screens.
+ */
+
+.ms-grid-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-space-5);
+}
+
+/*
+ * Form field spanning the complete row.
+ */
+
+.ms-grid-full {
+  grid-column: 1 / -1;
+}
+
+/*
+ * Common dashboard layouts.
+ */
+
+.ms-dashboard-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-grid-gap);
+}
+
+.ms-dashboard-main-wide {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-grid-gap);
+}
+
+/*
+ * Responsive breakpoints
+ */
+
+@media (min-width: 640px) {
+  .ms-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ms-grid-equal {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ms-grid-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .ms-grid-sidebar {
+    grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
+  }
+
+  .ms-grid-content-sidebar {
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 20rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ms-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ms-grid-main-aside {
+    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+  }
+
+  .ms-dashboard-main {
+    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+  }
+
+  .ms-dashboard-main-wide {
+    grid-template-columns: minmax(0, 3fr) minmax(20rem, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .ms-grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .ms-grid-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .ms-grid-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .ms-grid-equal {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,98 @@
+/*
+ * ==========================================================
+ * MediSync Light Theme
+ * ==========================================================
+ */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Backgrounds */
+  --ms-bg: var(--ms-slate-50);
+  --ms-surface: #ffffff;
+  --ms-surface-raised: #ffffff;
+  --ms-surface-muted: var(--ms-slate-100);
+  --ms-surface-subtle: #f8fafc;
+
+  /* Text */
+  --ms-text: var(--ms-slate-900);
+  --ms-text-secondary: var(--ms-slate-600);
+  --ms-text-muted: var(--ms-slate-500);
+  --ms-text-disabled: var(--ms-slate-400);
+  --ms-text-inverse: #ffffff;
+
+  /* Borders */
+  --ms-border: var(--ms-slate-200);
+  --ms-border-strong: var(--ms-slate-300);
+  --ms-border-subtle: var(--ms-slate-100);
+
+  /* Brand */
+  --ms-primary: var(--ms-blue-600);
+  --ms-primary-hover: var(--ms-blue-700);
+  --ms-primary-active: var(--ms-blue-800);
+  --ms-primary-soft: var(--ms-blue-50);
+  --ms-primary-soft-border: var(--ms-blue-200);
+
+  --ms-accent: var(--ms-sky-500);
+  --ms-accent-soft: var(--ms-sky-50);
+
+  /* Status */
+  --ms-success: var(--ms-green-600);
+  --ms-success-hover: var(--ms-green-700);
+  --ms-success-soft: var(--ms-green-50);
+  --ms-success-border: var(--ms-green-200);
+  --ms-success-text: var(--ms-green-700);
+
+  --ms-warning: var(--ms-amber-500);
+  --ms-warning-hover: var(--ms-amber-600);
+  --ms-warning-soft: var(--ms-amber-50);
+  --ms-warning-border: var(--ms-amber-200);
+  --ms-warning-text: var(--ms-amber-700);
+
+  --ms-danger: var(--ms-red-600);
+  --ms-danger-hover: var(--ms-red-700);
+  --ms-danger-soft: var(--ms-red-50);
+  --ms-danger-border: var(--ms-red-200);
+  --ms-danger-text: var(--ms-red-700);
+
+  --ms-info: var(--ms-info-600);
+  --ms-info-soft: var(--ms-info-50);
+  --ms-info-border: var(--ms-blue-200);
+  --ms-info-text: var(--ms-info-700);
+
+  /* Overlay */
+  --ms-overlay: rgba(15, 23, 42, 0.45);
+
+  /* Focus */
+  --ms-focus: var(--ms-blue-500);
+  --ms-focus-ring: rgba(59, 130, 246, 0.25);
+
+  /* Form */
+  --ms-input-bg: #ffffff;
+  --ms-input-border: var(--ms-slate-300);
+  --ms-input-border-focus: var(--ms-blue-500);
+  --ms-input-placeholder: var(--ms-slate-400);
+
+  /* Navigation */
+  --ms-nav-bg: #ffffff;
+  --ms-nav-border: var(--ms-slate-200);
+  --ms-nav-text: var(--ms-slate-600);
+  --ms-nav-text-hover: var(--ms-blue-600);
+  --ms-nav-active-bg: var(--ms-blue-50);
+  --ms-nav-active-text: var(--ms-blue-600);
+
+  /* Selection */
+  --ms-selection-bg: var(--ms-blue-600);
+  --ms-selection-text: #ffffff;
+
+  /* Scrollbar */
+  --ms-scrollbar-track: var(--ms-slate-100);
+  --ms-scrollbar-thumb: var(--ms-slate-300);
+  --ms-scrollbar-thumb-hover: var(--ms-slate-400);
+
+  /* Skeleton */
+  --ms-skeleton-start: var(--ms-slate-100);
+  --ms-skeleton-middle: var(--ms-slate-200);
+  --ms-skeleton-end: var(--ms-slate-100);
+}

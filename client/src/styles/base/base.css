@@ -1,0 +1,202 @@
+/*
+ * ==========================================================
+ * MediSync Base
+ * ==========================================================
+ */
+
+html {
+  background: var(--ms-bg);
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+body {
+  min-width: 320px;
+
+  background: var(--ms-bg);
+  color: var(--ms-text);
+
+  font-family: var(--ms-font-sans);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-normal);
+  line-height: var(--ms-leading-relaxed);
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  transition:
+    background-color var(--ms-duration-normal) var(--ms-ease-standard),
+    color var(--ms-duration-normal) var(--ms-ease-standard);
+}
+
+/*
+ * ==========================================================
+ * Typography Defaults
+ * ==========================================================
+ */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--ms-text);
+  font-weight: var(--ms-font-semibold);
+  line-height: var(--ms-leading-tight);
+}
+
+h1 {
+  font-size: var(--ms-text-4xl);
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+h2 {
+  font-size: var(--ms-text-2xl);
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+h3 {
+  font-size: var(--ms-text-xl);
+}
+
+h4 {
+  font-size: var(--ms-text-lg);
+}
+
+p {
+  color: var(--ms-text-secondary);
+}
+
+/*
+ * ==========================================================
+ * Links
+ * ==========================================================
+ */
+
+a {
+  transition: var(--ms-transition-colors);
+}
+
+a:hover {
+  color: var(--ms-primary);
+}
+
+/*
+ * ==========================================================
+ * Images
+ * ==========================================================
+ */
+
+img {
+  max-width: 100%;
+}
+
+/*
+ * ==========================================================
+ * Forms
+ * ==========================================================
+ */
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--ms-input-placeholder);
+  opacity: 1;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--ms-primary);
+}
+
+/*
+ * ==========================================================
+ * Selection
+ * ==========================================================
+ */
+
+::selection {
+  background: var(--ms-selection-bg);
+  color: var(--ms-selection-text);
+}
+
+/*
+ * ==========================================================
+ * Scrollbar
+ * ==========================================================
+ */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color:
+    var(--ms-scrollbar-thumb)
+    var(--ms-scrollbar-track);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ms-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ms-scrollbar-thumb);
+  border-radius: var(--ms-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ms-scrollbar-thumb-hover);
+}
+
+/*
+ * ==========================================================
+ * Theme Transition
+ * ==========================================================
+ */
+
+body,
+button,
+input,
+textarea,
+select {
+  transition:
+    background-color var(--ms-duration-normal) var(--ms-ease-standard),
+    color var(--ms-duration-normal) var(--ms-ease-standard),
+    border-color var(--ms-duration-normal) var(--ms-ease-standard);
+}
+
+/*
+ * ==========================================================
+ * Print
+ * ==========================================================
+ */
+
+@media print {
+  html,
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  body {
+    color-scheme: light;
+  }
+
+  a {
+    color: inherit;
+  }
+}

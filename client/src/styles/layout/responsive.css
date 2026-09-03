@@ -1,0 +1,218 @@
+/*
+ * ==========================================================
+ * MediSync Responsive Utilities
+ * ==========================================================
+ */
+
+/*
+ * ==========================================================
+ * Responsive Visibility
+ * ==========================================================
+ */
+
+.ms-only-mobile {
+  display: block;
+}
+
+.ms-only-tablet {
+  display: none;
+}
+
+.ms-only-desktop {
+  display: none;
+}
+
+.ms-hide-mobile {
+  display: none;
+}
+
+.ms-hide-tablet {
+  display: block;
+}
+
+.ms-hide-desktop {
+  display: block;
+}
+
+/*
+ * ==========================================================
+ * Responsive Direction
+ * ==========================================================
+ */
+
+.ms-responsive-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-4);
+}
+
+.ms-responsive-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-4);
+}
+
+/*
+ * ==========================================================
+ * Responsive Alignment
+ * ==========================================================
+ */
+
+.ms-responsive-center {
+  align-items: flex-start;
+}
+
+.ms-responsive-between {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+}
+
+/*
+ * ==========================================================
+ * Responsive Width
+ * ==========================================================
+ */
+
+.ms-responsive-full {
+  width: 100%;
+}
+
+/*
+ * ==========================================================
+ * Mobile-friendly horizontal scrolling
+ * ==========================================================
+ */
+
+.ms-scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.ms-scroll-x > * {
+  flex-shrink: 0;
+}
+
+/*
+ * Prevent horizontal page overflow.
+ */
+
+.ms-page-overflow-safe {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/*
+ * ==========================================================
+ * Tablet
+ * ==========================================================
+ */
+
+@media (min-width: 640px) {
+  .ms-only-mobile {
+    display: none;
+  }
+
+  .ms-only-tablet {
+    display: block;
+  }
+
+  .ms-hide-mobile {
+    display: block;
+  }
+
+  .ms-responsive-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .ms-responsive-center {
+    align-items: center;
+  }
+}
+
+/*
+ * ==========================================================
+ * Desktop
+ * ==========================================================
+ */
+
+@media (min-width: 1024px) {
+  .ms-only-tablet {
+    display: none;
+  }
+
+  .ms-only-desktop {
+    display: block;
+  }
+
+  .ms-hide-tablet {
+    display: none;
+  }
+
+  .ms-hide-desktop {
+    display: block;
+  }
+
+  .ms-responsive-between {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/*
+ * ==========================================================
+ * Large Desktop
+ * ==========================================================
+ */
+
+@media (min-width: 1280px) {
+  .ms-only-desktop {
+    display: block;
+  }
+}
+
+/*
+ * ==========================================================
+ * Touch Devices
+ * ==========================================================
+ */
+
+@media (hover: none) and (pointer: coarse) {
+  /*
+   * Give interactive controls comfortable touch targets.
+   *
+   * Component-specific controls can override this where
+   * a smaller control is intentionally required.
+   */
+
+  .ms-touch-target {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+}
+
+/*
+ * ==========================================================
+ * Reduced Width / Small Screens
+ * ==========================================================
+ */
+
+@media (max-width: 374px) {
+  .ms-page {
+    padding-inline: 0;
+  }
+
+  .ms-container,
+  .ms-container-wide,
+  .ms-container-narrow,
+  .ms-container-tight {
+    padding-inline: 1rem;
+  }
+}

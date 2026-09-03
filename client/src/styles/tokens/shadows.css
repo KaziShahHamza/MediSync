@@ -1,0 +1,32 @@
+:root {
+  /*
+   * ==========================================================
+   * Shadows
+   * ==========================================================
+   *
+   * MediSync intentionally uses restrained shadows.
+   */
+
+  --ms-shadow-none: none;
+
+  --ms-shadow-xs:
+    0 1px 2px rgba(15, 23, 42, 0.04);
+
+  --ms-shadow-sm:
+    0 1px 3px rgba(15, 23, 42, 0.06);
+
+  --ms-shadow-md:
+    0 4px 12px rgba(15, 23, 42, 0.08);
+
+  --ms-shadow-lg:
+    0 10px 30px rgba(15, 23, 42, 0.1);
+
+  --ms-shadow-xl:
+    0 20px 40px rgba(15, 23, 42, 0.12);
+
+  /* Semantic shadows */
+  --ms-shadow-card: var(--ms-shadow-sm);
+  --ms-shadow-card-hover: var(--ms-shadow-md);
+  --ms-shadow-modal: var(--ms-shadow-xl);
+  --ms-shadow-dropdown: var(--ms-shadow-lg);
+}

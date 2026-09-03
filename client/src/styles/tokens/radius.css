@@ -1,0 +1,24 @@
+:root {
+  /*
+   * ==========================================================
+   * Border Radius
+   * ==========================================================
+   */
+
+  --ms-radius-none: 0;
+  --ms-radius-sm: 0.375rem;
+  --ms-radius-md: 0.5rem;
+  --ms-radius-lg: 0.75rem;
+  --ms-radius-xl: 1rem;
+  --ms-radius-2xl: 1.25rem;
+  --ms-radius-3xl: 1.5rem;
+  --ms-radius-full: 9999px;
+
+  /*
+   * Semantic radius tokens
+   */
+  --ms-radius-control: var(--ms-radius-lg);
+  --ms-radius-card: var(--ms-radius-xl);
+  --ms-radius-modal: var(--ms-radius-2xl);
+  --ms-radius-badge: var(--ms-radius-full);
+}

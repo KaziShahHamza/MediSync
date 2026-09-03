@@ -1,0 +1,35 @@
+:root {
+  /*
+   * ==========================================================
+   * Spacing Scale
+   * ==========================================================
+   */
+
+  --ms-space-0: 0;
+  --ms-space-1: 0.25rem;
+  --ms-space-2: 0.5rem;
+  --ms-space-3: 0.75rem;
+  --ms-space-4: 1rem;
+  --ms-space-5: 1.25rem;
+  --ms-space-6: 1.5rem;
+  --ms-space-7: 1.75rem;
+  --ms-space-8: 2rem;
+  --ms-space-10: 2.5rem;
+  --ms-space-12: 3rem;
+  --ms-space-14: 3.5rem;
+  --ms-space-16: 4rem;
+  --ms-space-20: 5rem;
+  --ms-space-24: 6rem;
+
+  /* Common component spacing */
+  --ms-control-height: 2.75rem;
+  --ms-control-height-sm: 2.5rem;
+  --ms-control-height-lg: 3rem;
+
+  --ms-page-padding-x: 1.25rem;
+  --ms-page-padding-y: 2.5rem;
+
+  --ms-card-padding: 1.5rem;
+  --ms-section-gap: 4rem;
+  --ms-grid-gap: 1.5rem;
+}

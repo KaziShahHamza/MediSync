@@ -1,0 +1,83 @@
+/*
+ * ==========================================================
+ * MediSync Container
+ * ==========================================================
+ */
+
+.ms-container {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: var(--ms-page-padding-x);
+}
+
+/*
+ * Wider container for dashboard-style layouts.
+ */
+
+.ms-container-wide {
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-inline: var(--ms-page-padding-x);
+}
+
+/*
+ * Narrow container for focused content such as
+ * authentication forms and document details.
+ */
+
+.ms-container-narrow {
+  width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
+  padding-inline: var(--ms-page-padding-x);
+}
+
+/*
+ * Extra-narrow container.
+ */
+
+.ms-container-tight {
+  width: 100%;
+  max-width: 36rem;
+  margin-inline: auto;
+  padding-inline: var(--ms-page-padding-x);
+}
+
+/*
+ * Full-width content inside a container.
+ */
+
+.ms-container-full {
+  width: 100%;
+}
+
+/*
+ * Responsive horizontal padding.
+ */
+
+@media (min-width: 640px) {
+  .ms-container,
+  .ms-container-wide,
+  .ms-container-narrow,
+  .ms-container-tight {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ms-container,
+  .ms-container-wide,
+  .ms-container-narrow,
+  .ms-container-tight {
+    padding-inline: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .ms-container,
+  .ms-container-wide {
+    padding-inline: 2.5rem;
+  }
+}

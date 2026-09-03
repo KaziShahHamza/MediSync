@@ -1,0 +1,90 @@
+/*
+ * ==========================================================
+ * MediSync Accessibility
+ * ==========================================================
+ */
+
+/*
+ * Keyboard focus
+ */
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ms-focus);
+  outline-offset: 2px;
+}
+
+/*
+ * Interactive elements
+ */
+
+button,
+a,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  cursor: pointer;
+}
+
+/*
+ * Disabled elements
+ */
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/*
+ * Reduced motion
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * Screen-reader-only content
+ */
+
+.ms-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/*
+ * Restore screen-reader-only content when focused.
+ */
+
+.ms-sr-only:focus,
+.ms-sr-only:active {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: var(--ms-space-2) var(--ms-space-3);
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}

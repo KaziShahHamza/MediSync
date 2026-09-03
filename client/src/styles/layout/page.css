@@ -1,0 +1,274 @@
+/*
+ * ==========================================================
+ * MediSync Page Layout
+ * ==========================================================
+ */
+
+.ms-page {
+  width: 100%;
+  min-height: 100%;
+  padding-block: var(--ms-page-padding-y);
+}
+
+/*
+ * Main page header.
+ */
+
+.ms-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-2);
+
+  margin-bottom: var(--ms-space-10);
+}
+
+/*
+ * Header with actions on larger screens.
+ *
+ * Example:
+ *
+ * <header className="ms-page-header ms-page-header-row">
+ */
+
+.ms-page-header-row {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-5);
+}
+
+/*
+ * Page title.
+ */
+
+.ms-page-title {
+  margin: 0;
+
+  color: var(--ms-text);
+
+  font-size: var(--ms-text-4xl);
+  font-weight: var(--ms-font-bold);
+  line-height: var(--ms-leading-tight);
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+/*
+ * Page subtitle / description.
+ */
+
+.ms-page-subtitle {
+  max-width: 48rem;
+  margin: 0;
+
+  color: var(--ms-text-secondary);
+
+  font-size: var(--ms-text-base);
+  line-height: var(--ms-leading-relaxed);
+}
+
+/*
+ * Page header actions.
+ */
+
+.ms-page-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ms-space-3);
+}
+
+/*
+ * Generic section.
+ */
+
+.ms-section {
+  width: 100%;
+  margin-bottom: var(--ms-section-gap);
+}
+
+.ms-section:last-child {
+  margin-bottom: 0;
+}
+
+/*
+ * Section header.
+ */
+
+.ms-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--ms-space-4);
+
+  margin-bottom: var(--ms-space-6);
+}
+
+/*
+ * Section heading group.
+ */
+
+.ms-section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-1);
+}
+
+/*
+ * Section title.
+ */
+
+.ms-section-title {
+  margin: 0;
+
+  color: var(--ms-text);
+
+  font-size: var(--ms-text-2xl);
+  font-weight: var(--ms-font-semibold);
+  line-height: var(--ms-leading-tight);
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+/*
+ * Section description.
+ */
+
+.ms-section-description {
+  margin: 0;
+
+  color: var(--ms-text-secondary);
+
+  font-size: var(--ms-text-sm);
+  line-height: var(--ms-leading-normal);
+}
+
+/*
+ * Small section.
+ */
+
+.ms-section-sm {
+  margin-bottom: var(--ms-space-8);
+}
+
+/*
+ * Large section.
+ */
+
+.ms-section-lg {
+  margin-bottom: var(--ms-space-20);
+}
+
+/*
+ * Generic vertical stack.
+ */
+
+.ms-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.ms-stack-xs {
+  gap: var(--ms-space-1);
+}
+
+.ms-stack-sm {
+  gap: var(--ms-space-2);
+}
+
+.ms-stack-md {
+  gap: var(--ms-space-4);
+}
+
+.ms-stack-lg {
+  gap: var(--ms-space-6);
+}
+
+.ms-stack-xl {
+  gap: var(--ms-space-8);
+}
+
+/*
+ * Horizontal cluster.
+ *
+ * Useful for buttons, badges, filters and actions.
+ */
+
+.ms-cluster {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ms-cluster-xs {
+  gap: var(--ms-space-1);
+}
+
+.ms-cluster-sm {
+  gap: var(--ms-space-2);
+}
+
+.ms-cluster-md {
+  gap: var(--ms-space-3);
+}
+
+.ms-cluster-lg {
+  gap: var(--ms-space-4);
+}
+
+/*
+ * Centered content.
+ */
+
+.ms-content-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+}
+
+/*
+ * Full-width section.
+ */
+
+.ms-full-width {
+  width: 100%;
+}
+
+/*
+ * Hide overflow where required by layout components.
+ */
+
+.ms-overflow-hidden {
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .ms-page-header {
+    margin-bottom: var(--ms-space-12);
+  }
+
+  .ms-page-header-row {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+@media (max-width: 639px) {
+  .ms-page {
+    padding-block: var(--ms-space-8);
+  }
+
+  .ms-page-title {
+    font-size: var(--ms-text-3xl);
+  }
+
+  .ms-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ms-page-actions {
+    width: 100%;
+  }
+}

@@ -1,0 +1,38 @@
+:root {
+  /*
+   * ==========================================================
+   * Motion
+   * ==========================================================
+   */
+
+  --ms-duration-fast: 150ms;
+  --ms-duration-normal: 200ms;
+  --ms-duration-slow: 250ms;
+
+  --ms-ease-standard: ease;
+  --ms-ease-in: ease-in;
+  --ms-ease-out: ease-out;
+  --ms-ease-in-out: ease-in-out;
+
+  --ms-transition-colors:
+    color var(--ms-duration-fast) var(--ms-ease-standard),
+    background-color var(--ms-duration-fast) var(--ms-ease-standard),
+    border-color var(--ms-duration-fast) var(--ms-ease-standard);
+
+  --ms-transition-shadow:
+    box-shadow var(--ms-duration-normal) var(--ms-ease-standard);
+
+  --ms-transition-transform:
+    transform var(--ms-duration-normal) var(--ms-ease-out);
+
+  --ms-transition-standard:
+    all var(--ms-duration-normal) var(--ms-ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ms-duration-fast: 0ms;
+    --ms-duration-normal: 0ms;
+    --ms-duration-slow: 0ms;
+  }
+}

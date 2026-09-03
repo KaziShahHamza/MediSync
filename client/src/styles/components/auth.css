@@ -1,0 +1,176 @@
+/* =========================================================
+   MEDISYNC — AUTH LAYOUT
+   ========================================================= */
+
+.ms-auth-page {
+  min-height: calc(100vh - 72px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--ms-space-10) var(--ms-page-padding-x);
+
+  background: var(--ms-bg);
+}
+
+.ms-auth-shell {
+  width: min(100%, 1024px);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+  overflow: hidden;
+
+  background: var(--ms-surface);
+
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-2xl);
+
+  box-shadow: var(--ms-shadow-lg);
+}
+
+.ms-auth-intro {
+  display: flex;
+  align-items: center;
+
+  padding: var(--ms-space-12);
+
+  background: var(--ms-primary-soft);
+}
+
+.ms-auth-intro-content {
+  max-width: 460px;
+}
+
+.ms-auth-eyebrow {
+  display: inline-flex;
+
+  margin-bottom: var(--ms-space-4);
+
+  color: var(--ms-primary);
+  font-size: var(--ms-font-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  letter-spacing: var(--ms-tracking-wide);
+  text-transform: uppercase;
+}
+
+.ms-auth-title {
+  margin: 0;
+
+  color: var(--ms-text);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: var(--ms-font-weight-bold);
+  line-height: var(--ms-leading-tight);
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+.ms-auth-title span {
+  color: var(--ms-primary);
+}
+
+.ms-auth-description {
+  margin: var(--ms-space-5) 0 0;
+
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-base);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-auth-features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-3);
+
+  margin-top: var(--ms-space-8);
+}
+
+.ms-auth-feature {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+
+  color: var(--ms-text);
+  font-size: var(--ms-font-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+.ms-auth-feature-dot {
+  width: 8px;
+  height: 8px;
+
+  flex: 0 0 auto;
+
+  background: var(--ms-primary);
+  border-radius: var(--ms-radius-full);
+}
+
+.ms-auth-form {
+  padding: var(--ms-space-10) var(--ms-space-12);
+}
+
+.ms-auth-form-header {
+  margin-bottom: var(--ms-space-8);
+}
+
+.ms-auth-form-title {
+  margin: 0;
+
+  color: var(--ms-text);
+  font-size: var(--ms-font-2xl);
+  font-weight: var(--ms-font-weight-bold);
+  line-height: var(--ms-leading-tight);
+}
+
+.ms-auth-form-subtitle {
+  margin: var(--ms-space-2) 0 0;
+
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-font-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-auth-form-content {
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .ms-auth-shell {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+
+  .ms-auth-intro {
+    display: none;
+  }
+
+  .ms-auth-form {
+    padding: var(--ms-space-8);
+  }
+}
+
+@media (max-width: 639px) {
+  .ms-auth-page {
+    min-height: calc(100vh - 64px);
+    align-items: flex-start;
+
+    padding-top: var(--ms-space-6);
+    padding-bottom: var(--ms-space-6);
+  }
+
+  .ms-auth-shell {
+    border-radius: var(--ms-radius-lg);
+  }
+
+  .ms-auth-form {
+    padding: var(--ms-space-6) var(--ms-space-4);
+  }
+
+  .ms-auth-form-header {
+    margin-bottom: var(--ms-space-6);
+  }
+
+  .ms-auth-form-title {
+    font-size: var(--ms-font-xl);
+  }
+}

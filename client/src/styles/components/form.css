@@ -1,0 +1,164 @@
+/* =========================================================
+   MEDISYNC — FORM CONTROLS
+   ========================================================= */
+
+.ms-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-6);
+}
+
+.ms-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-4);
+}
+
+.ms-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-2);
+}
+
+.ms-label {
+  color: var(--ms-text);
+  font-size: var(--ms-font-sm);
+  font-weight: var(--ms-font-weight-medium);
+  line-height: var(--ms-leading-normal);
+}
+
+.ms-required {
+  color: var(--ms-danger);
+}
+
+.ms-help-text {
+  margin: 0;
+
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-xs);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-error {
+  margin: 0;
+
+  color: var(--ms-danger);
+  font-size: var(--ms-font-xs);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-input,
+.ms-select,
+.ms-textarea {
+  width: 100%;
+
+  color: var(--ms-text);
+  background: var(--ms-surface);
+
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-md);
+
+  font-family: inherit;
+  font-size: var(--ms-font-sm);
+
+  transition:
+    border-color var(--ms-transition-fast),
+    box-shadow var(--ms-transition-fast),
+    background-color var(--ms-transition-fast);
+}
+
+.ms-input,
+.ms-select {
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.ms-textarea {
+  min-height: 110px;
+  padding: 10px 12px;
+
+  resize: vertical;
+}
+
+.ms-input::placeholder,
+.ms-textarea::placeholder {
+  color: var(--ms-text-muted);
+}
+
+.ms-input:hover,
+.ms-select:hover,
+.ms-textarea:hover {
+  border-color: var(--ms-border-strong);
+}
+
+.ms-input:focus,
+.ms-select:focus,
+.ms-textarea:focus {
+  outline: none;
+  border-color: var(--ms-primary);
+
+  box-shadow:
+    0 0 0 3px var(--ms-primary-soft);
+}
+
+.ms-input:disabled,
+.ms-select:disabled,
+.ms-textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--ms-surface-muted);
+}
+
+.ms-input-error,
+.ms-select-error,
+.ms-textarea-error {
+  border-color: var(--ms-danger);
+}
+
+.ms-input-error:focus,
+.ms-select-error:focus,
+.ms-textarea-error:focus {
+  border-color: var(--ms-danger);
+
+  box-shadow:
+    0 0 0 3px var(--ms-danger-soft);
+}
+
+.ms-checkbox,
+.ms-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ms-space-2);
+
+  color: var(--ms-text);
+  font-size: var(--ms-font-sm);
+
+  cursor: pointer;
+}
+
+.ms-checkbox input,
+.ms-radio input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ms-primary);
+}
+
+.ms-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ms-space-3);
+
+  padding-top: var(--ms-space-2);
+}
+
+@media (max-width: 639px) {
+  .ms-form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .ms-form-actions .ms-btn {
+    width: 100%;
+  }
+}

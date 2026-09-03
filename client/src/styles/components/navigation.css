@@ -1,0 +1,254 @@
+/* =========================================================
+   MEDISYNC — NAVIGATION
+   ========================================================= */
+
+.ms-navbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--ms-z-sticky);
+
+  background: var(--ms-surface);
+  border-bottom: 1px solid var(--ms-border);
+
+  box-shadow: var(--ms-shadow-sm);
+}
+
+.ms-navbar-inner {
+  min-height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--ms-space-6);
+}
+
+.ms-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ms-space-3);
+
+  min-width: 0;
+
+  color: var(--ms-text);
+  text-decoration: none;
+}
+
+.ms-brand:hover {
+  text-decoration: none;
+}
+
+.ms-brand-logo {
+  width: 48px;
+  height: 48px;
+
+  flex: 0 0 auto;
+
+  object-fit: cover;
+  border-radius: var(--ms-radius-md);
+}
+
+.ms-brand-content {
+  min-width: 0;
+}
+
+.ms-brand-name {
+  margin: 0;
+
+  color: var(--ms-text);
+  font-size: var(--ms-font-lg);
+  font-weight: var(--ms-font-weight-bold);
+  line-height: var(--ms-leading-tight);
+}
+
+.ms-brand-tagline {
+  margin: 3px 0 0;
+
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-xs);
+  line-height: var(--ms-leading-normal);
+}
+
+.ms-navbar-navigation {
+  min-width: 0;
+}
+
+.ms-navbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.ms-nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  min-height: 40px;
+  padding: 0 10px;
+
+  color: var(--ms-text-secondary);
+  background: transparent;
+
+  border: 1px solid transparent;
+  border-radius: var(--ms-radius-md);
+
+  font-size: var(--ms-font-sm);
+  font-weight: var(--ms-font-weight-medium);
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    color var(--ms-transition-fast),
+    background-color var(--ms-transition-fast),
+    border-color var(--ms-transition-fast);
+}
+
+.ms-nav-link:hover {
+  color: var(--ms-text);
+  background: var(--ms-surface-muted);
+  text-decoration: none;
+}
+
+.ms-nav-link:focus-visible {
+  outline: 2px solid var(--ms-primary);
+  outline-offset: 2px;
+}
+
+.ms-nav-link-active {
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+}
+
+.ms-nav-link-active:hover {
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+}
+
+.ms-navbar-divider {
+  width: 1px;
+  height: 32px;
+
+  margin: 0 var(--ms-space-2);
+
+  background: var(--ms-border);
+}
+
+.ms-navbar-user {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  margin-right: var(--ms-space-2);
+}
+
+.ms-navbar-user-name {
+  overflow: hidden;
+
+  color: var(--ms-text);
+  font-size: var(--ms-font-sm);
+  font-weight: var(--ms-font-weight-medium);
+  line-height: var(--ms-leading-tight);
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ms-navbar-user-email {
+  max-width: 180px;
+
+  overflow: hidden;
+
+  margin-top: 3px;
+
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-xs);
+  line-height: var(--ms-leading-tight);
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1199px) {
+  .ms-navbar-user {
+    display: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .ms-navbar-inner {
+    gap: var(--ms-space-3);
+  }
+
+  .ms-navbar-actions {
+    gap: 2px;
+  }
+
+  .ms-nav-link {
+    padding: 0 8px;
+  }
+
+  .ms-nav-link span {
+    display: none;
+  }
+
+  .ms-nav-link svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .ms-navbar-divider {
+    margin: 0 4px;
+  }
+
+  .ms-btn-danger span {
+    display: none;
+  }
+
+  .ms-btn-danger {
+    width: 40px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 639px) {
+  .ms-navbar-inner {
+    min-height: 64px;
+  }
+
+  .ms-brand-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .ms-brand-tagline {
+    display: none;
+  }
+
+  .ms-brand-name {
+    font-size: var(--ms-font-base);
+  }
+
+  .ms-nav-link {
+    min-width: 38px;
+    min-height: 38px;
+  }
+
+  .ms-btn-danger {
+    min-width: 38px;
+    min-height: 38px;
+  }
+}
+
+@media (max-width: 479px) {
+  .ms-brand-content {
+    display: none;
+  }
+
+  .ms-navbar-actions {
+    margin-left: auto;
+  }
+}

@@ -1,0 +1,85 @@
+:root {
+  /*
+   * ==========================================================
+   * MediSync Color Tokens
+   * ==========================================================
+   *
+   * These are semantic design tokens.
+   *
+   * Components should use:
+   *
+   *   var(--ms-primary)
+   *   var(--ms-surface)
+   *   var(--ms-text)
+   *
+   * rather than hard-coded colors.
+   */
+
+  /* Brand palette */
+  --ms-blue-50: #eff6ff;
+  --ms-blue-100: #dbeafe;
+  --ms-blue-200: #bfdbfe;
+  --ms-blue-300: #93c5fd;
+  --ms-blue-400: #60a5fa;
+  --ms-blue-500: #3b82f6;
+  --ms-blue-600: #2563eb;
+  --ms-blue-700: #1d4ed8;
+  --ms-blue-800: #1e40af;
+  --ms-blue-900: #1e3a8a;
+
+  --ms-sky-50: #f0f9ff;
+  --ms-sky-100: #e0f2fe;
+  --ms-sky-200: #bae6fd;
+  --ms-sky-500: #0ea5e9;
+  --ms-sky-600: #0284c7;
+  --ms-sky-700: #0369a1;
+
+  /* Neutral palette */
+  --ms-slate-50: #f8fafc;
+  --ms-slate-100: #f1f5f9;
+  --ms-slate-200: #e2e8f0;
+  --ms-slate-300: #cbd5e1;
+  --ms-slate-400: #94a3b8;
+  --ms-slate-500: #64748b;
+  --ms-slate-600: #475569;
+  --ms-slate-700: #334155;
+  --ms-slate-800: #1e293b;
+  --ms-slate-900: #0f172a;
+  --ms-slate-950: #020617;
+
+  /* Status palette */
+  --ms-green-50: #f0fdf4;
+  --ms-green-100: #dcfce7;
+  --ms-green-200: #bbf7d0;
+  --ms-green-500: #22c55e;
+  --ms-green-600: #16a34a;
+  --ms-green-700: #15803d;
+
+  --ms-amber-50: #fffbeb;
+  --ms-amber-100: #fef3c7;
+  --ms-amber-200: #fde68a;
+  --ms-amber-500: #f59e0b;
+  --ms-amber-600: #d97706;
+  --ms-amber-700: #b45309;
+
+  --ms-red-50: #fef2f2;
+  --ms-red-100: #fee2e2;
+  --ms-red-200: #fecaca;
+  --ms-red-500: #ef4444;
+  --ms-red-600: #dc2626;
+  --ms-red-700: #b91c1c;
+
+  /* Informational palette */
+  --ms-info-50: #eff6ff;
+  --ms-info-100: #dbeafe;
+  --ms-info-600: #2563eb;
+  --ms-info-700: #1d4ed8;
+
+  /*
+   * ==========================================================
+   * Semantic tokens
+   * ==========================================================
+   *
+   * Light/dark theme files assign these values.
+   */
+}

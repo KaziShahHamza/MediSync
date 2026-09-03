@@ -1,0 +1,179 @@
+/* =========================================================
+   MEDISYNC — BUTTONS
+   ========================================================= */
+
+.ms-btn {
+  --ms-btn-height: 40px;
+  --ms-btn-padding-x: 16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: var(--ms-btn-height);
+  padding: 0 var(--ms-btn-padding-x);
+
+  border: 1px solid transparent;
+  border-radius: var(--ms-radius-md);
+
+  font-family: inherit;
+  font-size: var(--ms-font-sm);
+  font-weight: var(--ms-font-weight-medium);
+  line-height: 1;
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color var(--ms-transition-fast),
+    border-color var(--ms-transition-fast),
+    color var(--ms-transition-fast),
+    box-shadow var(--ms-transition-fast),
+    transform var(--ms-transition-fast);
+}
+
+.ms-btn:hover {
+  text-decoration: none;
+}
+
+.ms-btn:active {
+  transform: translateY(1px);
+}
+
+.ms-btn:focus-visible {
+  outline: 2px solid var(--ms-primary);
+  outline-offset: 2px;
+}
+
+.ms-btn:disabled,
+.ms-btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary */
+
+.ms-btn-primary {
+  color: var(--ms-primary-contrast);
+  background: var(--ms-primary);
+  border-color: var(--ms-primary);
+}
+
+.ms-btn-primary:hover {
+  color: var(--ms-primary-contrast);
+  background: var(--ms-primary-hover);
+  border-color: var(--ms-primary-hover);
+}
+
+/* Secondary */
+
+.ms-btn-secondary {
+  color: var(--ms-text);
+  background: var(--ms-surface);
+  border-color: var(--ms-border);
+}
+
+.ms-btn-secondary:hover {
+  background: var(--ms-surface-muted);
+  border-color: var(--ms-border-strong);
+}
+
+/* Danger */
+
+.ms-btn-danger {
+  color: var(--ms-danger-contrast);
+  background: var(--ms-danger);
+  border-color: var(--ms-danger);
+}
+
+.ms-btn-danger:hover {
+  background: var(--ms-danger-hover);
+  border-color: var(--ms-danger-hover);
+}
+
+/* Ghost */
+
+.ms-btn-ghost {
+  color: var(--ms-text-secondary);
+  background: transparent;
+  border-color: transparent;
+}
+
+.ms-btn-ghost:hover {
+  color: var(--ms-text);
+  background: var(--ms-surface-muted);
+}
+
+/* Small */
+
+.ms-btn-sm {
+  --ms-btn-height: 34px;
+  --ms-btn-padding-x: 12px;
+
+  font-size: var(--ms-font-xs);
+}
+
+/* Large */
+
+.ms-btn-lg {
+  --ms-btn-height: 46px;
+  --ms-btn-padding-x: 20px;
+
+  font-size: var(--ms-font-base);
+}
+
+/* Full width */
+
+.ms-btn-full {
+  width: 100%;
+}
+
+/* Icon-only */
+
+.ms-btn-icon {
+  width: var(--ms-btn-height);
+  padding: 0;
+}
+
+.ms-btn-icon.ms-btn-sm {
+  width: 34px;
+}
+
+.ms-btn-icon.ms-btn-lg {
+  width: 46px;
+}
+
+/* Loading */
+
+.ms-btn-loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.ms-btn-loading::after {
+  content: "";
+
+  width: 16px;
+  height: 16px;
+
+  position: absolute;
+  inset: 50% auto auto 50%;
+
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+
+  transform: translate(-50%, -50%);
+  animation: ms-button-spin 0.7s linear infinite;
+}
+
+@keyframes ms-button-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

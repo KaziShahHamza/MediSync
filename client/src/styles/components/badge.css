@@ -1,0 +1,51 @@
+/* =========================================================
+   MEDISYNC — BADGES
+   ========================================================= */
+
+.ms-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  min-height: 24px;
+  padding: 3px 9px;
+
+  border: 1px solid transparent;
+  border-radius: var(--ms-radius-full);
+
+  font-size: var(--ms-font-xs);
+  font-weight: var(--ms-font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.ms-badge-primary {
+  color: var(--ms-primary);
+  background: var(--ms-primary-soft);
+  border-color: var(--ms-primary-soft-strong);
+}
+
+.ms-badge-success {
+  color: var(--ms-success);
+  background: var(--ms-success-soft);
+  border-color: var(--ms-success-soft-strong);
+}
+
+.ms-badge-warning {
+  color: var(--ms-warning);
+  background: var(--ms-warning-soft);
+  border-color: var(--ms-warning-soft-strong);
+}
+
+.ms-badge-danger {
+  color: var(--ms-danger);
+  background: var(--ms-danger-soft);
+  border-color: var(--ms-danger-soft-strong);
+}
+
+.ms-badge-neutral {
+  color: var(--ms-text-secondary);
+  background: var(--ms-surface-muted);
+  border-color: var(--ms-border);
+}
