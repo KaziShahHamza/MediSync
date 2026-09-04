@@ -78,7 +78,7 @@ export default function DoctorChambers({
 
             <div className="ms-field">
               <label htmlFor={`chamber-address-${index}`} className="ms-label">
-                Full Address
+                Chamber Address
               </label>
 
               <textarea

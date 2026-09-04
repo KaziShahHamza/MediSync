@@ -122,6 +122,7 @@
 
 .ms-dashboard-health-card {
   height: var(--ms-dashboard-card-min-height);
+  padding: var(--ms-space-5);
 }
 
 .ms-dashboard-health-card-top {
@@ -177,6 +178,7 @@
   min-height: 190px;
   flex-direction: column;
   justify-content: space-between;
+  padding: 1.35rem;
 }
 
 .ms-dashboard-stat-top {
@@ -227,6 +229,7 @@
   flex-direction: column;
   justify-content: space-between;
   text-decoration: none;
+  padding: 1.35rem;
 }
 
 .ms-dashboard-quick-top {
@@ -291,7 +294,7 @@
 
 .ms-dashboard-ai-card {
   overflow: hidden;
-  border-color: var(--ms-primary-soft-strong);
+  border-color: var(--ms-text-muted);
 }
 
 .ms-dashboard-ai-header {
@@ -299,6 +302,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--ms-space-4);
+  padding: 1.25rem;
 }
 
 .ms-dashboard-ai-heading {
@@ -330,7 +334,8 @@
 }
 
 .ms-dashboard-ai-body {
-  margin-top: var(--ms-space-6);
+  margin-top: var(--ms-space-2);
+  padding-left: var(--ms-space-8);
 }
 
 .ms-dashboard-ai-summary,
@@ -351,7 +356,7 @@
 }
 
 .ms-dashboard-ai-generated {
-  margin: var(--ms-space-4) 0 0;
+  margin: var(--ms-space-2);
   color: var(--ms-text-muted);
   font-size: var(--ms-font-size-xs);
 }
@@ -361,7 +366,7 @@
   align-items: flex-start;
   gap: var(--ms-space-4);
   margin-top: var(--ms-space-6);
-  padding-top: var(--ms-space-5);
+  padding: var(--ms-space-2);
   border-top: 1px solid var(--ms-border);
 }
 
@@ -370,7 +375,7 @@
 }
 
 .ms-dashboard-ai-cooldown {
-  max-width: 520px;
+  max-width: 820px;
 }
 
 .ms-dashboard-ai-cooldown p {

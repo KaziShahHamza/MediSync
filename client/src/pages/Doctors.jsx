@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Stethoscope } from "lucide-react";
 
 import { useDoctors } from "../context/DoctorContext";
-import DoctorCard from "../components/DoctorCard";
+import DoctorCard from "../components/doctors/DoctorCard";
 import DoctorForm from "../components/doctors/DoctorForm";
 
 export default function Doctors() {
@@ -62,7 +62,7 @@ export default function Doctors() {
               </div>
 
               <div>
-                <span className="ms-doctors-eyebrow">Healthcare providers</span>
+                {/* <span className="ms-doctors-eyebrow">Healthcare providers</span> */}
 
                 <h1 className="ms-page-title">My Doctors</h1>
               </div>
@@ -79,24 +79,24 @@ export default function Doctors() {
           <section className="ms-doctors-list-column">
             <div className="ms-doctors-list-header">
               <div>
-                <span className="ms-doctors-section-eyebrow">
+                {/* <span className="ms-doctors-section-eyebrow">
                   Healthcare records
-                </span>
+                </span> */}
 
-                <h2 className="ms-section-title">Doctor Records</h2>
+                {/* <h2 className="ms-section-title">Doctor Records</h2> */}
 
                 <p className="ms-doctors-list-description">
-                  {doctors.length} doctor
-                  {doctors.length === 1 ? "" : "s"} saved
+                  {doctors.length} Doctor
+                  {doctors.length === 1 ? "" : "s"} Saved
                 </p>
               </div>
 
-              <span className="ms-badge ms-doctors-count">
+              {/* <span className="ms-badge ms-doctors-count">
                 {doctors.length}
                 <span className="ms-doctors-count-label">
                   {doctors.length === 1 ? " Doctor" : " Doctors"}
                 </span>
-              </span>
+              </span> */}
             </div>
 
             {doctors.length ? (

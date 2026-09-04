@@ -7,7 +7,7 @@ export function renderDoctorsSection(doc, doctors = []) {
   drawSectionHeader(
     doc,
     "Doctors",
-    "Doctors and healthcare professionals saved in MediSync."
+    "Doctors and healthcare professionals saved in MediSync.",
   );
 
   if (!doctors.length) {
@@ -41,7 +41,8 @@ export function renderDoctorsSection(doc, doctors = []) {
     const details = [];
     if (doctor.bmdcRegNo) details.push(`BMDC Reg. No: ${doctor.bmdcRegNo}`);
     if (doctor.designation) details.push(`Designation: ${doctor.designation}`);
-    if (doctor.degrees?.length) details.push(`Degrees: ${doctor.degrees.join(", ")}`);
+    if (doctor.degrees?.length)
+      details.push(`Degrees: ${doctor.degrees.join(", ")}`);
     if (doctor.specialities?.length)
       details.push(`Specialities: ${doctor.specialities.join(", ")}`);
     if (doctor.primaryHospital)
@@ -52,14 +53,16 @@ export function renderDoctorsSection(doc, doctors = []) {
         .font("Helvetica")
         .fontSize(12)
         .fillColor(PDF_COLORS.textSecondary)
+        .moveDown(0.2)
         .text(detail, x + 10, doc.y, { width: width - 10 });
     });
 
     if (doctor.chambers?.length) {
-      doc.moveDown(0.25);
+      doc.moveDown(0.4);
       doc
         .font("Helvetica-Bold")
         .fontSize(12)
+        .moveDown(0.2)
         .fillColor(PDF_COLORS.text)
         .text("Chambers", x + 10);
 
@@ -72,7 +75,8 @@ export function renderDoctorsSection(doc, doctors = []) {
 
         if (chamber.address) doc.text(`Address: ${chamber.address}`, x + 26);
         if (chamber.phone) doc.text(`Phone: ${chamber.phone}`, x + 26);
-        if (chamber.serialNumber) doc.text(`Serial: ${chamber.serialNumber}`, x + 26);
+        if (chamber.serialNumber)
+          doc.text(`Serial: ${chamber.serialNumber}`, x + 26);
         if (chamber.visitingDays?.length)
           doc.text(`Visiting Days: ${chamber.visitingDays.join(", ")}`, x + 26);
         if (chamber.visitingTime)
@@ -82,7 +86,7 @@ export function renderDoctorsSection(doc, doctors = []) {
 
     if (doctor.contactInfo) {
       const contact = doctor.contactInfo;
-      doc.moveDown(0.25);
+      doc.moveDown(0.3);
       doc
         .font("Helvetica-Bold")
         .fontSize(12)
@@ -93,6 +97,7 @@ export function renderDoctorsSection(doc, doctors = []) {
         doc
           .font("Helvetica")
           .fontSize(12)
+          .moveDown(0.2)
           .fillColor(PDF_COLORS.textSecondary)
           .text(`Phone: ${contact.phones.join(", ")}`, x + 18);
       }
@@ -106,7 +111,7 @@ export function renderDoctorsSection(doc, doctors = []) {
     }
 
     if (doctor.notes) {
-      doc.moveDown(0.25);
+      doc.moveDown(0.3);
       doc
         .font("Helvetica")
         .fontSize(12)

@@ -50,7 +50,7 @@ function renderPrescriptionHeader(doc, prescription, index) {
     .lineWidth(1.5)
     .stroke();
 
-  doc.moveDown(0.2);
+  doc.moveDown(0.4);
 }
 
 function renderPrescriptionSummary(doc, prescription) {

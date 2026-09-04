@@ -26,9 +26,9 @@ export default function DoctorContactFields({ contactInfo, onChange }) {
         <div>
           <h3 className="ms-doctor-form-section-title">Contact Information</h3>
 
-          <p className="ms-doctor-form-section-description">
+          {/* <p className="ms-doctor-form-section-description">
             Add phone numbers, email addresses, and professional links.
-          </p>
+          </p> */}
         </div>
       </div>
 
@@ -111,53 +111,6 @@ export default function DoctorContactFields({ contactInfo, onChange }) {
           </div>
         </div>
 
-        {/* Website */}
-        <div className="ms-field">
-          <label htmlFor="doctor-website" className="ms-label">
-            Website
-          </label>
-
-          <input
-            id="doctor-website"
-            type="url"
-            value={contactInfo.website}
-            onChange={(e) => onChange("website", e.target.value)}
-            placeholder="https://example.com"
-            className="ms-input"
-          />
-        </div>
-
-        {/* Facebook */}
-        <div className="ms-field">
-          <label htmlFor="doctor-facebook" className="ms-label">
-            Facebook
-          </label>
-
-          <input
-            id="doctor-facebook"
-            type="url"
-            value={contactInfo.facebook}
-            onChange={(e) => onChange("facebook", e.target.value)}
-            placeholder="Facebook profile or page URL"
-            className="ms-input"
-          />
-        </div>
-
-        {/* LinkedIn */}
-        <div className="ms-field">
-          <label htmlFor="doctor-linkedin" className="ms-label">
-            LinkedIn
-          </label>
-
-          <input
-            id="doctor-linkedin"
-            type="url"
-            value={contactInfo.linkedin}
-            onChange={(e) => onChange("linkedin", e.target.value)}
-            placeholder="LinkedIn profile URL"
-            className="ms-input"
-          />
-        </div>
       </div>
     </section>
   );

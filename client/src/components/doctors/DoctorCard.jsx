@@ -178,7 +178,7 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
               </div>
             ))}
 
-            {doctor.contactInfo?.website && (
+            {/* {doctor.contactInfo?.website && (
               <div className="ms-doctor-contact-item">
                 <Globe size={17} aria-hidden="true" />
 
@@ -186,13 +186,13 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
                   {doctor.contactInfo.website}
                 </span>
               </div>
-            )}
+            )} */}
           </div>
         </section>
       )}
 
       {/* Social Links */}
-      {(doctor.contactInfo?.facebook || doctor.contactInfo?.linkedin) && (
+      {/* {(doctor.contactInfo?.facebook || doctor.contactInfo?.linkedin) && (
         <div className="ms-doctor-social-links">
           {doctor.contactInfo.facebook && (
             <span className="ms-doctor-social-item">
@@ -206,16 +206,16 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
             </span>
           )}
         </div>
-      )}
+      )} */}
 
       {/* Notes */}
-      {doctor.notes && (
+      {/* {doctor.notes && (
         <div className="ms-doctor-notes">
           <span className="ms-doctor-notes-label">Notes</span>
 
           <p>{doctor.notes}</p>
         </div>
-      )}
+      )} */}
 
       {/* Actions */}
       {(onEdit || onDelete) && (

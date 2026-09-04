@@ -28,13 +28,14 @@
 .ms-doctors-eyebrow,
 .ms-doctors-section-eyebrow {
   display: block;
-  margin-bottom: var(--ms-space-1);
+  /* margin-bottom: var(--ms-space-1); */
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
   font-weight: var(--ms-font-weight-semibold);
   letter-spacing: var(--ms-tracking-wide);
   line-height: var(--ms-leading-tight);
   text-transform: uppercase;
+  padding: var(--ms-space-2);
 }
 
 .ms-doctors-header .ms-page-subtitle {
@@ -71,7 +72,7 @@
 .ms-doctors-list-description {
   margin: var(--ms-space-1) 0 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
 }
 
 .ms-doctors-count {
@@ -109,7 +110,7 @@
 .ms-doctors-empty-title {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-xl);
+  font-size: var(--ms-text-xl);
   font-weight: var(--ms-font-weight-semibold);
 }
 
@@ -117,7 +118,7 @@
   max-width: 400px;
   margin: var(--ms-space-2) auto 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -130,12 +131,13 @@
   position: sticky;
   top: 6rem;
   min-width: 0;
+  padding: var(--ms-space-5);
 }
 
 .ms-doctor-form-header {
-  padding-bottom: var(--ms-space-6);
-  margin-bottom: var(--ms-space-6);
-  border-bottom: 1px solid var(--ms-border);
+  /* padding-bottom: var(--ms-space-6);
+  margin-bottom: var(--ms-space-6); */
+  border-bottom: 2px solid var(--ms-border);
 }
 
 .ms-doctor-form-title-row {
@@ -146,6 +148,7 @@
 
 .ms-doctor-form-icon {
   flex: 0 0 auto;
+  padding-bottom: 2px;
 }
 
 .ms-doctor-form-title-row .ms-card-title {
@@ -155,7 +158,7 @@
 .ms-doctor-form-description {
   margin: var(--ms-space-3) 0 0;
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -182,14 +185,14 @@
 .ms-doctor-form-section-title {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-base);
+  font-size: var(--ms-text-base);
   font-weight: var(--ms-font-weight-semibold);
 }
 
 .ms-doctor-form-section-description {
   margin: var(--ms-space-1) 0 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -262,7 +265,7 @@
   display: block;
   margin-bottom: var(--ms-space-1);
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
   font-weight: var(--ms-font-weight-semibold);
   letter-spacing: var(--ms-tracking-wide);
   text-transform: uppercase;
@@ -271,7 +274,7 @@
 .ms-doctor-chamber-title {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   font-weight: var(--ms-font-weight-semibold);
 }
 
@@ -303,7 +306,7 @@
 .ms-doctor-contact-add {
   min-height: 32px;
   padding: 0.35rem 0.6rem;
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
 }
 
 .ms-doctor-contact-list {
@@ -342,6 +345,7 @@
 
 .ms-doctor-card {
   min-width: 0;
+  padding: var(--ms-space-5);
 }
 
 .ms-doctor-card-header {
@@ -377,7 +381,7 @@
 .ms-doctor-card-name {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-xl);
+  font-size: var(--ms-text-xl);
   font-weight: var(--ms-font-weight-semibold);
   line-height: var(--ms-leading-tight);
   overflow-wrap: anywhere;
@@ -386,7 +390,7 @@
 .ms-doctor-card-designation {
   margin: var(--ms-space-1) 0 0;
   color: var(--ms-primary);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   font-weight: var(--ms-font-weight-medium);
 }
 
@@ -420,7 +424,7 @@
   gap: var(--ms-space-2);
   margin-bottom: var(--ms-space-3);
   color: var(--ms-text);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   font-weight: var(--ms-font-weight-semibold);
 }
 
@@ -454,13 +458,13 @@
 .ms-doctor-info-label {
   margin: 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
 }
 
 .ms-doctor-info-value {
   margin: var(--ms-space-1) 0 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   font-weight: var(--ms-font-weight-medium);
   line-height: var(--ms-leading-relaxed);
   overflow-wrap: anywhere;
@@ -487,7 +491,7 @@
   display: block;
   margin-bottom: var(--ms-space-1);
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
   font-weight: var(--ms-font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: var(--ms-tracking-wide);
@@ -496,7 +500,7 @@
 .ms-doctor-card-chamber-name {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   font-weight: var(--ms-font-weight-semibold);
 }
 
@@ -506,7 +510,7 @@
   gap: var(--ms-space-2);
   margin-top: var(--ms-space-3);
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -536,7 +540,7 @@
   border-radius: var(--ms-radius-lg);
   background: var(--ms-surface-muted);
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
 }
 
 .ms-doctor-contact-item svg {
@@ -567,7 +571,7 @@
   border-radius: var(--ms-radius-lg);
   background: var(--ms-surface-muted);
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
 }
 
 
@@ -587,7 +591,7 @@
   display: block;
   margin-bottom: var(--ms-space-1);
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
   font-weight: var(--ms-font-weight-semibold);
   letter-spacing: var(--ms-tracking-wide);
   text-transform: uppercase;
@@ -596,7 +600,7 @@
 .ms-doctor-notes p {
   margin: 0;
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-relaxed);
   white-space: pre-wrap;
 }
@@ -720,7 +724,7 @@
   }
 
   .ms-doctor-card-name {
-    font-size: var(--ms-font-size-lg);
+    font-size: var(--ms-text-lg);
   }
 
   .ms-doctor-array-field {
@@ -748,7 +752,7 @@
   }
 
   .ms-doctor-speciality {
-    font-size: var(--ms-font-size-xs);
+    font-size: var(--ms-text-xs);
   }
 
   .ms-doctor-chamber {

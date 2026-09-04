@@ -307,6 +307,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--ms-space-5);
+  padding: var(--ms-space-4);
 }
 
 .ms-input-with-icon {
@@ -328,7 +329,12 @@
 }
 
 .ms-medicine-form .ms-field {
+  /* font-size: var(--ms-text-base); */
   margin: 0;
+}
+
+.ms-label-2 {
+  font-size: var(--ms-text-base);
 }
 
 /* ---------------------------------------------------------

@@ -7,7 +7,7 @@ export function renderMedicinesSection(doc, medicines = []) {
   drawSectionHeader(
     doc,
     "Active Medicines",
-    "Medicines currently marked as active in MediSync."
+    "Medicines currently marked as active in MediSync.",
   );
 
   if (!medicines.length) {
@@ -46,9 +46,16 @@ export function renderMedicinesSection(doc, medicines = []) {
       .font("Helvetica-Bold")
       .fontSize(12)
       .fillColor(PDF_COLORS.text)
-      .text(`${index + 1}. ${medicine.name || "Unnamed Medicine"}`, x + 10, y + 8, {
-        width: width - 20,
-      });
+      .text(
+        `${index + 1}. ${medicine.name || "Unnamed Medicine"}`,
+        x + 10,
+        y + 8,
+        {
+          width: width - 20,
+        },
+      );
+
+    doc.moveDown(0.2);
 
     doc
       .font("Helvetica")
@@ -57,6 +64,8 @@ export function renderMedicinesSection(doc, medicines = []) {
       .text(`Time: ${schedule}`, x + 10, y + 22, {
         width: width - 20,
       });
+
+    doc.moveDown(0.2);
 
     doc
       .font("Helvetica")

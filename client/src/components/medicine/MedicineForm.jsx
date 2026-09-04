@@ -70,7 +70,7 @@ export default function MedicineForm({ onSave, editing }) {
     <form onSubmit={submit} className="ms-card ms-form ms-medicine-form">
       {/* Medicine Name */}
       <div className="ms-field">
-        <label htmlFor="medicine-name" className="ms-label">
+        <label htmlFor="medicine-name" className="ms-label-2">
           Medicine Name
         </label>
 
@@ -91,7 +91,7 @@ export default function MedicineForm({ onSave, editing }) {
 
       {/* Medicine Image */}
       <div className="ms-field">
-        <label htmlFor="medicine-image" className="ms-label">
+        <label htmlFor="medicine-image" className="ms-label-2">
           Medicine Image URL
         </label>
 
@@ -115,7 +115,7 @@ export default function MedicineForm({ onSave, editing }) {
 
       {/* Dosage Schedule */}
       <fieldset className="ms-form-section ms-medicine-dosage-section">
-        <legend className="ms-label">Dosage Schedule</legend>
+        <legend className="ms-label-2">Dosage Schedule</legend>
 
         <div className="ms-medicine-time-grid">
           {TIMES.map((time) => {
@@ -149,7 +149,7 @@ export default function MedicineForm({ onSave, editing }) {
 
       {/* Start Month */}
       <div className="ms-field">
-        <label htmlFor="medicine-start-date" className="ms-label">
+        <label htmlFor="medicine-start-date" className="ms-label-2">
           Start Month
         </label>
 
@@ -193,7 +193,7 @@ export default function MedicineForm({ onSave, editing }) {
       {/* End Month */}
       {!isActive && (
         <div className="ms-field">
-          <label htmlFor="medicine-end-date" className="ms-label">
+          <label htmlFor="medicine-end-date" className="ms-label-2">
             End Month
           </label>
 

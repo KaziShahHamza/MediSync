@@ -16,7 +16,7 @@ export function renderAISummarySection(doc, aiReport) {
   if (!aiReport?.summary) {
     doc
       .font("Helvetica")
-      .fontSize(13)
+      .fontSize(12)
       .fillColor(PDF_COLORS.textMuted)
       .text("No AI health summary has been generated yet.", leftX, doc.y);
     doc.moveDown(1);
@@ -25,7 +25,7 @@ export function renderAISummarySection(doc, aiReport) {
 
   doc
     .font("Helvetica")
-    .fontSize(13)
+    .fontSize(12)
     .fillColor(PDF_COLORS.textSecondary)
     .text(aiReport.summary, leftX, doc.y, {
       align: "left",

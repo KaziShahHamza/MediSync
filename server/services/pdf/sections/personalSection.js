@@ -44,6 +44,8 @@ export function renderPersonalSection(doc, { user, profile }) {
       .fontSize(10)
       .fillColor(PDF_COLORS.textMuted)
       .text(itemLeft.label, leftX, currentY);
+    
+    doc.moveDown(0.2);
 
     doc
       .font("Helvetica")
@@ -59,6 +61,8 @@ export function renderPersonalSection(doc, { user, profile }) {
         .fillColor(PDF_COLORS.textMuted)
         .text(itemRight.label, rightX, currentY);
 
+      doc.moveDown(0.2);
+      
       doc
         .font("Helvetica")
         .fontSize(11)

@@ -18,7 +18,7 @@ function renderDocumentHeader(doc) {
 
   doc
     .font("Helvetica-Bold")
-    .fontSize(23)
+    .fontSize(20)
     .fillColor(PDF_COLORS.text)
     .text("MediSync", x + 14, 40);
 
@@ -32,7 +32,7 @@ function renderDocumentHeader(doc) {
 
   doc
     .font("Helvetica-Bold")
-    .fontSize(11)
+    .fontSize(9)
     .fillColor(PDF_COLORS.textMuted)
     .text("REPORT GENERATED", rightX, 42, {
       width: 170,
@@ -41,7 +41,7 @@ function renderDocumentHeader(doc) {
 
   doc
     .font("Helvetica")
-    .fontSize(12)
+    .fontSize(9)
     .fillColor(PDF_COLORS.textSecondary)
     .text(formatExportDateTime(), rightX, 55, {
       width: 170,

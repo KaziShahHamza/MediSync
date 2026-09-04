@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FileImage } from "lucide-react";
 
 import { usePrescriptions } from "../context/PrescriptionContext";
-import PrescriptionCard from "../components/PrescriptionCard";
+import PrescriptionCard from "../components/prescription/PrescriptionCard";
 import PrescriptionUpload from "../components/prescription/PrescriptionUpload";
 import PrescriptionPreview from "../components/prescription/PrescriptionPreview";
 
