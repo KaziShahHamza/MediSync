@@ -1,0 +1,745 @@
+
+/*
+ * ==========================================================
+ * MediSync Responsive Utilities
+ * ==========================================================
+ */
+
+/*
+ * ==========================================================
+ * Responsive Visibility
+ * ==========================================================
+ */
+
+.ms-only-mobile {
+  display: block;
+}
+
+.ms-only-tablet {
+  display: none;
+}
+
+.ms-only-desktop {
+  display: none;
+}
+
+.ms-hide-mobile {
+  display: none;
+}
+
+.ms-hide-tablet {
+  display: block;
+}
+
+.ms-hide-desktop {
+  display: block;
+}
+
+/*
+ * ==========================================================
+ * Responsive Direction
+ * ==========================================================
+ */
+
+.ms-responsive-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-4);
+}
+
+.ms-responsive-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-4);
+}
+
+/*
+ * ==========================================================
+ * Responsive Alignment
+ * ==========================================================
+ */
+
+.ms-responsive-center {
+  align-items: flex-start;
+}
+
+.ms-responsive-between {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+}
+
+/*
+ * ==========================================================
+ * Responsive Width
+ * ==========================================================
+ */
+
+.ms-responsive-full {
+  width: 100%;
+}
+
+/*
+ * ==========================================================
+ * Mobile-friendly horizontal scrolling
+ * ==========================================================
+ */
+
+.ms-scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.ms-scroll-x > * {
+  flex-shrink: 0;
+}
+
+/*
+ * Prevent horizontal page overflow.
+ */
+
+.ms-page-overflow-safe {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/*
+ * ==========================================================
+ * Tablet
+ * ==========================================================
+ */
+
+@media (min-width: 640px) {
+  .ms-only-mobile {
+    display: none;
+  }
+
+  .ms-only-tablet {
+    display: block;
+  }
+
+  .ms-hide-mobile {
+    display: block;
+  }
+
+  .ms-responsive-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .ms-responsive-center {
+    align-items: center;
+  }
+}
+
+/*
+ * ==========================================================
+ * Desktop
+ * ==========================================================
+ */
+
+@media (min-width: 1024px) {
+  .ms-only-tablet {
+    display: none;
+  }
+
+  .ms-only-desktop {
+    display: block;
+  }
+
+  .ms-hide-tablet {
+    display: none;
+  }
+
+  .ms-hide-desktop {
+    display: block;
+  }
+
+  .ms-responsive-between {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/*
+ * ==========================================================
+ * Large Desktop
+ * ==========================================================
+ */
+
+@media (min-width: 1280px) {
+  .ms-only-desktop {
+    display: block;
+  }
+}
+
+/*
+ * ==========================================================
+ * Touch Devices
+ * ==========================================================
+ */
+
+@media (hover: none) and (pointer: coarse) {
+  /*
+   * Give interactive controls comfortable touch targets.
+   *
+   * Component-specific controls can override this where
+   * a smaller control is intentionally required.
+   */
+
+  .ms-touch-target {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+}
+
+/*
+ * ==========================================================
+ * Reduced Width / Small Screens
+ * ==========================================================
+ */
+
+@media (max-width: 374px) {
+  .ms-page {
+    padding-inline: 0;
+  }
+
+  .ms-container,
+  .ms-container-wide,
+  .ms-container-narrow,
+  .ms-container-tight {
+    padding-inline: 1rem;
+  }
+}
+
+/* =========================================================
+   MEDISYNC — GLOBAL APPLICATION SHELL
+   ========================================================= */
+
+.ms-app-shell {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  color: var(--ms-text);
+  background: var(--ms-bg);
+}
+
+.ms-main {
+  flex: 1 1 auto;
+  min-width: 0;
+
+  width: 100%;
+}
+
+/*
+ * Prevent accidental horizontal overflow from individual
+ * feature sections or responsive content.
+ */
+
+.ms-main,
+.ms-main > * {
+  min-width: 0;
+}
+
+/*
+ * Route content should remain visually separated from
+ * the sticky navigation.
+ */
+
+.ms-main {
+  position: relative;
+}
+
+/*
+ * Accessibility:
+ * Respect reduced-motion preferences throughout the shell.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-app-shell *,
+  .ms-app-shell *::before,
+  .ms-app-shell *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * ==========================================================
+ * MediSync Dark Theme
+ * ==========================================================
+ *
+ * Dark mode is controlled through semantic variables.
+ *
+ * Components should not need separate dark-mode classes.
+ */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Backgrounds */
+  --ms-bg: var(--ms-slate-950);
+  --ms-surface: var(--ms-slate-900);
+  --ms-surface-raised: var(--ms-slate-800);
+  --ms-surface-muted: var(--ms-slate-800);
+  --ms-surface-subtle: #172033;
+
+  /* Text */
+  --ms-text: var(--ms-slate-50);
+  --ms-text-secondary: var(--ms-slate-300);
+  --ms-text-muted: var(--ms-slate-400);
+  --ms-text-disabled: var(--ms-slate-500);
+  --ms-text-inverse: var(--ms-slate-950);
+
+  /* Borders */
+  --ms-border: var(--ms-slate-700);
+  --ms-border-strong: var(--ms-slate-600);
+  --ms-border-subtle: var(--ms-slate-800);
+
+  /* Brand */
+  --ms-primary: var(--ms-blue-500);
+  --ms-primary-hover: var(--ms-blue-400);
+  --ms-primary-active: var(--ms-blue-300);
+  --ms-primary-soft: rgba(37, 99, 235, 0.16);
+  --ms-primary-soft-border: rgba(96, 165, 250, 0.3);
+
+  --ms-accent: var(--ms-sky-500);
+  --ms-accent-soft: rgba(14, 165, 233, 0.14);
+
+  /* Status */
+  --ms-success: var(--ms-green-500);
+  --ms-success-hover: var(--ms-green-400);
+  --ms-success-soft: rgba(34, 197, 94, 0.13);
+  --ms-success-border: rgba(74, 222, 128, 0.3);
+  --ms-success-text: #86efac;
+
+  --ms-warning: var(--ms-amber-500);
+  --ms-warning-hover: var(--ms-amber-400);
+  --ms-warning-soft: rgba(245, 158, 11, 0.13);
+  --ms-warning-border: rgba(251, 191, 36, 0.3);
+  --ms-warning-text: #fcd34d;
+
+  --ms-danger: var(--ms-red-500);
+  --ms-danger-hover: var(--ms-red-400);
+  --ms-danger-soft: rgba(239, 68, 68, 0.13);
+  --ms-danger-border: rgba(248, 113, 113, 0.3);
+  --ms-danger-text: #fca5a5;
+
+  --ms-info: var(--ms-blue-500);
+  --ms-info-soft: rgba(59, 130, 246, 0.13);
+  --ms-info-border: rgba(96, 165, 250, 0.3);
+  --ms-info-text: #93c5fd;
+
+  /* Overlay */
+  --ms-overlay: rgba(2, 6, 23, 0.72);
+
+  /* Focus */
+  --ms-focus: var(--ms-blue-400);
+  --ms-focus-ring: rgba(96, 165, 250, 0.3);
+
+  /* Form */
+  --ms-input-bg: var(--ms-slate-900);
+  --ms-input-border: var(--ms-slate-600);
+  --ms-input-border-focus: var(--ms-blue-400);
+  --ms-input-placeholder: var(--ms-slate-500);
+
+  /* Navigation */
+  --ms-nav-bg: var(--ms-slate-900);
+  --ms-nav-border: var(--ms-slate-700);
+  --ms-nav-text: var(--ms-slate-300);
+  --ms-nav-text-hover: var(--ms-blue-400);
+  --ms-nav-active-bg: rgba(37, 99, 235, 0.14);
+  --ms-nav-active-text: var(--ms-blue-400);
+
+  /* Selection */
+  --ms-selection-bg: var(--ms-blue-500);
+  --ms-selection-text: #ffffff;
+
+  /* Scrollbar */
+  --ms-scrollbar-track: var(--ms-slate-900);
+  --ms-scrollbar-thumb: var(--ms-slate-600);
+  --ms-scrollbar-thumb-hover: var(--ms-slate-500);
+
+  /* Skeleton */
+  --ms-skeleton-start: var(--ms-slate-800);
+  --ms-skeleton-middle: var(--ms-slate-700);
+  --ms-skeleton-end: var(--ms-slate-800);
+}
+
+/*
+ * ==========================================================
+ * MediSync Light Theme
+ * ==========================================================
+ */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Backgrounds */
+  --ms-bg: var(--ms-slate-50);
+  --ms-surface: #ffffff;
+  --ms-surface-raised: #ffffff;
+  --ms-surface-muted: var(--ms-slate-100);
+  --ms-surface-subtle: #f8fafc;
+
+  /* Text */
+  --ms-text: var(--ms-slate-900);
+  --ms-text-secondary: var(--ms-slate-600);
+  --ms-text-muted: var(--ms-slate-500);
+  --ms-text-disabled: var(--ms-slate-400);
+  --ms-text-inverse: #ffffff;
+
+  /* Borders */
+  --ms-border: var(--ms-slate-200);
+  --ms-border-strong: var(--ms-slate-300);
+  --ms-border-subtle: var(--ms-slate-100);
+
+  /* Brand */
+  --ms-primary: var(--ms-blue-600);
+  --ms-primary-hover: var(--ms-blue-700);
+  --ms-primary-active: var(--ms-blue-800);
+  --ms-primary-soft: var(--ms-blue-50);
+  --ms-primary-soft-border: var(--ms-blue-200);
+
+  --ms-accent: var(--ms-sky-500);
+  --ms-accent-soft: var(--ms-sky-50);
+
+  /* Status */
+  --ms-success: var(--ms-green-600);
+  --ms-success-hover: var(--ms-green-700);
+  --ms-success-soft: var(--ms-green-50);
+  --ms-success-border: var(--ms-green-200);
+  --ms-success-text: var(--ms-green-700);
+
+  --ms-warning: var(--ms-amber-500);
+  --ms-warning-hover: var(--ms-amber-600);
+  --ms-warning-soft: var(--ms-amber-50);
+  --ms-warning-border: var(--ms-amber-200);
+  --ms-warning-text: var(--ms-amber-700);
+
+  --ms-danger: var(--ms-red-600);
+  --ms-danger-hover: var(--ms-red-700);
+  --ms-danger-soft: var(--ms-red-50);
+  --ms-danger-border: var(--ms-red-200);
+  --ms-danger-text: var(--ms-red-700);
+
+  --ms-info: var(--ms-info-600);
+  --ms-info-soft: var(--ms-info-50);
+  --ms-info-border: var(--ms-blue-200);
+  --ms-info-text: var(--ms-info-700);
+
+  /* Overlay */
+  --ms-overlay: rgba(15, 23, 42, 0.45);
+
+  /* Focus */
+  --ms-focus: var(--ms-blue-500);
+  --ms-focus-ring: rgba(59, 130, 246, 0.25);
+
+  /* Form */
+  --ms-input-bg: #ffffff;
+  --ms-input-border: var(--ms-slate-300);
+  --ms-input-border-focus: var(--ms-blue-500);
+  --ms-input-placeholder: var(--ms-slate-400);
+
+  /* Navigation */
+  --ms-nav-bg: #ffffff;
+  --ms-nav-border: var(--ms-slate-200);
+  --ms-nav-text: var(--ms-slate-600);
+  --ms-nav-text-hover: var(--ms-blue-600);
+  --ms-nav-active-bg: var(--ms-blue-50);
+  --ms-nav-active-text: var(--ms-blue-600);
+
+  /* Selection */
+  --ms-selection-bg: var(--ms-blue-600);
+  --ms-selection-text: #ffffff;
+
+  /* Scrollbar */
+  --ms-scrollbar-track: var(--ms-slate-100);
+  --ms-scrollbar-thumb: var(--ms-slate-300);
+  --ms-scrollbar-thumb-hover: var(--ms-slate-400);
+
+  /* Skeleton */
+  --ms-skeleton-start: var(--ms-slate-100);
+  --ms-skeleton-middle: var(--ms-slate-200);
+  --ms-skeleton-end: var(--ms-slate-100);
+}
+
+:root {
+  /*
+   * ==========================================================
+   * MediSync Color Tokens
+   * ==========================================================
+   *
+   * These are semantic design tokens.
+   *
+   * Components should use:
+   *
+   *   var(--ms-primary)
+   *   var(--ms-surface)
+   *   var(--ms-text)
+   *
+   * rather than hard-coded colors.
+   */
+
+  /* Brand palette */
+  --ms-blue-50: #eff6ff;
+  --ms-blue-100: #dbeafe;
+  --ms-blue-200: #bfdbfe;
+  --ms-blue-300: #93c5fd;
+  --ms-blue-400: #60a5fa;
+  --ms-blue-500: #3b82f6;
+  --ms-blue-600: #2563eb;
+  --ms-blue-700: #1d4ed8;
+  --ms-blue-800: #1e40af;
+  --ms-blue-900: #1e3a8a;
+
+  --ms-sky-50: #f0f9ff;
+  --ms-sky-100: #e0f2fe;
+  --ms-sky-200: #bae6fd;
+  --ms-sky-500: #0ea5e9;
+  --ms-sky-600: #0284c7;
+  --ms-sky-700: #0369a1;
+
+  /* Neutral palette */
+  --ms-slate-50: #f8fafc;
+  --ms-slate-100: #f1f5f9;
+  --ms-slate-200: #e2e8f0;
+  --ms-slate-300: #cbd5e1;
+  --ms-slate-400: #94a3b8;
+  --ms-slate-500: #64748b;
+  --ms-slate-600: #475569;
+  --ms-slate-700: #334155;
+  --ms-slate-800: #1e293b;
+  --ms-slate-900: #0f172a;
+  --ms-slate-950: #020617;
+
+  /* Status palette */
+  --ms-green-50: #f0fdf4;
+  --ms-green-100: #dcfce7;
+  --ms-green-200: #bbf7d0;
+  --ms-green-500: #22c55e;
+  --ms-green-600: #16a34a;
+  --ms-green-700: #15803d;
+
+  --ms-amber-50: #fffbeb;
+  --ms-amber-100: #fef3c7;
+  --ms-amber-200: #fde68a;
+  --ms-amber-500: #f59e0b;
+  --ms-amber-600: #d97706;
+  --ms-amber-700: #b45309;
+
+  --ms-red-50: #fef2f2;
+  --ms-red-100: #fee2e2;
+  --ms-red-200: #fecaca;
+  --ms-red-500: #ef4444;
+  --ms-red-600: #dc2626;
+  --ms-red-700: #b91c1c;
+
+  /* Informational palette */
+  --ms-info-50: #eff6ff;
+  --ms-info-100: #dbeafe;
+  --ms-info-600: #2563eb;
+  --ms-info-700: #1d4ed8;
+
+  /*
+   * ==========================================================
+   * Semantic tokens
+   * ==========================================================
+   *
+   * Light/dark theme files assign these values.
+   */
+}
+
+:root {
+  /*
+   * ==========================================================
+   * Motion
+   * ==========================================================
+   */
+
+  --ms-duration-fast: 150ms;
+  --ms-duration-normal: 200ms;
+  --ms-duration-slow: 250ms;
+
+  --ms-ease-standard: ease;
+  --ms-ease-in: ease-in;
+  --ms-ease-out: ease-out;
+  --ms-ease-in-out: ease-in-out;
+
+  --ms-transition-colors:
+    color var(--ms-duration-fast) var(--ms-ease-standard),
+    background-color var(--ms-duration-fast) var(--ms-ease-standard),
+    border-color var(--ms-duration-fast) var(--ms-ease-standard);
+
+  --ms-transition-shadow:
+    box-shadow var(--ms-duration-normal) var(--ms-ease-standard);
+
+  --ms-transition-transform:
+    transform var(--ms-duration-normal) var(--ms-ease-out);
+
+  --ms-transition-standard:
+    all var(--ms-duration-normal) var(--ms-ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ms-duration-fast: 0ms;
+    --ms-duration-normal: 0ms;
+    --ms-duration-slow: 0ms;
+  }
+}
+
+:root {
+  /*
+   * ==========================================================
+   * Border Radius
+   * ==========================================================
+   */
+
+  --ms-radius-none: 0;
+  --ms-radius-sm: 0.375rem;
+  --ms-radius-md: 0.5rem;
+  --ms-radius-lg: 0.75rem;
+  --ms-radius-xl: 1rem;
+  --ms-radius-2xl: 1.25rem;
+  --ms-radius-3xl: 1.5rem;
+  --ms-radius-full: 9999px;
+
+  /*
+   * Semantic radius tokens
+   */
+  --ms-radius-control: var(--ms-radius-lg);
+  --ms-radius-card: var(--ms-radius-xl);
+  --ms-radius-modal: var(--ms-radius-2xl);
+  --ms-radius-badge: var(--ms-radius-full);
+}
+
+:root {
+  /*
+   * ==========================================================
+   * Shadows
+   * ==========================================================
+   *
+   * MediSync intentionally uses restrained shadows.
+   */
+
+  --ms-shadow-none: none;
+
+  --ms-shadow-xs:
+    0 1px 2px rgba(15, 23, 42, 0.04);
+
+  --ms-shadow-sm:
+    0 1px 3px rgba(15, 23, 42, 0.06);
+
+  --ms-shadow-md:
+    0 4px 12px rgba(15, 23, 42, 0.08);
+
+  --ms-shadow-lg:
+    0 10px 30px rgba(15, 23, 42, 0.1);
+
+  --ms-shadow-xl:
+    0 20px 40px rgba(15, 23, 42, 0.12);
+
+  /* Semantic shadows */
+  --ms-shadow-card: var(--ms-shadow-sm);
+  --ms-shadow-card-hover: var(--ms-shadow-md);
+  --ms-shadow-modal: var(--ms-shadow-xl);
+  --ms-shadow-dropdown: var(--ms-shadow-lg);
+}
+
+:root {
+  /*
+   * ==========================================================
+   * Spacing Scale
+   * ==========================================================
+   */
+
+  --ms-space-0: 0;
+  --ms-space-1: 0.25rem;
+  --ms-space-2: 0.5rem;
+  --ms-space-3: 0.75rem;
+  --ms-space-4: 1rem;
+  --ms-space-5: 1.25rem;
+  --ms-space-6: 1.5rem;
+  --ms-space-7: 1.75rem;
+  --ms-space-8: 2rem;
+  --ms-space-10: 2.5rem;
+  --ms-space-12: 3rem;
+  --ms-space-14: 3.5rem;
+  --ms-space-16: 4rem;
+  --ms-space-20: 5rem;
+  --ms-space-24: 6rem;
+
+  /* Common component spacing */
+  --ms-control-height: 2.75rem;
+  --ms-control-height-sm: 2.5rem;
+  --ms-control-height-lg: 3rem;
+
+  --ms-page-padding-x: 1.25rem;
+  --ms-page-padding-y: 2.5rem;
+
+  --ms-card-padding: 1.5rem;
+  --ms-section-gap: 4rem;
+  --ms-grid-gap: 1.5rem;
+}
+
+:root {
+  /*
+   * ==========================================================
+   * Typography
+   * ==========================================================
+   */
+
+  --ms-font-sans:
+    "Inter",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  --ms-font-mono:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    monospace;
+
+  /* Font sizes */
+  --ms-text-xs: 0.75rem;
+  --ms-text-sm: 0.875rem;
+  --ms-text-base: 1rem;
+  --ms-text-lg: 1.125rem;
+  --ms-text-xl: 1.25rem;
+  --ms-text-2xl: 1.5rem;
+  --ms-text-3xl: 1.875rem;
+  --ms-text-4xl: 2.25rem;
+
+  /* Line heights */
+  --ms-leading-tight: 1.25;
+  --ms-leading-snug: 1.375;
+  --ms-leading-normal: 1.5;
+  --ms-leading-relaxed: 1.625;
+
+  /* Font weights */
+  --ms-font-normal: 400;
+  --ms-font-medium: 500;
+  --ms-font-semibold: 600;
+  --ms-font-bold: 700;
+
+  /* Letter spacing */
+  --ms-tracking-tight: -0.025em;
+  --ms-tracking-normal: 0;
+  --ms-tracking-wide: 0.025em;
+  --ms-tracking-wider: 0.05em;
+}

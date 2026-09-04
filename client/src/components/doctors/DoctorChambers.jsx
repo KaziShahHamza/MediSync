@@ -34,9 +34,9 @@ export default function DoctorChambers({
                 Chamber {index + 1}
               </span>
 
-              <h4 className="ms-doctor-chamber-title">
+              {/* <h4 className="ms-doctor-chamber-title">
                 {chamber.name || "New chamber"}
-              </h4>
+              </h4> */}
             </div>
 
             {chambers.length > 1 && (
@@ -53,7 +53,7 @@ export default function DoctorChambers({
 
           <div className="ms-stack-md">
             <div className="ms-field">
-              <label htmlFor={`chamber-name-${index}`} className="ms-label">
+              <label htmlFor={`chamber-name-${index}`} className="ms-label-3">
                 Chamber Name
               </label>
 
@@ -77,7 +77,7 @@ export default function DoctorChambers({
             </div>
 
             <div className="ms-field">
-              <label htmlFor={`chamber-address-${index}`} className="ms-label">
+              <label htmlFor={`chamber-address-${index}`} className="ms-label-3">
                 Chamber Address
               </label>
 
@@ -94,7 +94,7 @@ export default function DoctorChambers({
             </div>
 
             <div className="ms-field">
-              <label htmlFor={`chamber-phone-${index}`} className="ms-label">
+              <label htmlFor={`chamber-phone-${index}`} className="ms-label-3">
                 Chamber Phone
               </label>
 
@@ -109,7 +109,7 @@ export default function DoctorChambers({
             </div>
 
             <div className="ms-field">
-              <label htmlFor={`chamber-days-${index}`} className="ms-label">
+              <label htmlFor={`chamber-days-${index}`} className="ms-label-3">
                 Visiting Days
               </label>
 
@@ -133,7 +133,7 @@ export default function DoctorChambers({
             </div>
 
             <div className="ms-field">
-              <label htmlFor={`chamber-time-${index}`} className="ms-label">
+              <label htmlFor={`chamber-time-${index}`} className="ms-label-3">
                 Visiting Time
               </label>
 

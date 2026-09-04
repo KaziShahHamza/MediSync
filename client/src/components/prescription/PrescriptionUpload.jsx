@@ -163,8 +163,8 @@ function PrescriptionUpload({ onUploaded }) {
         </div>
 
         <div>
-          <h2>Upload prescription</h2>
 
+          <h2>Upload prescription</h2>
           <p>
             Add a prescription image and let AI create a quick summary.
           </p>
@@ -176,7 +176,7 @@ function PrescriptionUpload({ onUploaded }) {
         onSubmit={handleSubmit}
       >
         <div className="ms-field">
-          <label className="ms-label" htmlFor="prescription-title">
+          <label className="ms-label-5" htmlFor="prescription-title">
             Prescription title
           </label>
 
@@ -192,7 +192,7 @@ function PrescriptionUpload({ onUploaded }) {
         </div>
 
         <div className="ms-field">
-          <span className="ms-label">Prescription image</span>
+          <span className="ms-label-5">Prescription image</span>
 
           <label className="ms-prescription-file-picker">
             <input

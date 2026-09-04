@@ -30,34 +30,12 @@
   display: block;
   /* margin-bottom: var(--ms-space-1); */
   color: var(--ms-text-muted);
-  font-size: var(--ms-text-lg);
-  font-weight: var(--ms-font-semibold);
+  font-size: var(--ms-text-xs);
+  font-weight: var(--ms-font-weight-semibold);
   letter-spacing: var(--ms-tracking-wide);
   line-height: var(--ms-leading-tight);
   text-transform: uppercase;
-  padding-bottom: var(--ms-space-4);
-  font-weight: var(--ms-font-medium);
-}
-
-.ms-label-2 {
-  font-size: var(--ms-text-base);
-  padding-top: var(--ms-space-2);
-  font-weight: var(--ms-font-medium);
-}
-
-.ms-label-3 {
-  font-size: var(--ms-text-base);
-  font-weight: var(--ms-font-medium);
-}
-
-.ms-label-4 {
-  font-size: var(--ms-text-base);
-  font-weight: var(--ms-font-medium);
-}
-
-.ms-label-5 {
-  font-size: var(--ms-text-base);
-  font-weight: var(--ms-font-medium);
+  padding: var(--ms-space-2);
 }
 
 .ms-doctors-header .ms-page-subtitle {
@@ -94,7 +72,7 @@
 .ms-doctors-list-description {
   margin: var(--ms-space-1) 0 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-text-base);
+  font-size: var(--ms-text-sm);
 }
 
 .ms-doctors-count {
@@ -133,14 +111,14 @@
   margin: 0;
   color: var(--ms-text);
   font-size: var(--ms-text-xl);
-  font-weight: var(--ms-font-semibold);
+  font-weight: var(--ms-font-weight-semibold);
 }
 
 .ms-doctors-empty-text {
   max-width: 400px;
   margin: var(--ms-space-2) auto 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-text-base);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -180,7 +158,7 @@
 .ms-doctor-form-description {
   margin: var(--ms-space-3) 0 0;
   color: var(--ms-text-secondary);
-  font-size: var(--ms-text-base);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -200,10 +178,6 @@
   border: 0;
 }
 
-.ms-form-section-title {
-  padding-bottom: var(--ms-space-3);
-}
-
 .ms-doctor-form-section-header {
   margin-bottom: var(--ms-space-4);
 }
@@ -211,14 +185,14 @@
 .ms-doctor-form-section-title {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-text-lg);
-  font-weight: var(--ms-font-semibold);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-weight-semibold);
 }
 
 .ms-doctor-form-section-description {
   margin: var(--ms-space-1) 0 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-text-base);
+  font-size: var(--ms-text-xs);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -289,17 +263,19 @@
 
 .ms-doctor-chamber-number {
   display: block;
+  margin-bottom: var(--ms-space-1);
   color: var(--ms-text-muted);
-  font-size: var(--ms-text-lg);
-  font-weight: var(--ms-font-semibold);
+  font-size: var(--ms-text-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  letter-spacing: var(--ms-tracking-wide);
   text-transform: uppercase;
 }
 
 .ms-doctor-chamber-title {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-text-base);
-  font-weight: var(--ms-font-semibold);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-weight-semibold);
 }
 
 .ms-doctor-remove-button {
@@ -330,7 +306,7 @@
 .ms-doctor-contact-add {
   min-height: 32px;
   padding: 0.35rem 0.6rem;
-  font-size: var(--ms-text-base);
+  font-size: var(--ms-text-xs);
 }
 
 .ms-doctor-contact-list {
@@ -348,10 +324,6 @@
 .ms-doctor-array-field .ms-input {
   flex: 1;
   min-width: 0;
-}
-
-.ms-help-text {
-  font-size: var(--ms-text-base);
 }
 
 
@@ -410,7 +382,7 @@
   margin: 0;
   color: var(--ms-text);
   font-size: var(--ms-text-xl);
-  font-weight: var(--ms-font-semibold);
+  font-weight: var(--ms-font-weight-semibold);
   line-height: var(--ms-leading-tight);
   overflow-wrap: anywhere;
 }
@@ -418,8 +390,8 @@
 .ms-doctor-card-designation {
   margin: var(--ms-space-1) 0 0;
   color: var(--ms-primary);
-  font-size: var(--ms-text-base);
-  font-weight: var(--ms-font-medium);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-weight-medium);
 }
 
 .ms-doctor-specialities {
@@ -452,8 +424,8 @@
   gap: var(--ms-space-2);
   margin-bottom: var(--ms-space-3);
   color: var(--ms-text);
-  font-size: var(--ms-text-base);
-  font-weight: var(--ms-font-semibold);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-weight-semibold);
 }
 
 .ms-doctor-info-grid {
@@ -486,14 +458,14 @@
 .ms-doctor-info-label {
   margin: 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-text-base);
+  font-size: var(--ms-text-xs);
 }
 
 .ms-doctor-info-value {
   margin: var(--ms-space-1) 0 0;
   color: var(--ms-text);
-  font-size: var(--ms-text-base);
-  font-weight: var(--ms-font-medium);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-weight-medium);
   line-height: var(--ms-leading-relaxed);
   overflow-wrap: anywhere;
 }
@@ -519,8 +491,8 @@
   display: block;
   margin-bottom: var(--ms-space-1);
   color: var(--ms-text-muted);
-  font-size: var(--ms-text-base);
-  font-weight: var(--ms-font-semibold);
+  font-size: var(--ms-text-xs);
+  font-weight: var(--ms-font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: var(--ms-tracking-wide);
 }
@@ -528,8 +500,8 @@
 .ms-doctor-card-chamber-name {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-text-base);
-  font-weight: var(--ms-font-semibold);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-weight-semibold);
 }
 
 .ms-doctor-detail-row {
@@ -538,7 +510,7 @@
   gap: var(--ms-space-2);
   margin-top: var(--ms-space-3);
   color: var(--ms-text-secondary);
-  font-size: var(--ms-text-base);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -568,7 +540,7 @@
   border-radius: var(--ms-radius-lg);
   background: var(--ms-surface-muted);
   color: var(--ms-text-secondary);
-  font-size: var(--ms-text-base);
+  font-size: var(--ms-text-sm);
 }
 
 .ms-doctor-contact-item svg {
@@ -599,7 +571,7 @@
   border-radius: var(--ms-radius-lg);
   background: var(--ms-surface-muted);
   color: var(--ms-text-secondary);
-  font-size: var(--ms-text-base);
+  font-size: var(--ms-text-xs);
 }
 
 
@@ -619,8 +591,8 @@
   display: block;
   margin-bottom: var(--ms-space-1);
   color: var(--ms-text-muted);
-  font-size: var(--ms-text-base);
-  font-weight: var(--ms-font-semibold);
+  font-size: var(--ms-text-xs);
+  font-weight: var(--ms-font-weight-semibold);
   letter-spacing: var(--ms-tracking-wide);
   text-transform: uppercase;
 }
@@ -628,7 +600,7 @@
 .ms-doctor-notes p {
   margin: 0;
   color: var(--ms-text-secondary);
-  font-size: var(--ms-text-base);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-relaxed);
   white-space: pre-wrap;
 }
@@ -780,7 +752,7 @@
   }
 
   .ms-doctor-speciality {
-    font-size: var(--ms-text-base);
+    font-size: var(--ms-text-xs);
   }
 
   .ms-doctor-chamber {

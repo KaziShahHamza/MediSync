@@ -32,7 +32,7 @@ export default function DoctorContactFields({ contactInfo, onChange }) {
         {/* Phones */}
         <div className="ms-doctor-contact-group">
           <div className="ms-doctor-contact-header">
-            <label className="ms-label">Phone Numbers</label>
+            <label className="ms-label-4">Phone Numbers</label>
 
             <button
               type="button"
@@ -71,7 +71,7 @@ export default function DoctorContactFields({ contactInfo, onChange }) {
         {/* Emails */}
         <div className="ms-doctor-contact-group">
           <div className="ms-doctor-contact-header">
-            <label className="ms-label">Email Addresses</label>
+            <label className="ms-label-4">Email Addresses</label>
 
             <button
               type="button"

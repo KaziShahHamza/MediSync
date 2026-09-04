@@ -313,7 +313,7 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
       <div className="ms-doctor-form-header">
         <div>
           <p className="ms-doctors-eyebrow">
-            {isEditing ? "Edit doctor" : "New doctor"}
+            {isEditing ? "Edit doctor" : "Add New doctor"}
           </p>
         </div>
       </div>
@@ -322,7 +322,7 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
         <section className="ms-form-section ms-doctor-form-section">
           <div className="ms-form-grid">
             <div className="ms-field ms-field-full">
-              <label className="ms-label" htmlFor="doctor-name">
+              <label className="ms-label-2" htmlFor="doctor-name">
                 Doctor name
               </label>
 
@@ -339,7 +339,7 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
             </div>
 
             <div className="ms-field">
-              <label className="ms-label" htmlFor="bmdc-reg-no">
+              <label className="ms-label-2" htmlFor="bmdc-reg-no">
                 BMDC registration number
               </label>
 
@@ -355,7 +355,7 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
             </div>
 
             <div className="ms-field">
-              <label className="ms-label" htmlFor="designation">
+              <label className="ms-label-2" htmlFor="designation">
                 Designation
               </label>
 
@@ -377,7 +377,7 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
             </div>
 
             <div className="ms-field">
-              <label className="ms-label" htmlFor="primary-hospital">
+              <label className="ms-label-2" htmlFor="primary-hospital">
                 Primary hospital
               </label>
 
@@ -399,7 +399,7 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
             </div>
 
             <div className="ms-field">
-              <label className="ms-label" htmlFor="degrees">
+              <label className="ms-label-2" htmlFor="degrees">
                 Degrees
               </label>
 
@@ -423,7 +423,7 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
             </div>
 
             <div className="ms-field">
-              <label className="ms-label" htmlFor="specialities">
+              <label className="ms-label-2" htmlFor="specialities">
                 Specialities
               </label>
 

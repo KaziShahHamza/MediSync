@@ -1,0 +1,896 @@
+/* ==========================================================
+   MediSync — Doctors
+   Doctor page, cards, forms, chambers & contact fields
+   ========================================================== */
+
+
+/* ==========================================================
+   PAGE HEADER
+   ========================================================== */
+
+.ms-doctors-page {
+  overflow-x: hidden;
+}
+
+.ms-doctors-header {
+  margin-bottom: var(--ms-space-10);
+}
+
+.ms-doctors-heading {
+  max-width: 52rem;
+}
+
+.ms-doctors-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-4);
+}
+
+.ms-doctors-page-icon {
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 3rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--ms-radius-lg);
+
+  color: var(--ms-blue-600);
+  background: var(--ms-blue-50);
+  border: 1px solid var(--ms-blue-100);
+}
+
+.ms-doctors-page .ms-page-title {
+  margin: 0;
+}
+
+.ms-doctors-page .ms-page-subtitle {
+  margin-top: var(--ms-space-3);
+  max-width: 48rem;
+}
+
+
+/* ==========================================================
+   MAIN DOCTORS LAYOUT
+   ========================================================== */
+
+.ms-doctors-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--ms-space-6);
+  align-items: start;
+}
+
+.ms-doctors-list-column {
+  min-width: 0;
+}
+
+.ms-doctors-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+
+  margin-bottom: var(--ms-space-4);
+}
+
+.ms-doctors-list-description {
+  margin: 0;
+
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+.ms-doctors-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-5);
+}
+
+
+/* ==========================================================
+   DOCTOR CARD
+   ========================================================== */
+
+.ms-doctor-card {
+  min-width: 0;
+  padding: 0;
+
+  overflow: hidden;
+
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-xl);
+  background: var(--ms-surface);
+
+  box-shadow: var(--ms-shadow-card);
+
+  transition:
+    box-shadow var(--ms-duration-normal) var(--ms-ease-standard),
+    border-color var(--ms-duration-normal) var(--ms-ease-standard);
+}
+
+.ms-doctor-card:hover {
+  border-color: var(--ms-border-strong);
+  box-shadow: var(--ms-shadow-card-hover);
+}
+
+
+/* ==========================================================
+   CARD HEADER
+   ========================================================== */
+
+.ms-doctor-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-5);
+
+  padding: var(--ms-card-padding);
+
+  border-bottom: 1px solid var(--ms-border-subtle);
+}
+
+.ms-doctor-card-identity {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-4);
+}
+
+.ms-doctor-avatar {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex: 0 0 3.25rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--ms-radius-full);
+
+  color: var(--ms-blue-600);
+  background: var(--ms-blue-50);
+  border: 1px solid var(--ms-blue-100);
+}
+
+.ms-doctor-card-name-group {
+  min-width: 0;
+}
+
+.ms-doctor-card-name {
+  margin: 0;
+
+  color: var(--ms-text-primary);
+  font-size: var(--ms-text-lg);
+  line-height: var(--ms-leading-tight);
+  font-weight: var(--ms-font-weight-semibold);
+
+  overflow-wrap: anywhere;
+}
+
+.ms-doctor-card-designation {
+  margin: var(--ms-space-1) 0 0;
+
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-text-sm);
+  line-height: var(--ms-leading-normal);
+}
+
+.ms-doctor-specialities {
+  flex: 0 1 auto;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--ms-space-2);
+}
+
+.ms-doctor-speciality {
+  white-space: normal;
+}
+
+
+/* ==========================================================
+   CARD INFORMATION SECTIONS
+   ========================================================== */
+
+.ms-doctor-info-section {
+  padding: var(--ms-space-5) var(--ms-card-padding);
+
+  border-bottom: 1px solid var(--ms-border-subtle);
+}
+
+.ms-doctor-subsection-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--ms-space-2);
+
+  margin-bottom: var(--ms-space-4);
+
+  color: var(--ms-text-primary);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-doctor-subsection-heading svg {
+  color: var(--ms-blue-600);
+  flex: 0 0 auto;
+}
+
+.ms-doctor-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-space-4);
+}
+
+.ms-doctor-info-item {
+  min-width: 0;
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ms-space-3);
+}
+
+.ms-doctor-info-icon {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--ms-slate-600);
+  background: var(--ms-slate-50);
+  border: 1px solid var(--ms-border-subtle);
+  border-radius: var(--ms-radius-md);
+}
+
+.ms-doctor-info-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.ms-doctor-info-content {
+  min-width: 0;
+}
+
+.ms-doctor-info-label {
+  margin: 0 0 var(--ms-space-1);
+
+  color: var(--ms-text-muted);
+  font-size: var(--ms-text-xs);
+  line-height: var(--ms-leading-normal);
+  font-weight: var(--ms-font-weight-medium);
+}
+
+.ms-doctor-info-value {
+  margin: 0;
+
+  color: var(--ms-text-primary);
+  font-size: var(--ms-text-sm);
+  line-height: var(--ms-leading-relaxed);
+
+  overflow-wrap: anywhere;
+}
+
+
+/* ==========================================================
+   CHAMBERS — CARD DISPLAY
+   ========================================================== */
+
+.ms-doctor-chamber-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-3);
+}
+
+.ms-doctor-card-chamber {
+  padding: var(--ms-space-4);
+
+  border: 1px solid var(--ms-border-subtle);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface-subtle);
+}
+
+.ms-doctor-card-chamber-header {
+  margin-bottom: var(--ms-space-3);
+}
+
+.ms-doctor-card-chamber-label {
+  display: block;
+
+  margin-bottom: var(--ms-space-1);
+
+  color: var(--ms-text-muted);
+  font-size: var(--ms-text-xs);
+  font-weight: var(--ms-font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--ms-tracking-wide);
+}
+
+.ms-doctor-card-chamber-name {
+  margin: 0;
+
+  color: var(--ms-text-primary);
+  font-size: var(--ms-text-sm);
+  line-height: var(--ms-leading-normal);
+  font-weight: var(--ms-font-weight-semibold);
+
+  overflow-wrap: anywhere;
+}
+
+.ms-doctor-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ms-space-2);
+
+  margin-top: var(--ms-space-2);
+
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-text-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-doctor-detail-row svg {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+
+  color: var(--ms-text-muted);
+}
+
+
+/* ==========================================================
+   CARD CONTACT INFORMATION
+   ========================================================== */
+
+.ms-doctor-contact-list-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-3);
+
+  padding: var(--ms-space-4);
+
+  border: 1px solid var(--ms-border-subtle);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface-subtle);
+}
+
+.ms-doctor-contact-item {
+  min-width: 0;
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ms-space-3);
+
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-text-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+.ms-doctor-contact-item svg {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+
+  color: var(--ms-blue-600);
+}
+
+.ms-doctor-contact-item span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+
+/* ==========================================================
+   CARD ACTIONS
+   ========================================================== */
+
+.ms-doctor-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--ms-space-3);
+
+  padding: var(--ms-space-4) var(--ms-card-padding);
+}
+
+.ms-doctor-action-button {
+  min-width: 6rem;
+}
+
+
+/* ==========================================================
+   EMPTY STATE
+   ========================================================== */
+
+.ms-doctors-empty {
+  min-height: 18rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--ms-space-8);
+
+  text-align: center;
+}
+
+.ms-doctors-empty-icon {
+  width: 4rem;
+  height: 4rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: var(--ms-space-4);
+
+  color: var(--ms-blue-600);
+  background: var(--ms-blue-50);
+  border: 1px solid var(--ms-blue-100);
+  border-radius: var(--ms-radius-full);
+}
+
+.ms-doctors-empty-title {
+  margin: 0;
+
+  color: var(--ms-text-primary);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+.ms-doctors-empty-text {
+  max-width: 24rem;
+
+  margin: var(--ms-space-2) 0 0;
+
+  color: var(--ms-text-secondary);
+  font-size: var(--ms-text-sm);
+  line-height: var(--ms-leading-relaxed);
+}
+
+
+/* ==========================================================
+   DOCTOR FORM CARD
+   ========================================================== */
+
+.ms-doctor-form-card {
+  min-width: 0;
+  padding: 0;
+
+  overflow: hidden;
+}
+
+.ms-doctor-form-header {
+  padding: var(--ms-card-padding);
+
+  border-bottom: 1px solid var(--ms-border-subtle);
+}
+
+.ms-doctors-eyebrow {
+  margin: 0;
+
+  color: var(--ms-blue-600);
+  font-size: var(--ms-text-xs);
+  line-height: var(--ms-leading-normal);
+  font-weight: var(--ms-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--ms-tracking-wide);
+}
+
+
+/* ==========================================================
+   DOCTOR FORM
+   ========================================================== */
+
+.ms-doctor-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.ms-doctor-form-section {
+  margin: 0;
+  padding: var(--ms-card-padding);
+
+  border-bottom: 1px solid var(--ms-border-subtle);
+}
+
+.ms-doctor-form-section:last-of-type {
+  border-bottom: 0;
+}
+
+.ms-doctor-form .ms-form-grid {
+  gap: var(--ms-space-5);
+}
+
+.ms-doctor-form .ms-field {
+  min-width: 0;
+}
+
+.ms-doctor-form .ms-label {
+  margin-bottom: var(--ms-space-2);
+}
+
+.ms-doctor-form .ms-help-text {
+  margin-top: var(--ms-space-2);
+}
+
+.ms-doctor-multi-select,
+.ms-select-multiple {
+  min-height: 8rem;
+  padding: var(--ms-space-2);
+}
+
+.ms-doctor-multi-select option,
+.ms-select-multiple option {
+  padding: var(--ms-space-2);
+}
+
+
+/* ==========================================================
+   FORM SECTION HEADERS
+   ========================================================== */
+
+.ms-form-section-header,
+.ms-doctor-form-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+
+  margin-bottom: var(--ms-space-5);
+}
+
+.ms-form-section-title,
+.ms-doctor-form-section-title {
+  margin: 0;
+
+  color: var(--ms-text-primary);
+  font-size: var(--ms-text-base);
+  line-height: var(--ms-leading-tight);
+  font-weight: var(--ms-font-weight-semibold);
+}
+
+
+/* ==========================================================
+   CHAMBERS — FORM
+   ========================================================== */
+
+.ms-doctor-chambers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-4);
+}
+
+.ms-doctor-chamber {
+  padding: var(--ms-space-5);
+
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface-subtle);
+}
+
+.ms-doctor-chamber-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-4);
+
+  margin-bottom: var(--ms-space-5);
+}
+
+.ms-doctor-chamber-number {
+  display: block;
+
+  margin-bottom: var(--ms-space-1);
+
+  color: var(--ms-blue-600);
+  font-size: var(--ms-text-xs);
+  font-weight: var(--ms-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--ms-tracking-wide);
+}
+
+.ms-doctor-chamber-title {
+  margin: 0;
+
+  color: var(--ms-text-primary);
+  font-size: var(--ms-text-sm);
+  line-height: var(--ms-leading-normal);
+  font-weight: var(--ms-font-weight-semibold);
+
+  overflow-wrap: anywhere;
+}
+
+.ms-doctor-remove-button {
+  flex: 0 0 auto;
+}
+
+
+/* ==========================================================
+   CONTACT FORM
+   ========================================================== */
+
+.ms-doctor-contact-group {
+  min-width: 0;
+}
+
+.ms-doctor-contact-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ms-space-3);
+
+  margin-bottom: var(--ms-space-3);
+}
+
+.ms-doctor-contact-header .ms-label {
+  margin: 0;
+}
+
+.ms-doctor-contact-add {
+  flex: 0 0 auto;
+
+  padding-inline: var(--ms-space-2);
+}
+
+.ms-doctor-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-3);
+}
+
+.ms-doctor-array-field {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--ms-space-2);
+}
+
+.ms-doctor-array-field .ms-input {
+  min-width: 0;
+}
+
+
+/* ==========================================================
+   FORM ACTIONS
+   ========================================================== */
+
+.ms-doctor-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--ms-space-3);
+
+  padding: var(--ms-card-padding);
+
+  background: var(--ms-surface-subtle);
+  border-top: 1px solid var(--ms-border-subtle);
+}
+
+.ms-doctor-form-actions .ms-btn-primary {
+  min-width: 8rem;
+}
+
+
+/* ==========================================================
+   RESPONSIVE — TABLET
+   ========================================================== */
+
+@media (min-width: 768px) {
+  .ms-doctors-layout {
+    grid-template-columns: minmax(0, 1.35fr) minmax(20rem, 0.85fr);
+    gap: var(--ms-space-6);
+  }
+
+  .ms-doctor-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ms-doctor-info-item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+
+/* ==========================================================
+   RESPONSIVE — DESKTOP
+   ========================================================== */
+
+@media (min-width: 1024px) {
+  .ms-doctors-layout {
+    grid-template-columns: minmax(0, 1.45fr) minmax(22rem, 0.85fr);
+    gap: var(--ms-space-8);
+  }
+
+  .ms-doctor-form-card {
+    position: sticky;
+    top: var(--ms-space-6);
+  }
+
+  .ms-doctor-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* ==========================================================
+   RESPONSIVE — LARGE DESKTOP
+   ========================================================== */
+
+@media (min-width: 1280px) {
+  .ms-doctors-layout {
+    grid-template-columns: minmax(0, 1.6fr) minmax(24rem, 0.85fr);
+    gap: var(--ms-space-8);
+  }
+}
+
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 639px) {
+  .ms-doctors-header {
+    margin-bottom: var(--ms-space-8);
+  }
+
+  .ms-doctors-title-row {
+    align-items: flex-start;
+  }
+
+  .ms-doctors-page-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    flex-basis: 2.75rem;
+  }
+
+  .ms-doctor-card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ms-doctor-specialities {
+    justify-content: flex-start;
+  }
+
+  .ms-doctor-card-identity {
+    align-items: flex-start;
+  }
+
+  .ms-doctor-card-actions {
+    justify-content: stretch;
+  }
+
+  .ms-doctor-action-button {
+    flex: 1 1 0;
+  }
+
+  .ms-form-section-header,
+  .ms-doctor-form-section-header {
+    align-items: flex-start;
+  }
+
+  .ms-doctor-form-section-header .ms-btn {
+    flex: 0 0 auto;
+  }
+
+  .ms-doctor-chamber {
+    padding: var(--ms-space-4);
+  }
+
+  .ms-doctor-contact-header {
+    align-items: flex-start;
+  }
+
+  .ms-doctor-contact-add {
+    white-space: nowrap;
+  }
+
+  .ms-doctor-form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .ms-doctor-form-actions .ms-btn {
+    width: 100%;
+  }
+}
+
+
+/* ==========================================================
+   VERY SMALL SCREENS
+   ========================================================== */
+
+@media (max-width: 374px) {
+  .ms-doctor-card-header,
+  .ms-doctor-info-section,
+  .ms-doctor-card-actions,
+  .ms-doctor-form-header,
+  .ms-doctor-form-section,
+  .ms-doctor-form-actions {
+    padding-inline: var(--ms-space-4);
+  }
+
+  .ms-doctor-avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+    flex-basis: 2.75rem;
+  }
+
+  .ms-doctor-card-name {
+    font-size: var(--ms-text-base);
+  }
+
+  .ms-doctor-card-actions {
+    flex-direction: column;
+  }
+
+  .ms-doctor-action-button {
+    width: 100%;
+  }
+
+  .ms-doctor-form-section-header {
+    flex-direction: column;
+  }
+
+  .ms-doctor-form-section-header .ms-btn {
+    width: 100%;
+  }
+
+  .ms-doctor-contact-header {
+    flex-direction: column;
+  }
+
+  .ms-doctor-contact-add {
+    width: 100%;
+  }
+}
+
+
+/* ==========================================================
+   DARK MODE ADJUSTMENTS
+   ========================================================== */
+
+[data-theme="dark"] .ms-doctors-page-icon,
+[data-theme="dark"] .ms-doctor-avatar,
+[data-theme="dark"] .ms-doctors-empty-icon {
+  color: var(--ms-blue-400);
+  background: var(--ms-blue-950);
+  border-color: var(--ms-blue-900);
+}
+
+[data-theme="dark"] .ms-doctor-info-icon {
+  color: var(--ms-slate-300);
+  background: var(--ms-slate-800);
+  border-color: var(--ms-slate-700);
+}
+
+[data-theme="dark"] .ms-doctor-card-chamber,
+[data-theme="dark"] .ms-doctor-contact-list-card,
+[data-theme="dark"] .ms-doctor-chamber {
+  background: var(--ms-surface-subtle);
+}
+
+[data-theme="dark"] .ms-doctor-form-actions {
+  background: var(--ms-surface-subtle);
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-doctor-card {
+    transition: none;
+  }
+}

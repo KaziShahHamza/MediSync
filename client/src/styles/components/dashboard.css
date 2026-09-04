@@ -294,7 +294,7 @@
 
 .ms-dashboard-ai-card {
   overflow: hidden;
-  border-color: var(--ms-text-muted);
+  /* border-color: var(--ms-text-muted); */
 }
 
 .ms-dashboard-ai-header {

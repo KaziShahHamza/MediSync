@@ -1,0 +1,943 @@
+/*
+ * ==========================================================
+ * MediSync Accessibility
+ * ==========================================================
+ */
+
+/*
+ * Keyboard focus
+ */
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ms-focus);
+  outline-offset: 2px;
+}
+
+/*
+ * Interactive elements
+ */
+
+button,
+a,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  cursor: pointer;
+}
+
+/*
+ * Disabled elements
+ */
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/*
+ * Reduced motion
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * Screen-reader-only content
+ */
+
+.ms-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/*
+ * Restore screen-reader-only content when focused.
+ */
+
+.ms-sr-only:focus,
+.ms-sr-only:active {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: var(--ms-space-2) var(--ms-space-3);
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/*
+ * ==========================================================
+ * MediSync Base
+ * ==========================================================
+ */
+
+html {
+  background: var(--ms-bg);
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+body {
+  min-width: 320px;
+
+  background: var(--ms-bg);
+  color: var(--ms-text);
+
+  font-family: var(--ms-font-sans);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-normal);
+  line-height: var(--ms-leading-relaxed);
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  transition:
+    background-color var(--ms-duration-normal) var(--ms-ease-standard),
+    color var(--ms-duration-normal) var(--ms-ease-standard);
+}
+
+/*
+ * ==========================================================
+ * Typography Defaults
+ * ==========================================================
+ */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--ms-text);
+  font-weight: var(--ms-font-semibold);
+  line-height: var(--ms-leading-tight);
+}
+
+h1 {
+  font-size: var(--ms-text-4xl);
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+h2 {
+  font-size: var(--ms-text-2xl);
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+h3 {
+  font-size: var(--ms-text-xl);
+}
+
+h4 {
+  font-size: var(--ms-text-lg);
+}
+
+p {
+  color: var(--ms-text-secondary);
+}
+
+/*
+ * ==========================================================
+ * Links
+ * ==========================================================
+ */
+
+a {
+  transition: var(--ms-transition-colors);
+}
+
+a:hover {
+  color: var(--ms-primary);
+}
+
+/*
+ * ==========================================================
+ * Images
+ * ==========================================================
+ */
+
+img {
+  max-width: 100%;
+}
+
+/*
+ * ==========================================================
+ * Forms
+ * ==========================================================
+ */
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--ms-input-placeholder);
+  opacity: 1;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--ms-primary);
+}
+
+/*
+ * ==========================================================
+ * Selection
+ * ==========================================================
+ */
+
+::selection {
+  background: var(--ms-selection-bg);
+  color: var(--ms-selection-text);
+}
+
+/*
+ * ==========================================================
+ * Scrollbar
+ * ==========================================================
+ */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color:
+    var(--ms-scrollbar-thumb)
+    var(--ms-scrollbar-track);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ms-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ms-scrollbar-thumb);
+  border-radius: var(--ms-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ms-scrollbar-thumb-hover);
+}
+
+/*
+ * ==========================================================
+ * Theme Transition
+ * ==========================================================
+ */
+
+body,
+button,
+input,
+textarea,
+select {
+  transition:
+    background-color var(--ms-duration-normal) var(--ms-ease-standard),
+    color var(--ms-duration-normal) var(--ms-ease-standard),
+    border-color var(--ms-duration-normal) var(--ms-ease-standard);
+}
+
+/*
+ * ==========================================================
+ * Print
+ * ==========================================================
+ */
+
+@media print {
+  html,
+  body {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  body {
+    color-scheme: light;
+  }
+
+  a {
+    color: inherit;
+  }
+}
+
+/*
+ * ==========================================================
+ * MediSync Reset
+ * ==========================================================
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button,
+input,
+textarea,
+select {
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+
+img,
+picture,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+textarea {
+  resize: vertical;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/*
+ * ==========================================================
+ * MediSync Container
+ * ==========================================================
+ */
+
+.ms-container {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: var(--ms-page-padding-x);
+}
+
+/*
+ * Wider container for dashboard-style layouts.
+ */
+
+.ms-container-wide {
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+  padding-inline: var(--ms-page-padding-x);
+}
+
+/*
+ * Narrow container for focused content such as
+ * authentication forms and document details.
+ */
+
+.ms-container-narrow {
+  width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
+  padding-inline: var(--ms-page-padding-x);
+}
+
+/*
+ * Extra-narrow container.
+ */
+
+.ms-container-tight {
+  width: 100%;
+  max-width: 36rem;
+  margin-inline: auto;
+  padding-inline: var(--ms-page-padding-x);
+}
+
+/*
+ * Full-width content inside a container.
+ */
+
+.ms-container-full {
+  width: 100%;
+}
+
+/*
+ * Responsive horizontal padding.
+ */
+
+@media (min-width: 640px) {
+  .ms-container,
+  .ms-container-wide,
+  .ms-container-narrow,
+  .ms-container-tight {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ms-container,
+  .ms-container-wide,
+  .ms-container-narrow,
+  .ms-container-tight {
+    padding-inline: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .ms-container,
+  .ms-container-wide {
+    padding-inline: 2.5rem;
+  }
+}
+
+/*
+ * ==========================================================
+ * MediSync Grid System
+ * ==========================================================
+ */
+
+.ms-grid {
+  display: grid;
+  width: 100%;
+  gap: var(--ms-grid-gap);
+}
+
+/*
+ * Auto-fit grid.
+ *
+ * Useful when the content should determine how many
+ * columns can comfortably fit.
+ */
+
+.ms-grid-auto {
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 16rem), 1fr)
+  );
+}
+
+/*
+ * Two-column grid.
+ */
+
+.ms-grid-2 {
+  grid-template-columns: 1fr;
+}
+
+/*
+ * Three-column grid.
+ */
+
+.ms-grid-3 {
+  grid-template-columns: 1fr;
+}
+
+/*
+ * Four-column grid.
+ */
+
+.ms-grid-4 {
+  grid-template-columns: 1fr;
+}
+
+/*
+ * Five-column grid.
+ */
+
+.ms-grid-5 {
+  grid-template-columns: 1fr;
+}
+
+/*
+ * Six-column grid.
+ */
+
+.ms-grid-6 {
+  grid-template-columns: 1fr;
+}
+
+/*
+ * Equal flexible columns.
+ */
+
+.ms-grid-equal {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+/*
+ * Sidebar + content.
+ */
+
+.ms-grid-sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-grid-gap);
+}
+
+/*
+ * Content + sidebar.
+ */
+
+.ms-grid-content-sidebar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-grid-gap);
+}
+
+/*
+ * Wide content + narrow side panel.
+ */
+
+.ms-grid-main-aside {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-grid-gap);
+}
+
+/*
+ * Form layout.
+ *
+ * Two equal fields on larger screens.
+ */
+
+.ms-grid-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-space-5);
+}
+
+/*
+ * Form field spanning the complete row.
+ */
+
+.ms-grid-full {
+  grid-column: 1 / -1;
+}
+
+/*
+ * Common dashboard layouts.
+ */
+
+.ms-dashboard-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-grid-gap);
+}
+
+.ms-dashboard-main-wide {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ms-grid-gap);
+}
+
+/*
+ * Responsive breakpoints
+ */
+
+@media (min-width: 640px) {
+  .ms-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ms-grid-equal {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ms-grid-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .ms-grid-sidebar {
+    grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr);
+  }
+
+  .ms-grid-content-sidebar {
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 20rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ms-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ms-grid-main-aside {
+    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+  }
+
+  .ms-dashboard-main {
+    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+  }
+
+  .ms-dashboard-main-wide {
+    grid-template-columns: minmax(0, 3fr) minmax(20rem, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .ms-grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .ms-grid-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .ms-grid-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .ms-grid-equal {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/*
+ * ==========================================================
+ * MediSync Page Layout
+ * ==========================================================
+ */
+
+.ms-page {
+  width: 100%;
+  min-height: 100%;
+  padding-block: var(--ms-page-padding-y);
+}
+
+/*
+ * Main page header.
+ */
+
+.ms-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-2);
+
+  margin-bottom: var(--ms-space-10);
+}
+
+/*
+ * Header with actions on larger screens.
+ *
+ * Example:
+ *
+ * <header className="ms-page-header ms-page-header-row">
+ */
+
+.ms-page-header-row {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ms-space-5);
+}
+
+/*
+ * Page title.
+ */
+
+.ms-page-title {
+  margin: 0;
+
+  color: var(--ms-text);
+
+  font-size: var(--ms-text-4xl);
+  font-weight: var(--ms-font-bold);
+  line-height: var(--ms-leading-tight);
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+/*
+ * Page subtitle / description.
+ */
+
+.ms-page-subtitle {
+  max-width: 48rem;
+  margin: 0;
+
+  color: var(--ms-text-secondary);
+
+  font-size: var(--ms-text-base);
+  line-height: var(--ms-leading-relaxed);
+}
+
+/*
+ * Page header actions.
+ */
+
+.ms-page-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ms-space-3);
+}
+
+/*
+ * Generic section.
+ */
+
+.ms-section {
+  width: 100%;
+  margin-bottom: var(--ms-section-gap);
+}
+
+.ms-section:last-child {
+  margin-bottom: 0;
+}
+
+/*
+ * Section header.
+ */
+
+.ms-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--ms-space-4);
+
+  margin-bottom: var(--ms-space-6);
+}
+
+/*
+ * Section heading group.
+ */
+
+.ms-section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ms-space-1);
+}
+
+/*
+ * Section title.
+ */
+
+.ms-section-title {
+  margin: 0;
+
+  color: var(--ms-text);
+
+  font-size: var(--ms-text-2xl);
+  font-weight: var(--ms-font-semibold);
+  line-height: var(--ms-leading-tight);
+  letter-spacing: var(--ms-tracking-tight);
+}
+
+/*
+ * Section description.
+ */
+
+.ms-section-description {
+  margin: 0;
+
+  color: var(--ms-text-secondary);
+
+  font-size: var(--ms-text-sm);
+  line-height: var(--ms-leading-normal);
+}
+
+/*
+ * Small section.
+ */
+
+.ms-section-sm {
+  margin-bottom: var(--ms-space-8);
+}
+
+/*
+ * Large section.
+ */
+
+.ms-section-lg {
+  margin-bottom: var(--ms-space-20);
+}
+
+/*
+ * Generic vertical stack.
+ */
+
+.ms-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.ms-stack-xs {
+  gap: var(--ms-space-1);
+}
+
+.ms-stack-sm {
+  gap: var(--ms-space-2);
+}
+
+.ms-stack-md {
+  gap: var(--ms-space-4);
+}
+
+.ms-stack-lg {
+  gap: var(--ms-space-6);
+}
+
+.ms-stack-xl {
+  gap: var(--ms-space-8);
+}
+
+/*
+ * Horizontal cluster.
+ *
+ * Useful for buttons, badges, filters and actions.
+ */
+
+.ms-cluster {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ms-cluster-xs {
+  gap: var(--ms-space-1);
+}
+
+.ms-cluster-sm {
+  gap: var(--ms-space-2);
+}
+
+.ms-cluster-md {
+  gap: var(--ms-space-3);
+}
+
+.ms-cluster-lg {
+  gap: var(--ms-space-4);
+}
+
+/*
+ * Centered content.
+ */
+
+.ms-content-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+}
+
+/*
+ * Full-width section.
+ */
+
+.ms-full-width {
+  width: 100%;
+}
+
+/*
+ * Hide overflow where required by layout components.
+ */
+
+.ms-overflow-hidden {
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .ms-page-header {
+    margin-bottom: var(--ms-space-12);
+  }
+
+  .ms-page-header-row {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+@media (max-width: 639px) {
+  .ms-page {
+    padding-block: var(--ms-space-8);
+  }
+
+  .ms-page-title {
+    font-size: var(--ms-text-3xl);
+  }
+
+  .ms-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ms-page-actions {
+    width: 100%;
+  }
+}
