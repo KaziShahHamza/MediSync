@@ -25,10 +25,6 @@ export default function DoctorContactFields({ contactInfo, onChange }) {
       <div className="ms-doctor-form-section-header">
         <div>
           <h3 className="ms-doctor-form-section-title">Contact Information</h3>
-
-          {/* <p className="ms-doctor-form-section-description">
-            Add phone numbers, email addresses, and professional links.
-          </p> */}
         </div>
       </div>
 

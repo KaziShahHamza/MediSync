@@ -311,35 +311,15 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
   return (
     <aside className="ms-card ms-doctor-form-card">
       <div className="ms-doctor-form-header">
-        {/* <div className="ms-icon-box ms-doctor-form-icon">
-          <Stethoscope size={26} aria-hidden="true" />
-        </div> */}
-
         <div>
           <p className="ms-doctors-eyebrow">
             {isEditing ? "Edit doctor" : "New doctor"}
           </p>
-
-          {/* <h2 className="ms-section-title">
-            {isEditing ? "Update doctor" : "Add a doctor"}
-          </h2> */}
-
-          {/* <p className="ms-form-section-description">
-            Keep your healthcare provider information organized.
-          </p> */}
         </div>
       </div>
 
       <form className="ms-form ms-doctor-form" onSubmit={handleSubmit}>
         <section className="ms-form-section ms-doctor-form-section">
-          <div className="ms-form-section-header">
-            {/* <h3 className="ms-form-section-title">Professional information</h3> */}
-{/* 
-            <p className="ms-form-section-description">
-              Add the doctor's professional and registration details.
-            </p> */}
-          </div>
-
           <div className="ms-form-grid">
             <div className="ms-field ms-field-full">
               <label className="ms-label" htmlFor="doctor-name">
@@ -472,11 +452,6 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
           <div className="ms-form-section-header">
             <div>
               <h3 className="ms-form-section-title">Chambers</h3>
-
-              {/* <p className="ms-form-section-description">
-                Add the locations and visiting schedules where this doctor sees
-                patients.
-              </p> */}
             </div>
 
             <button
@@ -498,14 +473,6 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
         </section>
 
         <section className="ms-form-section ms-doctor-form-section">
-          {/* <div className="ms-form-section-header">
-            <h3 className="ms-form-section-title">Contact information</h3>
-
-            <p className="ms-form-section-description">
-              Add phone numbers, emails and online contact details.
-            </p>
-          </div> */}
-
           <DoctorContactFields
             contactInfo={form.contactInfo}
             onChange={updateContactInfo}
@@ -518,31 +485,7 @@ export default function DoctorForm({ editingDoctor, onSaved, onCancel }) {
           />
         </section>
 
-        <section className="ms-form-section ms-doctor-form-section">
-          {/* <div className="ms-form-section-header">
-            <h3 className="ms-form-section-title">Notes</h3>
-
-            <p className="ms-form-section-description">
-              Add any additional information you want to remember.
-            </p>
-          </div> */}
-
-          {/* <div className="ms-field">
-            <label className="ms-label" htmlFor="doctor-notes">
-              Notes
-            </label>
-
-            <textarea
-              id="doctor-notes"
-              name="notes"
-              className="ms-input ms-textarea"
-              value={form.notes}
-              onChange={handleChange}
-              placeholder="Additional notes about this doctor..."
-              rows={4}
-            />
-          </div> */}
-        </section>
+        <section className="ms-form-section ms-doctor-form-section"></section>
 
         <div className="ms-doctor-form-actions">
           {isEditing && (

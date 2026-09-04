@@ -62,8 +62,6 @@ export default function Doctors() {
               </div>
 
               <div>
-                {/* <span className="ms-doctors-eyebrow">Healthcare providers</span> */}
-
                 <h1 className="ms-page-title">My Doctors</h1>
               </div>
             </div>
@@ -79,24 +77,11 @@ export default function Doctors() {
           <section className="ms-doctors-list-column">
             <div className="ms-doctors-list-header">
               <div>
-                {/* <span className="ms-doctors-section-eyebrow">
-                  Healthcare records
-                </span> */}
-
-                {/* <h2 className="ms-section-title">Doctor Records</h2> */}
-
                 <p className="ms-doctors-list-description">
                   {doctors.length} Doctor
                   {doctors.length === 1 ? "" : "s"} Saved
                 </p>
               </div>
-
-              {/* <span className="ms-badge ms-doctors-count">
-                {doctors.length}
-                <span className="ms-doctors-count-label">
-                  {doctors.length === 1 ? " Doctor" : " Doctors"}
-                </span>
-              </span> */}
             </div>
 
             {doctors.length ? (
