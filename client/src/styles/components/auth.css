@@ -50,7 +50,7 @@
 
   color: var(--ms-primary);
   font-size: var(--ms-font-xs);
-  font-weight: var(--ms-font-weight-semibold);
+  font-weight: var(--ms-font-semibold);
   letter-spacing: var(--ms-tracking-wide);
   text-transform: uppercase;
 }
@@ -60,7 +60,7 @@
 
   color: var(--ms-text);
   font-size: clamp(2rem, 4vw, 2.75rem);
-  font-weight: var(--ms-font-weight-bold);
+  font-weight: var(--ms-font-bold);
   line-height: var(--ms-leading-tight);
   letter-spacing: var(--ms-tracking-tight);
 }
@@ -92,7 +92,7 @@
 
   color: var(--ms-text);
   font-size: var(--ms-font-sm);
-  font-weight: var(--ms-font-weight-medium);
+  font-weight: var(--ms-font-medium);
 }
 
 .ms-auth-feature-dot {
@@ -118,7 +118,7 @@
 
   color: var(--ms-text);
   font-size: var(--ms-font-2xl);
-  font-weight: var(--ms-font-weight-bold);
+  font-weight: var(--ms-font-bold);
   line-height: var(--ms-leading-tight);
 }
 

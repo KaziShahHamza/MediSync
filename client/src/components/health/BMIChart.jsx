@@ -93,7 +93,7 @@ export default function BMIChart({ logs, height }) {
                 {
                   label: "BMI",
                   data: bmiData.map((log) => log.bmi),
-                  borderColor: "var(--ms-primary)",
+                  borderColor: "#3b82f6",
                   backgroundColor: "var(--ms-primary-soft)",
                   tension: 0.3,
                 },

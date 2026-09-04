@@ -71,14 +71,14 @@ export default function BloodPressureChart({ logs }) {
                 {
                   label: "Systolic",
                   data: bpLogs.map((log) => log.High),
-                  borderColor: "var(--ms-primary)",
+                  borderColor: "#3b82f6",
                   backgroundColor: "var(--ms-primary-soft)",
                   tension: 0.3,
                 },
                 {
                   label: "Diastolic",
                   data: bpLogs.map((log) => log.Low),
-                  borderColor: "var(--ms-danger)",
+                  borderColor: "#ef4444",
                   backgroundColor: "var(--ms-danger-soft)",
                   tension: 0.3,
                 },

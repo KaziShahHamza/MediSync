@@ -34,7 +34,7 @@ export default function BloodSugarForm({ onAdd }) {
       </div>
 
       <div className="ms-field">
-        <label htmlFor="blood-sugar-glucose" className="ms-label">
+        <label htmlFor="blood-sugar-glucose" className="ms-label-6">
           Blood Glucose
         </label>
 
@@ -43,21 +43,21 @@ export default function BloodSugarForm({ onAdd }) {
           type="number"
           step="0.1"
           className="ms-input"
-          placeholder="Example: 95"
+          placeholder="Example: 5.2"
           value={glucose}
           onChange={(e) => setGlucose(e.target.value)}
           required
         />
 
         <p className="ms-help-text">
-          Enter your blood glucose reading in mg/dL.
+          Enter your blood glucose reading in mmol/L.
         </p>
       </div>
 
       <div className="ms-health-reference">
         <span className="ms-health-reference-label">Reference</span>
 
-        <p>Normal fasting range: 70–99 mg/dL</p>
+        <p>Normal fasting range: 3.9–5.6 mmol/L</p>
       </div>
 
       <button

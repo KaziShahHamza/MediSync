@@ -37,8 +37,8 @@ export default function BloodPressureForm({ onAdd }) {
       </div>
 
       <div className="ms-field">
-        <label htmlFor="blood-pressure-systolic" className="ms-label">
-          Systolic Pressure
+        <label htmlFor="blood-pressure-systolic" className="ms-label-6">
+          High Pressure (Systolic)
         </label>
 
         <input
@@ -51,14 +51,11 @@ export default function BloodPressureForm({ onAdd }) {
           required
         />
 
-        <p className="ms-help-text">
-          The upper number in your blood pressure reading.
-        </p>
       </div>
 
       <div className="ms-field">
-        <label htmlFor="blood-pressure-diastolic" className="ms-label">
-          Diastolic Pressure
+        <label htmlFor="blood-pressure-diastolic" className="ms-label-6">
+          Low Pressure (Diastolic)
         </label>
 
         <input
@@ -71,15 +68,14 @@ export default function BloodPressureForm({ onAdd }) {
           required
         />
 
-        <p className="ms-help-text">
-          The lower number in your blood pressure reading.
-        </p>
       </div>
 
       <div className="ms-health-reference">
         <span className="ms-health-reference-label">Reference</span>
 
-        <p>Normal range: below 120 / 80 mmHg</p>
+        <p>Normal range:</p>
+        <p>High (Systolic) = 120 mmHg</p>
+        <p>Low (Diastolic) = 80 mmHg</p>
       </div>
 
       <button

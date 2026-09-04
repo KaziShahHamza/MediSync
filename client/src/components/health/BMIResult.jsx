@@ -2,9 +2,9 @@ export default function BMIResult({ bmi }) {
   if (!bmi) {
     return (
       <div className="ms-bmi-result ms-bmi-result-empty">
-        <p className="ms-bmi-result-message">
+        {/* <p className="ms-bmi-result-message">
           Enter your weight to calculate BMI.
-        </p>
+        </p> */}
 
         <p className="ms-bmi-result-help">
           Healthy BMI range: 18.5 – 24.9 kg/m²

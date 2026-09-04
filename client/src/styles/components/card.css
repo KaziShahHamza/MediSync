@@ -40,7 +40,7 @@
 
   color: var(--ms-text);
   font-size: var(--ms-font-lg);
-  font-weight: var(--ms-font-weight-semibold);
+  font-weight: var(--ms-font-semibold);
   line-height: var(--ms-leading-tight);
 }
 

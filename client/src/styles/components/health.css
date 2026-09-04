@@ -31,8 +31,8 @@
   display: block;
   margin-bottom: var(--ms-space-1);
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-semibold);
   letter-spacing: var(--ms-tracking-wide);
   line-height: var(--ms-leading-tight);
   text-transform: uppercase;
@@ -43,7 +43,9 @@
   max-width: 680px;
 }
 
-
+.ms-label-6 {
+  font-size: var(--ms-text-base);
+}
 /* ---------------------------------------------------------
    HEALTH SECTIONS
    --------------------------------------------------------- */
@@ -80,10 +82,9 @@
   max-width: 680px;
   margin: var(--ms-space-2) 0 0;
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-base);
   line-height: var(--ms-leading-relaxed);
 }
-
 
 /* ---------------------------------------------------------
    METRIC LAYOUT
@@ -96,7 +97,6 @@
   gap: var(--ms-space-6);
 }
 
-
 /* ---------------------------------------------------------
    HEALTH FORMS
    --------------------------------------------------------- */
@@ -106,6 +106,7 @@
   flex-direction: column;
   gap: var(--ms-space-6);
   min-width: 0;
+  padding: var(--ms-space-5);
 }
 
 .ms-health-form-header {
@@ -134,7 +135,6 @@
 .ms-health-form .ms-error {
   margin-top: var(--ms-space-2);
 }
-
 
 /* ---------------------------------------------------------
    PROFILE VALUE / SAVED HEIGHT
@@ -167,8 +167,8 @@
 .ms-health-profile-main {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-lg);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-lg);
+  font-weight: var(--ms-font-semibold);
   line-height: var(--ms-leading-tight);
 }
 
@@ -179,10 +179,9 @@
 .ms-health-profile-error {
   margin: 0;
   color: var(--ms-danger);
-  font-size: var(--ms-font-size-sm);
-  font-weight: var(--ms-font-weight-medium);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-medium);
 }
-
 
 /* ---------------------------------------------------------
    INPUT WITH ICON
@@ -206,7 +205,6 @@
   padding-left: 2.6rem;
 }
 
-
 /* ---------------------------------------------------------
    BMI RESULT
    --------------------------------------------------------- */
@@ -214,7 +212,6 @@
 .ms-health-bmi-result {
   min-width: 0;
 }
-
 
 /* ---------------------------------------------------------
    REFERENCE INFORMATION
@@ -231,8 +228,8 @@
   display: block;
   margin-bottom: var(--ms-space-1);
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-semibold);
   letter-spacing: var(--ms-tracking-wide);
   text-transform: uppercase;
 }
@@ -240,14 +237,13 @@
 .ms-health-reference p {
   margin: 0;
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-base);
   line-height: var(--ms-leading-relaxed);
 }
 
 .ms-health-submit {
   margin-top: auto;
 }
-
 
 /* ---------------------------------------------------------
    CHART CARD
@@ -258,6 +254,7 @@
   flex-direction: column;
   min-width: 0;
   min-height: 380px;
+  padding: var(--ms-space-5);
 }
 
 .ms-health-chart-header {
@@ -289,7 +286,6 @@
   min-height: 280px;
 }
 
-
 /* ---------------------------------------------------------
    EMPTY CHART STATE
    --------------------------------------------------------- */
@@ -317,18 +313,17 @@
 .ms-health-empty-title {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-base);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-semibold);
 }
 
 .ms-health-empty-text {
   max-width: 360px;
   margin: var(--ms-space-2) auto 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-base);
   line-height: var(--ms-leading-relaxed);
 }
-
 
 /* ---------------------------------------------------------
    CHART.JS CANVAS
@@ -337,7 +332,6 @@
 .ms-health-chart canvas {
   max-width: 100%;
 }
-
 
 /* ---------------------------------------------------------
    TABLET
@@ -358,7 +352,6 @@
   }
 }
 
-
 /* ---------------------------------------------------------
    SMALL TABLET / LARGE MOBILE
    --------------------------------------------------------- */
@@ -376,7 +369,6 @@
     min-height: 380px;
   }
 }
-
 
 /* ---------------------------------------------------------
    MOBILE
@@ -414,7 +406,7 @@
   }
 
   .ms-health-section-description {
-    font-size: var(--ms-font-size-sm);
+    font-size: var(--ms-text-base);
   }
 
   .ms-health-form,
@@ -439,7 +431,6 @@
     padding: var(--ms-space-4);
   }
 }
-
 
 /* ---------------------------------------------------------
    VERY SMALL MOBILE
@@ -489,49 +480,48 @@
 .ms-bmi-result-label {
   margin: 0;
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-sm);
-  font-weight: var(--ms-font-weight-medium);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-medium);
 }
 
 .ms-bmi-result-status {
   padding: 0.25rem 0.625rem;
   border-radius: var(--ms-radius-full);
-  font-size: var(--ms-font-size-xs);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-semibold);
 }
 
 .ms-bmi-result-value {
   margin: var(--ms-space-2) 0 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-4xl);
-  font-weight: var(--ms-font-weight-bold);
+  font-size: var(--ms-text-4xl);
+  font-weight: var(--ms-font-bold);
   line-height: 1;
   letter-spacing: var(--ms-tracking-tight);
 }
 
 .ms-bmi-result-category {
   margin: var(--ms-space-2) 0 0;
-  font-size: var(--ms-font-size-sm);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-base);
+  font-weight: var(--ms-font-semibold);
 }
 
 .ms-bmi-result-help {
   margin: var(--ms-space-4) 0 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-base);
   line-height: var(--ms-leading-relaxed);
 }
 
 .ms-bmi-result-empty .ms-bmi-result-message {
   margin: 0;
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-base);
 }
 
 .ms-bmi-result-empty .ms-bmi-result-help {
   margin-top: var(--ms-space-2);
 }
-
 
 /* BMI STATUS COLORS */
 

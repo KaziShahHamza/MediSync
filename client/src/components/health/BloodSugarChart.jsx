@@ -71,7 +71,7 @@ export default function BloodSugarChart({ logs }) {
                 {
                   label: "Blood Glucose",
                   data: sugarLogs.map((log) => log.glucose),
-                  borderColor: "var(--ms-primary)",
+                  borderColor: "#3b82f6",
                   backgroundColor: "var(--ms-primary-soft)",
                   tension: 0.3,
                 },

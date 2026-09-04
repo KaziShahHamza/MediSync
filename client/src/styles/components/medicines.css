@@ -35,8 +35,8 @@
   display: block;
   margin-bottom: var(--ms-space-1);
   color: var(--ms-primary);
-  font-size: var(--ms-font-size-xs);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-xs);
+  font-weight: var(--ms-font-semibold);
   letter-spacing: var(--ms-tracking-wide);
   line-height: var(--ms-leading-normal);
   text-transform: uppercase;
@@ -144,15 +144,15 @@
 .ms-medicine-group-title {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-lg);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-lg);
+  font-weight: var(--ms-font-semibold);
   line-height: var(--ms-leading-tight);
 }
 
 .ms-medicine-group-description {
   margin: var(--ms-space-1) 0 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-normal);
 }
 
@@ -217,8 +217,8 @@
 .ms-medicine-name {
   margin: 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-lg);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-lg);
+  font-weight: var(--ms-font-semibold);
   line-height: var(--ms-leading-tight);
   overflow-wrap: anywhere;
 }
@@ -244,7 +244,7 @@
   gap: var(--ms-space-2);
   margin-top: var(--ms-space-2);
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-normal);
 }
 
@@ -287,15 +287,15 @@
 .ms-medicine-empty-title {
   margin: var(--ms-space-5) 0 0;
   color: var(--ms-text);
-  font-size: var(--ms-font-size-xl);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-xl);
+  font-weight: var(--ms-font-semibold);
 }
 
 .ms-medicine-empty-description {
   max-width: 420px;
   margin: var(--ms-space-2) auto 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -411,8 +411,8 @@
 }
 
 .ms-medicine-time-label {
-  font-size: var(--ms-font-size-sm);
-  font-weight: var(--ms-font-weight-medium);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-medium);
 }
 
 /* ---------------------------------------------------------
@@ -489,14 +489,14 @@
 
 .ms-checkbox-title {
   color: var(--ms-text);
-  font-size: var(--ms-font-size-sm);
-  font-weight: var(--ms-font-weight-medium);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-medium);
   line-height: var(--ms-leading-normal);
 }
 
 .ms-checkbox-description {
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -629,10 +629,10 @@
   }
 
   .ms-medicine-name {
-    font-size: var(--ms-font-size-base);
+    font-size: var(--ms-text-base);
   }
 
   .ms-medicine-meta {
-    font-size: var(--ms-font-size-xs);
+    font-size: var(--ms-text-xs);
   }
 }

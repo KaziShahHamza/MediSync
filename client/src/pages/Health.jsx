@@ -25,7 +25,7 @@ export default function Health() {
           <div className="ms-health-heading">
             <div className="ms-health-title-row">
               <div className="ms-icon-box ms-health-page-icon">
-                <HeartPulse size={24} aria-hidden="true" />
+                <HeartPulse size={40} aria-hidden="true" />
               </div>
 
               <div>
@@ -46,26 +46,7 @@ export default function Health() {
         <section className="ms-health-sections">
           {/* Blood Pressure */}
           <section className="ms-section ms-health-section">
-            <div className="ms-health-section-header">
-              <div className="ms-health-section-heading">
-                <div className="ms-icon-box ms-health-section-icon">
-                  <HeartPulse size={21} aria-hidden="true" />
-                </div>
 
-                <div>
-                  <span className="ms-health-section-eyebrow">
-                    Cardiovascular
-                  </span>
-
-                  <h2 className="ms-section-title">Blood Pressure</h2>
-
-                  <p className="ms-health-section-description">
-                    Record systolic and diastolic pressure and monitor recent
-                    readings.
-                  </p>
-                </div>
-              </div>
-            </div>
 
             <div className="ms-health-metric-layout">
               <BloodPressureForm onAdd={addLog} />
@@ -77,21 +58,7 @@ export default function Health() {
           <section className="ms-section ms-health-section">
             <div className="ms-health-section-header">
               <div className="ms-health-section-heading">
-                <div className="ms-icon-box ms-health-section-icon">
-                  <Droplets size={21} aria-hidden="true" />
-                </div>
 
-                <div>
-                  <span className="ms-health-section-eyebrow">
-                    Glucose monitoring
-                  </span>
-
-                  <h2 className="ms-section-title">Blood Sugar</h2>
-
-                  <p className="ms-health-section-description">
-                    Record blood glucose readings and follow changes over time.
-                  </p>
-                </div>
               </div>
             </div>
 
@@ -103,26 +70,6 @@ export default function Health() {
 
           {/* BMI */}
           <section className="ms-section ms-health-section">
-            <div className="ms-health-section-header">
-              <div className="ms-health-section-heading">
-                <div className="ms-icon-box ms-health-section-icon">
-                  <Scale size={21} aria-hidden="true" />
-                </div>
-
-                <div>
-                  <span className="ms-health-section-eyebrow">
-                    Body composition
-                  </span>
-
-                  <h2 className="ms-section-title">BMI Tracking</h2>
-
-                  <p className="ms-health-section-description">
-                    Use your saved profile height and weight records to track
-                    BMI over time.
-                  </p>
-                </div>
-              </div>
-            </div>
 
             <div className="ms-health-metric-layout">
               <BMIForm onAdd={addLog} />

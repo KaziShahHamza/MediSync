@@ -32,8 +32,8 @@
   display: block;
   margin-bottom: var(--ms-space-2);
   color: var(--ms-primary);
-  font-size: var(--ms-font-size-xs);
-  font-weight: var(--ms-font-weight-semibold);
+  font-size: var(--ms-text-xs);
+  font-weight: var(--ms-font-semibold);
   letter-spacing: var(--ms-tracking-wide);
   line-height: var(--ms-leading-normal);
   text-transform: uppercase;
@@ -86,14 +86,14 @@
 
 .ms-dashboard-clock-date {
   color: var(--ms-text);
-  font-size: var(--ms-font-size-sm);
-  font-weight: var(--ms-font-weight-medium);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-medium);
 }
 
 .ms-dashboard-clock-time {
   margin-top: 2px;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
 }
 
 /* ---------------------------------------------------------
@@ -139,15 +139,15 @@
 .ms-dashboard-health-label {
   margin: 0;
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-sm);
-  font-weight: var(--ms-font-weight-medium);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-medium);
 }
 
 .ms-dashboard-health-value {
   margin: var(--ms-space-3) 0 0;
   color: var(--ms-text);
   font-size: clamp(1.75rem, 3vw, 2.25rem);
-  font-weight: var(--ms-font-weight-bold);
+  font-weight: var(--ms-font-bold);
   letter-spacing: var(--ms-tracking-tight);
   line-height: var(--ms-leading-tight);
 }
@@ -155,7 +155,7 @@
 .ms-dashboard-health-subtitle {
   margin: var(--ms-space-4) 0 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
 }
 
 .ms-dashboard-health-icon,
@@ -191,15 +191,15 @@
 .ms-dashboard-stat-label {
   margin: 0;
   color: var(--ms-text-secondary);
-  font-size: var(--ms-font-size-sm);
-  font-weight: var(--ms-font-weight-medium);
+  font-size: var(--ms-text-sm);
+  font-weight: var(--ms-font-medium);
 }
 
 .ms-dashboard-stat-value {
   margin: var(--ms-space-3) 0 0;
   color: var(--ms-text);
   font-size: 2.5rem;
-  font-weight: var(--ms-font-weight-bold);
+  font-weight: var(--ms-font-bold);
   letter-spacing: var(--ms-tracking-tight);
   line-height: 1;
 }
@@ -270,7 +270,7 @@
 .ms-dashboard-quick-description {
   margin: var(--ms-space-2) 0 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-sm);
+  font-size: var(--ms-text-sm);
   line-height: var(--ms-leading-relaxed);
 }
 
@@ -328,8 +328,8 @@
   color: var(--ms-primary);
   background: var(--ms-primary-soft);
   border-radius: var(--ms-radius-full);
-  font-size: var(--ms-font-size-xs);
-  font-weight: var(--ms-font-weight-bold);
+  font-size: var(--ms-text-xs);
+  font-weight: var(--ms-font-bold);
   letter-spacing: var(--ms-tracking-wide);
 }
 
@@ -342,7 +342,7 @@
 .ms-dashboard-ai-empty {
   max-width: 900px;
   margin: 0;
-  font-size: var(--ms-font-size-base);
+  font-size: var(--ms-text-base);
   line-height: var(--ms-leading-relaxed);
   white-space: pre-line;
 }
@@ -358,7 +358,7 @@
 .ms-dashboard-ai-generated {
   margin: var(--ms-space-2);
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
 }
 
 .ms-dashboard-ai-footer {
@@ -381,7 +381,7 @@
 .ms-dashboard-ai-cooldown p {
   margin: 0;
   color: var(--ms-text-muted);
-  font-size: var(--ms-font-size-xs);
+  font-size: var(--ms-text-xs);
   line-height: var(--ms-leading-relaxed);
 }
 

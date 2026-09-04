@@ -63,7 +63,7 @@ export default function BMIForm({ onAdd }) {
 
       {/* Saved Height */}
       <div className="ms-field">
-        <label htmlFor="bmi-height" className="ms-label">
+        <label htmlFor="bmi-height" className="ms-label-6">
           Height
         </label>
 
@@ -99,7 +99,7 @@ export default function BMIForm({ onAdd }) {
 
       {/* Weight */}
       <div className="ms-field">
-        <label htmlFor="bmi-weight" className="ms-label">
+        <label htmlFor="bmi-weight" className="ms-label-6">
           Weight
         </label>
 
@@ -119,7 +119,7 @@ export default function BMIForm({ onAdd }) {
           />
         </div>
 
-        <p className="ms-help-text">Enter your current weight in kilograms.</p>
+        {/* <p className="ms-help-text">Enter your current weight in kilograms.</p> */}
       </div>
 
       {/* Result */}
