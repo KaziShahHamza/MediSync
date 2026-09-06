@@ -9,7 +9,6 @@ import {
   Legend,
   Tooltip,
 } from "chart.js";
-
 import { Line } from "react-chartjs-2";
 import { TrendingUp, Activity } from "lucide-react";
 
@@ -49,7 +48,7 @@ export default function BMIChart({ logs, height }) {
       : [];
 
   return (
-    <div className="card min-h-[380px]">
+    <div className="card">
       <div className="flex items-center gap-3 mb-6">
         <TrendingUp size={22} className="text-blue-600" />
 
@@ -73,28 +72,30 @@ export default function BMIChart({ logs, height }) {
           </p>
         </div>
       ) : (
-        <Line
-          data={{
-            labels: bmiData.map((log) =>
-              new Date(log.createdAt).toLocaleDateString()
-            ),
-
-            datasets: [
-              {
-                label: "BMI",
-
-                data: bmiData.map((log) => log.bmi),
-
-                borderColor: "#2563EB",
-
-                backgroundColor: "#2563EB33",
-
-                tension: 0.3,
-              },
-            ],
-          }}
-        />
+        <div className="h-90">
+          <Line
+            data={{
+              labels: bmiData.map((log) =>
+                new Date(log.createdAt).toLocaleDateString()
+              ),
+              datasets: [
+                {
+                  label: "BMI",
+                  data: bmiData.map((log) => log.bmi),
+                  borderColor: "#2563EB",
+                  backgroundColor: "#2563EB33",
+                  tension: 0.3,
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+            }}
+          />
+        </div>
       )}
     </div>
   );
 }
+

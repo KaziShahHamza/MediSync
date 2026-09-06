@@ -5,15 +5,17 @@ import { Droplets, Save } from "lucide-react";
 
 export default function BloodSugarForm({ onAdd }) {
   const [glucose, setGlucose] = useState("");
+  const [glucoseTiming, setGlucoseTiming] = useState("fasting");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!glucose) return;
+    if (!glucose || !glucoseTiming) return;
 
     await onAdd({
       type: "diabetes",
       glucose,
+      glucoseTiming,
     });
 
     setGlucose("");
@@ -30,6 +32,20 @@ export default function BloodSugarForm({ onAdd }) {
       </div>
 
       <div>
+        <label>Measurement Type</label>
+
+        <select
+          className="input"
+          value={glucoseTiming}
+          onChange={(e) => setGlucoseTiming(e.target.value)}
+        >
+          <option value="fasting">Fasting</option>
+          <option value="postMeal">2 Hours After Meal</option>
+          <option value="random">Random</option>
+        </select>
+      </div>
+
+      <div>
         <label>Blood Glucose</label>
 
         <input
@@ -43,7 +59,7 @@ export default function BloodSugarForm({ onAdd }) {
       </div>
 
       <p className="text-sm text-slate-500">
-        Normal fasting range: 70–99 mg/dL
+        Enter your blood glucose level in mg/dL.
       </p>
 
       <button type="submit" className="btn-primary w-full">

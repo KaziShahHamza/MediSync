@@ -22,6 +22,10 @@ const healthLogSchema = new mongoose.Schema(
 
     // Blood Sugar
     glucose: Number,
+    glucoseTiming: {
+      type: String,
+      enum: ["fasting", "postMeal", "random"],
+    },
 
     // Weight
     weight: Number,
@@ -33,7 +37,7 @@ const healthLogSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("HealthLog", healthLogSchema);

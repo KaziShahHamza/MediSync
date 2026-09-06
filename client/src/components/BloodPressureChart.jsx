@@ -27,7 +27,7 @@ export default function BloodPressureChart({ logs }) {
     .slice(-7);
 
   return (
-    <div className="card min-h-[380px]">
+    <div className="card">
       <div className="flex items-center gap-3 mb-6">
         <HeartPulse size={22} className="text-blue-600" />
 
@@ -43,27 +43,35 @@ export default function BloodPressureChart({ logs }) {
           </p>
         </div>
       ) : (
-        <Line
-          data={{
-            labels: bpLogs.map((log) =>
-              new Date(log.createdAt).toLocaleDateString()
-            ),
-            datasets: [
-              {
-                label: "Systolic",
-                data: bpLogs.map((log) => log.High),
-                borderColor: "#2563EB",
-                backgroundColor: "#2563EB33",
-              },
-              {
-                label: "Diastolic",
-                data: bpLogs.map((log) => log.Low),
-                borderColor: "#DC2626",
-                backgroundColor: "#DC262633",
-              },
-            ],
-          }}
-        />
+        <div className="h-90">
+          <Line
+            data={{
+              labels: bpLogs.map((log) =>
+                new Date(log.createdAt).toLocaleDateString()
+              ),
+              datasets: [
+                {
+                  label: "Systolic",
+                  data: bpLogs.map((log) => log.High),
+                  borderColor: "#2563EB",
+                  backgroundColor: "#2563EB33",
+                  tension: 0.2,
+                },
+                {
+                  label: "Diastolic",
+                  data: bpLogs.map((log) => log.Low),
+                  borderColor: "#DC2626",
+                  backgroundColor: "#DC262633",
+                  tension: 0.2,
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+            }}
+          />
+        </div>
       )}
     </div>
   );

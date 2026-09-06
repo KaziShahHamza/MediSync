@@ -124,7 +124,7 @@ export default function HealthSummaryCard({
         <>
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-sm font-medium text-slate-500">{title}</h3>
+              <h3 className="text-sm font-medium text-slate-500">{title} </h3>
 
               <p className="text-3xl font-bold text-slate-900 mt-3">
                 {value || "No data"}

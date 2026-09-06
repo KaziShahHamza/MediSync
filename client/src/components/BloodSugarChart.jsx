@@ -18,23 +18,77 @@ ChartJS.register(
   PointElement,
   LineElement,
   Legend,
-  Tooltip
+  Tooltip,
 );
 
 export default function BloodSugarChart({ logs }) {
-  const sugarLogs = logs
-    .filter((log) => log.type === "diabetes")
-    .slice(-7);
+  const diabetesLogs = logs.filter(
+    (log) =>
+      log.type === "diabetes" && log.glucose != null && log.glucoseTiming,
+  );
+
+  const groupedByDate = {};
+
+  diabetesLogs.forEach((log) => {
+    const date = new Date(log.createdAt).toLocaleDateString();
+
+    if (!groupedByDate[date]) {
+      groupedByDate[date] = {
+        fasting: null,
+        postMeal: null,
+        random: null,
+      };
+    }
+
+    groupedByDate[date][log.glucoseTiming] = log.glucose;
+  });
+
+  const dates = Object.keys(groupedByDate)
+    .sort((a, b) => new Date(a) - new Date(b))
+    .slice(-10);
+
+  const chartData = {
+    labels: dates,
+
+    datasets: [
+      {
+        label: "Fasting",
+        data: dates.map((date) => groupedByDate[date].fasting),
+        borderColor: "#2563EB",
+        backgroundColor: "#2563EB33",
+        tension: 0.3,
+        spanGaps: true,
+      },
+
+      {
+        label: "2 Hours After Meal",
+        data: dates.map((date) => groupedByDate[date].postMeal),
+        borderColor: "#16A34A",
+        backgroundColor: "#16A34A33",
+        tension: 0.3,
+        spanGaps: true,
+      },
+
+      {
+        label: "Random",
+        data: dates.map((date) => groupedByDate[date].random),
+        borderColor: "#DC2626",
+        backgroundColor: "#DC262633",
+        tension: 0.3,
+        spanGaps: true,
+      },
+    ],
+  };
 
   return (
-    <div className="card min-h-[380px]">
+    <div className="card">
       <div className="flex items-center gap-3 mb-6">
         <Droplets size={22} className="text-blue-600" />
 
         <h3 className="card-title">Blood Sugar History</h3>
       </div>
 
-      {sugarLogs.length === 0 ? (
+      {dates.length === 0 ? (
         <div className="h-72 flex flex-col items-center justify-center text-center">
           <Activity size={40} className="text-slate-300" />
 
@@ -43,21 +97,15 @@ export default function BloodSugarChart({ logs }) {
           </p>
         </div>
       ) : (
-        <Line
-          data={{
-            labels: sugarLogs.map((log) =>
-              new Date(log.createdAt).toLocaleDateString()
-            ),
-            datasets: [
-              {
-                label: "Blood Glucose",
-                data: sugarLogs.map((log) => log.glucose),
-                borderColor: "#2563EB",
-                backgroundColor: "#2563EB33",
-              },
-            ],
-          }}
-        />
+        <div className="h-90">
+          <Line
+            data={chartData}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+            }}
+          />
+        </div>
       )}
     </div>
   );
