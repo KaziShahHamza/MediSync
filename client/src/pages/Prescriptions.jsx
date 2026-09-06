@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { usePrescriptions } from "../context/PrescriptionContext";
 import PrescriptionCard from "../components/PrescriptionCard";
-
 import {
   Upload,
   FileImage,
@@ -10,7 +9,6 @@ import {
   Sparkles,
   AlertCircle,
 } from "lucide-react";
-
 import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -64,7 +62,7 @@ export default function Prescriptions() {
           body: formData,
         },
       );
-      
+
       // const uploadRes = await fetch(
       //   `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
       //   {
@@ -308,7 +306,6 @@ export default function Prescriptions() {
           </div>
         </aside>
       </div>
-      
       {/* Preview Modal */}
       {selected && (
         <div

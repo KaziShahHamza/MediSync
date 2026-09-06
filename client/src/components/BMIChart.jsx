@@ -18,12 +18,12 @@ ChartJS.register(
   PointElement,
   LineElement,
   Legend,
-  Tooltip
+  Tooltip,
 );
 
 export default function BMIChart({ logs, height }) {
   // Get only weight logs
-  const weightLogs = logs.filter((log) => log.type === "weight");
+  const weightLogs = logs.filter((log) => log.type === "weight").slice(-10);
 
   // Get height from profile
   const feet = Number(height?.feet) || 0;
@@ -39,10 +39,7 @@ export default function BMIChart({ logs, height }) {
       ? weightLogs.map((log) => ({
           ...log,
           bmi: Number(
-            (
-              Number(log.weight) /
-              (heightMeters * heightMeters)
-            ).toFixed(1)
+            (Number(log.weight) / (heightMeters * heightMeters)).toFixed(1),
           ),
         }))
       : [];
@@ -52,7 +49,7 @@ export default function BMIChart({ logs, height }) {
       <div className="flex items-center gap-3 mb-6">
         <TrendingUp size={22} className="text-blue-600" />
 
-        <h3 className="card-title">BMI History</h3>
+        <h3 className="card-title">BMI History (Last 10 Entries) </h3>
       </div>
 
       {!heightMeters ? (
@@ -64,7 +61,7 @@ export default function BMIChart({ logs, height }) {
           </p>
         </div>
       ) : bmiData.length === 0 ? (
-        <div className="h-72 flex flex-col items-center justify-center text-center">
+        <div className="h-90 flex flex-col items-center justify-center text-center">
           <Activity size={40} className="text-slate-300" />
 
           <p className="mt-4 text-slate-500">
@@ -76,7 +73,7 @@ export default function BMIChart({ logs, height }) {
           <Line
             data={{
               labels: bmiData.map((log) =>
-                new Date(log.createdAt).toLocaleDateString()
+                new Date(log.createdAt).toLocaleDateString(),
               ),
               datasets: [
                 {
@@ -98,4 +95,3 @@ export default function BMIChart({ logs, height }) {
     </div>
   );
 }
-

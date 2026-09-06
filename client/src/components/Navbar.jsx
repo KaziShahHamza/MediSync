@@ -15,14 +15,11 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-
   const navigate = useNavigate();
-
   const location = useLocation();
 
   const handleLogout = () => {
     logout();
-
     navigate("/");
   };
 
@@ -34,7 +31,6 @@ export default function Navbar() {
       className={`nav-link ${isActive(path) ? "nav-link-active" : ""}`}
     >
       <Icon size={18} strokeWidth={2} />
-
       <span>{label}</span>
     </Link>
   );
@@ -60,7 +56,7 @@ export default function Navbar() {
             </h1>
 
             <p className="text-xs text-slate-500">
-              Personal Health Platform
+              Your Personal Health Platform
             </p>
           </div>
         </Link>
@@ -94,13 +90,16 @@ export default function Navbar() {
               <div className="h-8 w-px bg-slate-200 mx-2" />
 
               <div className="hidden xl:flex flex-col mr-2">
+                <span className="text-xs font-medium text-slate-800">
+                  Welcome, 
+                </span>
                 <span className="text-sm font-medium text-slate-800">
-                  {user.name || "User"}
+                  {user.username || "User"}
                 </span>
 
-                <span className="text-xs text-slate-500">
+                {/* <span className="text-xs text-slate-500">
                   {user.email}
-                </span>
+                </span> */}
               </div>
 
               <button onClick={handleLogout} className="btn-danger">

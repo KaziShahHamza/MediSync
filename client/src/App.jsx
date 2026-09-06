@@ -21,8 +21,10 @@ import Medicines from "./pages/Medicines";
 import Health from "./pages/Health";
 // import Health2 from "./pages/Health2";
 import Prescriptions from "./pages/Prescriptions";
+import Reports from "./pages/Reports";
 import Doctors from "./pages/Doctors";
 import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 
 // import TestPage from "./pages/TestPage";
 
@@ -107,6 +109,15 @@ export default function App() {
                   />
 
                   <Route
+                    path="/reports"
+                    element={
+                      <ProtectedRoute>
+                        <Reports />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  <Route
                     path="/doctors"
                     element={
                       <ProtectedRoute>
@@ -132,6 +143,18 @@ export default function App() {
                       </ProtectedRoute>
                     }
                   />
+
+                  <Route
+                    path="/settings"
+                    element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    }
+                  />
+
+
+
                 </Routes>
               </BrowserRouter>
             </DoctorProvider>

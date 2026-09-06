@@ -24,14 +24,14 @@ ChartJS.register(
 export default function BloodPressureChart({ logs }) {
   const bpLogs = logs
     .filter((log) => log.type === "bp")
-    .slice(-7);
+    .slice(-10);
 
   return (
     <div className="card">
       <div className="flex items-center gap-3 mb-6">
         <HeartPulse size={22} className="text-blue-600" />
 
-        <h3 className="card-title">Blood Pressure History</h3>
+        <h3 className="card-title">Blood Pressure Chart (Last 10 Entries) </h3>
       </div>
 
       {bpLogs.length === 0 ? (
@@ -60,8 +60,8 @@ export default function BloodPressureChart({ logs }) {
                 {
                   label: "Diastolic",
                   data: bpLogs.map((log) => log.Low),
-                  borderColor: "#DC2626",
-                  backgroundColor: "#DC262633",
+                  borderColor: "#16A34A",
+                  backgroundColor: "#16A34A33",
                   tension: 0.2,
                 },
               ],

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Scale, Save, Ruler, Weight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import BMIResult from "./BMIResult";
 import { useProfile } from "../context/ProfileContext";
 
@@ -9,6 +10,8 @@ export default function BMIForm({ onAdd }) {
   const { profile } = useProfile();
 
   const [weight, setWeight] = useState("");
+
+  const navigate = useNavigate();
 
   const heightCm = useMemo(() => {
     const feet = Number(profile?.height?.feet) || 0;
@@ -66,17 +69,43 @@ export default function BMIForm({ onAdd }) {
           <Ruler size={20} className="text-slate-400 shrink-0" />
 
           {heightCm ? (
-            <div>
-              <p className="text-lg font-semibold text-slate-800">
-                {heightDisplay}
-              </p>
+            <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+              <div>
+                <p className="text-lg font-semibold text-slate-800">
+                  {heightDisplay}
+                </p>
 
-              <p className="text-xs text-slate-500">
-                Retrieved from your profile
-              </p>
+                <p className="text-xs text-slate-500">
+                  Retrieved from your profile
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  window.scrollTo(0, 0);
+                  navigate("/settings");
+                }}
+                className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
+              >
+                Change?
+              </button>
             </div>
           ) : (
-            <p className="text-sm font-medium text-red-500">Height not set</p>
+            <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+              <p className="text-sm font-medium text-red-500">Height not set</p>
+
+              <button
+                type="button"
+                onClick={() => {
+                  window.scrollTo(0, 0);
+                  navigate("/profile");
+                }}
+                className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
+              >
+                Set height
+              </button>
+            </div>
           )}
         </div>
 

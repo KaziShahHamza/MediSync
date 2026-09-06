@@ -141,8 +141,8 @@ export default function BloodSugarChart({ logs }) {
             ? groupedByDate[date].random.glucose
             : null,
         ),
-        borderColor: "#DC2626",
-        backgroundColor: "#DC262633",
+        borderColor: "#22b6ae",
+        backgroundColor: "#22b6af57",
         tension: 0.3,
         spanGaps: false,
       },
@@ -154,7 +154,7 @@ export default function BloodSugarChart({ logs }) {
       <div className="flex items-center gap-3 mb-6">
         <Droplets size={22} className="text-blue-600" />
 
-        <h3 className="card-title">Blood Sugar History</h3>
+        <h3 className="card-title">Blood Sugar History (Last 10 Days)</h3>
       </div>
 
       {dates.length === 0 ? (
