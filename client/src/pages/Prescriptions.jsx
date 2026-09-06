@@ -64,6 +64,14 @@ export default function Prescriptions() {
           body: formData,
         },
       );
+      
+      // const uploadRes = await fetch(
+      //   `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+      //   {
+      //     method: "POST",
+      //     body: formData,
+      //   },
+      // );
 
       if (!uploadRes.ok) {
         throw new Error("Failed to upload image.");
@@ -393,9 +401,7 @@ export default function Prescriptions() {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-slate-900">
-                      AI Summary
-                    </h3>
+                    <h3 className="font-semibold text-slate-900">AI Summary</h3>
 
                     {/* {selected.aiAnalyzedAt && (
                       <p className="text-xs text-slate-400 mt-0.5">

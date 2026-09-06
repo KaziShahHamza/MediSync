@@ -146,7 +146,7 @@ select {
          rounded-2xl
          border
          border-slate-200
-         p-6
+         p-4
          transition-all
          duration-150;
 
@@ -251,11 +251,34 @@ select {
 ========================================================== */
 
 label {
-  @apply block
-         mb-2
-         text-sm
+  @apply text-sm
          font-medium
          text-slate-700;
+}
+
+/* Medicine image upload area */
+.medicine-image-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  width: 100%;
+  height: 8rem;
+
+  padding: 1rem;
+  margin-bottom: 0;
+
+  border: 2px dashed #cbd5e1;
+  border-radius: 0.75rem;
+
+  cursor: pointer;
+  transition: border-color 150ms ease;
+}
+
+.medicine-image-upload:hover {
+  border-color: #60a5fa;
 }
 
 .input,
@@ -848,7 +871,6 @@ a {
     border: 1px solid #ddd;
   }
 }
-
 
 .image-preview-scroll {
   scrollbar-width: auto;

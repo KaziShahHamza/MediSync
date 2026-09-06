@@ -1,17 +1,19 @@
-// client/src/pages/Medicines.jsx
-
 import { useEffect, useState } from "react";
 import { Pill, PlusCircle } from "lucide-react";
 
 import MedicineForm from "../components/MedicineForm";
 import MedicineList from "../components/MedicineList";
 
+const API_URL = import.meta.env.VITE_API_URL;
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
 export default function Dashboard() {
   const [meds, setMeds] = useState([]);
   const [editing, setEditing] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const fetchMeds = async () => {
     const res = await fetch(`${API_URL}/api/medicines`, {
@@ -27,30 +29,87 @@ export default function Dashboard() {
     fetchMeds();
   }, []);
 
-  const saveMedicine = async (data) => {
-    if (editing) {
-      await fetch(`${API_URL}/api/medicines/${editing._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
+  const uploadMedicineImage = async (file) => {
+    const formData = new FormData();
 
-      setEditing(null);
-    } else {
-      await fetch(`${API_URL}/api/medicines`, {
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
+    // Optional: organize medicine images in Cloudinary.
+    formData.append("folder", "MediSync/medicines");
+
+    const uploadRes = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+      {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
+        body: formData,
+      },
+    );
+
+    if (!uploadRes.ok) {
+      const errorData = await uploadRes.json();
+
+      console.error("Cloudinary upload error:", errorData);
+
+      throw new Error(
+        errorData.error?.message || "Failed to upload medicine image.",
+      );
     }
 
-    fetchMeds();
+    const uploadData = await uploadRes.json();
+
+    return uploadData.secure_url;
+  };
+
+  const saveMedicine = async (data) => {
+    setLoading(true);
+
+    try {
+      let imageUrl = data.imageUrl || "";
+
+      // Upload only when a new image was selected.
+      if (data.imageFile) {
+        imageUrl = await uploadMedicineImage(data.imageFile);
+      }
+
+      const medicineData = {
+        name: data.name,
+        dosageTimes: data.dosageTimes,
+        imageUrl,
+        startDate: data.startDate,
+        endDate: data.isActive ? null : data.endDate,
+        isActive: data.isActive,
+      };
+
+      const url = editing
+        ? `${API_URL}/api/medicines/${editing._id}`
+        : `${API_URL}/api/medicines`;
+
+      const method = editing ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(medicineData),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to save medicine.");
+      }
+
+      setEditing(null);
+      await fetchMeds();
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Failed to save medicine.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const deleteMedicine = async (id) => {
@@ -78,7 +137,8 @@ export default function Dashboard() {
           </div>
 
           <p className="mt-3 text-slate-600">
-            Manage your medications, dosage schedules, and treatment information.
+            Manage your medications, dosage schedules, and treatment
+            information.
           </p>
         </div>
       </section>
@@ -110,7 +170,11 @@ export default function Dashboard() {
             </h2>
           </div>
 
-          <MedicineForm onSave={saveMedicine} editing={editing} />
+          <MedicineForm
+            onSave={saveMedicine}
+            editing={editing}
+            loading={loading}
+          />
         </div>
       </section>
     </div>

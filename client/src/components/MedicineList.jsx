@@ -27,7 +27,7 @@ export default function MedicineList({ medicines, onEdit, onDelete }) {
     <div key={med._id} className="card">
       {" "}
       <div className="flex gap-5 items-center">
-        {/* Medicine Image */}{" "}
+        {/* Medicine Image */}
         <div className="w-24 h-24 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center shrink-0">
           {med.imageUrl ? (
             <img
@@ -36,11 +36,18 @@ export default function MedicineList({ medicines, onEdit, onDelete }) {
               className="w-full h-full object-cover"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
+                e.currentTarget.nextElementSibling.style.display = "flex";
               }}
             />
-          ) : (
+          ) : null}
+
+          <div
+            className={`w-full h-full items-center justify-center ${
+              med.imageUrl ? "hidden" : "flex"
+            }`}
+          >
             <ImageOff size={28} className="text-slate-400" />
-          )}{" "}
+          </div>
         </div>
         {/* Medicine Details */}
         <div className="flex-1 min-w-0">
