@@ -11,6 +11,7 @@ import { DoctorProvider } from "./context/DoctorContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
+import ScrollToTop from "./components/ScrollToTop";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -50,6 +51,7 @@ export default function App() {
           <PrescriptionProvider>
             <DoctorProvider>
               <BrowserRouter>
+                <ScrollToTop />
                 <Navbar />
 
                 {/* Background reminder engine */}
@@ -152,9 +154,6 @@ export default function App() {
                       </ProtectedRoute>
                     }
                   />
-
-
-
                 </Routes>
               </BrowserRouter>
             </DoctorProvider>

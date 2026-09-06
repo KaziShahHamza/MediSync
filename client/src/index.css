@@ -766,6 +766,164 @@ input[type="radio"] {
 }
 
 /* ==========================================================
+   Desktop Dropdown
+========================================================== */
+
+.navbar-dropdown {
+  @apply absolute
+         right-0
+         top-[calc(100%+8px)]
+         w-56
+         rounded-xl
+         border
+         border-slate-200
+         bg-white
+         p-2
+         shadow-lg
+         shadow-slate-200/50;
+}
+
+.navbar-dropdown-account {
+  @apply w-52;
+}
+
+.navbar-dropdown-item {
+  @apply flex
+         items-center
+         gap-3
+         w-full
+         rounded-lg
+         px-3
+         py-2.5
+         text-sm
+         font-medium
+         text-slate-600
+         transition-colors
+         duration-150;
+}
+
+.navbar-dropdown-item:hover {
+  @apply bg-blue-50
+         text-blue-600;
+}
+
+.navbar-dropdown-item-active {
+  @apply bg-blue-50
+         text-blue-600;
+}
+
+.navbar-dropdown-item svg {
+  @apply shrink-0;
+}
+
+.navbar-dropdown-divider {
+  @apply my-2
+         h-px
+         bg-slate-200;
+}
+
+.navbar-dropdown-danger {
+  @apply text-red-500;
+}
+
+.navbar-dropdown-danger:hover {
+  @apply bg-red-50
+         text-red-600;
+}
+
+/* ==========================================================
+   Account Button
+========================================================== */
+
+.navbar-account {
+  @apply inline-flex
+         items-center
+         gap-2
+         h-10
+         px-3
+         rounded-xl
+         border
+         border-transparent
+         text-sm
+         font-medium
+         text-slate-600
+         transition-all
+         duration-150;
+}
+
+.navbar-account:hover {
+  @apply bg-slate-50
+         text-slate-800;
+}
+
+.navbar-account-active {
+  @apply bg-blue-50
+         text-blue-600
+         border-blue-100;
+}
+
+/* ==========================================================
+   Mobile Menu Button
+========================================================== */
+
+.navbar-mobile-toggle {
+  @apply flex
+         items-center
+         justify-center
+         w-10
+         h-10
+         rounded-xl
+         border
+         border-slate-200
+         bg-white
+         text-slate-600
+         transition-colors
+         duration-150;
+}
+
+.navbar-mobile-toggle:hover {
+  @apply bg-blue-50
+         text-blue-600
+         border-blue-200;
+}
+
+/* ==========================================================
+   Mobile Menu
+========================================================== */
+
+.navbar-mobile-menu {
+  @apply border-t
+         border-slate-200
+         bg-white;
+}
+
+.navbar-mobile-list {
+  @apply flex
+         flex-col
+         gap-1;
+}
+
+.navbar-mobile-list .nav-link {
+  @apply w-full
+         justify-start
+         border-b-0
+         px-4
+         py-3
+         h-auto
+         rounded-xl;
+}
+
+.navbar-mobile-logout {
+  @apply text-red-500
+         mt-2;
+}
+
+.navbar-mobile-logout:hover {
+  @apply bg-red-50
+         text-red-600;
+}
+
+/* ==========================================================
    Accessibility
 ========================================================== */
 
