@@ -173,6 +173,7 @@ export default function Dashboard() {
           <MedicineForm
             onSave={saveMedicine}
             editing={editing}
+            onCancel={() => setEditing(null)}
             loading={loading}
           />
         </div>
