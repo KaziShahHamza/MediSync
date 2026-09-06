@@ -38,9 +38,26 @@ router.get("/health-report", auth, async (req, res) => {
       createdAt: -1,
     });
 
-    const latestDiabetes = await HealthLog.findOne({
+    const latestFasting = await HealthLog.findOne({
       user: userId,
       type: "diabetes",
+      glucoseTiming: "fasting",
+    }).sort({
+      createdAt: -1,
+    });
+
+    const latestPostMeal = await HealthLog.findOne({
+      user: userId,
+      type: "diabetes",
+      glucoseTiming: "postMeal",
+    }).sort({
+      createdAt: -1,
+    });
+
+    const latestRandom = await HealthLog.findOne({
+      user: userId,
+      type: "diabetes",
+      glucoseTiming: "random",
     }).sort({
       createdAt: -1,
     });
@@ -104,12 +121,28 @@ router.get("/health-report", auth, async (req, res) => {
             }
           : null,
 
-        diabetes: latestDiabetes
-          ? {
-              glucose: latestDiabetes.glucose,
-              date: latestDiabetes.createdAt,
-            }
-          : null,
+        diabetes: {
+          fasting: latestFasting
+            ? {
+                glucose: latestFasting.glucose,
+                date: latestFasting.recordedAt || latestFasting.createdAt,
+              }
+            : null,
+
+          postMeal: latestPostMeal
+            ? {
+                glucose: latestPostMeal.glucose,
+                date: latestPostMeal.recordedAt || latestPostMeal.createdAt,
+              }
+            : null,
+
+          random: latestRandom
+            ? {
+                glucose: latestRandom.glucose,
+                date: latestRandom.recordedAt || latestRandom.createdAt,
+              }
+            : null,
+        },
 
         weight: latestWeight
           ? {

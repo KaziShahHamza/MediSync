@@ -27,6 +27,11 @@ const healthLogSchema = new mongoose.Schema(
       enum: ["fasting", "postMeal", "random"],
     },
 
+    recordedAt: {
+      type: String,
+      match: /^\d{4}-\d{2}-\d{2}$/,
+    },
+
     // Weight
     weight: Number,
 

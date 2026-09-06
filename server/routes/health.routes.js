@@ -9,9 +9,26 @@ const router = express.Router();
 // create log
 router.post("/", auth, async (req, res) => {
   try {
+    const { type, recordedAt } = req.body;
+
+    // Blood sugar records require a measurement date.
+    if (type === "diabetes") {
+      if (!recordedAt) {
+        return res.status(400).json({
+          message: "Blood sugar measurement date is required.",
+        });
+      }
+
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(recordedAt)) {
+        return res.status(400).json({
+          message: "Invalid blood sugar measurement date.",
+        });
+      }
+    }
+
     const log = await HealthLog.create({
       ...req.body,
-      user: req.userId 
+      user: req.userId,
     });
 
     res.json(log);

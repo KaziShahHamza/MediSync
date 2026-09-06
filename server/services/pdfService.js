@@ -210,15 +210,41 @@ export async function generateHealthReport(res, data) {
 
   doc.font("Helvetica");
 
-  if (health.diabetes) {
-    doc.text(`${health.diabetes.glucose} mmol/L`);
+  const diabetes = health.diabetes;
 
-    doc
-      .fontSize(9)
-      .fillColor("#64748b")
-      .text(`Recorded: ${formatDate(health.diabetes.date)}`);
+  if (diabetes?.fasting || diabetes?.postMeal || diabetes?.random) {
+    if (diabetes.fasting) {
+      doc.text(`Fasting: ${diabetes.fasting.glucose} mg/dL`);
 
-    doc.fontSize(11).fillColor("#334155");
+      doc
+        .fontSize(9)
+        .fillColor("#64748b")
+        .text(`Recorded: ${formatDate(diabetes.fasting.date)}`);
+
+      doc.fontSize(11).fillColor("#334155");
+    }
+
+    if (diabetes.postMeal) {
+      doc.text(`2 Hours After Meal: ${diabetes.postMeal.glucose} mg/dL`);
+
+      doc
+        .fontSize(9)
+        .fillColor("#64748b")
+        .text(`Recorded: ${formatDate(diabetes.postMeal.date)}`);
+
+      doc.fontSize(11).fillColor("#334155");
+    }
+
+    if (diabetes.random) {
+      doc.text(`Random: ${diabetes.random.glucose} mg/dL`);
+
+      doc
+        .fontSize(9)
+        .fillColor("#64748b")
+        .text(`Recorded: ${formatDate(diabetes.random.date)}`);
+
+      doc.fontSize(11).fillColor("#334155");
+    }
   } else {
     doc.text("No blood sugar record available.");
   }

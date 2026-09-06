@@ -279,11 +279,41 @@ export default function Dashboard() {
           <HealthSummaryCard
             title="Blood Sugar"
             value={
-              data.health.diabetes
-                ? `${data.health.diabetes.glucose} mmol/L`
-                : null
+              data.health.diabetes &&
+              (data.health.diabetes.fasting ||
+                data.health.diabetes.postMeal ||
+                data.health.diabetes.random) ? (
+                <div className="space-y-2">
+                  {data.health.diabetes.fasting && (
+                    <div>
+                      <span className="text-sm font-medium text-slate-500">
+                        Fasting:
+                      </span>{" "}
+                      {data.health.diabetes.fasting.glucose} mg/dL
+                    </div>
+                  )}
+
+                  {data.health.diabetes.postMeal && (
+                    <div>
+                      <span className="text-sm font-medium text-slate-500">
+                        2h After Meal:
+                      </span>{" "}
+                      {data.health.diabetes.postMeal.glucose} mg/dL
+                    </div>
+                  )}
+
+                  {data.health.diabetes.random && (
+                    <div>
+                      <span className="text-sm font-medium text-slate-500">
+                        Random:
+                      </span>{" "}
+                      {data.health.diabetes.random.glucose} mg/dL
+                    </div>
+                  )}
+                </div>
+              ) : null
             }
-            subtitle="Latest glucose level"
+            subtitle="Latest reading for each measurement type"
             icon={Droplets}
           />
 

@@ -6,10 +6,7 @@ import Medicine from "../models/Medicine.js";
 import Doctor from "../models/Doctor.js";
 import Prescription from "../models/Prescription.js";
 
-import {
-  calculateBMI,
-  getBMICategory,
-} from "../utils/healthCalculations.js";
+import { calculateBMI, getBMICategory } from "../utils/healthCalculations.js";
 
 // Fast dashboard data
 export async function getDashboardData(userId) {
@@ -22,9 +19,22 @@ export async function getDashboardData(userId) {
     type: "bp",
   }).sort({ createdAt: -1 });
 
-  const latestDiabetes = await HealthLog.findOne({
+  const latestFasting = await HealthLog.findOne({
     user: userId,
     type: "diabetes",
+    glucoseTiming: "fasting",
+  }).sort({ createdAt: -1 });
+
+  const latestPostMeal = await HealthLog.findOne({
+    user: userId,
+    type: "diabetes",
+    glucoseTiming: "postMeal",
+  }).sort({ createdAt: -1 });
+
+  const latestRandom = await HealthLog.findOne({
+    user: userId,
+    type: "diabetes",
+    glucoseTiming: "random",
   }).sort({ createdAt: -1 });
 
   const latestWeight = await HealthLog.findOne({
@@ -44,10 +54,7 @@ export async function getDashboardData(userId) {
     user: userId,
   });
 
-  const bmiValue = calculateBMI(
-    latestWeight?.weight,
-    profile?.height
-  );
+  const bmiValue = calculateBMI(latestWeight?.weight, profile?.height);
 
   const bmi = bmiValue
     ? {
@@ -73,12 +80,28 @@ export async function getDashboardData(userId) {
           }
         : null,
 
-      diabetes: latestDiabetes
-        ? {
-            glucose: latestDiabetes.glucose,
-            date: latestDiabetes.createdAt,
-          }
-        : null,
+      diabetes: {
+        fasting: latestFasting
+          ? {
+              glucose: latestFasting.glucose,
+              date: latestFasting.recordedAt || latestFasting.createdAt,
+            }
+          : null,
+
+        postMeal: latestPostMeal
+          ? {
+              glucose: latestPostMeal.glucose,
+              date: latestPostMeal.recordedAt || latestPostMeal.createdAt,
+            }
+          : null,
+
+        random: latestRandom
+          ? {
+              glucose: latestRandom.glucose,
+              date: latestRandom.recordedAt || latestRandom.createdAt,
+            }
+          : null,
+      },
 
       bmi,
     },
@@ -91,7 +114,6 @@ export async function getDashboardData(userId) {
   };
 }
 
-
 // Detailed health data for AI summary generation
 export async function getAIHealthData(userId) {
   const profile = await Profile.findOne({
@@ -103,9 +125,22 @@ export async function getAIHealthData(userId) {
     type: "bp",
   }).sort({ createdAt: -1 });
 
-  const latestDiabetes = await HealthLog.findOne({
+  const latestFasting = await HealthLog.findOne({
     user: userId,
     type: "diabetes",
+    glucoseTiming: "fasting",
+  }).sort({ createdAt: -1 });
+
+  const latestPostMeal = await HealthLog.findOne({
+    user: userId,
+    type: "diabetes",
+    glucoseTiming: "postMeal",
+  }).sort({ createdAt: -1 });
+
+  const latestRandom = await HealthLog.findOne({
+    user: userId,
+    type: "diabetes",
+    glucoseTiming: "random",
   }).sort({ createdAt: -1 });
 
   const latestWeight = await HealthLog.findOne({
@@ -138,10 +173,7 @@ export async function getAIHealthData(userId) {
     user: userId,
   }).select("name dosageTimes");
 
-  const bmiValue = calculateBMI(
-    latestWeight?.weight,
-    profile?.height
-  );
+  const bmiValue = calculateBMI(latestWeight?.weight, profile?.height);
 
   const bmi = bmiValue
     ? {
@@ -161,12 +193,28 @@ export async function getAIHealthData(userId) {
         }
       : null,
 
-    diabetes: latestDiabetes
-      ? {
-          glucose: latestDiabetes.glucose,
-          date: latestDiabetes.createdAt,
-        }
-      : null,
+    diabetes: {
+      fasting: latestFasting
+        ? {
+            glucose: latestFasting.glucose,
+            date: latestFasting.recordedAt || latestFasting.createdAt,
+          }
+        : null,
+
+      postMeal: latestPostMeal
+        ? {
+            glucose: latestPostMeal.glucose,
+            date: latestPostMeal.recordedAt || latestPostMeal.createdAt,
+          }
+        : null,
+
+      random: latestRandom
+        ? {
+            glucose: latestRandom.glucose,
+            date: latestRandom.recordedAt || latestRandom.createdAt,
+          }
+        : null,
+    },
 
     weight: latestWeight
       ? {
@@ -206,7 +254,8 @@ export async function getAIHealthData(userId) {
 
       bloodSugar: recentDiabetes.map((log) => ({
         glucose: log.glucose,
-        date: log.createdAt,
+        timing: log.glucoseTiming,
+        date: log.recordedAt || log.createdAt,
       })),
 
       weight: recentWeight.map((log) => ({

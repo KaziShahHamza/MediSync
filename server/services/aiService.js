@@ -1,3 +1,5 @@
+// server/services/aiService.js
+
 import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({

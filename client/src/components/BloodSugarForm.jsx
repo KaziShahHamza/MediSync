@@ -1,21 +1,58 @@
 // client/src/components/BloodSugarForm.jsx
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Droplets, Save } from "lucide-react";
+
+function formatDateLabel(date) {
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function formatDateValue(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
 
 export default function BloodSugarForm({ onAdd }) {
   const [glucose, setGlucose] = useState("");
   const [glucoseTiming, setGlucoseTiming] = useState("fasting");
 
+  const availableDates = useMemo(() => {
+    const dates = [];
+
+    for (let offset = 0; offset < 5; offset++) {
+      const date = new Date();
+
+      date.setHours(0, 0, 0, 0);
+      date.setDate(date.getDate() - offset);
+
+      dates.push({
+        value: formatDateValue(date),
+        label: formatDateLabel(date),
+      });
+    }
+
+    return dates;
+  }, []);
+
+  const [recordedAt, setRecordedAt] = useState(availableDates[0]?.value || "");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!glucose || !glucoseTiming) return;
+    if (!glucose || !glucoseTiming || !recordedAt) return;
 
     await onAdd({
       type: "diabetes",
       glucose,
       glucoseTiming,
+      recordedAt,
     });
 
     setGlucose("");
@@ -29,6 +66,22 @@ export default function BloodSugarForm({ onAdd }) {
         </div>
 
         <h3 className="card-title">Blood Sugar</h3>
+      </div>
+
+      <div>
+        <label>Measurement Date</label>
+
+        <select
+          className="input"
+          value={recordedAt}
+          onChange={(e) => setRecordedAt(e.target.value)}
+        >
+          {availableDates.map((date) => (
+            <option key={date.value} value={date.value}>
+              {date.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>

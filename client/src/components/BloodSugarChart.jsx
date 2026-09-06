@@ -21,16 +21,64 @@ ChartJS.register(
   Tooltip,
 );
 
+function getRecordedDate(log) {
+  return log.recordedAt || log.createdAt;
+}
+
+function getCalendarDate(log) {
+  const value = getRecordedDate(log);
+
+  if (!value) return null;
+
+  // New records use YYYY-MM-DD.
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return value;
+  }
+
+  // Older records fall back to createdAt.
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function formatChartDate(dateString) {
+  const [year, month, day] = dateString.split("-");
+
+  const date = new Date(
+    Number(year),
+    Number(month) - 1,
+    Number(day),
+  );
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
 export default function BloodSugarChart({ logs }) {
   const diabetesLogs = logs.filter(
     (log) =>
-      log.type === "diabetes" && log.glucose != null && log.glucoseTiming,
+      log.type === "diabetes" &&
+      log.glucose != null &&
+      log.glucoseTiming &&
+      ["fasting", "postMeal", "random"].includes(log.glucoseTiming),
   );
 
   const groupedByDate = {};
 
   diabetesLogs.forEach((log) => {
-    const date = new Date(log.createdAt).toLocaleDateString();
+    const date = getCalendarDate(log);
+
+    if (!date) return;
 
     if (!groupedByDate[date]) {
       groupedByDate[date] = {
@@ -40,42 +88,63 @@ export default function BloodSugarChart({ logs }) {
       };
     }
 
-    groupedByDate[date][log.glucoseTiming] = log.glucose;
+    const existingLog = groupedByDate[date][log.glucoseTiming];
+
+    // Keep the latest saved reading for this date and timing.
+    if (
+      !existingLog ||
+      new Date(log.createdAt).getTime() >
+        new Date(existingLog.createdAt).getTime()
+    ) {
+      groupedByDate[date][log.glucoseTiming] = log;
+    }
   });
 
   const dates = Object.keys(groupedByDate)
-    .sort((a, b) => new Date(a) - new Date(b))
+    .sort((a, b) => a.localeCompare(b))
     .slice(-10);
 
   const chartData = {
-    labels: dates,
+    labels: dates.map(formatChartDate),
 
     datasets: [
       {
         label: "Fasting",
-        data: dates.map((date) => groupedByDate[date].fasting),
+        data: dates.map((date) =>
+          groupedByDate[date].fasting
+            ? groupedByDate[date].fasting.glucose
+            : null,
+        ),
         borderColor: "#2563EB",
         backgroundColor: "#2563EB33",
         tension: 0.3,
-        spanGaps: true,
+        spanGaps: false,
       },
 
       {
         label: "2 Hours After Meal",
-        data: dates.map((date) => groupedByDate[date].postMeal),
+        data: dates.map((date) =>
+          groupedByDate[date].postMeal
+            ? groupedByDate[date].postMeal.glucose
+            : null,
+        ),
         borderColor: "#16A34A",
         backgroundColor: "#16A34A33",
         tension: 0.3,
-        spanGaps: true,
+        spanGaps: false,
       },
 
       {
         label: "Random",
-        data: dates.map((date) => groupedByDate[date].random),
+        data: dates.map((date) =>
+          groupedByDate[date].random
+            ? groupedByDate[date].random.glucose
+            : null,
+        ),
         borderColor: "#DC2626",
         backgroundColor: "#DC262633",
         tension: 0.3,
-        spanGaps: true,
+        spanGaps: false,
       },
     ],
   };
@@ -89,7 +158,7 @@ export default function BloodSugarChart({ logs }) {
       </div>
 
       {dates.length === 0 ? (
-        <div className="h-72 flex flex-col items-center justify-center text-center">
+        <div className="h-90 flex flex-col items-center justify-center text-center">
           <Activity size={40} className="text-slate-300" />
 
           <p className="mt-4 text-slate-500">
@@ -102,7 +171,7 @@ export default function BloodSugarChart({ logs }) {
             data={chartData}
             options={{
               responsive: true,
-              maintainAspectRatio: false,
+              // maintainAspectRatio: false,
             }}
           />
         </div>
