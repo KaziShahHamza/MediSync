@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useDoctors } from "../context/DoctorContext";
+import { MousePointer2 } from "lucide-react";
 import DoctorCard from "../components/DoctorCard";
 import hospitals from "../data/hospitals.json";
 import specialties from "../data/specialties.json";
@@ -16,7 +17,12 @@ const emptyChamber = {
   phone: "",
   serialNumber: "",
   visitingDays: [],
-  visitingTime: "",
+  visitingTime: {
+    startHour: "6",
+    startPeriod: "PM",
+    endHour: "9",
+    endPeriod: "PM",
+  },
 };
 
 const emptyForm = {
@@ -51,51 +57,6 @@ export default function Doctors() {
     setForm((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  }
-
-  function toggleSpeciality(speciality) {
-    setForm((prev) => ({
-      ...prev,
-      specialities: prev.specialities.includes(speciality)
-        ? prev.specialities.filter((item) => item !== speciality)
-        : [...prev.specialities, speciality],
-    }));
-  }
-
-  function handleDegreeChange(index, value) {
-    setForm((prev) => {
-      const degrees = [...prev.degrees];
-      degrees[index] = value;
-
-      return {
-        ...prev,
-        degrees,
-      };
-    });
-  }
-
-  function addDegree() {
-    setForm((prev) => ({
-      ...prev,
-      degrees: [...prev.degrees, ""],
-    }));
-  }
-
-  function removeDegree(index) {
-    setForm((prev) => ({
-      ...prev,
-      degrees: prev.degrees.filter((_, i) => i !== index),
-    }));
-  }
-
-  function updateContactInfo(field, value) {
-    setForm((prev) => ({
-      ...prev,
-      contactInfo: {
-        ...prev.contactInfo,
-        [field]: value,
-      },
     }));
   }
 
@@ -185,18 +146,16 @@ export default function Doctors() {
     });
   }
 
-  function toggleChamberDay(chamberIndex, day) {
+  function updateVisitingTime(index, field, value) {
     setForm((prev) => {
       const chambers = [...prev.chambers];
-      const chamber = chambers[chamberIndex];
 
-      const visitingDays = chamber.visitingDays.includes(day)
-        ? chamber.visitingDays.filter((item) => item !== day)
-        : [...chamber.visitingDays, day];
-
-      chambers[chamberIndex] = {
-        ...chamber,
-        visitingDays,
+      chambers[index] = {
+        ...chambers[index],
+        visitingTime: {
+          ...chambers[index].visitingTime,
+          [field]: value,
+        },
       };
 
       return {
@@ -244,7 +203,12 @@ export default function Doctors() {
               phone: chamber.phone || "",
               serialNumber: chamber.serialNumber || "",
               visitingDays: chamber.visitingDays || [],
-              visitingTime: chamber.visitingTime || "",
+              visitingTime: {
+                startHour: chamber.visitingTime?.startHour ?? "6",
+                startPeriod: chamber.visitingTime?.startPeriod ?? "PM",
+                endHour: chamber.visitingTime?.endHour ?? "9",
+                endPeriod: chamber.visitingTime?.endPeriod ?? "PM",
+              },
             }))
           : [{ ...emptyChamber, visitingDays: [] }],
       contactInfo: {
@@ -471,9 +435,25 @@ export default function Doctors() {
                 ))}
               </select>
 
-              <p className="mt-1 text-sm text-slate-500">
-                Hold Ctrl/Cmd to select multiple degrees.
-              </p>
+              {/* Multiple selection hint */}
+              <div className="mt-3 flex items-start gap-3 rounded-xl border border-blue-100 bg-blue-50 px-3 py-3">
+                <div className="degree-hint-icon">
+                  <MousePointer2 size={17} />
+                </div>
+
+                <div>
+                  <p className="text-sm font-semibold text-blue-700">
+                    Select multiple degrees
+                  </p>
+
+                  <p className="mt-0.5 text-xs text-blue-600">
+                    Hold <kbd className="degree-hint-key">Ctrl</kbd>
+                    <span className="mx-1">/</span>
+                    <kbd className="degree-hint-key">Cmd</kbd> and click to
+                    select more than one.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Specialities */}
@@ -674,21 +654,98 @@ export default function Doctors() {
                         </select>
 
                         <p className="mt-1 text-sm text-slate-500">
-                          Select all days the doctor visits this chamber.
+                          Select the days doctor visits this chamber.
                         </p>
                       </div>
 
                       <div>
-                        <label>Visiting Time</label>
+                        <label className="block mb-2 font-medium text-slate-700">
+                          Visiting Time
+                        </label>
 
-                        <input
-                          value={chamber.visitingTime}
-                          onChange={(e) =>
-                            updateChamber(index, "visitingTime", e.target.value)
-                          }
-                          placeholder="Example: 6 PM - 9 PM"
-                          className="input"
-                        />
+                        <div className="flex items-center gap-2">
+                          {/* Start hour */}
+                          <select
+                            value={chamber.visitingTime.startHour}
+                            onChange={(e) =>
+                              updateVisitingTime(
+                                index,
+                                "startHour",
+                                e.target.value,
+                              )
+                            }
+                            className="input flex-1"
+                          >
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                              (hour) => (
+                                <option key={hour} value={hour}>
+                                  {hour}
+                                </option>
+                              ),
+                            )}
+                          </select>
+
+                          {/* Start AM / PM */}
+                          <select
+                            value={chamber.visitingTime.startPeriod}
+                            onChange={(e) =>
+                              updateVisitingTime(
+                                index,
+                                "startPeriod",
+                                e.target.value,
+                              )
+                            }
+                            className="input flex-1"
+                          >
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                          </select>
+
+                          <span className="shrink-0 text-sm font-medium text-slate-500">
+                            to
+                          </span>
+
+                          {/* End hour */}
+                          <select
+                            value={chamber.visitingTime.endHour}
+                            onChange={(e) =>
+                              updateVisitingTime(
+                                index,
+                                "endHour",
+                                e.target.value,
+                              )
+                            }
+                            className="input flex-1"
+                          >
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                              (hour) => (
+                                <option key={hour} value={hour}>
+                                  {hour}
+                                </option>
+                              ),
+                            )}
+                          </select>
+
+                          {/* End AM / PM */}
+                          <select
+                            value={chamber.visitingTime.endPeriod}
+                            onChange={(e) =>
+                              updateVisitingTime(
+                                index,
+                                "endPeriod",
+                                e.target.value,
+                              )
+                            }
+                            className="input flex-1"
+                          >
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                          </select>
+                        </div>
+
+                        <p className="mt-1 text-sm text-slate-500">
+                          Select the chamber’s visiting hours.
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -780,7 +837,7 @@ export default function Doctors() {
               </div>
             </div>
             {/* Notes */}
-            <div>
+            {/* <div>
               <label>Notes</label>
 
               <textarea
@@ -790,7 +847,7 @@ export default function Doctors() {
                 onChange={handleChange}
                 className="input min-h-24"
               />
-            </div>
+            </div> */}
 
             {/* Actions */}
             <div className="space-y-3">

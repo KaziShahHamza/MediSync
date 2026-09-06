@@ -404,8 +404,15 @@ export async function generateHealthReport(res, data) {
             );
           }
 
-          if (chamber.visitingTime) {
-            doc.text(`         Visiting Time: ${chamber.visitingTime}`);
+          if (
+            chamber.visitingTime?.startHour &&
+            chamber.visitingTime?.startPeriod &&
+            chamber.visitingTime?.endHour &&
+            chamber.visitingTime?.endPeriod
+          ) {
+            doc.text(
+              `         Visiting Time: ${chamber.visitingTime.startHour} ${chamber.visitingTime.startPeriod} to ${chamber.visitingTime.endHour} ${chamber.visitingTime.endPeriod}`,
+            );
           }
         });
       }

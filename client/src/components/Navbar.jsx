@@ -1,6 +1,6 @@
 // client/src/components/Navbar.jsx
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Activity,
@@ -25,77 +25,33 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [documentsOpen, setDocumentsOpen] = useState(false);
-  const [accountOpen, setAccountOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const documentsRef = useRef(null);
-  const accountRef = useRef(null);
 
   const username = user?.username || user?.name || "User";
 
   const isActive = (path) => location.pathname === path;
 
   const isDocumentsActive =
-    location.pathname === "/prescriptions" ||
-    location.pathname === "/reports";
+    location.pathname === "/prescriptions" || location.pathname === "/reports";
 
   const isAccountActive =
-    location.pathname === "/profile" ||
-    location.pathname === "/settings";
+    location.pathname === "/profile" || location.pathname === "/settings";
 
   const handleLogout = () => {
     setMobileOpen(false);
-    setAccountOpen(false);
     logout();
     navigate("/");
   };
 
   const handleNavigation = () => {
     setMobileOpen(false);
-    setDocumentsOpen(false);
-    setAccountOpen(false);
   };
-
-  // Close desktop dropdowns when clicking outside.
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        documentsRef.current &&
-        !documentsRef.current.contains(event.target)
-      ) {
-        setDocumentsOpen(false);
-      }
-
-      if (
-        accountRef.current &&
-        !accountRef.current.contains(event.target)
-      ) {
-        setAccountOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  // Close mobile menu when the route changes.
-  useEffect(() => {
-    setMobileOpen(false);
-    setDocumentsOpen(false);
-    setAccountOpen(false);
-  }, [location.pathname]);
 
   const navItem = (path, label, Icon) => (
     <Link
       to={path}
       onClick={handleNavigation}
-      className={`nav-link ${
-        isActive(path) ? "nav-link-active" : ""
-      }`}
+      className={`nav-link ${isActive(path) ? "nav-link-active" : ""}`}
     >
       <Icon size={18} strokeWidth={2} />
       <span>{label}</span>
@@ -105,7 +61,10 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
       <div className="container h-[72px] flex items-center justify-between gap-4">
-        {/* Logo */}
+        {/* =====================================================
+            LOGO
+        ====================================================== */}
+
         <Link
           to="/"
           onClick={handleNavigation}
@@ -135,7 +94,9 @@ export default function Navbar() {
         {/* =====================================================
             DESKTOP NAVIGATION
         ====================================================== */}
+
         <div className="hidden lg:flex items-center gap-1">
+          {/* Public navigation */}
           {!user && (
             <>
               <Link
@@ -153,24 +114,25 @@ export default function Navbar() {
             </>
           )}
 
+          {/* Authenticated navigation */}
           {user && (
             <>
               {navItem("/dashboard", "Dashboard", LayoutDashboard)}
 
-              {navItem("/medicines", "My Medicines", Pill)}
-
               {navItem("/health", "Health Overview", Activity)}
+
+              {navItem("/medicines", "My Medicines", Pill)}
 
               {navItem("/doctors", "My Doctors", Stethoscope)}
 
-              {/* Documents dropdown */}
-              <div className="relative" ref={documentsRef}>
+              {/* =================================================
+                  DOCUMENTS DROPDOWN
+                  Opens on hover
+              ================================================== */}
+
+              <div className="navbar-dropdown-wrapper">
                 <button
                   type="button"
-                  onClick={() => {
-                    setDocumentsOpen((value) => !value);
-                    setAccountOpen(false);
-                  }}
                   className={`nav-link ${
                     isDocumentsActive ? "nav-link-active" : ""
                   }`}
@@ -179,113 +141,89 @@ export default function Navbar() {
 
                   <span>Documents</span>
 
-                  <ChevronDown
-                    size={15}
-                    strokeWidth={2}
-                    className={`transition-transform duration-150 ${
-                      documentsOpen ? "rotate-180" : ""
-                    }`}
-                  />
+                  <ChevronDown size={15} strokeWidth={2} />
                 </button>
 
-                {documentsOpen && (
-                  <div className="navbar-dropdown">
-                    <Link
-                      to="/prescriptions"
-                      onClick={handleNavigation}
-                      className={`navbar-dropdown-item ${
-                        isActive("/prescriptions")
-                          ? "navbar-dropdown-item-active"
-                          : ""
-                      }`}
-                    >
-                      <FileImage size={17} />
-                      <span>My Prescriptions</span>
-                    </Link>
+                <div className="navbar-dropdown">
+                  <Link
+                    to="/prescriptions"
+                    onClick={handleNavigation}
+                    className={`navbar-dropdown-item ${
+                      isActive("/prescriptions")
+                        ? "navbar-dropdown-item-active"
+                        : ""
+                    }`}
+                  >
+                    <FileImage size={17} />
+                    <span>My Prescriptions</span>
+                  </Link>
 
-                    <Link
-                      to="/reports"
-                      onClick={handleNavigation}
-                      className={`navbar-dropdown-item ${
-                        isActive("/reports")
-                          ? "navbar-dropdown-item-active"
-                          : ""
-                      }`}
-                    >
-                      <FileBarChart size={17} />
-                      <span>My Reports</span>
-                    </Link>
-                  </div>
-                )}
+                  <Link
+                    to="/reports"
+                    onClick={handleNavigation}
+                    className={`navbar-dropdown-item ${
+                      isActive("/reports") ? "navbar-dropdown-item-active" : ""
+                    }`}
+                  >
+                    <FileBarChart size={17} />
+                    <span>My Reports</span>
+                  </Link>
+                </div>
               </div>
 
-              {/* Account dropdown */}
-              <div className="relative ml-2" ref={accountRef}>
+              {/* =================================================
+                  ACCOUNT DROPDOWN
+                  Opens on hover
+              ================================================== */}
+
+              <div className="navbar-dropdown-wrapper ml-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    setAccountOpen((value) => !value);
-                    setDocumentsOpen(false);
-                  }}
                   className={`navbar-account ${
                     isAccountActive ? "navbar-account-active" : ""
                   }`}
                 >
                   <UserRound size={18} strokeWidth={2} />
 
-                  <span>
-                    Welcome, {username}
-                  </span>
+                  <span>Welcome, {username}</span>
 
-                  <ChevronDown
-                    size={15}
-                    strokeWidth={2}
-                    className={`transition-transform duration-150 ${
-                      accountOpen ? "rotate-180" : ""
-                    }`}
-                  />
+                  <ChevronDown size={15} strokeWidth={2} />
                 </button>
 
-                {accountOpen && (
-                  <div className="navbar-dropdown navbar-dropdown-account">
-                    <Link
-                      to="/profile"
-                      onClick={handleNavigation}
-                      className={`navbar-dropdown-item ${
-                        isActive("/profile")
-                          ? "navbar-dropdown-item-active"
-                          : ""
-                      }`}
-                    >
-                      <UserRound size={17} />
-                      <span>Profile</span>
-                    </Link>
+                <div className="navbar-dropdown navbar-dropdown-account">
+                  <Link
+                    to="/profile"
+                    onClick={handleNavigation}
+                    className={`navbar-dropdown-item ${
+                      isActive("/profile") ? "navbar-dropdown-item-active" : ""
+                    }`}
+                  >
+                    <UserRound size={17} />
+                    <span>Profile</span>
+                  </Link>
 
-                    <Link
-                      to="/settings"
-                      onClick={handleNavigation}
-                      className={`navbar-dropdown-item ${
-                        isActive("/settings")
-                          ? "navbar-dropdown-item-active"
-                          : ""
-                      }`}
-                    >
-                      <Settings size={17} />
-                      <span>Settings</span>
-                    </Link>
+                  <Link
+                    to="/settings"
+                    onClick={handleNavigation}
+                    className={`navbar-dropdown-item ${
+                      isActive("/settings") ? "navbar-dropdown-item-active" : ""
+                    }`}
+                  >
+                    <Settings size={17} />
+                    <span>Settings</span>
+                  </Link>
 
-                    <div className="navbar-dropdown-divider" />
+                  <div className="navbar-dropdown-divider" />
 
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="navbar-dropdown-item navbar-dropdown-danger"
-                    >
-                      <LogOut size={17} />
-                      <span>Logout</span>
-                    </button>
-                  </div>
-                )}
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="navbar-dropdown-item navbar-dropdown-danger"
+                  >
+                    <LogOut size={17} />
+                    <span>Logout</span>
+                  </button>
+                </div>
               </div>
             </>
           )}
@@ -294,6 +232,7 @@ export default function Navbar() {
         {/* =====================================================
             MOBILE HEADER
         ====================================================== */}
+
         <div className="flex lg:hidden items-center gap-3">
           {user && (
             <span className="text-sm font-medium text-slate-700 truncate max-w-[140px]">
@@ -303,17 +242,11 @@ export default function Navbar() {
 
           {!user ? (
             <>
-              <Link
-                to="/login"
-                className="nav-link"
-              >
+              <Link to="/login" className="nav-link">
                 Login
               </Link>
 
-              <Link
-                to="/signup"
-                className="btn-primary"
-              >
+              <Link to="/signup" className="btn-primary">
                 Sign Up
               </Link>
             </>
@@ -338,23 +271,20 @@ export default function Navbar() {
       {/* =======================================================
           MOBILE MENU
       ======================================================== */}
+
       {user && mobileOpen && (
         <div className="navbar-mobile-menu lg:hidden">
           <nav className="container py-4">
             <div className="navbar-mobile-list">
               {navItem("/dashboard", "Dashboard", LayoutDashboard)}
 
-              {navItem("/medicines", "My Medicines", Pill)}
-
               {navItem("/health", "Health Overview", Activity)}
+
+              {navItem("/medicines", "My Medicines", Pill)}
 
               {navItem("/doctors", "My Doctors", Stethoscope)}
 
-              {navItem(
-                "/prescriptions",
-                "My Prescriptions",
-                FileImage
-              )}
+              {navItem("/prescriptions", "My Prescriptions", FileImage)}
 
               {navItem("/reports", "My Reports", FileBarChart)}
 
@@ -368,6 +298,7 @@ export default function Navbar() {
                 className="nav-link navbar-mobile-logout"
               >
                 <LogOut size={18} strokeWidth={2} />
+
                 <span>Logout</span>
               </button>
             </div>

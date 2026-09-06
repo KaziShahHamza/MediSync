@@ -89,9 +89,7 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
           <div className="mb-3 flex items-center gap-2">
             <Stethoscope size={18} className="text-blue-600" />
 
-            <h4 className="font-semibold text-slate-800">
-              Chambers
-            </h4>
+            <h4 className="font-semibold text-slate-800">Chambers</h4>
           </div>
 
           <div className="space-y-3">
@@ -129,14 +127,13 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
                 {chamber.serialNumber && (
                   <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
                     <Hash size={16} className="text-blue-600" />
-                    <span>
-                      Serial: {chamber.serialNumber}
-                    </span>
+                    <span>Serial: {chamber.serialNumber}</span>
                   </div>
                 )}
 
                 {(chamber.visitingDays?.length > 0 ||
-                  chamber.visitingTime) && (
+                  chamber.visitingTime?.startHour ||
+                  chamber.visitingTime?.endHour) && (
                   <div className="mt-3 flex gap-2 text-sm text-slate-600">
                     <Clock
                       size={16}
@@ -145,8 +142,12 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
 
                     <span>
                       {chamber.visitingDays?.join(", ") || "-"}
-                      {chamber.visitingTime
-                        ? ` • ${chamber.visitingTime}`
+
+                      {chamber.visitingTime?.startHour &&
+                      chamber.visitingTime?.startPeriod &&
+                      chamber.visitingTime?.endHour &&
+                      chamber.visitingTime?.endPeriod
+                        ? ` • ${chamber.visitingTime.startHour} ${chamber.visitingTime.startPeriod} to ${chamber.visitingTime.endHour} ${chamber.visitingTime.endPeriod}`
                         : ""}
                     </span>
                   </div>
@@ -173,9 +174,7 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
                 className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 text-sm"
               >
                 <Phone size={17} className="text-blue-600" />
-                <span className="font-medium text-slate-700">
-                  {phone}
-                </span>
+                <span className="font-medium text-slate-700">{phone}</span>
               </div>
             ))}
 
@@ -185,9 +184,7 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
                 className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 text-sm"
               >
                 <Mail size={17} className="text-blue-600" />
-                <span className="font-medium text-slate-700">
-                  {email}
-                </span>
+                <span className="font-medium text-slate-700">{email}</span>
               </div>
             ))}
 
@@ -201,24 +198,6 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
               </div>
             )}
           </div>
-        </div>
-      )}
-
-      {/* Social Links */}
-      {(doctor.contactInfo?.facebook ||
-        doctor.contactInfo?.linkedin) && (
-        <div className="mt-4 flex flex-wrap gap-3 text-sm">
-          {doctor.contactInfo.facebook && (
-            <span className="rounded-lg bg-slate-100 px-3 py-2 text-slate-600">
-              Facebook: {doctor.contactInfo.facebook}
-            </span>
-          )}
-
-          {doctor.contactInfo.linkedin && (
-            <span className="rounded-lg bg-slate-100 px-3 py-2 text-slate-600">
-              LinkedIn: {doctor.contactInfo.linkedin}
-            </span>
-          )}
         </div>
       )}
 
@@ -254,14 +233,10 @@ export default function DoctorCard({ doctor, onEdit, onDelete }) {
 function Info({ icon, label, value }) {
   return (
     <div className="flex gap-3 rounded-xl bg-slate-50 p-3">
-      <div className="mt-1 text-blue-600">
-        {icon}
-      </div>
+      <div className="mt-1 text-blue-600">{icon}</div>
 
       <div className="min-w-0">
-        <p className="text-xs text-slate-500">
-          {label}
-        </p>
+        <p className="text-xs text-slate-500">{label}</p>
 
         <p className="mt-1 font-medium text-slate-800 break-words">
           {value || "-"}

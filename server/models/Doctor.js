@@ -34,9 +34,31 @@ const chamberSchema = new mongoose.Schema(
     },
 
     visitingTime: {
-      type: String,
-      default: "",
-      trim: true,
+      startHour: {
+        type: Number,
+        min: 1,
+        max: 12,
+        default: null,
+      },
+
+      startPeriod: {
+        type: String,
+        enum: ["AM", "PM", null],
+        default: null,
+      },
+
+      endHour: {
+        type: Number,
+        min: 1,
+        max: 12,
+        default: null,
+      },
+
+      endPeriod: {
+        type: String,
+        enum: ["AM", "PM", null],
+        default: null,
+      },
     },
   },
   { _id: true },
