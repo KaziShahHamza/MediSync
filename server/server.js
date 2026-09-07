@@ -15,6 +15,7 @@ import doctorRoutes from "./routes/doctor.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
 import exportRoutes from "./routes/export.routes.js";
+import reportRoutes from "./routes/report.routes.js";
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/prescriptions", prescriptionRoutes);
 app.use("/api/doctors", doctorRoutes);
+app.use("/api/reports", reportRoutes);
 
 const PORT = process.env.PORT || 5000;
 

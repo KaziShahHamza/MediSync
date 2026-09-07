@@ -55,6 +55,9 @@ export default function Prescriptions() {
       formData.append("file", file);
       formData.append("upload_preset", UPLOAD_PRESET);
 
+      // Optional: organize medicine images in Cloudinary.
+      formData.append("folder", "MediSync/prescriptions");
+
       const uploadRes = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
         {
@@ -62,14 +65,6 @@ export default function Prescriptions() {
           body: formData,
         },
       );
-
-      // const uploadRes = await fetch(
-      //   `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-      //   {
-      //     method: "POST",
-      //     body: formData,
-      //   },
-      // );
 
       if (!uploadRes.ok) {
         throw new Error("Failed to upload image.");
@@ -176,7 +171,7 @@ export default function Prescriptions() {
       {/* Header */}{" "}
       <div className="mb-10">
         {" "}
-        <h1 className="page-title">My Prescriptions & Reports</h1>
+        <h1 className="page-title">My Prescriptions</h1>
         <p className="subtitle mt-2">
           Store and manage your medical prescriptions securely.
         </p>
@@ -186,7 +181,7 @@ export default function Prescriptions() {
         <section>
           <div className="flex justify-between items-center mb-5">
             <div>
-              <h2 className="section-title">Medical Records Gallery</h2>
+              {/*<h2 className="section-title">Medical Records Gallery</h2> */}
 
               <p className="text-sm text-slate-500 mt-1">
                 {prescriptions.length} record
@@ -226,20 +221,20 @@ export default function Prescriptions() {
         <aside className="card sticky top-24">
           <div className="flex items-center gap-3 mb-6">
             <div>
-              <h2 className="card-title">Upload Prescriptions/Reports</h2>
+              <h2 className="card-title">Upload Prescriptions</h2>
 
-              <p className="text-sm text-slate-500">Add a new medical record</p>
+              <p className="text-sm text-slate-500">Add a new prescription</p>
             </div>
           </div>
 
           <div className="space-y-5">
             {/* Title */}
             <div>
-              <label>Prescription/Report Title</label>
+              <label>Prescription Title</label>
 
               <input
                 type="text"
-                placeholder="Example: Blood Test Report"
+                placeholder="Example: Dr. Rahman - 2023"
                 value={title}
                 disabled={loading}
                 onChange={(e) => setTitle(e.target.value)}
@@ -249,7 +244,7 @@ export default function Prescriptions() {
 
             {/* Image */}
             <div>
-              <label>Prescription/Report Image</label>
+              <label>Prescription Image</label>
 
               <label
                 className={`flex items-center gap-3 rounded-xl border border-dashed border-slate-300 px-4 py-4 transition duration-150 ${

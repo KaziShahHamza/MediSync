@@ -8,6 +8,7 @@ import { MedicineProvider } from "./context/MedicineContext";
 import { ProfileProvider } from "./context/ProfileContext";
 import { PrescriptionProvider } from "./context/PrescriptionContext";
 import { DoctorProvider } from "./context/DoctorContext";
+import { ReportProvider } from "./context/ReportContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -20,22 +21,11 @@ import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import Medicines from "./pages/Medicines";
 import Health from "./pages/Health";
-// import Health2 from "./pages/Health2";
 import Prescriptions from "./pages/Prescriptions";
 import Reports from "./pages/Reports";
 import Doctors from "./pages/Doctors";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
-
-// import TestPage from "./pages/TestPage";
-
-// import useMedicineReminder from "./hooks/useMedicineReminder";
-
-// function ReminderWrapper() {
-//   const { medicines } = useMedicines();
-//   useMedicineReminder(medicines);
-//   return null;
-// }
 
 export default function App() {
   useEffect(() => {
@@ -49,114 +39,97 @@ export default function App() {
       <ProfileProvider>
         <MedicineProvider>
           <PrescriptionProvider>
-            <DoctorProvider>
-              <BrowserRouter>
-                <ScrollToTop />
-                <Navbar />
+            <ReportProvider>
+              <DoctorProvider>
+                <BrowserRouter>
+                  <ScrollToTop />
+                  <Navbar />
 
-                {/* Background reminder engine */}
-                {/* <ReminderWrapper /> */}
+                  {/* Background reminder engine */}
+                  {/* <ReminderWrapper /> */}
 
-                <Routes>
-                  {/* Public Routes */}
-                  <Route path="/" element={<Home />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
+                  <Routes>
+                    {/* Public Routes */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
 
-                  {/* Protected Routes */}
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    }
-                  />
+                    {/* Protected Routes */}
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <ProtectedRoute>
+                          <Dashboard />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  <Route
-                    path="/medicines"
-                    element={
-                      <ProtectedRoute>
-                        <Medicines />
-                      </ProtectedRoute>
-                    }
-                  />
+                    <Route
+                      path="/medicines"
+                      element={
+                        <ProtectedRoute>
+                          <Medicines />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  <Route
-                    path="/health"
-                    element={
-                      <ProtectedRoute>
-                        <Health />
-                      </ProtectedRoute>
-                    }
-                  />
+                    <Route
+                      path="/health"
+                      element={
+                        <ProtectedRoute>
+                          <Health />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  {/* 
-                  <Route
-                    path="/health2"
-                    element={
-                      <ProtectedRoute>
-                        <Health2 />
-                      </ProtectedRoute>
-                    }
-                  /> */}
+                    <Route
+                      path="/prescriptions"
+                      element={
+                        <ProtectedRoute>
+                          <Prescriptions />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  <Route
-                    path="/prescriptions"
-                    element={
-                      <ProtectedRoute>
-                        <Prescriptions />
-                      </ProtectedRoute>
-                    }
-                  />
+                    <Route
+                      path="/reports"
+                      element={
+                        <ProtectedRoute>
+                          <Reports />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  <Route
-                    path="/reports"
-                    element={
-                      <ProtectedRoute>
-                        <Reports />
-                      </ProtectedRoute>
-                    }
-                  />
+                    <Route
+                      path="/doctors"
+                      element={
+                        <ProtectedRoute>
+                          <Doctors />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  <Route
-                    path="/doctors"
-                    element={
-                      <ProtectedRoute>
-                        <Doctors />
-                      </ProtectedRoute>
-                    }
-                  />
+                    <Route
+                      path="/profile"
+                      element={
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  {/* <Route
-                    path="/test"
-                    element={
-                      <ProtectedRoute>
-                        <TestPage />
-                      </ProtectedRoute>
-                    }
-                  /> */}
-
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <Profile />
-                      </ProtectedRoute>
-                    }
-                  />
-
-                  <Route
-                    path="/settings"
-                    element={
-                      <ProtectedRoute>
-                        <Settings />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Routes>
-              </BrowserRouter>
-            </DoctorProvider>
+                    <Route
+                      path="/settings"
+                      element={
+                        <ProtectedRoute>
+                          <Settings />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Routes>
+                </BrowserRouter>
+              </DoctorProvider>
+            </ReportProvider>
           </PrescriptionProvider>
         </MedicineProvider>
       </ProfileProvider>
