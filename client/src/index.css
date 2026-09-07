@@ -77,6 +77,10 @@ select {
   @apply max-w-7xl mx-auto px-5 md:px-6 lg:px-8;
 }
 
+.continer-profile-setting-page {
+  @apply max-w-4xl mx-auto px-5 md:px-6 lg:px-8;
+}
+
 .page {
   @apply py-10 md:py-12 lg:py-14;
 }
