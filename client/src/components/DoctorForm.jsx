@@ -157,8 +157,9 @@ export default function DoctorForm({
       </div>
 
       <form onSubmit={onSubmit} className="space-y-6">
-        {/* Basic Information */}
-        <div className="space-y-4">
+        {/* Basic + Professional Information */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* Doctor Name */}
           <div>
             <label>Doctor Name</label>
 
@@ -172,6 +173,7 @@ export default function DoctorForm({
             />
           </div>
 
+          {/* BMDC Registration */}
           <div>
             <label>BMDC Registration Number</label>
 
@@ -183,48 +185,53 @@ export default function DoctorForm({
               className="input"
             />
           </div>
+
+          {/* Designation */}
+          <SelectField
+            label="Designation"
+            name="designation"
+            value={form.designation}
+            onChange={onChange}
+            placeholder="Select designation"
+            options={designations}
+          />
+
+          {/* Primary Hospital */}
+          <SelectField
+            label="Primary Hospital"
+            name="primaryHospital"
+            value={form.primaryHospital}
+            onChange={onChange}
+            placeholder="Select Primary Hospital"
+            options={hospitals.map((hospital) => ({
+              value: hospital.name,
+              label: `${hospital.name} — ${hospital.city}`,
+            }))}
+          />
         </div>
 
-        {/* Degrees */}
-        <MultiSelect
-          label="Degrees"
-          value={form.degrees}
-          options={degrees}
-          onChange={(e) => updateMultiSelect("degrees", e)}
-          hint
-        />
+        {/* Degrees + Specialities */}
+        <div className="grid gap-6 sm:grid-cols-2">
+          {/* Degrees */}
+          <MultiSelect
+            label="Degrees"
+            value={form.degrees}
+            options={degrees}
+            onChange={(e) => updateMultiSelect("degrees", e)}
+            description="Hold Ctrl/Cmd to select more than one."
+          />
 
-        {/* Specialities */}
-        <MultiSelect
-          label="Specialities"
-          value={form.specialities}
-          options={specialties}
-          onChange={(e) => updateMultiSelect("specialities", e)}
-          description="Select one or more specialities."
-        />
+          {/* Specialities */}
+          <MultiSelect
+            label="Specialities"
+            value={form.specialities}
+            options={specialties}
+            onChange={(e) => updateMultiSelect("specialities", e)}
+            description="Hold Ctrl/Cmd to select more than one."
+          />
+        </div>
 
-        {/* Designation */}
-        <SelectField
-          label="Designation"
-          name="designation"
-          value={form.designation}
-          onChange={onChange}
-          placeholder="Select designation"
-          options={designations}
-        />
-
-        {/* Primary Hospital */}
-        <SelectField
-          label="Primary Hospital"
-          name="primaryHospital"
-          value={form.primaryHospital}
-          onChange={onChange}
-          placeholder="Select Primary Hospital"
-          options={hospitals.map((hospital) => ({
-            value: hospital.name,
-            label: `${hospital.name} — ${hospital.city}`,
-          }))}
-        />
+        {/* <MultiSelect hint /> */}
 
         {/* Chambers */}
         <div>
@@ -270,21 +277,104 @@ export default function DoctorForm({
                 </div>
 
                 <div className="space-y-4">
-                  <SelectField
-                    label="Chamber Name"
-                    value={chamber.name}
-                    onChange={(e) =>
-                      updateChamber(index, "name", e.target.value)
-                    }
-                    placeholder="Select Chamber / Hospital"
-                    options={hospitals.map((hospital) => ({
-                      value: hospital.name,
-                      label: `${hospital.name} — ${hospital.city}`,
-                    }))}
-                  />
+                  {/* Chamber Name + Phone */}
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <SelectField
+                      label="Chamber Name"
+                      value={chamber.name}
+                      onChange={(e) =>
+                        updateChamber(index, "name", e.target.value)
+                      }
+                      placeholder="Select Chamber / Hospital"
+                      options={hospitals.map((hospital) => ({
+                        value: hospital.name,
+                        label: `${hospital.name} — ${hospital.city}`,
+                      }))}
+                    />
 
+                    <div>
+                      <label>Chamber Phone</label>
+
+                      <input
+                        type="tel"
+                        value={chamber.phone}
+                        onChange={(e) =>
+                          updateChamber(index, "phone", e.target.value)
+                        }
+                        placeholder="Chamber phone number"
+                        className="input"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Visiting Days + Visiting Time */}
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <MultiSelect
+                      label="Visiting Days"
+                      value={chamber.visitingDays}
+                      options={days}
+                      onChange={(e) => {
+                        const values = Array.from(
+                          e.target.selectedOptions,
+                          (option) => option.value,
+                        );
+
+                        updateChamber(index, "visitingDays", values);
+                      }}
+                      description="Select the days doctor visits this chamber."
+                    />
+
+                    <div>
+                      <label className="mb-2 block font-medium text-slate-700">
+                        Visiting Time
+                      </label>
+
+                      <div className="flex flex-col items-start gap-2">
+                        <div className="flex items-center gap-2">
+                          <label className="mb-2 block font-medium text-slate-700">
+                            From:
+                          </label>
+                          <TimeSelect
+                            value={chamber.visitingTime.startHour}
+                            onChange={(value) =>
+                              updateVisitingTime(index, "startHour", value)
+                            }
+                          />
+
+                          <PeriodSelect
+                            value={chamber.visitingTime.startPeriod}
+                            onChange={(value) =>
+                              updateVisitingTime(index, "startPeriod", value)
+                            }
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <label className="mb-2 pr-4 block font-medium text-slate-700">
+                            To:  
+                          </label>
+
+                          <TimeSelect
+                            value={chamber.visitingTime.endHour}
+                            onChange={(value) =>
+                              updateVisitingTime(index, "endHour", value)
+                            }
+                          />
+
+                          <PeriodSelect
+                            value={chamber.visitingTime.endPeriod}
+                            onChange={(value) =>
+                              updateVisitingTime(index, "endPeriod", value)
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Full Address */}
                   <div>
-                    <label>Full Address</label>
+                    <label>Chamber Address</label>
 
                     <textarea
                       value={chamber.address}
@@ -292,113 +382,8 @@ export default function DoctorForm({
                         updateChamber(index, "address", e.target.value)
                       }
                       placeholder="Full chamber address"
-                      className="input min-h-20"
+                      className="input !min-h-18"
                     />
-                  </div>
-
-                  <div>
-                    <label>Chamber Phone</label>
-
-                    <input
-                      value={chamber.phone}
-                      onChange={(e) =>
-                        updateChamber(index, "phone", e.target.value)
-                      }
-                      placeholder="Chamber phone number"
-                      className="input"
-                    />
-                  </div>
-
-                  <div>
-                    <label>Serial Number</label>
-
-                    <input
-                      value={chamber.serialNumber}
-                      onChange={(e) =>
-                        updateChamber(
-                          index,
-                          "serialNumber",
-                          e.target.value,
-                        )
-                      }
-                      placeholder="Patient serial number"
-                      className="input"
-                    />
-                  </div>
-
-                  <MultiSelect
-                    label="Visiting Days"
-                    value={chamber.visitingDays}
-                    options={days}
-                    onChange={(e) => {
-                      const values = Array.from(
-                        e.target.selectedOptions,
-                        (option) => option.value,
-                      );
-
-                      updateChamber(
-                        index,
-                        "visitingDays",
-                        values,
-                      );
-                    }}
-                    description="Select the days doctor visits this chamber."
-                  />
-
-                  <div>
-                    <label className="mb-2 block font-medium text-slate-700">
-                      Visiting Time
-                    </label>
-
-                    <div className="flex items-center gap-2">
-                      <TimeSelect
-                        value={chamber.visitingTime.startHour}
-                        onChange={(value) =>
-                          updateVisitingTime(
-                            index,
-                            "startHour",
-                            value,
-                          )
-                        }
-                      />
-
-                      <PeriodSelect
-                        value={chamber.visitingTime.startPeriod}
-                        onChange={(value) =>
-                          updateVisitingTime(
-                            index,
-                            "startPeriod",
-                            value,
-                          )
-                        }
-                      />
-
-                      <span className="shrink-0 text-sm font-medium text-slate-500">
-                        to
-                      </span>
-
-                      <TimeSelect
-                        value={chamber.visitingTime.endHour}
-                        onChange={(value) =>
-                          updateVisitingTime(
-                            index,
-                            "endHour",
-                            value,
-                          )
-                        }
-                      />
-
-                      <PeriodSelect
-                        value={chamber.visitingTime.endPeriod}
-                        onChange={(value) =>
-                          updateVisitingTime(
-                            index,
-                            "endPeriod",
-                            value,
-                          )
-                        }
-                      />
-                    </div>
                   </div>
                 </div>
               </div>
@@ -408,36 +393,35 @@ export default function DoctorForm({
 
         {/* Contact Information */}
         <div>
-          <h3 className="mb-4 font-semibold text-slate-800">
-            Contact Information
+          <h3 className="mb-1 font-semibold text-slate-800">
+            Doctor Contact Information
           </h3>
 
-          <ContactList
-            label="Phone Numbers"
-            values={form.contactInfo.phones}
-            placeholder="Phone number"
-            onChange={(index, value) =>
-              updateContact("phones", index, value)
-            }
-            onAdd={() => addContact("phones")}
-            onRemove={(index) =>
-              removeContact("phones", index)
-            }
-          />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label>Doctor Phone Number</label>
 
-          <ContactList
-            label="Email Addresses"
-            type="email"
-            values={form.contactInfo.emails}
-            placeholder="Email address"
-            onChange={(index, value) =>
-              updateContact("emails", index, value)
-            }
-            onAdd={() => addContact("emails")}
-            onRemove={(index) =>
-              removeContact("emails", index)
-            }
-          />
+              <input
+                type="tel"
+                value={form.contactInfo.phones[0] || ""}
+                onChange={(e) => updateContact("phones", 0, e.target.value)}
+                placeholder="Phone number"
+                className="input"
+              />
+            </div>
+
+            <div>
+              <label>Doctor Email Address</label>
+
+              <input
+                type="email"
+                value={form.contactInfo.emails[0] || ""}
+                onChange={(e) => updateContact("emails", 0, e.target.value)}
+                placeholder="Email address"
+                className="input"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Actions */}
@@ -471,9 +455,7 @@ function MultiSelect({
 }) {
   return (
     <div>
-      <label className="mb-2 block font-medium text-slate-700">
-        {label}
-      </label>
+      <label className="mb-2 block font-medium text-slate-700">{label}</label>
 
       <select
         multiple
@@ -507,40 +489,26 @@ function MultiSelect({
             <p className="mt-0.5 text-xs text-blue-600">
               Hold <kbd className="degree-hint-key">Ctrl</kbd>
               <span className="mx-1">/</span>
-              <kbd className="degree-hint-key">Cmd</kbd> and click to
-              select more than one.
+              <kbd className="degree-hint-key">Cmd</kbd> and click to select
+              more than one.
             </p>
           </div>
         </div>
       )}
 
       {description && (
-        <p className="mt-1 text-sm text-slate-500">
-          {description}
-        </p>
+        <p className="mt-1 text-sm text-slate-500">{description}</p>
       )}
     </div>
   );
 }
 
-function SelectField({
-  label,
-  name,
-  value,
-  onChange,
-  placeholder,
-  options,
-}) {
+function SelectField({ label, name, value, onChange, placeholder, options }) {
   return (
     <div>
       <label>{label}</label>
 
-      <select
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="input"
-      >
+      <select name={name} value={value} onChange={onChange} className="input">
         <option value="">{placeholder}</option>
 
         {options.map((option) => {
@@ -581,7 +549,7 @@ function PeriodSelect({ value, onChange }) {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="input flex-1"
+      className="input flex-1 !min-w-[80px]"
     >
       <option value="AM">AM</option>
       <option value="PM">PM</option>
@@ -589,50 +557,50 @@ function PeriodSelect({ value, onChange }) {
   );
 }
 
-function ContactList({
-  label,
-  values,
-  placeholder,
-  type = "text",
-  onChange,
-  onAdd,
-  onRemove,
-}) {
-  return (
-    <div className="mb-4">
-      <div className="mb-2 flex items-center justify-between">
-        <label className="mb-0">{label}</label>
+// function ContactList({
+//   label,
+//   values,
+//   placeholder,
+//   type = "text",
+//   onChange,
+//   onAdd,
+//   onRemove,
+// }) {
+//   return (
+//     <div className="mb-4">
+//       <div className="mb-2 flex items-center justify-between">
+//         <label className="mb-0">{label}</label>
 
-        <button
-          type="button"
-          onClick={onAdd}
-          className="text-sm font-medium text-blue-600"
-        >
-          + Add
-        </button>
-      </div>
+//         <button
+//           type="button"
+//           onClick={onAdd}
+//           className="text-sm font-medium text-blue-600"
+//         >
+//           + Add
+//         </button>
+//       </div>
 
-      <div className="space-y-2">
-        {values.map((value, index) => (
-          <div key={index} className="flex gap-2">
-            <input
-              type={type}
-              value={value}
-              onChange={(e) => onChange(index, e.target.value)}
-              placeholder={placeholder}
-              className="input flex-1"
-            />
+//       <div className="space-y-2">
+//         {values.map((value, index) => (
+//           <div key={index} className="flex gap-2">
+//             <input
+//               type={type}
+//               value={value}
+//               onChange={(e) => onChange(index, e.target.value)}
+//               placeholder={placeholder}
+//               className="input flex-1"
+//             />
 
-            <button
-              type="button"
-              onClick={() => onRemove(index)}
-              className="rounded-xl border border-slate-200 px-3 text-slate-500 hover:text-red-600"
-            >
-              <Trash2 size={17} />
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+//             <button
+//               type="button"
+//               onClick={() => onRemove(index)}
+//               className="rounded-xl border border-slate-200 px-3 text-slate-500 hover:text-red-600"
+//             >
+//               <Trash2 size={17} />
+//             </button>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }

@@ -205,7 +205,7 @@ export default function Doctors() {
         </p>
       </section>
 
-      <div className="grid items-start gap-8 lg:grid-cols-[1fr_420px]">
+      <div className="grid items-start gap-8 lg:grid-cols-[1fr_720px]">
         {/* Doctor List */}
         <section>
           <div className="mb-5 flex items-center justify-between">
