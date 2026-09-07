@@ -1,47 +1,13 @@
 // client/src/pages/Doctors.jsx
 
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
 import { useDoctors } from "../context/DoctorContext";
-import { MousePointer2 } from "lucide-react";
 import DoctorCard from "../components/DoctorCard";
-import hospitals from "../data/hospitals.json";
-import specialties from "../data/specialties.json";
-import designations from "../data/designations.json";
-import days from "../data/days.json";
-import degrees from "../data/degrees.json";
-
-const emptyChamber = {
-  name: "",
-  address: "",
-  phone: "",
-  serialNumber: "",
-  visitingDays: [],
-  visitingTime: {
-    startHour: "6",
-    startPeriod: "PM",
-    endHour: "9",
-    endPeriod: "PM",
-  },
-};
-
-const emptyForm = {
-  name: "",
-  bmdcRegNo: "",
-  degrees: [],
-  specialities: [],
-  designation: "",
-  primaryHospital: "",
-  chambers: [{ ...emptyChamber }],
-  contactInfo: {
-    phones: [],
-    emails: [],
-    website: "",
-    facebook: "",
-    linkedin: "",
-  },
-  notes: "",
-};
+import DoctorForm, {
+  emptyForm,
+  emptyChamber,
+} from "../components/DoctorForm";
+import DoctorModal from "../components/DoctorModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -50,6 +16,7 @@ export default function Doctors() {
 
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -58,131 +25,6 @@ export default function Doctors() {
       ...prev,
       [name]: value,
     }));
-  }
-
-  function handlePhoneChange(index, value) {
-    setForm((prev) => {
-      const phones = [...prev.contactInfo.phones];
-      phones[index] = value;
-
-      return {
-        ...prev,
-        contactInfo: {
-          ...prev.contactInfo,
-          phones,
-        },
-      };
-    });
-  }
-
-  function addPhone() {
-    setForm((prev) => ({
-      ...prev,
-      contactInfo: {
-        ...prev.contactInfo,
-        phones: [...prev.contactInfo.phones, ""],
-      },
-    }));
-  }
-
-  function removePhone(index) {
-    setForm((prev) => ({
-      ...prev,
-      contactInfo: {
-        ...prev.contactInfo,
-        phones: prev.contactInfo.phones.filter((_, i) => i !== index),
-      },
-    }));
-  }
-
-  function handleEmailChange(index, value) {
-    setForm((prev) => {
-      const emails = [...prev.contactInfo.emails];
-      emails[index] = value;
-
-      return {
-        ...prev,
-        contactInfo: {
-          ...prev.contactInfo,
-          emails,
-        },
-      };
-    });
-  }
-
-  function addEmail() {
-    setForm((prev) => ({
-      ...prev,
-      contactInfo: {
-        ...prev.contactInfo,
-        emails: [...prev.contactInfo.emails, ""],
-      },
-    }));
-  }
-
-  function removeEmail(index) {
-    setForm((prev) => ({
-      ...prev,
-      contactInfo: {
-        ...prev.contactInfo,
-        emails: prev.contactInfo.emails.filter((_, i) => i !== index),
-      },
-    }));
-  }
-
-  function updateChamber(index, field, value) {
-    setForm((prev) => {
-      const chambers = [...prev.chambers];
-
-      chambers[index] = {
-        ...chambers[index],
-        [field]: value,
-      };
-
-      return {
-        ...prev,
-        chambers,
-      };
-    });
-  }
-
-  function updateVisitingTime(index, field, value) {
-    setForm((prev) => {
-      const chambers = [...prev.chambers];
-
-      chambers[index] = {
-        ...chambers[index],
-        visitingTime: {
-          ...chambers[index].visitingTime,
-          [field]: value,
-        },
-      };
-
-      return {
-        ...prev,
-        chambers,
-      };
-    });
-  }
-
-  function addChamber() {
-    setForm((prev) => ({
-      ...prev,
-      chambers: [...prev.chambers, { ...emptyChamber, visitingDays: [] }],
-    }));
-  }
-
-  function removeChamber(index) {
-    setForm((prev) => {
-      if (prev.chambers.length === 1) {
-        return prev;
-      }
-
-      return {
-        ...prev,
-        chambers: prev.chambers.filter((_, i) => i !== index),
-      };
-    });
   }
 
   function editDoctor(doctor) {
@@ -195,6 +37,7 @@ export default function Doctors() {
       specialities: doctor.specialities || [],
       designation: doctor.designation || "",
       primaryHospital: doctor.primaryHospital || "",
+
       chambers:
         doctor.chambers?.length > 0
           ? doctor.chambers.map((chamber) => ({
@@ -204,13 +47,26 @@ export default function Doctors() {
               serialNumber: chamber.serialNumber || "",
               visitingDays: chamber.visitingDays || [],
               visitingTime: {
-                startHour: chamber.visitingTime?.startHour ?? "6",
-                startPeriod: chamber.visitingTime?.startPeriod ?? "PM",
-                endHour: chamber.visitingTime?.endHour ?? "9",
-                endPeriod: chamber.visitingTime?.endPeriod ?? "PM",
+                startHour:
+                  chamber.visitingTime?.startHour ?? "6",
+                startPeriod:
+                  chamber.visitingTime?.startPeriod ?? "PM",
+                endHour:
+                  chamber.visitingTime?.endHour ?? "9",
+                endPeriod:
+                  chamber.visitingTime?.endPeriod ?? "PM",
               },
             }))
-          : [{ ...emptyChamber, visitingDays: [] }],
+          : [
+              {
+                ...emptyChamber,
+                visitingDays: [],
+                visitingTime: {
+                  ...emptyChamber.visitingTime,
+                },
+              },
+            ],
+
       contactInfo: {
         phones: doctor.contactInfo?.phones || [],
         emails: doctor.contactInfo?.emails || [],
@@ -218,6 +74,7 @@ export default function Doctors() {
         facebook: doctor.contactInfo?.facebook || "",
         linkedin: doctor.contactInfo?.linkedin || "",
       },
+
       notes: doctor.notes || "",
     });
   }
@@ -227,7 +84,15 @@ export default function Doctors() {
       ...emptyForm,
       degrees: [],
       specialities: [],
-      chambers: [{ ...emptyChamber, visitingDays: [] }],
+      chambers: [
+        {
+          ...emptyChamber,
+          visitingDays: [],
+          visitingTime: {
+            ...emptyChamber.visitingTime,
+          },
+        },
+      ],
       contactInfo: {
         phones: [],
         emails: [],
@@ -248,7 +113,13 @@ export default function Doctors() {
     const cleanedForm = {
       ...form,
 
-      degrees: form.degrees.filter((degree) => degree.trim() !== ""),
+      degrees: form.degrees.filter(
+        (degree) => degree.trim() !== "",
+      ),
+
+      specialities: form.specialities.filter(
+        (speciality) => speciality.trim() !== "",
+      ),
 
       chambers: form.chambers.map((chamber) => ({
         ...chamber,
@@ -257,8 +128,14 @@ export default function Doctors() {
 
       contactInfo: {
         ...form.contactInfo,
-        phones: form.contactInfo.phones.filter((phone) => phone.trim() !== ""),
-        emails: form.contactInfo.emails.filter((email) => email.trim() !== ""),
+
+        phones: form.contactInfo.phones.filter(
+          (phone) => phone.trim() !== "",
+        ),
+
+        emails: form.contactInfo.emails.filter(
+          (email) => email.trim() !== "",
+        ),
       },
     };
 
@@ -282,7 +159,7 @@ export default function Doctors() {
       }
 
       resetForm();
-      fetchDoctors();
+      await fetchDoctors();
     } catch (error) {
       console.error(error);
     }
@@ -292,18 +169,25 @@ export default function Doctors() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`${API_URL}/api/doctors/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${API_URL}/api/doctors/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete doctor");
       }
 
-      fetchDoctors();
+      if (selectedDoctor?._id === id) {
+        setSelectedDoctor(null);
+      }
+
+      await fetchDoctors();
     } catch (error) {
       console.error(error);
     }
@@ -316,26 +200,26 @@ export default function Doctors() {
         <h1 className="page-title">My Doctors</h1>
 
         <p className="mt-3 text-slate-600">
-          Manage your healthcare providers, hospitals, chambers, and contact
-          information.
+          Manage your healthcare providers, hospitals, chambers,
+          and contact information.
         </p>
       </section>
 
-      <div className="grid lg:grid-cols-[1fr_420px] gap-8 items-start">
+      <div className="grid items-start gap-8 lg:grid-cols-[1fr_420px]">
         {/* Doctor List */}
         <section>
-          <div className="flex items-center justify-between mb-5">
+          <div className="mb-5 flex items-center justify-between">
             <div>
               <h2 className="section-title">Doctor Records</h2>
 
-              <p className="text-sm text-slate-500 mt-1">
+              <p className="mt-1 text-sm text-slate-500">
                 {doctors.length} doctor
                 {doctors.length === 1 ? "" : "s"} saved
               </p>
             </div>
           </div>
 
-          {doctors.length ? (
+          {doctors.length > 0 ? (
             <div className="space-y-6">
               {doctors.map((doctor) => (
                 <DoctorCard
@@ -343,6 +227,7 @@ export default function Doctors() {
                   doctor={doctor}
                   onEdit={editDoctor}
                   onDelete={deleteDoctor}
+                  onOpen={setSelectedDoctor}
                 />
               ))}
             </div>
@@ -353,521 +238,32 @@ export default function Doctors() {
               </h3>
 
               <p className="mt-2 text-slate-500">
-                Add your doctors to keep healthcare contacts organized.
+                Add your doctors to keep healthcare contacts
+                organized.
               </p>
             </div>
           )}
         </section>
 
         {/* Doctor Form */}
-        <aside className="card sticky top-24">
-          <div className="mb-6">
-            <h2 className="card-title">
-              {editingId ? "Update Doctor" : "Add Doctor"}
-            </h2>
-
-            <p className="text-sm text-slate-500 mt-1">
-              Store professional, chamber, and contact details.
-            </p>
-          </div>
-
-          <form onSubmit={saveDoctor} className="space-y-6">
-            {/* Basic Information */}
-            <div>
-              {/* <h3 className="font-semibold text-slate-800 mb-4">
-                Doctor Information
-              </h3> */}
-
-              <div className="space-y-4">
-                <div>
-                  <label>Doctor Name</label>
-
-                  <input
-                    name="name"
-                    placeholder="Enter doctor name"
-                    value={form.name}
-                    onChange={handleChange}
-                    className="input"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label>BMDC Registration Number</label>
-
-                  <input
-                    name="bmdcRegNo"
-                    placeholder="Example: A-66477"
-                    value={form.bmdcRegNo}
-                    onChange={handleChange}
-                    className="input"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Degrees */}
-            <div>
-              <label className="block mb-2 font-medium text-slate-700">
-                Degrees
-              </label>
-
-              <select
-                multiple
-                value={form.degrees}
-                onChange={(e) => {
-                  const values = Array.from(
-                    e.target.selectedOptions,
-                    (option) => option.value,
-                  );
-
-                  setForm((prev) => ({
-                    ...prev,
-                    degrees: values,
-                  }));
-                }}
-                className="input min-h-40"
-              >
-                {degrees.map((degree) => (
-                  <option key={degree} value={degree}>
-                    {degree}
-                  </option>
-                ))}
-              </select>
-
-              {/* Multiple selection hint */}
-              <div className="mt-3 flex items-start gap-3 rounded-xl border border-blue-100 bg-blue-50 px-3 py-3">
-                <div className="degree-hint-icon">
-                  <MousePointer2 size={17} />
-                </div>
-
-                <div>
-                  <p className="text-sm font-semibold text-blue-700">
-                    Select multiple degrees
-                  </p>
-
-                  <p className="mt-0.5 text-xs text-blue-600">
-                    Hold <kbd className="degree-hint-key">Ctrl</kbd>
-                    <span className="mx-1">/</span>
-                    <kbd className="degree-hint-key">Cmd</kbd> and click to
-                    select more than one.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Specialities */}
-            <div>
-              <label className="block mb-2 font-medium text-slate-700">
-                Specialities
-              </label>
-
-              <select
-                multiple
-                value={form.specialities}
-                onChange={(e) => {
-                  const values = Array.from(
-                    e.target.selectedOptions,
-                    (option) => option.value,
-                  );
-
-                  setForm((prev) => ({
-                    ...prev,
-                    specialities: values,
-                  }));
-                }}
-                className="input min-h-40"
-              >
-                {specialties.map((speciality) => (
-                  <option key={speciality} value={speciality}>
-                    {speciality}
-                  </option>
-                ))}
-              </select>
-
-              <p className="mt-1 text-sm text-slate-500">
-                Select one or more specialities.
-              </p>
-            </div>
-
-            {/* Designation */}
-            <div>
-              <label className="block mb-2 font-medium text-slate-700">
-                Designation
-              </label>
-
-              <select
-                name="designation"
-                value={form.designation}
-                onChange={handleChange}
-                className="input"
-              >
-                <option value="">Select designation</option>
-
-                {designations.map((designation) => (
-                  <option key={designation} value={designation}>
-                    {designation}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Designation */}
-            <div>
-              <label>Primary Hospital</label>
-
-              <select
-                name="primaryHospital"
-                value={form.primaryHospital}
-                onChange={handleChange}
-                className="input"
-              >
-                <option value="">Select Primary Hospital</option>
-
-                {hospitals.map((hospital) => (
-                  <option
-                    key={`${hospital.name}-${hospital.city}`}
-                    value={hospital.name}
-                  >
-                    {hospital.name} — {hospital.city}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Chambers */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="font-semibold text-slate-800">Chambers</h3>
-
-                  <p className="text-xs text-slate-500 mt-1">
-                    Add every chamber where the doctor sees patients.
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={addChamber}
-                  className="flex items-center gap-1 text-sm text-blue-600 font-medium"
-                >
-                  <Plus size={16} />
-                  Add
-                </button>
-              </div>
-
-              <div className="space-y-5">
-                {form.chambers.map((chamber, index) => (
-                  <div
-                    key={index}
-                    className="rounded-xl border border-slate-200 p-4"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-medium text-slate-800">
-                        Chamber {index + 1}
-                      </h4>
-
-                      {form.chambers.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeChamber(index)}
-                          className="text-slate-400 hover:text-red-600"
-                        >
-                          <Trash2 size={17} />
-                        </button>
-                      )}
-                    </div>
-
-                    <div className="space-y-4">
-                      <div>
-                        <label>Chamber Name</label>
-
-                        <select
-                          value={chamber.name}
-                          onChange={(e) =>
-                            updateChamber(index, "name", e.target.value)
-                          }
-                          className="input"
-                        >
-                          <option value="">Select Chamber / Hospital</option>
-
-                          {hospitals.map((hospital) => (
-                            <option
-                              key={`${hospital.name}-${hospital.city}`}
-                              value={hospital.name}
-                            >
-                              {hospital.name} — {hospital.city}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label>Full Address</label>
-
-                        <textarea
-                          value={chamber.address}
-                          onChange={(e) =>
-                            updateChamber(index, "address", e.target.value)
-                          }
-                          placeholder="Full chamber address"
-                          className="input min-h-20"
-                        />
-                      </div>
-
-                      <div>
-                        <label>Chamber Phone</label>
-
-                        <input
-                          value={chamber.phone}
-                          onChange={(e) =>
-                            updateChamber(index, "phone", e.target.value)
-                          }
-                          placeholder="Chamber phone number"
-                          className="input"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block mb-2 font-medium text-slate-700">
-                          Visiting Days
-                        </label>
-
-                        <select
-                          multiple
-                          value={chamber.visitingDays}
-                          onChange={(e) => {
-                            const values = Array.from(
-                              e.target.selectedOptions,
-                              (option) => option.value,
-                            );
-
-                            updateChamber(index, "visitingDays", values);
-                          }}
-                          className="input min-h-40"
-                        >
-                          {days.map((day) => (
-                            <option key={day} value={day}>
-                              {day}
-                            </option>
-                          ))}
-                        </select>
-
-                        <p className="mt-1 text-sm text-slate-500">
-                          Select the days doctor visits this chamber.
-                        </p>
-                      </div>
-
-                      <div>
-                        <label className="block mb-2 font-medium text-slate-700">
-                          Visiting Time
-                        </label>
-
-                        <div className="flex items-center gap-2">
-                          {/* Start hour */}
-                          <select
-                            value={chamber.visitingTime.startHour}
-                            onChange={(e) =>
-                              updateVisitingTime(
-                                index,
-                                "startHour",
-                                e.target.value,
-                              )
-                            }
-                            className="input flex-1"
-                          >
-                            {Array.from({ length: 12 }, (_, i) => i + 1).map(
-                              (hour) => (
-                                <option key={hour} value={hour}>
-                                  {hour}
-                                </option>
-                              ),
-                            )}
-                          </select>
-
-                          {/* Start AM / PM */}
-                          <select
-                            value={chamber.visitingTime.startPeriod}
-                            onChange={(e) =>
-                              updateVisitingTime(
-                                index,
-                                "startPeriod",
-                                e.target.value,
-                              )
-                            }
-                            className="input flex-1"
-                          >
-                            <option value="AM">AM</option>
-                            <option value="PM">PM</option>
-                          </select>
-
-                          <span className="shrink-0 text-sm font-medium text-slate-500">
-                            to
-                          </span>
-
-                          {/* End hour */}
-                          <select
-                            value={chamber.visitingTime.endHour}
-                            onChange={(e) =>
-                              updateVisitingTime(
-                                index,
-                                "endHour",
-                                e.target.value,
-                              )
-                            }
-                            className="input flex-1"
-                          >
-                            {Array.from({ length: 12 }, (_, i) => i + 1).map(
-                              (hour) => (
-                                <option key={hour} value={hour}>
-                                  {hour}
-                                </option>
-                              ),
-                            )}
-                          </select>
-
-                          {/* End AM / PM */}
-                          <select
-                            value={chamber.visitingTime.endPeriod}
-                            onChange={(e) =>
-                              updateVisitingTime(
-                                index,
-                                "endPeriod",
-                                e.target.value,
-                              )
-                            }
-                            className="input flex-1"
-                          >
-                            <option value="AM">AM</option>
-                            <option value="PM">PM</option>
-                          </select>
-                        </div>
-
-                        <p className="mt-1 text-sm text-slate-500">
-                          Select the chamber’s visiting hours.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div>
-              <h3 className="font-semibold text-slate-800 mb-4">
-                Contact Information
-              </h3>
-
-              {/* Phones */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <label className="mb-0">Phone Numbers</label>
-
-                  <button
-                    type="button"
-                    onClick={addPhone}
-                    className="text-sm text-blue-600 font-medium"
-                  >
-                    + Add Phone
-                  </button>
-                </div>
-
-                <div className="space-y-2">
-                  {form.contactInfo.phones.map((phone, index) => (
-                    <div key={index} className="flex gap-2">
-                      <input
-                        value={phone}
-                        onChange={(e) =>
-                          handlePhoneChange(index, e.target.value)
-                        }
-                        placeholder="Phone number"
-                        className="input flex-1"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() => removePhone(index)}
-                        className="px-3 rounded-xl border border-slate-200 text-slate-500 hover:text-red-600"
-                      >
-                        <Trash2 size={17} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Emails */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <label className="mb-0">Email Addresses</label>
-
-                  <button
-                    type="button"
-                    onClick={addEmail}
-                    className="text-sm text-blue-600 font-medium"
-                  >
-                    + Add Email
-                  </button>
-                </div>
-
-                <div className="space-y-2">
-                  {form.contactInfo.emails.map((email, index) => (
-                    <div key={index} className="flex gap-2">
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) =>
-                          handleEmailChange(index, e.target.value)
-                        }
-                        placeholder="Email address"
-                        className="input flex-1"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() => removeEmail(index)}
-                        className="px-3 rounded-xl border border-slate-200 text-slate-500 hover:text-red-600"
-                      >
-                        <Trash2 size={17} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            {/* Notes */}
-            {/* <div>
-              <label>Notes</label>
-
-              <textarea
-                name="notes"
-                placeholder="Additional notes"
-                value={form.notes}
-                onChange={handleChange}
-                className="input min-h-24"
-              />
-            </div> */}
-
-            {/* Actions */}
-            <div className="space-y-3">
-              <button type="submit" className="btn-primary w-full">
-                {editingId ? "Update Doctor" : "Add Doctor"}
-              </button>
-
-              {editingId && (
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="btn-secondary w-full"
-                >
-                  Cancel Edit
-                </button>
-              )}
-            </div>
-          </form>
-        </aside>
+        <DoctorForm
+          form={form}
+          editingId={editingId}
+          onChange={handleChange}
+          onSubmit={saveDoctor}
+          onReset={resetForm}
+          setForm={setForm}
+        />
       </div>
+
+      {/* Doctor Details Modal */}
+      {selectedDoctor && (
+        <DoctorModal
+          doctor={selectedDoctor}
+          onClose={() => setSelectedDoctor(null)}
+          onEdit={editDoctor}
+        />
+      )}
     </div>
   );
 }
