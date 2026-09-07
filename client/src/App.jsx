@@ -26,6 +26,7 @@ import Reports from "./pages/Reports";
 import Doctors from "./pages/Doctors";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
+import LifestyleScore from "./pages/lifestyle/LifestyleScore";
 
 export default function App() {
   useEffect(() => {
@@ -114,6 +115,15 @@ export default function App() {
                       element={
                         <ProtectedRoute>
                           <Profile />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                      <Route
+                      path="/lifestyle"
+                      element={
+                        <ProtectedRoute>
+                          <LifestyleScore />
                         </ProtectedRoute>
                       }
                     />
