@@ -299,6 +299,8 @@ export default function Navbar() {
 
               {navItem("/reports", "My Reports", FileBarChart)}
 
+              {navItem("/lifestyle", "Lifestyle", FileBarChart)}
+
               {navItem("/profile", "Profile", UserRound)}
 
               {navItem("/settings", "Settings", Settings)}
