@@ -122,9 +122,9 @@ export default function App() {
                       <Route
                       path="/lifestyle"
                       element={
-                        <ProtectedRoute>
+                        // <ProtectedRoute>
                           <LifestyleScore />
-                        </ProtectedRoute>
+                        // </ProtectedRoute>
                       }
                     />
 
