@@ -168,6 +168,17 @@ export default function Navbar() {
                     <FileBarChart size={17} />
                     <span>My Reports</span>
                   </Link>
+
+                  <Link
+                    to="/lifestyle"
+                    onClick={handleNavigation}
+                    className={`navbar-dropdown-item ${
+                      isActive("/reports") ? "navbar-dropdown-item-active" : ""
+                    }`}
+                  >
+                    <FileBarChart size={17} />
+                    <span>My Lifestyle</span>
+                  </Link>
                 </div>
               </div>
 
