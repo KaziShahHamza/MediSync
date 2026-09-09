@@ -283,6 +283,37 @@ body {
 }
 
 /* Results & Reference Components */
+.result-heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.result-total-score {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  white-space: nowrap;
+  color: #6b7280;
+}
+
+.result-total-score strong {
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.result-total-label {
+  margin-right: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -304,6 +335,25 @@ body {
 .result-metric-value {
   font-size: 20px;
   color: #111827;
+}
+
+.result-category-progress {
+  height: 5px;
+  margin-top: 12px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.result-category-progress-fill {
+  height: 100%;
+  background: #374151;
+  transition: width 200ms ease;
+}
+
+.result-category-percentage {
+  margin-top: 7px;
+  font-size: 12px;
+  color: #6b7280;
 }
 
 .feedback-container {
@@ -337,9 +387,19 @@ body {
 }
 
 .grade-range {
+  display: block;
   font-size: 13px;
   color: #6b7280;
 }
+
+.grade-description {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #6b7280;
+}
+
 
 /* Controls Footer Component */
 .controls-bar {
@@ -369,4 +429,31 @@ body {
 
 .btn-reset:hover {
   background: #f3f4f6;
+}
+
+
+@media (max-width: 640px) {
+  .result-heading-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .result-total-score {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .result-heading-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .result-total-score {
+    align-self: flex-start;
+  }
+}
+
+.option-label input:disabled {
+  cursor: not-allowed;
 }
