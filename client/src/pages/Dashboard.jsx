@@ -19,6 +19,9 @@ import StatCard from "../components/dashboard/StatCard";
 import QuickLinkCard from "../components/dashboard/QuickLinkCard";
 import { useAuth } from "../context/AuthContext";
 
+import { useLifestyle } from "../context/LifestyleContext";
+import LifestyleScoreCard from "../components/LifestyleScoreCard";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Dashboard() {
@@ -35,6 +38,8 @@ export default function Dashboard() {
   const [time, setTime] = useState(new Date());
 
   const { user } = useAuth();
+
+  const { latestAssessment } = useLifestyle();
 
   // Dashboard data
   useEffect(() => {
@@ -249,14 +254,18 @@ export default function Dashboard() {
       </section>
       {/* AI / Health Summary */}
       <section className="section">
-        <HealthSummaryCard
-          summary={aiSummary}
-          loading={aiLoading}
-          generating={aiGenerating}
-          generatedAt={aiGeneratedAt}
-          message={aiMessage}
-          onGenerate={handleGenerateSummary}
-        />
+        <div className="grid xl:grid-cols-2 gap-6">
+          <HealthSummaryCard
+            summary={aiSummary}
+            loading={aiLoading}
+            generating={aiGenerating}
+            generatedAt={aiGeneratedAt}
+            message={aiMessage}
+            onGenerate={handleGenerateSummary}
+          />
+
+          <LifestyleScoreCard assessment={latestAssessment} />
+        </div>
       </section>
       {/* Health Overview */}
       <section className="section">

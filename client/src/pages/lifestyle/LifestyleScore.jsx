@@ -1,30 +1,20 @@
 // src/pages/lifestyle/LifestyleScore.jsx
 
 import { useMemo, useState } from "react";
-import "./styles.css";
+import { Activity } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext";
 import { useLifestyle } from "../../context/LifestyleContext";
 
-import Header, {
-  StickyScoreBar,
-} from "./ScoreHeader";
+import Header, { StickyScoreBar } from "./ScoreHeader";
 
-import {
-  DemoSelector,
-  Questionnaire,
-} from "./QuestionnaireSection";
+import { DemoSelector, Questionnaire } from "./QuestionnaireSection";
 
-import {
-  AssessmentResult,
-  GradeReference,
-} from "./AssessmentResults";
+import { AssessmentResult, GradeReference } from "./AssessmentResults";
 
 import { QUESTIONS, DEMO_USERS } from "./lifestyleQuestions";
-import {
-  getGrade,
-  getFeedback,
-} from "./lifestyleScoring";
+
+import { getGrade, getFeedback } from "./lifestyleScoring";
 
 export default function LifestyleScore() {
   const { user } = useAuth();
@@ -189,34 +179,53 @@ export default function LifestyleScore() {
 
       await saveAssessment(answers);
 
-      setSaveMessage(
-        "Your lifestyle assessment has been saved successfully.",
-      );
+      setSaveMessage("Your lifestyle assessment has been saved successfully.");
     } catch (error) {
       setSaveError(
         error.message || "Unable to save your lifestyle assessment.",
       );
+
       setSaveMessage("");
     }
   };
 
   return (
-    <main className="assessment-container">
-      <div className="assessment-wrapper">
+    <main className="container page">
+      {/* Page Header */}
+      <section className="page-header">
+        <div>
+          <div className="flex items-center gap-3">
+            <div className="icon-wrapper">
+              <Activity size={24} className="text-blue-600" />
+            </div>
+
+            <h1 className="page-title">Lifestyle Score</h1>
+          </div>
+
+          <p className="mt-3 text-slate-600">
+            Assess your daily habits and understand how they contribute to your
+            overall lifestyle health.
+          </p>
+        </div>
+      </section>
+
+      {/* Assessment Introduction */}
+      <section className="section">
         <Header />
+      </section>
 
-        <DemoSelector
-          demoUsers={DEMO_USERS}
-          onSelect={loadDemo}
-        />
-
+      {/* Current Score */}
+      <section className="section">
         <StickyScoreBar
           totalScore={totalScore}
           grade={grade}
           answeredCount={answeredCount}
           totalQuestions={QUESTIONS.length}
         />
+      </section>
 
+      {/* Questionnaire */}
+      <section className="section">
         <Questionnaire
           categories={categories}
           questions={QUESTIONS}
@@ -225,32 +234,48 @@ export default function LifestyleScore() {
           showScoring={showScoring}
           onAnswerChange={handleAnswerChange}
         />
+      </section>
 
+      {/* Assessment Result */}
+      <section className="section">
         <AssessmentResult
           totalScore={totalScore}
           grade={grade}
           feedback={feedback}
           categoryResults={categoryResults}
         />
+      </section>
 
+      {/* Grade Reference */}
+      <section className="section">
         <GradeReference />
+      </section>
 
-        <section className="scoring-controls">
-          <label className="scoring-toggle">
+      {/* Assessment Controls */}
+      <section className="card">
+        <div className="card-header">
+          <h2 className="card-title">Assessment Controls</h2>
+
+          <p className="text-sm text-slate-500 mt-1">
+            Review your score details, save your assessment, or start again.
+          </p>
+        </div>
+
+        <div className="card-content">
+          <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={showScoring}
-              onChange={(event) =>
-                setShowScoring(event.target.checked)
-              }
+              onChange={(event) => setShowScoring(event.target.checked)}
+              className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
             />
 
-            <span>
+            <span className="text-sm font-medium text-slate-700">
               Show scoring details
             </span>
           </label>
 
-          <div className="assessment-actions">
+          <div className="flex flex-wrap items-center gap-3 mt-6">
             {user && (
               <button
                 type="button"
@@ -272,89 +297,121 @@ export default function LifestyleScore() {
           </div>
 
           {!user && (
-            <p className="assessment-note">
-              You can complete the assessment without logging in.
-              Log in to save your result.
-            </p>
+            <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <p className="text-sm text-slate-600">
+                You can complete the assessment without logging in. Log in to
+                save your result.
+              </p>
+            </div>
           )}
 
           {saveMessage && (
-            <p className="success-message" role="status">
-              {saveMessage}
-            </p>
+            <div
+              className="mt-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3"
+              role="status"
+            >
+              <p className="text-sm text-green-700">{saveMessage}</p>
+            </div>
           )}
 
           {(saveError || lifestyleError) && (
-            <p className="error-message" role="alert">
-              {saveError || lifestyleError}
-            </p>
+            <div
+              className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3"
+              role="alert"
+            >
+              <p className="text-sm text-red-700">
+                {saveError || lifestyleError}
+              </p>
+            </div>
           )}
-        </section>
+        </div>
+      </section>
 
-        {user && latestAssessment && (
-          <section className="latest-assessment-card">
-            <h2>Latest Saved Assessment</h2>
+      {/* Latest Saved Assessment */}
+      {user && latestAssessment && (
+        <section className="section">
+          <div className="card">
+            <div className="card-header">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="card-title">Latest Saved Assessment</h2>
 
-            <div className="latest-assessment-summary">
-              <span>
-                Score:{" "}
-                <strong>
-                  {latestAssessment.totalScore}/100
-                </strong>
-              </span>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Your most recently saved lifestyle assessment.
+                  </p>
+                </div>
 
-              <span>
-                Grade:{" "}
-                <strong>
-                  {latestAssessment.grade}
-                </strong>
-              </span>
+                <span className="badge badge-success">
+                  Grade {latestAssessment.grade}
+                </span>
+              </div>
             </div>
 
-            {latestAssessment.assessedAt && (
-              <p>
-                Saved on{" "}
-                {new Date(
-                  latestAssessment.assessedAt,
-                ).toLocaleDateString()}
+            <div className="card-content">
+              <div className="flex items-end gap-2">
+                <strong className="text-4xl font-bold text-slate-900">
+                  {latestAssessment.totalScore}
+                </strong>
+
+                <span className="text-sm text-slate-500 mb-1">/ 100</span>
+              </div>
+
+              {latestAssessment.assessedAt && (
+                <p className="text-sm text-slate-500 mt-3">
+                  Saved on{" "}
+                  {new Date(latestAssessment.assessedAt).toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Assessment History */}
+      {user && assessments.length > 0 && (
+        <section className="section">
+          <div className="card">
+            <div className="card-header">
+              <h2 className="card-title">Assessment History</h2>
+
+              <p className="text-sm text-slate-500 mt-1">
+                Your saved Lifestyle Score assessments.
               </p>
-            )}
-          </section>
-        )}
+            </div>
 
-        {user && assessments.length > 0 && (
-          <section className="assessment-history-card">
-            <h2>Assessment History</h2>
+            <div className="card-content">
+              <div className="divide-y divide-slate-200">
+                {assessments.map((assessment) => (
+                  <div
+                    key={assessment._id}
+                    className="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-baseline gap-1">
+                        <strong className="text-xl font-bold text-slate-900">
+                          {assessment.totalScore}
+                        </strong>
 
-            <div className="assessment-history-list">
-              {assessments.map((assessment) => (
-                <div
-                  key={assessment._id}
-                  className="assessment-history-item"
-                >
-                  <div>
-                    <strong>
-                      {assessment.totalScore}/100
-                    </strong>
+                        <span className="text-sm text-slate-500">/ 100</span>
+                      </div>
 
-                    <span>
-                      Grade {assessment.grade}
+                      <span className="badge badge-success">
+                        Grade {assessment.grade}
+                      </span>
+                    </div>
+
+                    <span className="text-sm text-slate-500">
+                      {assessment.assessedAt
+                        ? new Date(assessment.assessedAt).toLocaleDateString()
+                        : "Unknown date"}
                     </span>
                   </div>
-
-                  <span>
-                    {assessment.assessedAt
-                      ? new Date(
-                          assessment.assessedAt,
-                        ).toLocaleDateString()
-                      : "Unknown date"}
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </section>
-        )}
-      </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

@@ -3,6 +3,9 @@
 import { Activity, HeartPulse, Droplets, Scale } from "lucide-react";
 import useHealthLogs from "../hooks/useHealthLogs";
 import { useProfile } from "../context/ProfileContext";
+import { useLifestyle } from "../context/LifestyleContext";
+
+import LifestyleScoreCard from "../components/LifestyleScoreCard";
 
 import BMIForm from "../components/BMIForm";
 import BMIChart from "../components/BMIChart";
@@ -17,9 +20,10 @@ export default function Health() {
   const { logs, addLog } = useHealthLogs();
   const { profile } = useProfile();
 
+  const { latestAssessment } = useLifestyle();
+
   return (
     <div className="container page">
-
       {/* Header */}
       <section className="page-header">
         <div>
@@ -40,7 +44,6 @@ export default function Health() {
 
       {/* Health Metrics */}
       <section className="space-y-12">
-
         {/* Blood Pressure */}
         <div>
           <div className="flex items-center gap-3 mb-5">
@@ -53,7 +56,6 @@ export default function Health() {
             <BloodPressureChart logs={logs} />
           </div>
         </div>
-
         {/* Blood Sugar */}
         <div>
           <div className="flex items-center gap-3 mb-5">
@@ -66,7 +68,6 @@ export default function Health() {
             <BloodSugarChart logs={logs} />
           </div>
         </div>
-
         {/* BMI */}
         <div>
           <div className="flex items-center gap-3 mb-5">
@@ -77,13 +78,40 @@ export default function Health() {
           <div className="grid lg:grid-cols-[360px_1fr] gap-6">
             <BMIForm onAdd={addLog} />
 
-            <BMIChart
-              logs={logs}
-              height={profile?.height}
-            />
+            <BMIChart logs={logs} height={profile?.height} />
           </div>
         </div>
 
+        {/* Lifestyle Score */}
+        <div>
+          <div className="flex items-center gap-3 mb-5">
+            <Activity size={22} className="text-blue-600" />
+            <h2 className="section-title">Lifestyle Score</h2>
+          </div>
+
+          <div className="grid lg:grid-cols-[360px_1fr] gap-6">
+            <LifestyleScoreCard assessment={latestAssessment} />
+
+            <div className="card">
+              <div className="flex items-center gap-3 mb-6">
+                <Activity size={22} className="text-blue-600" />
+
+                <div>
+                  <h3 className="card-title">Lifestyle Score History</h3>
+
+                  <p className="text-sm text-slate-500 mt-1">
+                    Review how your lifestyle score changes over time.
+                  </p>
+                </div>
+              </div>
+
+              {/* Lifestyle score chart will go here */}
+            </div>
+
+          </div>
+        </div>
+
+        
       </section>
     </div>
   );
