@@ -6,6 +6,7 @@ import { useProfile } from "../context/ProfileContext";
 import { useLifestyle } from "../context/LifestyleContext";
 
 import LifestyleScoreCard from "../components/LifestyleScoreCard";
+import LifestyleScoreChart from "../components/LifestyleScoreChart";
 
 import BMIForm from "../components/BMIForm";
 import BMIChart from "../components/BMIChart";
@@ -20,7 +21,7 @@ export default function Health() {
   const { logs, addLog } = useHealthLogs();
   const { profile } = useProfile();
 
-  const { latestAssessment } = useLifestyle();
+  const { assessments, latestAssessment } = useLifestyle();
 
   return (
     <div className="container page">
@@ -92,26 +93,9 @@ export default function Health() {
           <div className="grid lg:grid-cols-[360px_1fr] gap-6">
             <LifestyleScoreCard assessment={latestAssessment} />
 
-            <div className="card">
-              <div className="flex items-center gap-3 mb-6">
-                <Activity size={22} className="text-blue-600" />
-
-                <div>
-                  <h3 className="card-title">Lifestyle Score History</h3>
-
-                  <p className="text-sm text-slate-500 mt-1">
-                    Review how your lifestyle score changes over time.
-                  </p>
-                </div>
-              </div>
-
-              {/* Lifestyle score chart will go here */}
-            </div>
-
+            <LifestyleScoreChart assessments={assessments} />
           </div>
         </div>
-
-        
       </section>
     </div>
   );

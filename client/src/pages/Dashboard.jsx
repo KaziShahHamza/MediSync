@@ -254,7 +254,7 @@ export default function Dashboard() {
       </section>
       {/* AI / Health Summary */}
       <section className="section">
-        <div className="grid xl:grid-cols-2 gap-6">
+        <div className="grid xl:grid-cols-[6fr_4fr] gap-6">
           <HealthSummaryCard
             summary={aiSummary}
             loading={aiLoading}
