@@ -1,6 +1,6 @@
 import React from "react";
 
-export function Header() {
+export default function Header() {
   return (
     <header className="card header-card">
       <div className="header-subtitle">MediSync Lifestyle Assessment</div>
@@ -16,7 +16,7 @@ export function Header() {
   );
 }
 
-export function StickyScoreBar({
+export  function StickyScoreBar({
   totalScore,
   grade,
   answeredCount,

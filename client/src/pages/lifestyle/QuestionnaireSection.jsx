@@ -34,34 +34,29 @@ export function Questionnaire({
   onAnswerChange,
 }) {
   const handleOptionChange = (question, optionLabel) => {
+    const currentValue = answers[question.id];
+
     if (question.type === "multi") {
-      const currentValues = Array.isArray(answers[question.id])
-        ? answers[question.id]
-        : [];
+      const currentValues = Array.isArray(currentValue) ? currentValue : [];
 
-      const alreadySelected = currentValues.includes(optionLabel);
+      const isSelected = currentValues.includes(optionLabel);
 
-      if (alreadySelected) {
+      if (isSelected) {
         onAnswerChange(
           question.id,
-          currentValues.filter((value) => value !== optionLabel)
+          currentValues.filter((value) => value !== optionLabel),
         );
 
         return;
       }
 
-      /*
-       * Diet is intended to allow 2–3 selections.
-       * Prevent more than 3 selections.
-       */
-      if (currentValues.length >= 3) {
+      const maxSelections = question.maxSelections ?? Infinity;
+
+      if (currentValues.length >= maxSelections) {
         return;
       }
 
-      onAnswerChange(question.id, [
-        ...currentValues,
-        optionLabel,
-      ]);
+      onAnswerChange(question.id, [...currentValues, optionLabel]);
 
       return;
     }
@@ -78,12 +73,12 @@ export function Questionnaire({
       }
 
       const selectedOptions = question.options.filter((option) =>
-        selectedValue.includes(option.label)
+        selectedValue.includes(option.label),
       );
 
       const totalPoints = selectedOptions.reduce(
         (sum, option) => sum + option.points,
-        0
+        0,
       );
 
       return {
@@ -97,7 +92,7 @@ export function Questionnaire({
     }
 
     const selectedOption = question.options.find(
-      (option) => option.label === selectedValue
+      (option) => option.label === selectedValue,
     );
 
     return selectedOption
@@ -120,7 +115,7 @@ export function Questionnaire({
     <div>
       {categories.map((category) => {
         const categoryQuestions = questions.filter(
-          (question) => question.category === category
+          (question) => question.category === category,
         );
 
         const result = categoryResults[category];
@@ -129,18 +124,14 @@ export function Questionnaire({
           <section key={category} className="card category-card">
             <div className="category-header">
               <div>
-                <div className="category-subtitle">
-                  Lifestyle Category
-                </div>
+                <div className="category-subtitle">Lifestyle Category</div>
 
                 <h2 className="category-title">{category}</h2>
               </div>
 
               {result && (
                 <div className="text-right">
-                  <div className="category-score-label">
-                    Category Score
-                  </div>
+                  <div className="category-score-label">Category Score</div>
 
                   <strong className="category-score-val">
                     {result.score} / {result.max}
@@ -157,11 +148,19 @@ export function Questionnaire({
 
                 const isMulti = question.type === "multi";
 
+                // Use the question-specific selection limit.
+                // If maxSelections is not defined, default to 3.
+                const maxSelections = question.maxSelections ?? 3;
+
+                const selectedCount = Array.isArray(selectedValue)
+                  ? selectedValue.length
+                  : 0;
+
+                const selectionLimitReached =
+                  isMulti && selectedCount >= maxSelections;
+
                 return (
-                  <div
-                    key={question.id}
-                    className="question-block"
-                  >
+                  <div key={question.id} className="question-block">
                     <div className="question-meta">
                       <div>
                         <h3 className="question-heading">
@@ -169,16 +168,14 @@ export function Questionnaire({
                         </h3>
 
                         {question.subtext && (
-                          <p className="question-subtext">
-                            {question.subtext}
-                          </p>
+                          <p className="question-subtext">{question.subtext}</p>
                         )}
 
                         {isMulti && (
                           <p className="question-subtext">
-                            {Array.isArray(selectedValue)
-                              ? `${selectedValue.length} of 3 selected`
-                              : "Select up to 3 options"}
+                            {selectedCount > 0
+                              ? `${selectedCount} of ${maxSelections} selected`
+                              : `Select up to ${maxSelections} options`}
                           </p>
                         )}
                       </div>
@@ -187,10 +184,10 @@ export function Questionnaire({
                         <div className="question-selected-points">
                           {isMulti
                             ? `${formatPoints(
-                                selectedPoints.totalPoints
+                                selectedPoints.totalPoints,
                               )} selected`
                             : `${formatPoints(
-                                selectedPoints.totalPoints
+                                selectedPoints.totalPoints,
                               )} points`}
                         </div>
                       )}
@@ -216,11 +213,7 @@ export function Questionnaire({
                             <span className="option-text">
                               <input
                                 id={inputId}
-                                type={
-                                  isMulti
-                                    ? "checkbox"
-                                    : "radio"
-                                }
+                                type={isMulti ? "checkbox" : "radio"}
                                 name={
                                   isMulti
                                     ? question.id
@@ -231,14 +224,10 @@ export function Questionnaire({
                                 disabled={
                                   isMulti &&
                                   !isSelected &&
-                                  Array.isArray(selectedValue) &&
-                                  selectedValue.length >= 3
+                                  selectionLimitReached
                                 }
                                 onChange={() =>
-                                  handleOptionChange(
-                                    question,
-                                    option.label
-                                  )
+                                  handleOptionChange(question, option.label)
                                 }
                               />
 
@@ -248,9 +237,7 @@ export function Questionnaire({
                             {showScoring && (
                               <span
                                 className={`option-pts ${
-                                  option.points < 0
-                                    ? "negative"
-                                    : ""
+                                  option.points < 0 ? "negative" : ""
                                 }`}
                               >
                                 {formatPoints(option.points)}
@@ -264,7 +251,7 @@ export function Questionnaire({
                     {showScoring && (
                       <p className="scoring-explanation-text">
                         {isMulti
-                          ? "Diet selections are combined and contribute to the Food & Sugar category score."
+                          ? "Selected options are combined and contribute to this category score."
                           : "The selected option contributes the displayed points to this category."}
                       </p>
                     )}

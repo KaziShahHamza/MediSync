@@ -1,6 +1,6 @@
 import React from "react";
 
-export function AssessmentResult({ categoryResults, totalScore, getFeedback }) {
+export function AssessmentResult({ categoryResults, totalScore, feedback }) {
   return (
     <section className="card">
       <div className="result-heading-row">
@@ -56,7 +56,7 @@ export function AssessmentResult({ categoryResults, totalScore, getFeedback }) {
           Feedback
         </div>
 
-        <p className="feedback-text">{getFeedback(totalScore)}</p>
+        <p className="feedback-text">{feedback}</p>
       </div>
     </section>
   );
