@@ -2,18 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { Activity } from "lucide-react";
-
 import { useAuth } from "../../context/AuthContext";
 import { useLifestyle } from "../../context/LifestyleContext";
-
 import Header, { StickyScoreBar } from "./ScoreHeader";
-
 import { DemoSelector, Questionnaire } from "./QuestionnaireSection";
-
 import { AssessmentResult, GradeReference } from "./AssessmentResults";
-
 import { QUESTIONS, DEMO_USERS } from "./lifestyleQuestions";
-
 import { getGrade, getFeedback } from "./lifestyleScoring";
 
 export default function LifestyleScore() {
