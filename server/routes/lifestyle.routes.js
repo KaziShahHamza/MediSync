@@ -5,9 +5,9 @@ import express from "express";
 import auth from "../middleware/auth.js";
 import LifestyleAssessment from "../models/LifestyleAssessment.js";
 
-import {
-  calculateLifestyleScore,
-} from "../utils/lifestyleScoring.js";
+import { calculateLifestyleScore } from "../utils/lifestyleScoring.js";
+
+import { syncLifestyleToAIChatData } from "../services/aiChatDataService.js";
 
 const router = express.Router();
 
@@ -40,6 +40,12 @@ router.post("/", auth, async (req, res) => {
       assessedAt: new Date(),
     });
 
+    try {
+      await syncLifestyleToAIChatData(req.userId);
+    } catch (error) {
+      console.error("Failed to sync lifestyle to AI chat data:", error);
+    }
+
     // Keep only the newest 10 assessments for this user.
     const assessmentsToKeep = await LifestyleAssessment.find({
       user: req.userId,
@@ -67,8 +73,7 @@ router.post("/", auth, async (req, res) => {
     console.error("Save lifestyle assessment error:", error);
 
     return res.status(400).json({
-      message:
-        error.message || "Failed to save lifestyle assessment",
+      message: error.message || "Failed to save lifestyle assessment",
     });
   }
 });

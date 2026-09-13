@@ -6,6 +6,8 @@ import Doctor from "../models/Doctor.js";
 
 import auth from "../middleware/auth.js";
 
+import { syncDoctorsToAIChatData } from "../services/aiChatDataService.js";
+
 const router = express.Router();
 
 // Get all doctors
@@ -40,6 +42,12 @@ router.post("/", auth, async (req, res) => {
       ...doctorData,
       user: req.userId,
     });
+
+    try {
+      await syncDoctorsToAIChatData(req.userId);
+    } catch (error) {
+      console.error("Failed to sync doctors to AI chat data:", error);
+    }
 
     res.status(201).json(doctor);
   } catch (error) {
@@ -79,6 +87,12 @@ router.put("/:id", auth, async (req, res) => {
       });
     }
 
+    try {
+      await syncDoctorsToAIChatData(req.userId);
+    } catch (error) {
+      console.error("Failed to sync doctors to AI chat data:", error);
+    }
+
     res.json(doctor);
   } catch (error) {
     console.error("Failed to update doctor:", error);
@@ -103,6 +117,12 @@ router.delete("/:id", auth, async (req, res) => {
       });
     }
 
+    try {
+      await syncDoctorsToAIChatData(req.userId);
+    } catch (error) {
+      console.error("Failed to sync doctors to AI chat data:", error);
+    }
+    
     res.json({
       success: true,
     });

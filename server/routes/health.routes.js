@@ -4,6 +4,8 @@ import express from "express";
 import HealthLog from "../models/HealthLog.js";
 import auth from "../middleware/auth.js";
 
+import { syncHealthToAIChatData } from "../services/aiChatDataService.js";
+
 const router = express.Router();
 
 // create log
@@ -31,6 +33,12 @@ router.post("/", auth, async (req, res) => {
       user: req.userId,
     });
 
+    try {
+      await syncHealthToAIChatData(req.userId);
+    } catch (error) {
+      console.error("Failed to sync health to AI chat data:", error);
+    }
+
     res.json(log);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -40,7 +48,7 @@ router.post("/", auth, async (req, res) => {
 // get user logs
 router.get("/", auth, async (req, res) => {
   const logs = await HealthLog.find({
-    user: req.userId 
+    user: req.userId,
   }).sort({ createdAt: 1 });
 
   res.json(logs);
@@ -50,8 +58,14 @@ router.get("/", auth, async (req, res) => {
 router.delete("/:id", auth, async (req, res) => {
   await HealthLog.findOneAndDelete({
     _id: req.params.id,
-    user: req.userId 
+    user: req.userId,
   });
+
+  try {
+    await syncHealthToAIChatData(req.userId);
+  } catch (error) {
+    console.error("Failed to sync health to AI chat data:", error);
+  }
 
   res.json({ success: true });
 });

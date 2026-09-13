@@ -5,6 +5,8 @@ import auth from "../middleware/auth.js";
 import Profile from "../models/Profile.js";
 import User from "../models/User.js";
 
+import { syncProfileToAIChatData } from "../services/aiChatDataService.js";
+
 const router = express.Router();
 
 // GET Profile, Returns user info + profile
@@ -58,6 +60,12 @@ router.post("/", auth, async (req, res) => {
       user: req.userId,
     });
 
+    try {
+      await syncProfileToAIChatData(req.userId);
+    } catch (error) {
+      console.error("Failed to sync profile to AI chat data:", error);
+    }
+
     const user = await User.findById(req.userId).select("-password");
 
     res.status(201).json({
@@ -92,6 +100,12 @@ router.put("/", auth, async (req, res) => {
         runValidators: true,
       },
     );
+
+    try {
+      await syncProfileToAIChatData(req.userId);
+    } catch (error) {
+      console.error("Failed to sync profile to AI chat data:", error);
+    }
 
     if (!profile) {
       return res.status(404).json({

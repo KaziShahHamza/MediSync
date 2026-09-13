@@ -10,6 +10,7 @@ import { PrescriptionProvider } from "./context/PrescriptionContext";
 import { DoctorProvider } from "./context/DoctorContext";
 import { ReportProvider } from "./context/ReportContext";
 import { LifestyleProvider } from "./context/LifestyleContext";
+import { ChatbotProvider } from "./context/ChatbotContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -28,6 +29,8 @@ import Doctors from "./pages/Doctors";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import LifestyleScore from "./pages/lifestyle/LifestyleScore";
+import Assistant from "./pages/Assistant";
+
 
 export default function App() {
   useEffect(() => {
@@ -44,94 +47,105 @@ export default function App() {
             <PrescriptionProvider>
               <ReportProvider>
                 <DoctorProvider>
-                  <BrowserRouter>
-                    <ScrollToTop />
-                    <Navbar />
+                  <ChatbotProvider>
+                    <BrowserRouter>
+                      <ScrollToTop />
+                      <Navbar />
 
-                    {/* Background reminder engine */}
-                    {/* <ReminderWrapper /> */}
+                      {/* Background reminder engine */}
+                      {/* <ReminderWrapper /> */}
 
-                    <Routes>
-                      {/* Public Routes */}
-                      <Route path="/" element={<Home />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/signup" element={<Signup />} />
-                      <Route path="/lifestyle" element={<LifestyleScore />} />
+                      <Routes>
+                        {/* Public Routes */}
+                        <Route path="/" element={<Home />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<Signup />} />
+                        <Route path="/lifestyle" element={<LifestyleScore />} />
 
-                      {/* Protected Routes */}
-                      <Route
-                        path="/dashboard"
-                        element={
-                          <ProtectedRoute>
-                            <Dashboard />
-                          </ProtectedRoute>
-                        }
-                      />
+                        {/* Protected Routes */}
+                        <Route
+                          path="/dashboard"
+                          element={
+                            <ProtectedRoute>
+                              <Dashboard />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/medicines"
-                        element={
-                          <ProtectedRoute>
-                            <Medicines />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/medicines"
+                          element={
+                            <ProtectedRoute>
+                              <Medicines />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/health"
-                        element={
-                          <ProtectedRoute>
-                            <Health />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/health"
+                          element={
+                            <ProtectedRoute>
+                              <Health />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/prescriptions"
-                        element={
-                          <ProtectedRoute>
-                            <Prescriptions />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/prescriptions"
+                          element={
+                            <ProtectedRoute>
+                              <Prescriptions />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/reports"
-                        element={
-                          <ProtectedRoute>
-                            <Reports />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/assistant"
+                          element={
+                            <ProtectedRoute>
+                              <Assistant />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/doctors"
-                        element={
-                          <ProtectedRoute>
-                            <Doctors />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/reports"
+                          element={
+                            <ProtectedRoute>
+                              <Reports />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/profile"
-                        element={
-                          <ProtectedRoute>
-                            <Profile />
-                          </ProtectedRoute>
-                        }
-                      />
+                        <Route
+                          path="/doctors"
+                          element={
+                            <ProtectedRoute>
+                              <Doctors />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                      <Route
-                        path="/settings"
-                        element={
-                          <ProtectedRoute>
-                            <Settings />
-                          </ProtectedRoute>
-                        }
-                      />
-                    </Routes>
-                  </BrowserRouter>
+                        <Route
+                          path="/profile"
+                          element={
+                            <ProtectedRoute>
+                              <Profile />
+                            </ProtectedRoute>
+                          }
+                        />
+
+                        <Route
+                          path="/settings"
+                          element={
+                            <ProtectedRoute>
+                              <Settings />
+                            </ProtectedRoute>
+                          }
+                        />
+                      </Routes>
+                    </BrowserRouter>
+                  </ChatbotProvider>
                 </DoctorProvider>
               </ReportProvider>
             </PrescriptionProvider>
