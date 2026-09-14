@@ -58,13 +58,13 @@ function formatDonorStatus(value) {
 function formatCompensation(value) {
   switch (value) {
     case "500":
-      return "500 Tk";
+      return "Yes";
 
     case "1000":
       return "1000 Tk";
 
     case "none":
-      return "No money";
+      return "No";
 
     default:
       return "-";
@@ -83,6 +83,8 @@ export default function ProfileSummary({
 
   const emergencyContacts =
     profile?.emergencyContacts || [];
+
+  const location = profile?.location || {};
 
   return (
     <div className="card w-full p-6 lg:p-8">
@@ -143,11 +145,6 @@ export default function ProfileSummary({
           <InfoItem
             label="Blood Group"
             value={profile?.bloodGroup}
-          />
-
-          <InfoItem
-            label="Location"
-            value={profile?.location}
           />
         </div>
       </div>
@@ -264,7 +261,7 @@ export default function ProfileSummary({
           />
 
           <InfoItem
-            label="Donation Compensation"
+            label="honorarium/conveyance? (সম্মানী/গাড়ি ভাড়া)"
             value={formatCompensation(
               profile?.bloodDonationCompensation
             )}
@@ -276,9 +273,23 @@ export default function ProfileSummary({
               profile?.lastBloodDonation
             )}
           />
+
+          <InfoItem
+            label="District / Zila"
+            value={location.district}
+          />
+
+          <InfoItem
+            label="Upazila / Sub-district"
+            value={location.upazila}
+          />
+
+          <InfoItem
+            label="Contact Number"
+            value={profile?.bloodDonationContactNumber}
+          />
         </div>
       </div>
     </div>
   );
 }
-

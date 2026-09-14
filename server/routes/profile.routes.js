@@ -22,13 +22,15 @@ const allowedProfileFields = [
   "bloodDonorStatus",
   "bloodDonationCompensation",
   "lastBloodDonation",
+  "location",
+  "bloodDonationContactNumber",
 ];
 
 function getProfileData(body) {
   return Object.fromEntries(
     allowedProfileFields
       .filter((field) => Object.prototype.hasOwnProperty.call(body, field))
-      .map((field) => [field, body[field]])
+      .map((field) => [field, body[field]]),
   );
 }
 
@@ -84,10 +86,7 @@ router.post("/", auth, async (req, res) => {
     try {
       await syncProfileToAIChatData(req.userId);
     } catch (error) {
-      console.error(
-        "Failed to sync profile to AI chat data:",
-        error
-      );
+      console.error("Failed to sync profile to AI chat data:", error);
     }
 
     const user = await User.findById(req.userId).select("-password");
@@ -125,7 +124,7 @@ router.put("/", auth, async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     if (!profile) {
@@ -137,10 +136,7 @@ router.put("/", auth, async (req, res) => {
     try {
       await syncProfileToAIChatData(req.userId);
     } catch (error) {
-      console.error(
-        "Failed to sync profile to AI chat data:",
-        error
-      );
+      console.error("Failed to sync profile to AI chat data:", error);
     }
 
     const user = await User.findById(req.userId).select("-password");

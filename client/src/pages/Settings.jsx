@@ -5,27 +5,22 @@ import { useProfile } from "../context/ProfileContext";
 import ProfileSection from "../components/profile/ProfileSection";
 import ProfileInput from "../components/profile/ProfileInput";
 import ProfileSelect from "../components/profile/ProfileSelect";
+import { districtsData } from "../data/districtsData";
 
 const illnessOptions = [
-  "Diabetes",
-  "Hypertension/Blood Pressure",
-  "Heart Disease",
-  "Kidney Disease",
-  "Asthma",
-  "Thyroid",
+  "Diabetes (ডায়াবেটিস)",
+  "Hypertension / High BP (উচ্চ রক্তচাপ)",
+  "Heart Disease (হৃদরোগ)",
+  "Kidney Disease (কিডনি সমস্যা)",
+  "Asthma / Breathing Problem (হাঁপানি / অ্যাজমা)",
+  "Thyroid (থাইরয়েড)",
+  "Gastric / Acidity (গ্যাস্ট্রিক / আলসার)",
+  "Hepatitis / Liver Disease (হেপাটাইটিস / লিভার)",
+  "Tuberculosis / TB (যক্ষ্মা)",
+  "Arthritis / Joint Pain (বাতব্যথা)",
 ];
 
-const bloodGroups = [
-  "",
-  "A+",
-  "A-",
-  "B+",
-  "B-",
-  "AB+",
-  "AB-",
-  "O+",
-  "O-",
-];
+const bloodGroups = ["", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const relationOptions = [
   "Son",
@@ -58,10 +53,7 @@ const months = [
 
 const currentYear = new Date().getFullYear();
 
-const years = Array.from(
-  { length: 100 },
-  (_, index) => currentYear - index
-);
+const years = Array.from({ length: 100 }, (_, index) => currentYear - index);
 
 const createEmptyContact = () => ({
   relation: "",
@@ -81,7 +73,6 @@ const initialForm = {
   },
 
   bloodGroup: "",
-  location: "",
 
   allergies: "",
   chronicIllnesses: [],
@@ -95,6 +86,13 @@ const initialForm = {
   lastBloodDonation: {
     month: "",
     year: "",
+  },
+
+  bloodDonationContactNumber: "",
+
+  location: {
+    district: "",
+    upazila: "",
   },
 };
 
@@ -128,20 +126,12 @@ function buildDonationDate(month, year) {
     return null;
   }
 
-  return new Date(
-    Date.UTC(Number(year), Number(month) - 1, 1)
-  ).toISOString();
+  return new Date(Date.UTC(Number(year), Number(month) - 1, 1)).toISOString();
 }
 
 export default function Settings() {
-  const {
-    profile,
-    userInfo,
-    fetchProfile,
-    setProfile,
-    setUserInfo,
-    loading,
-  } = useProfile();
+  const { profile, userInfo, fetchProfile, setProfile, setUserInfo, loading } =
+    useProfile();
 
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
@@ -164,7 +154,10 @@ export default function Settings() {
       },
 
       bloodGroup: profile?.bloodGroup || "",
-      location: profile?.location || "",
+      location: {
+        district: profile?.location?.district || "",
+        upazila: profile?.location?.upazila || "",
+      },
 
       allergies: profile?.allergies || "",
       chronicIllnesses: profile?.chronicIllnesses || [],
@@ -180,12 +173,11 @@ export default function Settings() {
 
       bloodDonorStatus: profile?.bloodDonorStatus || "",
 
-      bloodDonationCompensation:
-        profile?.bloodDonationCompensation || "",
+      bloodDonationCompensation: profile?.bloodDonationCompensation || "",
 
-      lastBloodDonation: getDonationMonthYear(
-        profile?.lastBloodDonation
-      ),
+      lastBloodDonation: getDonationMonthYear(profile?.lastBloodDonation),
+
+      bloodDonationContactNumber: profile?.bloodDonationContactNumber || "",
     };
 
     const timer = setTimeout(() => {
@@ -194,6 +186,12 @@ export default function Settings() {
 
     return () => clearTimeout(timer);
   }, [profile, userInfo]);
+
+  const selectedDistrict = districtsData.find(
+    (district) => district.name === form.location.district,
+  );
+
+  const availableUpazilas = selectedDistrict?.upazilas || [];
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -216,6 +214,30 @@ export default function Settings() {
     }));
   }
 
+  function handleLocationChange(field, value) {
+    setForm((prev) => {
+      if (field === "district") {
+        return {
+          ...prev,
+
+          location: {
+            district: value,
+            upazila: "",
+          },
+        };
+      }
+
+      return {
+        ...prev,
+
+        location: {
+          ...prev.location,
+          [field]: value,
+        },
+      };
+    });
+  }
+
   function toggleIllness(name) {
     setForm((prev) => {
       const exists = prev.chronicIllnesses.includes(name);
@@ -223,9 +245,7 @@ export default function Settings() {
       return {
         ...prev,
         chronicIllnesses: exists
-          ? prev.chronicIllnesses.filter(
-              (item) => item !== name
-            )
+          ? prev.chronicIllnesses.filter((item) => item !== name)
           : [...prev.chronicIllnesses, name],
       };
     });
@@ -236,10 +256,7 @@ export default function Settings() {
 
     setForm((prev) => ({
       ...prev,
-      emergencyContacts: [
-        ...prev.emergencyContacts,
-        createEmptyContact(),
-      ],
+      emergencyContacts: [...prev.emergencyContacts, createEmptyContact()],
     }));
   }
 
@@ -247,7 +264,7 @@ export default function Settings() {
     setForm((prev) => ({
       ...prev,
       emergencyContacts: prev.emergencyContacts.filter(
-        (_, contactIndex) => contactIndex !== index
+        (_, contactIndex) => contactIndex !== index,
       ),
     }));
   }
@@ -255,14 +272,13 @@ export default function Settings() {
   function handleEmergencyContactChange(index, field, value) {
     setForm((prev) => ({
       ...prev,
-      emergencyContacts: prev.emergencyContacts.map(
-        (contact, contactIndex) =>
-          contactIndex === index
-            ? {
-                ...contact,
-                [field]: value,
-              }
-            : contact
+      emergencyContacts: prev.emergencyContacts.map((contact, contactIndex) =>
+        contactIndex === index
+          ? {
+              ...contact,
+              [field]: value,
+            }
+          : contact,
       ),
     }));
   }
@@ -293,9 +309,7 @@ export default function Settings() {
 
       if (
         contact.email.trim() &&
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-          contact.email.trim()
-        )
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email.trim())
       ) {
         return `Please enter a valid email for ${contact.name}.`;
       }
@@ -308,18 +322,10 @@ export default function Settings() {
     }
 
     if (month && year) {
-      const selectedDate = new Date(
-        Number(year),
-        Number(month) - 1,
-        1
-      );
+      const selectedDate = new Date(Number(year), Number(month) - 1, 1);
 
       const now = new Date();
-      const currentMonth = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        1
-      );
+      const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
       if (selectedDate > currentMonth) {
         return "Last blood donation cannot be in the future.";
@@ -346,46 +352,47 @@ export default function Settings() {
 
     const payload = {
       name: form.name,
+
       dob: form.dob || null,
+
       gender: form.gender,
 
       height: {
-        feet:
-          form.height.feet === ""
-            ? null
-            : Number(form.height.feet),
+        feet: form.height.feet === "" ? null : Number(form.height.feet),
 
-        inches:
-          form.height.inches === ""
-            ? null
-            : Number(form.height.inches),
+        inches: form.height.inches === "" ? null : Number(form.height.inches),
       },
 
       bloodGroup: form.bloodGroup,
-      location: form.location.trim(),
 
       allergies: form.allergies,
+
       chronicIllnesses: form.chronicIllnesses,
+
       surgeries: form.surgeries,
 
-      emergencyContacts: form.emergencyContacts.map(
-        (contact) => ({
-          relation: contact.relation.trim(),
-          name: contact.name.trim(),
-          phone: contact.phone.trim(),
-          email: contact.email.trim(),
-        })
-      ),
+      emergencyContacts: form.emergencyContacts.map((contact) => ({
+        relation: contact.relation.trim(),
+        name: contact.name.trim(),
+        phone: contact.phone.trim(),
+        email: contact.email.trim(),
+      })),
 
       bloodDonorStatus: form.bloodDonorStatus,
 
-      bloodDonationCompensation:
-        form.bloodDonationCompensation,
+      bloodDonationCompensation: form.bloodDonationCompensation,
 
       lastBloodDonation: buildDonationDate(
         form.lastBloodDonation.month,
-        form.lastBloodDonation.year
+        form.lastBloodDonation.year,
       ),
+
+      location: {
+        district: form.location.district,
+        upazila: form.location.upazila,
+      },
+
+      bloodDonationContactNumber: form.bloodDonationContactNumber.trim(),
     };
 
     try {
@@ -428,9 +435,7 @@ export default function Settings() {
   if (loading) {
     return (
       <div className="continer-profile-setting-page py-12">
-        <p className="text-center text-slate-500">
-          Loading settings...
-        </p>
+        <p className="text-center text-slate-500">Loading settings...</p>
       </div>
     );
   }
@@ -438,9 +443,7 @@ export default function Settings() {
   return (
     <div className="continer-profile-setting-page py-10">
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-slate-800">
-          Settings
-        </h1>
+        <h1 className="text-3xl font-bold text-slate-800">Settings</h1>
 
         <p className="text-slate-500 mt-2">
           Update your personal and medical information.
@@ -494,9 +497,7 @@ export default function Settings() {
             </ProfileSelect>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
-                Height
-              </label>
+              <label className="block text-sm font-medium mb-2">Height</label>
 
               <div className="flex gap-3">
                 <input
@@ -572,9 +573,7 @@ export default function Settings() {
             ))}
           </div>
 
-          <label className="block text-sm font-medium mt-5">
-            Allergies
-          </label>
+          <label className="block text-sm font-medium mt-5">Allergies</label>
           <input
             type="text"
             name="allergies"
@@ -584,9 +583,7 @@ export default function Settings() {
             className="input w-full mt-2"
           />
 
-          <label className="block text-sm font-medium mt-5">
-            Surgeries
-          </label>
+          <label className="block text-sm font-medium mt-5">Surgeries</label>
           <input
             type="text"
             name="surgeries"
@@ -615,9 +612,7 @@ export default function Settings() {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      removeEmergencyContact(index)
-                    }
+                    onClick={() => removeEmergencyContact(index)}
                     className="text-sm text-red-600 hover:text-red-700"
                   >
                     Remove
@@ -632,17 +627,14 @@ export default function Settings() {
                       handleEmergencyContactChange(
                         index,
                         "relation",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                   >
                     <option value="">Select relation</option>
 
                     {relationOptions.map((relation) => (
-                      <option
-                        key={relation}
-                        value={relation}
-                      >
+                      <option key={relation} value={relation}>
                         {relation}
                       </option>
                     ))}
@@ -655,7 +647,7 @@ export default function Settings() {
                       handleEmergencyContactChange(
                         index,
                         "name",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                   />
@@ -668,7 +660,7 @@ export default function Settings() {
                       handleEmergencyContactChange(
                         index,
                         "phone",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                   />
@@ -681,7 +673,7 @@ export default function Settings() {
                       handleEmergencyContactChange(
                         index,
                         "email",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                   />
@@ -700,8 +692,8 @@ export default function Settings() {
             )}
 
             <p className="text-sm text-slate-500">
-              You can add up to 3 emergency contacts. Each
-              contact must have a phone number or email address.
+              You can add up to 3 emergency contacts. Each contact must have a
+              phone number or email address.
             </p>
           </div>
         </ProfileSection>
@@ -709,7 +701,7 @@ export default function Settings() {
         {/* Blood Donation */}
         <ProfileSection
           title="Blood Donation"
-          description="Manage your blood donation availability and donation history."
+          description="Manage your blood donation availability and contact information."
         >
           <div className="grid md:grid-cols-2 gap-5">
             <ProfileSelect
@@ -719,30 +711,31 @@ export default function Settings() {
               onChange={handleChange}
             >
               <option value="">Select</option>
-              <option value="yes">
-                Yes, I am available to donate
-              </option>
-              <option value="no">
-                No, I do not want to donate
-              </option>
+
+              <option value="yes">Yes, I am available to donate</option>
+
+              <option value="no">No, I do not want to donate</option>
+
               <option value="willingly">
                 Willingly, when someone needs blood
               </option>
             </ProfileSelect>
 
             <ProfileSelect
-              label="Blood donation compensation"
+              label="Accepts honorarium/conveyance? (সম্মানী/গাড়ি ভাড়া)"
               name="bloodDonationCompensation"
               value={form.bloodDonationCompensation}
               onChange={handleChange}
+              disabled={!["yes", "willingly"].includes(form.bloodDonorStatus)}
             >
               <option value="">Select</option>
-              <option value="500">500 Tk</option>
-              <option value="1000">1000 Tk</option>
-              <option value="none">No money needed</option>
+              <option value="500">Yes</option>
+              {/* <option value="1000">1000 Tk</option> */}
+              <option value="none">No</option>
             </ProfileSelect>
           </div>
 
+          {/* Last donation */}
           <div className="mt-6">
             <label className="block text-sm font-medium text-slate-700 mb-2">
               Last blood donation
@@ -752,20 +745,14 @@ export default function Settings() {
               <select
                 value={form.lastBloodDonation.month}
                 onChange={(e) =>
-                  handleDonationDateChange(
-                    "month",
-                    e.target.value
-                  )
+                  handleDonationDateChange("month", e.target.value)
                 }
                 className="input w-full"
               >
                 <option value="">Select month</option>
 
                 {months.map((month) => (
-                  <option
-                    key={month.value}
-                    value={month.value}
-                  >
+                  <option key={month.value} value={month.value}>
                     {month.label}
                   </option>
                 ))}
@@ -774,10 +761,7 @@ export default function Settings() {
               <select
                 value={form.lastBloodDonation.year}
                 onChange={(e) =>
-                  handleDonationDateChange(
-                    "year",
-                    e.target.value
-                  )
+                  handleDonationDateChange("year", e.target.value)
                 }
                 className="input w-full"
               >
@@ -790,21 +774,75 @@ export default function Settings() {
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* Location */}
+          <div className="mt-6">
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Location
+            </label>
+
+            <div className="grid md:grid-cols-2 gap-5">
+              <ProfileSelect
+                label="District / Zila"
+                value={form.location.district}
+                onChange={(e) =>
+                  handleLocationChange("district", e.target.value)
+                }
+              >
+                <option value="">Select district</option>
+
+                {districtsData.map((district) => (
+                  <option key={district.name} value={district.name}>
+                    {district.name}
+                  </option>
+                ))}
+              </ProfileSelect>
+
+              <ProfileSelect
+                label="Upazila / Upazila"
+                value={form.location.upazila}
+                onChange={(e) =>
+                  handleLocationChange("upazila", e.target.value)
+                }
+                disabled={!form.location.district}
+              >
+                <option value="">
+                  {form.location.district
+                    ? "Select upazila"
+                    : "Select district first"}
+                </option>
+
+                {availableUpazilas.map((upazila) => (
+                  <option key={upazila} value={upazila}>
+                    {upazila}
+                  </option>
+                ))}
+              </ProfileSelect>
+            </div>
+          </div>
+
+          {/* Blood donation contact */}
+          <div className="mt-6 max-w-md">
+            <ProfileInput
+              label="Contact Number"
+              type="tel"
+              name="bloodDonationContactNumber"
+              value={form.bloodDonationContactNumber}
+              onChange={handleChange}
+              placeholder="e.g. 017XXXXXXXX"
+            />
 
             <p className="text-sm text-slate-500 mt-2">
-              Select the month and year when you last donated
-              blood.
+              This number will be shown to people searching for eligible blood
+              donors.
             </p>
           </div>
         </ProfileSection>
 
         {/* Save */}
         <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={saving}
-            className="btn-primary"
-          >
+          <button type="submit" disabled={saving} className="btn-primary">
             {saving
               ? "Saving..."
               : profile
@@ -816,4 +854,3 @@ export default function Settings() {
     </div>
   );
 }
-

@@ -38,7 +38,7 @@ const emergencyContactSchema = new mongoose.Schema(
       },
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const profileSchema = new mongoose.Schema(
@@ -75,11 +75,6 @@ const profileSchema = new mongoose.Schema(
       default: "",
     },
 
-    location: {
-      type: String,
-      default: "",
-      trim: true,
-    },
 
     // Medical information
     allergies: {
@@ -119,7 +114,7 @@ const profileSchema = new mongoose.Schema(
 
     bloodDonationCompensation: {
       type: String,
-      enum: ["", "500", "1000", "none"],
+      enum: ["", "500", "none"],
       default: "",
     },
 
@@ -135,10 +130,30 @@ const profileSchema = new mongoose.Schema(
         message: "Last blood donation cannot be in the future.",
       },
     },
+
+    bloodDonationContactNumber: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    location: {
+      district: {
+        type: String,
+        default: "",
+        trim: true,
+      },
+
+      upazila: {
+        type: String,
+        default: "",
+        trim: true,
+      },
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 profileSchema.pre("validate", function (next) {
@@ -154,8 +169,34 @@ profileSchema.pre("validate", function (next) {
     }
   }
 
+  const isDonor =
+    this.bloodDonorStatus === "yes" ||
+    this.bloodDonorStatus === "willingly";
+
+  if (isDonor && !this.bloodDonationContactNumber?.trim()) {
+    this.invalidate(
+      "bloodDonationContactNumber",
+      "A contact number is required when you are available to donate blood."
+    );
+  }
+
+  if (isDonor) {
+    if (!this.location?.district) {
+      this.invalidate(
+        "location.district",
+        "Please select your district."
+      );
+    }
+
+    if (!this.location?.upazila) {
+      this.invalidate(
+        "location.upazila",
+        "Please select your upazila."
+      );
+    }
+  }
+
   next();
 });
 
 export default mongoose.model("Profile", profileSchema);
-
