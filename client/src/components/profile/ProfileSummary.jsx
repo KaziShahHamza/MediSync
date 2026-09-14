@@ -1,4 +1,4 @@
-// src/components/profile/ProfileSummary.jsx
+// client/src/components/profile/ProfileSummary.jsx
 
 function InfoItem({ label, value, full = false }) {
   return (
@@ -9,57 +9,154 @@ function InfoItem({ label, value, full = false }) {
         ${full ? "md:col-span-2" : ""}
       `}
     >
-      <p className="small-label uppercase tracking-wide">{label}</p>
+      <p className="small-label uppercase tracking-wide">
+        {label}
+      </p>
 
-      <p className="mt-2 font-medium break-words" style={{ color: "var(--color-text)" }}>
+      <p
+        className="mt-2 font-medium break-words"
+        style={{ color: "var(--color-text)" }}
+      >
         {value || "-"}
       </p>
     </div>
   );
 }
 
-export default function ProfileSummary({ userInfo, profile }) {
+function formatDonationDate(value) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
+
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function formatDonorStatus(value) {
+  switch (value) {
+    case "yes":
+      return "Yes, available to donate";
+
+    case "willingly":
+      return "Willingly, when someone needs blood";
+
+    case "no":
+      return "No";
+
+    default:
+      return "-";
+  }
+}
+
+function formatCompensation(value) {
+  switch (value) {
+    case "500":
+      return "500 Tk";
+
+    case "1000":
+      return "1000 Tk";
+
+    case "none":
+      return "No money";
+
+    default:
+      return "-";
+  }
+}
+
+export default function ProfileSummary({
+  userInfo,
+  profile,
+}) {
   const height = profile?.height;
 
   const heightValue = height?.feet
     ? `${height.feet} ft ${height.inches || 0} in`
     : "-";
 
-  const emergencyContact = profile?.emergencyContact;
+  const emergencyContacts =
+    profile?.emergencyContacts || [];
 
   return (
-    <div className="card w-full p-6 lg:p-8 bg-red-400">
+    <div className="card w-full p-6 lg:p-8">
       <div className="mb-8">
-        <h2 className="card-title text-xl">Profile Summary</h2>
+        <h2 className="card-title text-xl">
+          Profile Summary
+        </h2>
 
         <p className="text-sm text-muted mt-1">
-          Overview of your saved personal and health information.
+          Overview of your saved personal and health
+          information.
         </p>
       </div>
 
       {/* Personal Information */}
       <div className="mb-8">
-        <h3 className="section-title text-lg mb-4">Personal Information</h3>
+        <h3 className="section-title text-lg mb-4">
+          Personal Information
+        </h3>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <InfoItem label="Name" value={userInfo?.name} />
-          <InfoItem label="Username" value={userInfo?.username} />
-          <InfoItem label="Email" value={userInfo?.email} />
+          <InfoItem
+            label="Name"
+            value={userInfo?.name}
+          />
+
+          <InfoItem
+            label="Username"
+            value={userInfo?.username}
+          />
+
+          <InfoItem
+            label="Email"
+            value={userInfo?.email}
+          />
+
           <InfoItem
             label="Date of Birth"
             value={
-              profile?.dob ? new Date(profile.dob).toLocaleDateString() : "-"
+              profile?.dob
+                ? new Date(
+                    profile.dob
+                  ).toLocaleDateString()
+                : "-"
             }
           />
-          <InfoItem label="Gender" value={profile?.gender} />
-          <InfoItem label="Height" value={heightValue} />
-          <InfoItem label="Blood Group" value={profile?.bloodGroup} />
+
+          <InfoItem
+            label="Gender"
+            value={profile?.gender}
+          />
+
+          <InfoItem
+            label="Height"
+            value={heightValue}
+          />
+
+          <InfoItem
+            label="Blood Group"
+            value={profile?.bloodGroup}
+          />
+
+          <InfoItem
+            label="Location"
+            value={profile?.location}
+          />
         </div>
       </div>
 
       {/* Medical Information */}
       <div className="mb-8">
-        <h3 className="section-title text-lg mb-4">Medical Information</h3>
+        <h3 className="section-title text-lg mb-4">
+          Medical Information
+        </h3>
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="sm:col-span-2 surface-muted p-4 border-l-4 border-l-[rgb(var(--color-accent))]">
@@ -69,52 +166,119 @@ export default function ProfileSummary({ userInfo, profile }) {
 
             {profile?.chronicIllnesses?.length ? (
               <div className="flex flex-wrap gap-2 mt-3">
-                {profile.chronicIllnesses.map((item) => (
-                  <span key={item} className="badge">
-                    {item}
-                  </span>
-                ))}
+                {profile.chronicIllnesses.map(
+                  (item) => (
+                    <span
+                      key={item}
+                      className="badge"
+                    >
+                      {item}
+                    </span>
+                  )
+                )}
               </div>
             ) : (
-              <p className="mt-2 subtitle">None</p>
+              <p className="mt-2 subtitle">
+                None
+              </p>
             )}
           </div>
 
           <InfoItem
             label="Allergies"
-            value={profile?.allergies || "None"}
+            value={
+              profile?.allergies || "None"
+            }
             full
           />
 
           <InfoItem
             label="Previous Surgeries"
-            value={profile?.surgeries || "None"}
+            value={
+              profile?.surgeries || "None"
+            }
             full
           />
         </div>
       </div>
 
-      {/* Lifestyle */}
+      {/* Emergency Contacts */}
       <div className="mb-8">
-        <h3 className="section-title text-lg mb-4">Lifestyle</h3>
+        <h3 className="section-title text-lg mb-4">
+          Emergency Contacts
+        </h3>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <InfoItem label="Smoking" value={profile?.smoking} />
-          <InfoItem label="Alcohol" value={profile?.alcohol} />
-          <InfoItem label="Exercise" value={profile?.exercise} />
-          <InfoItem label="Diet" value={profile?.diet} />
-        </div>
+        {emergencyContacts.length ? (
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {emergencyContacts.map(
+              (contact, index) => (
+                <div
+                  key={index}
+                  className="surface-muted p-4"
+                >
+                  <p className="small-label uppercase tracking-wide">
+                    {contact.relation ||
+                      `Contact ${index + 1}`}
+                  </p>
+
+                  <p className="mt-2 font-semibold text-slate-800">
+                    {contact.name}
+                  </p>
+
+                  {contact.phone && (
+                    <p className="mt-2 text-sm text-slate-600">
+                      {contact.phone}
+                    </p>
+                  )}
+
+                  {contact.email && (
+                    <p className="mt-1 text-sm text-slate-600 break-words">
+                      {contact.email}
+                    </p>
+                  )}
+                </div>
+              )
+            )}
+          </div>
+        ) : (
+          <div className="surface-muted p-4">
+            <p className="subtitle">
+              No emergency contacts added.
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Emergency Contact */}
+      {/* Blood Donation */}
       <div>
-        <h3 className="section-title text-lg mb-4">Emergency Contact</h3>
+        <h3 className="section-title text-lg mb-4">
+          Blood Donation
+        </h3>
 
-        <div className="grid sm:grid-cols-2 gap-4">
-          <InfoItem label="Contact Name" value={emergencyContact?.name} />
-          <InfoItem label="Phone Number" value={emergencyContact?.phone} />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <InfoItem
+            label="Donor Status"
+            value={formatDonorStatus(
+              profile?.bloodDonorStatus
+            )}
+          />
+
+          <InfoItem
+            label="Donation Compensation"
+            value={formatCompensation(
+              profile?.bloodDonationCompensation
+            )}
+          />
+
+          <InfoItem
+            label="Last Blood Donation"
+            value={formatDonationDate(
+              profile?.lastBloodDonation
+            )}
+          />
         </div>
       </div>
     </div>
   );
 }
+

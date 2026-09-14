@@ -9,25 +9,45 @@ import { syncProfileToAIChatData } from "../services/aiChatDataService.js";
 
 const router = express.Router();
 
-// GET Profile, Returns user info + profile
+const allowedProfileFields = [
+  "dob",
+  "gender",
+  "height",
+  "bloodGroup",
+  "location",
+  "allergies",
+  "chronicIllnesses",
+  "surgeries",
+  "emergencyContacts",
+  "bloodDonorStatus",
+  "bloodDonationCompensation",
+  "lastBloodDonation",
+];
+
+function getProfileData(body) {
+  return Object.fromEntries(
+    allowedProfileFields
+      .filter((field) => Object.prototype.hasOwnProperty.call(body, field))
+      .map((field) => [field, body[field]])
+  );
+}
+
+// GET Profile
 router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");
 
-    let profile = await Profile.findOne({ user: req.userId });
-
-    if (!profile) {
-      return res.json({
-        user,
-        profile: null,
-      });
-    }
+    const profile = await Profile.findOne({
+      user: req.userId,
+    });
 
     res.json({
       user,
-      profile,
+      profile: profile || null,
     });
   } catch (err) {
+    console.error("Failed to fetch profile:", err);
+
     res.status(500).json({
       message: "Failed to fetch profile",
     });
@@ -37,7 +57,8 @@ router.get("/", auth, async (req, res) => {
 // Create profile
 router.post("/", auth, async (req, res) => {
   try {
-    const { name, ...profileData } = req.body;
+    const { name } = req.body;
+    const profileData = getProfileData(req.body);
 
     const exists = await Profile.findOne({
       user: req.userId,
@@ -63,7 +84,10 @@ router.post("/", auth, async (req, res) => {
     try {
       await syncProfileToAIChatData(req.userId);
     } catch (error) {
-      console.error("Failed to sync profile to AI chat data:", error);
+      console.error(
+        "Failed to sync profile to AI chat data:",
+        error
+      );
     }
 
     const user = await User.findById(req.userId).select("-password");
@@ -73,6 +97,8 @@ router.post("/", auth, async (req, res) => {
       profile,
     });
   } catch (err) {
+    console.error("Failed to create profile:", err);
+
     res.status(400).json({
       message: err.message,
     });
@@ -82,7 +108,8 @@ router.post("/", auth, async (req, res) => {
 // Update profile
 router.put("/", auth, async (req, res) => {
   try {
-    const { name, ...profileData } = req.body;
+    const { name } = req.body;
+    const profileData = getProfileData(req.body);
 
     if (name?.trim()) {
       await User.findByIdAndUpdate(req.userId, {
@@ -98,19 +125,22 @@ router.put("/", auth, async (req, res) => {
       {
         new: true,
         runValidators: true,
-      },
+      }
     );
-
-    try {
-      await syncProfileToAIChatData(req.userId);
-    } catch (error) {
-      console.error("Failed to sync profile to AI chat data:", error);
-    }
 
     if (!profile) {
       return res.status(404).json({
         message: "Profile not found",
       });
+    }
+
+    try {
+      await syncProfileToAIChatData(req.userId);
+    } catch (error) {
+      console.error(
+        "Failed to sync profile to AI chat data:",
+        error
+      );
     }
 
     const user = await User.findById(req.userId).select("-password");
@@ -120,6 +150,8 @@ router.put("/", auth, async (req, res) => {
       profile,
     });
   } catch (err) {
+    console.error("Failed to update profile:", err);
+
     res.status(400).json({
       message: err.message,
     });

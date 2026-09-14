@@ -15,6 +15,11 @@ medicine_2/
 │       ├── index.css
 │       ├── main.jsx
 │       ├── components/
+│       │   ├── assistant/
+│       │   │   ├── AssistantSidebar.jsx
+│       │   │   ├── ChatEmptyState.jsx
+│       │   │   ├── ChatInput.jsx
+│       │   │   └── ChatMessage.jsx
 │       │   ├── auth/
 │       │   ├── dashboard/
 │       │   ├── profile/
@@ -44,6 +49,7 @@ medicine_2/
 │       │   └── ScrollToTop.jsx
 │       ├── context/
 │       │   ├── AuthContext.jsx
+│       │   ├── ChatbotContext.jsx
 │       │   ├── DoctorContext.jsx
 │       │   ├── LifestyleContext.jsx
 │       │   ├── MedicineContext.jsx
@@ -60,6 +66,7 @@ medicine_2/
 │       │   ├── useHealthLogs.js
 │       │   └── useMedicineReminder.js
 │       ├── pages/
+│       │   ├── Assistant.jsx
 │       │   ├── Dashboard.jsx
 │       │   ├── Doctors.jsx
 │       │   ├── Health.jsx
@@ -76,7 +83,7 @@ medicine_2/
 │       │   └── lifestyle/
 │       └── utils/
 │           └── timeMap.js
-├── docs/
+├── .docs/
 │   ├── ARCHITECTURE.md
 │   ├── CODEBASE_MAP.md
 │   ├── DATA_API_REFERENCE.md
@@ -88,6 +95,8 @@ medicine_2/
 │   ├── middleware/
 │   │   └── auth.js
 │   ├── models/
+│   │   ├── AIChat.js
+│   │   ├── AIChatData.js
 │   │   ├── AIReport.js
 │   │   ├── Doctor.js
 │   │   ├── HealthLog.js
@@ -110,6 +119,8 @@ medicine_2/
 │   │   ├── profile.routes.js
 │   │   └── report.routes.js
 │   ├── services/
+│   │   ├── aiChatDataService.js
+│   │   ├── aiChatService.js
 │   │   ├── aiService.js
 │   │   ├── dashboardService.js
 │   │   ├── pdfService.js
@@ -195,6 +206,34 @@ medicine_2/
 - `server/routes/export.routes.js`
 - `server/services/pdfService.js`
 
+### AI health assistant
+
+- `client/src/pages/Assistant.jsx`
+- `client/src/context/ChatbotContext.jsx`
+- `client/src/components/assistant/AssistantSidebar.jsx`
+- `client/src/components/assistant/ChatEmptyState.jsx`
+- `client/src/components/assistant/ChatInput.jsx`
+- `client/src/components/assistant/ChatMessage.jsx`
+- `server/routes/ai.routes.js`
+- `server/models/AIChat.js`
+- `server/models/AIChatData.js`
+- `server/services/aiChatService.js`
+- `server/services/aiChatDataService.js`
+
+The assistant is available at the protected `/assistant` client route. Its API
+is mounted at `/api/ai` and supports cached summaries plus authenticated chat
+history and messaging endpoints:
+
+- `GET /api/ai/chats`
+- `GET /api/ai/chats/:chatId`
+- `POST /api/ai/chats`
+- `POST /api/ai/chats/:chatId/messages`
+- `DELETE /api/ai/chats/:chatId`
+
+`AIChatData` stores an assistant-specific snapshot of profile, lifestyle,
+health, and saved doctor data. Medicines, prescriptions, reports, and medical
+documents are intentionally excluded from the assistant context.
+
 ## 3. Responsibility boundaries
 
 ### Frontend responsibilities
@@ -230,7 +269,7 @@ If a future agent asks, “which files should I inspect before changing feature 
 
 The app is organized around feature-local contracts, not a global service layer.
 
-- Protects all authenticated flows and page access.
+## 5. Shared and high-impact modules
 
 ### `server/server.js`
 

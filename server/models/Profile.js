@@ -2,6 +2,45 @@
 
 import mongoose from "mongoose";
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const emergencyContactSchema = new mongoose.Schema(
+  {
+    relation: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    phone: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      default: "",
+      trim: true,
+      lowercase: true,
+      validate: {
+        validator: function (value) {
+          if (!value) return true;
+          return emailRegex.test(value);
+        },
+        message: "Please provide a valid email address.",
+      },
+    },
+  },
+  { _id: false }
+);
+
 const profileSchema = new mongoose.Schema(
   {
     user: {
@@ -11,11 +50,12 @@ const profileSchema = new mongoose.Schema(
       unique: true,
     },
 
+    // Personal information
     dob: Date,
 
     gender: {
       type: String,
-      enum: ["Male", "Female", "Other"],
+      enum: ["", "Male", "Female", "Other"],
       default: "",
     },
 
@@ -35,6 +75,13 @@ const profileSchema = new mongoose.Schema(
       default: "",
     },
 
+    location: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    // Medical information
     allergies: {
       type: String,
       default: "",
@@ -50,38 +97,42 @@ const profileSchema = new mongoose.Schema(
       default: "",
     },
 
-    smoking: {
-      type: String,
-      enum: ["Never", "Former", "Current"],
-      default: "",
-    },
+    // Emergency contacts
+    emergencyContacts: {
+      type: [emergencyContactSchema],
+      default: [],
 
-    alcohol: {
-      type: String,
-      enum: ["Never", "Occasionally", "Frequently"],
-      default: "",
-    },
-
-    exercise: {
-      type: String,
-      enum: ["Never", "1-2 Days", "3-5 Days", "Daily"],
-      default: "",
-    },
-
-    diet: {
-      type: String,
-      enum: ["Mixed", "Vegetarian", "Vegan"],
-      default: "",
-    },
-
-    emergencyContact: {
-      name: {
-        type: String,
-        default: "",
+      validate: {
+        validator: function (contacts) {
+          return contacts.length <= 3;
+        },
+        message: "You can add a maximum of 3 emergency contacts.",
       },
-      phone: {
-        type: String,
-        default: "",
+    },
+
+    // Blood donation
+    bloodDonorStatus: {
+      type: String,
+      enum: ["", "yes", "no", "willingly"],
+      default: "",
+    },
+
+    bloodDonationCompensation: {
+      type: String,
+      enum: ["", "500", "1000", "none"],
+      default: "",
+    },
+
+    lastBloodDonation: {
+      type: Date,
+      default: null,
+      validate: {
+        validator: function (value) {
+          if (!value) return true;
+
+          return value <= new Date();
+        },
+        message: "Last blood donation cannot be in the future.",
       },
     },
   },
@@ -90,4 +141,21 @@ const profileSchema = new mongoose.Schema(
   }
 );
 
+profileSchema.pre("validate", function (next) {
+  for (const contact of this.emergencyContacts || []) {
+    const hasPhone = Boolean(contact.phone?.trim());
+    const hasEmail = Boolean(contact.email?.trim());
+
+    if (!hasPhone && !hasEmail) {
+      this.invalidate(
+        "emergencyContacts",
+        "Each emergency contact must have a phone number or email address."
+      );
+    }
+  }
+
+  next();
+});
+
 export default mongoose.model("Profile", profileSchema);
+
