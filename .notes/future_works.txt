@@ -1,0 +1,35 @@
+<<---- Project Works ---->>
+
+add lifestyles to profile
+Blood donation page public
+demo 3 profiles
+email, whatsapp emergency
+Medicine monthly cost
+doctor visit cost
+doctor image upload to fill form
+more dhaka hopitals
+pharmacy, hospitals, ambulance near me
+AI chat page UI/UX
+Navbar
+AI response
+pdf redesign
+lifestyles page UI/UX
+Healthpage UI/UX
+Dashboard page UI/UX
+Homepage UI/UX
+Footer
+AI chat image upload
+readme
+files organize
+files splitting
+PWA
+input validation
+security
+encryption
+change API's
+online appointment page
+personal health assistant page
+dark mode
+active live on website
+anylytics
+

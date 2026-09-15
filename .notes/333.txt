@@ -1,0 +1,10 @@
+Emergency Contacts
+Emergency alert data/model + email service
+Critical BP/blood-sugar alert
+AI emergency/safety handling
+Doctor-specialty matching
+AI → emergency contact actions
+WhatsApp confirmation flow
+Remove the unused chat image functionality
+Full ownership/security testing
+Full emergency/safety end-to-end testing
