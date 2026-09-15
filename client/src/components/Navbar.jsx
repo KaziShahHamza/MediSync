@@ -15,6 +15,15 @@ import {
   Settings,
   Stethoscope,
   UserRound,
+  HeartPulse,
+  Bot,
+  Smile,
+  Flame,
+  Heart,
+  Coffee,
+  Sun,
+  Sparkles,
+  Brain,
   X,
 } from "lucide-react";
 
@@ -33,7 +42,10 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   const isDocumentsActive =
-    location.pathname === "/prescriptions" || location.pathname === "/reports";
+    location.pathname === "/prescriptions" || location.pathname === "/reports" || location.pathname === "/medicines" || location.pathname === "/doctors";
+
+    const ishealthActive =
+    location.pathname === "/health" || location.pathname === "/lifestyle";
 
   const isAccountActive =
     location.pathname === "/profile" || location.pathname === "/settings";
@@ -61,7 +73,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-      <div className="container h-[72px] flex items-center justify-between gap-4">
+      <div className="container h-[67px] flex items-center justify-between gap-4">
         {/* =====================================================
             LOGO
         ====================================================== */}
@@ -96,7 +108,7 @@ export default function Navbar() {
             DESKTOP NAVIGATION
         ====================================================== */}
 
-        <div className="hidden lg:flex items-center gap-1">
+        <div className="hidden lg:flex items-center ">
           {/* Public navigation */}
 
           <Link
@@ -106,7 +118,7 @@ export default function Navbar() {
             }`}
           >
             <Droplets size={18} strokeWidth={2} />
-            <span>Blood Need</span>
+            <span>Blood Need?</span>
           </Link>
 
           {!user && (
@@ -131,11 +143,68 @@ export default function Navbar() {
             <>
               {navItem("/dashboard", "Dashboard", LayoutDashboard)}
 
-              {navItem("/health", "Health Overview", Activity)}
+              {/* {navItem("/assistant", "AI Chat", Activity)} */}
 
-              {navItem("/medicines", "My Medicines", Pill)}
+              {/* {navItem("/medicines", "My Medicines", Pill)} */}
 
-              {navItem("/doctors", "My Doctors", Stethoscope)}
+              {/* {navItem("/doctors", "My Doctors", Stethoscope)} */}
+
+              {/* =================================================
+                  HEALTH DROPDOWN
+                  Opens on hover
+              ================================================== */}
+
+              <div className="navbar-dropdown-wrapper">
+                <button
+                  type="button"
+                  className={`nav-link ${
+                    ishealthActive ? "nav-link-active" : ""
+                  }`}
+                >
+                  <HeartPulse size={18} strokeWidth={2} />
+
+                  <span>Health Overview</span>
+
+                  <ChevronDown size={15} strokeWidth={2} />
+                </button>
+
+                <div className="navbar-dropdown">
+                  <Link
+                    to="/health"
+                    onClick={handleNavigation}
+                    className={`navbar-dropdown-item ${
+                      isActive("/health") ? "navbar-dropdown-item-active" : ""
+                    }`}
+                  >
+                    <Activity size={17} />
+                    <span>Health Charts</span>
+                  </Link>
+
+                  <Link
+                    to="/assistant"
+                    onClick={handleNavigation}
+                    className={`navbar-dropdown-item ${
+                      isActive("/assistant") ? "navbar-dropdown-item-active" : ""
+                    }`}
+                  >
+                    <Sparkles size={17} />
+                    <span>AI Chat</span>
+                  </Link>
+
+                  <Link
+                    to="/lifestyle"
+                    onClick={handleNavigation}
+                    className={`navbar-dropdown-item ${
+                      isActive("/lifestyle")
+                        ? "navbar-dropdown-item-active"
+                        : ""
+                    }`}
+                  >
+                    <Coffee size={17} />
+                    <span>My Lifestyle</span>
+                  </Link>
+                </div>
+              </div>
 
               {/* =================================================
                   DOCUMENTS DROPDOWN
@@ -151,12 +220,36 @@ export default function Navbar() {
                 >
                   <FileImage size={18} strokeWidth={2} />
 
-                  <span>Documents</span>
+                  <span>Medical Records</span>
 
                   <ChevronDown size={15} strokeWidth={2} />
                 </button>
 
                 <div className="navbar-dropdown">
+                  <Link
+                    to="/medicines"
+                    onClick={handleNavigation}
+                    className={`navbar-dropdown-item ${
+                      isActive("/medicines")
+                        ? "navbar-dropdown-item-active"
+                        : ""
+                    }`}
+                  >
+                    <Pill size={17} />
+                    <span>My Medicines</span>
+                  </Link>
+
+                  <Link
+                    to="/doctors"
+                    onClick={handleNavigation}
+                    className={`navbar-dropdown-item ${
+                      isActive("/doctors") ? "navbar-dropdown-item-active" : ""
+                    }`}
+                  >
+                    <Stethoscope size={17} />
+                    <span>My Doctors</span>
+                  </Link>
+
                   <Link
                     to="/prescriptions"
                     onClick={handleNavigation}
@@ -179,17 +272,6 @@ export default function Navbar() {
                   >
                     <FileBarChart size={17} />
                     <span>My Reports</span>
-                  </Link>
-
-                  <Link
-                    to="/lifestyle"
-                    onClick={handleNavigation}
-                    className={`navbar-dropdown-item ${
-                      isActive("/reports") ? "navbar-dropdown-item-active" : ""
-                    }`}
-                  >
-                    <FileBarChart size={17} />
-                    <span>My Lifestyle</span>
                   </Link>
                 </div>
               </div>
@@ -305,7 +387,11 @@ export default function Navbar() {
                 <>
                   {navItem("/dashboard", "Dashboard", LayoutDashboard)}
 
-                  {navItem("/health", "Health Overview", Activity)}
+                  {navItem("/health", "Health Charts", Activity)}
+
+                  {navItem("/assistant", "AI Chat", Sparkles)}
+
+                  {navItem("/lifestyle", "Lifestyle Score", Coffee)}
 
                   {navItem("/medicines", "My Medicines", Pill)}
 
@@ -314,8 +400,6 @@ export default function Navbar() {
                   {navItem("/prescriptions", "My Prescriptions", FileImage)}
 
                   {navItem("/reports", "My Reports", FileBarChart)}
-
-                  {navItem("/lifestyle", "Lifestyle", FileBarChart)}
 
                   {navItem("/profile", "Profile", UserRound)}
 
