@@ -1,14 +1,12 @@
 // src/services/aiChatDataService.js
+
 import Profile from "../models/Profile.js";
 import LifestyleAssessment from "../models/LifestyleAssessment.js";
 import HealthLog from "../models/HealthLog.js";
 import Doctor from "../models/Doctor.js";
 import AIChatData from "../models/AIChatData.js";
 
-import {
-  calculateBMI,
-  getBMICategory,
-} from "../utils/healthCalculations.js";
+import { calculateBMI, getBMICategory } from "../utils/healthCalculations.js";
 
 /*
  * ---------------------------------------------------------
@@ -67,15 +65,27 @@ function emptyLifestyleData() {
 function emptyProfileData() {
   return {
     dob: null,
+
     gender: "",
+
     height: {
       feet: null,
       inches: null,
     },
+
     bloodGroup: "",
+
     allergies: "",
+
     chronicIllnesses: [],
+
     surgeries: "",
+
+    emergencyContacts: [],
+
+    bloodDonorStatus: "",
+
+    lastBloodDonation: null,
   };
 }
 
@@ -112,6 +122,17 @@ export async function syncProfileToAIChatData(userId) {
         chronicIllnesses: profile.chronicIllnesses || [],
 
         surgeries: profile.surgeries || "",
+
+        emergencyContacts: (profile.emergencyContacts || []).map((contact) => ({
+          relation: contact.relation || "",
+          name: contact.name || "",
+          phone: contact.phone || "",
+          email: contact.email || "",
+        })),
+
+        bloodDonorStatus: profile.bloodDonorStatus || "",
+
+        lastBloodDonation: profile.lastBloodDonation || null,
       }
     : emptyProfileData();
 
@@ -131,7 +152,7 @@ export async function syncProfileToAIChatData(userId) {
     {
       upsert: true,
       new: true,
-    }
+    },
   );
 }
 
@@ -187,7 +208,7 @@ export async function syncLifestyleToAIChatData(userId) {
     {
       upsert: true,
       new: true,
-    }
+    },
   );
 }
 
@@ -347,7 +368,7 @@ export async function syncHealthToAIChatData(userId) {
     {
       upsert: true,
       new: true,
-    }
+    },
   );
 }
 
@@ -360,8 +381,7 @@ export async function syncHealthToAIChatData(userId) {
 export async function syncDoctorsToAIChatData(userId) {
   const doctors = await Doctor.find({
     user: userId,
-  })
-    .lean();
+  }).lean();
 
   const doctorData = doctors.map((doctor) => ({
     doctorId: doctor._id,
@@ -417,7 +437,7 @@ export async function syncDoctorsToAIChatData(userId) {
     {
       upsert: true,
       new: true,
-    }
+    },
   );
 }
 
@@ -434,12 +454,7 @@ export async function syncDoctorsToAIChatData(userId) {
  */
 
 export async function syncAllAIChatData(userId) {
-  const [
-    profile,
-    latestAssessment,
-    health,
-    doctors,
-  ] = await Promise.all([
+  const [profile, latestAssessment, health, doctors] = await Promise.all([
     Profile.findOne({
       user: userId,
     }).lean(),
@@ -512,13 +527,7 @@ export async function syncAllAIChatData(userId) {
     }).lean(),
   ]);
 
-  const [
-    bloodPressure,
-    fasting,
-    postMeal,
-    random,
-    weight,
-  ] = health;
+  const [bloodPressure, fasting, postMeal, random, weight] = health;
 
   /*
    * Profile
@@ -542,6 +551,17 @@ export async function syncAllAIChatData(userId) {
         chronicIllnesses: profile.chronicIllnesses || [],
 
         surgeries: profile.surgeries || "",
+
+        emergencyContacts: (profile.emergencyContacts || []).map((contact) => ({
+          relation: contact.relation || "",
+          name: contact.name || "",
+          phone: contact.phone || "",
+          email: contact.email || "",
+        })),
+
+        bloodDonorStatus: profile.bloodDonorStatus || "",
+
+        lastBloodDonation: profile.lastBloodDonation || null,
       }
     : emptyProfileData();
 
@@ -683,6 +703,6 @@ export async function syncAllAIChatData(userId) {
     {
       upsert: true,
       new: true,
-    }
+    },
   );
 }

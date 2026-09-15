@@ -1,3 +1,5 @@
+// server/models/AIChatData.js
+
 import mongoose from "mongoose";
 
 const aiChatDataSchema = new mongoose.Schema(
@@ -50,6 +52,43 @@ const aiChatDataSchema = new mongoose.Schema(
       surgeries: {
         type: String,
         default: "",
+      },
+
+      emergencyContacts: {
+        type: [
+          {
+            relation: {
+              type: String,
+              default: "",
+            },
+
+            name: {
+              type: String,
+              default: "",
+            },
+
+            phone: {
+              type: String,
+              default: "",
+            },
+
+            email: {
+              type: String,
+              default: "",
+            },
+          },
+        ],
+        default: [],
+      },
+
+      bloodDonorStatus: {
+        type: String,
+        default: "",
+      },
+
+      lastBloodDonation: {
+        type: Date,
+        default: null,
       },
     },
 
@@ -253,7 +292,7 @@ const aiChatDataSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model("AIChatData", aiChatDataSchema);

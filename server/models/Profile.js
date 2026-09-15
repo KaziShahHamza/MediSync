@@ -75,7 +75,6 @@ const profileSchema = new mongoose.Schema(
       default: "",
     },
 
-
     // Medical information
     allergies: {
       type: String,
@@ -156,7 +155,7 @@ const profileSchema = new mongoose.Schema(
   },
 );
 
-profileSchema.pre("validate", function (next) {
+profileSchema.pre("validate", function () {
   for (const contact of this.emergencyContacts || []) {
     const hasPhone = Boolean(contact.phone?.trim());
     const hasEmail = Boolean(contact.email?.trim());
@@ -164,39 +163,30 @@ profileSchema.pre("validate", function (next) {
     if (!hasPhone && !hasEmail) {
       this.invalidate(
         "emergencyContacts",
-        "Each emergency contact must have a phone number or email address."
+        "Each emergency contact must have a phone number or email address.",
       );
     }
   }
 
   const isDonor =
-    this.bloodDonorStatus === "yes" ||
-    this.bloodDonorStatus === "willingly";
+    this.bloodDonorStatus === "yes" || this.bloodDonorStatus === "willingly";
 
   if (isDonor && !this.bloodDonationContactNumber?.trim()) {
     this.invalidate(
       "bloodDonationContactNumber",
-      "A contact number is required when you are available to donate blood."
+      "A contact number is required when you are available to donate blood.",
     );
   }
 
   if (isDonor) {
     if (!this.location?.district) {
-      this.invalidate(
-        "location.district",
-        "Please select your district."
-      );
+      this.invalidate("location.district", "Please select your district.");
     }
 
     if (!this.location?.upazila) {
-      this.invalidate(
-        "location.upazila",
-        "Please select your upazila."
-      );
+      this.invalidate("location.upazila", "Please select your upazila.");
     }
   }
-
-  next();
 });
 
 export default mongoose.model("Profile", profileSchema);

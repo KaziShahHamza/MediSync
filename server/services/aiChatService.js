@@ -1,3 +1,5 @@
+// server/services/aiChatService.js
+
 import { GoogleGenAI } from "@google/genai";
 
 import AIChatData from "../models/AIChatData.js";
@@ -111,20 +113,43 @@ function buildProfileContext(profile) {
 
   return {
     available: true,
+
     dateOfBirth: profile.dob || null,
+
     age: calculateAge(profile.dob),
+
     gender: formatValue(profile.gender),
+
     height: profile.height
       ? {
           feet: profile.height.feet,
           inches: profile.height.inches,
         }
       : null,
+
     bloodGroup: formatValue(profile.bloodGroup),
+
     allergies: profile.allergies || "None recorded",
+
     chronicIllnesses:
-      profile.chronicIllnesses?.length > 0 ? profile.chronicIllnesses : [],
+      profile.chronicIllnesses?.length > 0
+        ? profile.chronicIllnesses
+        : [],
+
     surgeries: profile.surgeries || "None recorded",
+
+    emergencyContacts:
+      profile.emergencyContacts?.map((contact) => ({
+        relation: contact.relation || "",
+        name: contact.name || "",
+        phone: contact.phone || "",
+      })) || [],
+
+    bloodDonorStatus:
+      formatValue(profile.bloodDonorStatus),
+
+    lastBloodDonation:
+      profile.lastBloodDonation || null,
   };
 }
 
@@ -218,6 +243,15 @@ assume missing information.
 
 PERSONAL PROFILE:
 ${JSON.stringify(aiContext.profile, null, 2)}
+
+Important:
+- Emergency contacts are real contacts supplied by the user.
+- Only recommend or mention these contacts when appropriate.
+- Blood donor status describes the user's own willingness/availability
+  to donate blood.
+- Last blood donation is the date of the user's most recent donation.
+- Do not infer anything about the user's eligibility to donate blood from
+  these fields.
 
 LIFESTYLE ASSESSMENT:
 ${JSON.stringify(aiContext.lifestyle, null, 2)}

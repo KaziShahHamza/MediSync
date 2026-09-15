@@ -21,11 +21,7 @@ function hasMeaningfulHealthData(data) {
       data.profile.height?.feet ||
       data.profile.height?.inches ||
       data.profile.allergies ||
-      data.profile.chronicIllnesses?.length ||
-      data.profile.smoking ||
-      data.profile.alcohol ||
-      data.profile.exercise ||
-      data.profile.diet);
+      data.profile.chronicIllnesses?.length);
 
   return Boolean(
     data.bloodPressure ||
@@ -262,9 +258,7 @@ router.post("/chats/:chatId/messages", auth, async (req, res) => {
   try {
     const { content, imageUrls = [] } = req.body;
 
-    const message = typeof content === "string"
-      ? content.trim()
-      : "";
+    const message = typeof content === "string" ? content.trim() : "";
 
     if (!message && imageUrls.length === 0) {
       return res.status(400).json({
@@ -316,14 +310,8 @@ router.post("/chats/:chatId/messages", auth, async (req, res) => {
     });
 
     // Generate a useful title from the first user message.
-    if (
-      chat.title === "New Chat" &&
-      message
-    ) {
-      chat.title =
-        message.length > 60
-          ? `${message.slice(0, 57)}...`
-          : message;
+    if (chat.title === "New Chat" && message) {
+      chat.title = message.length > 60 ? `${message.slice(0, 57)}...` : message;
     }
 
     await chat.save();
@@ -369,11 +357,5 @@ router.delete("/chats/:chatId", auth, async (req, res) => {
     });
   }
 });
-
-
-
-
-
-
 
 export default router;
