@@ -17,6 +17,7 @@ import aiRoutes from "./routes/ai.routes.js";
 import exportRoutes from "./routes/export.routes.js";
 import reportRoutes from "./routes/report.routes.js";
 import lifestyleRoutes from "./routes/lifestyle.routes.js";
+import bloodRoutes from "./routes/blood.routes.js";
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use("/api/prescriptions", prescriptionRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/lifestyle", lifestyleRoutes);
+app.use("/api/blood", bloodRoutes);
 
 const PORT = process.env.PORT || 5000;
 

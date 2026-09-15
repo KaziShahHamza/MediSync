@@ -261,7 +261,7 @@ export default function ProfileSummary({
           />
 
           <InfoItem
-            label="honorarium/conveyance? (সম্মানী/গাড়ি ভাড়া)"
+            label="honorarium/travel cost? (সম্মানী/গাড়ি ভাড়া)"
             value={formatCompensation(
               profile?.bloodDonationCompensation
             )}

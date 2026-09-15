@@ -4,7 +4,10 @@
 
 ```text
 medicine_2/
+├── 101.txt
 ├── client/
+│   ├── .gitignore
+│   ├── package-lock.json
 │   ├── eslint.config.js
 │   ├── index.html
 │   ├── package.json
@@ -21,8 +24,16 @@ medicine_2/
 │       │   │   ├── ChatInput.jsx
 │       │   │   └── ChatMessage.jsx
 │       │   ├── auth/
+│       │   │   └── AuthLayout.jsx
 │       │   ├── dashboard/
+│       │   │   ├── HealthSummaryCard.jsx
+│       │   │   ├── QuickLinkCard.jsx
+│       │   │   └── StatCard.jsx
 │       │   ├── profile/
+│       │   │   ├── ProfileInput.jsx
+│       │   │   ├── ProfileSection.jsx
+│       │   │   ├── ProfileSelect.jsx
+│       │   │   └── ProfileSummary.jsx
 │       │   ├── BMIChart.jsx
 │       │   ├── BMIForm.jsx
 │       │   ├── BMIResult.jsx
@@ -60,6 +71,8 @@ medicine_2/
 │       │   ├── days.json
 │       │   ├── degrees.json
 │       │   ├── designations.json
+│       │   ├── districtsData.js
+│       │   ├── districtsData_2.js
 │       │   ├── hospitals.json
 │       │   └── specialties.json
 │       ├── hooks/
@@ -81,6 +94,13 @@ medicine_2/
 │       │   ├── TestPage.jsx
 │       │   ├── TestReminderPage.jsx
 │       │   └── lifestyle/
+│       │       ├── AssessmentResults.jsx
+│       │       ├── LifestyleScore.jsx
+│       │       ├── QuestionnaireSection.jsx
+│       │       ├── ScoreHeader.jsx
+│       │       ├── lifestyleQuestions.js
+│       │       ├── lifestyleScoring.js
+│       │       └── styles.css
 │       └── utils/
 │           └── timeMap.js
 ├── .docs/
@@ -90,8 +110,12 @@ medicine_2/
 │   ├── DEVELOPMENT_GUIDE.md
 │   └── PROJECT_CONTEXT.md
 ├── server/
+│   ├── package-lock.json
 │   ├── package.json
 │   ├── server.js
+│   ├── fonts/
+│   │   ├── NotoSansBengali-Bold.ttf
+│   │   └── NotoSansBengali-Regular.ttf
 │   ├── middleware/
 │   │   └── auth.js
 │   ├── models/
@@ -123,6 +147,7 @@ medicine_2/
 │   │   ├── aiChatService.js
 │   │   ├── aiService.js
 │   │   ├── dashboardService.js
+│   │   ├── healthSummaryService.js
 │   │   ├── pdfService.js
 │   │   ├── prescriptionAiService.js
 │   │   └── reportAiService.js
@@ -291,7 +316,7 @@ The app is organized around feature-local contracts, not a global service layer.
 - Shared calculation logic for lifestyle assessment scoring.
 - Important for logic consistency across assessment pages and history.
 
-## 7. Dependency / Responsibility Notes
+## 6. Dependency / Responsibility Notes
 
 Page → Context → API → Route → Model
 
@@ -303,7 +328,7 @@ Examples:
 - `client/src/pages/Dashboard.jsx` → `LifestyleContext.jsx` + direct fetches → `/api/dashboard`, `/api/ai/summary`, `/api/export/health-report` → `server/routes/*` → `server/models/*` / `server/services/*`
 - `client/src/pages/Reports.jsx` → direct Cloudinary upload + API call → `POST /api/reports`, `POST /api/reports/:id/analyze` → `server/models/Report.js` → `server/services/reportAiService.js`
 
-## 8. Refactoring Hotspots
+## 7. Refactoring Hotspots
 
 - Repeated direct `fetch` + token code across pages and contexts.
 - `client/src/pages/Medicines.jsx`, `Reports.jsx`, and `Prescriptions.jsx` each contain image upload logic with similar patterns.
@@ -313,7 +338,7 @@ Examples:
 - The `Home.jsx` page retains placeholder content and is not yet a fully representative app page.
 - UI styling is broadly spread through utility classes and custom classes rather than a component library.
 
-## 9. Agent File-Inspection Strategy
+## 8. Agent File-Inspection Strategy
 
 Before changing a feature, inspect in this order:
 

@@ -722,7 +722,7 @@ export default function Settings() {
             </ProfileSelect>
 
             <ProfileSelect
-              label="Accepts honorarium/conveyance? (সম্মানী/গাড়ি ভাড়া)"
+              label="Accepts honorarium/travel cost? (সম্মানী/গাড়ি ভাড়া)"
               name="bloodDonationCompensation"
               value={form.bloodDonationCompensation}
               onChange={handleChange}

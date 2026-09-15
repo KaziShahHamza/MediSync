@@ -30,6 +30,7 @@ import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import LifestyleScore from "./pages/lifestyle/LifestyleScore";
 import Assistant from "./pages/Assistant";
+import BloodNeed from "./pages/BloodNeed";
 
 
 export default function App() {
@@ -61,6 +62,7 @@ export default function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<Signup />} />
                         <Route path="/lifestyle" element={<LifestyleScore />} />
+                        <Route path="/blood-need" element={<BloodNeed />} />
 
                         {/* Protected Routes */}
                         <Route

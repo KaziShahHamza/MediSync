@@ -1,3 +1,5 @@
+// client/src/data/districtsData.js
+
 export const districtsData = [
   {
     name: "Dhaka",

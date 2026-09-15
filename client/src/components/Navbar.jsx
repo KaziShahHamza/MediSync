@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Activity,
   ChevronDown,
+  Droplets,
   FileBarChart,
   FileImage,
   LayoutDashboard,
@@ -97,6 +98,17 @@ export default function Navbar() {
 
         <div className="hidden lg:flex items-center gap-1">
           {/* Public navigation */}
+
+          <Link
+            to="/blood-need"
+            className={`nav-link ${
+              isActive("/blood-need") ? "nav-link-active" : ""
+            }`}
+          >
+            <Droplets size={18} strokeWidth={2} />
+            <span>Blood Need</span>
+          </Link>
+
           {!user && (
             <>
               <Link
@@ -283,37 +295,60 @@ export default function Navbar() {
           MOBILE MENU
       ======================================================== */}
 
-      {user && mobileOpen && (
+      {mobileOpen && (
         <div className="navbar-mobile-menu lg:hidden">
           <nav className="container py-4">
             <div className="navbar-mobile-list">
-              {navItem("/dashboard", "Dashboard", LayoutDashboard)}
+              {navItem("/blood-need", "Blood Need", Droplets)}
 
-              {navItem("/health", "Health Overview", Activity)}
+              {user ? (
+                <>
+                  {navItem("/dashboard", "Dashboard", LayoutDashboard)}
 
-              {navItem("/medicines", "My Medicines", Pill)}
+                  {navItem("/health", "Health Overview", Activity)}
 
-              {navItem("/doctors", "My Doctors", Stethoscope)}
+                  {navItem("/medicines", "My Medicines", Pill)}
 
-              {navItem("/prescriptions", "My Prescriptions", FileImage)}
+                  {navItem("/doctors", "My Doctors", Stethoscope)}
 
-              {navItem("/reports", "My Reports", FileBarChart)}
+                  {navItem("/prescriptions", "My Prescriptions", FileImage)}
 
-              {navItem("/lifestyle", "Lifestyle", FileBarChart)}
+                  {navItem("/reports", "My Reports", FileBarChart)}
 
-              {navItem("/profile", "Profile", UserRound)}
+                  {navItem("/lifestyle", "Lifestyle", FileBarChart)}
 
-              {navItem("/settings", "Settings", Settings)}
+                  {navItem("/profile", "Profile", UserRound)}
 
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="nav-link navbar-mobile-logout"
-              >
-                <LogOut size={18} strokeWidth={2} />
+                  {navItem("/settings", "Settings", Settings)}
 
-                <span>Logout</span>
-              </button>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="nav-link navbar-mobile-logout"
+                  >
+                    <LogOut size={18} strokeWidth={2} />
+                    <span>Logout</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={handleNavigation}
+                    className="nav-link"
+                  >
+                    Login
+                  </Link>
+
+                  <Link
+                    to="/signup"
+                    onClick={handleNavigation}
+                    className="nav-link"
+                  >
+                    Create Account
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>
