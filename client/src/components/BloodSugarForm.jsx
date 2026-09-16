@@ -1,7 +1,10 @@
 // client/src/components/BloodSugarForm.jsx
 
 import { useMemo, useState } from "react";
-import { Droplets, Save } from "lucide-react";
+import { Droplets, Loader2, Save } from "lucide-react";
+
+const CRITICAL_LOW_GLUCOSE = 3.0;
+const CRITICAL_HIGH_GLUCOSE = 22.2;
 
 function formatDateLabel(date) {
   return date.toLocaleDateString("en-US", {
@@ -22,6 +25,7 @@ function formatDateValue(date) {
 export default function BloodSugarForm({ onAdd }) {
   const [glucose, setGlucose] = useState("");
   const [glucoseTiming, setGlucoseTiming] = useState("fasting");
+  const [isSaving, setIsSaving] = useState(false);
 
   const availableDates = useMemo(() => {
     const dates = [];
@@ -43,19 +47,34 @@ export default function BloodSugarForm({ onAdd }) {
 
   const [recordedAt, setRecordedAt] = useState(availableDates[0]?.value || "");
 
+  const numericGlucose = Number(glucose);
+
+  const isCritical =
+    glucose &&
+    (numericGlucose < CRITICAL_LOW_GLUCOSE ||
+      numericGlucose >= CRITICAL_HIGH_GLUCOSE);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!glucose || !glucoseTiming || !recordedAt) return;
+    if (!glucose || !glucoseTiming || !recordedAt || isSaving) return;
 
-    await onAdd({
-      type: "diabetes",
-      glucose,
-      glucoseTiming,
-      recordedAt,
-    });
+    setIsSaving(true);
 
-    setGlucose("");
+    try {
+      await onAdd({
+        type: "diabetes",
+        glucose,
+        glucoseTiming,
+        recordedAt,
+      });
+
+      setGlucose("");
+    } catch (error) {
+      console.error("Failed to save blood sugar:", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -115,9 +134,20 @@ export default function BloodSugarForm({ onAdd }) {
         Enter your blood glucose level in mmol/L.
       </p>
 
-      <button type="submit" className="btn-primary w-full">
-        <Save size={18} />
-        Save Blood Sugar
+      <button type="submit" className="btn-primary w-full" disabled={isSaving}>
+        {isSaving ? (
+          <>
+            <Loader2 size={18} className="animate-spin" />
+            {isCritical
+              ? "Emailing emergency contacts..."
+              : "Saving blood sugar..."}
+          </>
+        ) : (
+          <>
+            <Save size={18} />
+            Save Blood Sugar
+          </>
+        )}
       </button>
     </form>
   );

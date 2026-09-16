@@ -1,25 +1,41 @@
 // client/src/components/BloodPressureForm.jsx
 
 import { useState } from "react";
-import { HeartPulse, Save } from "lucide-react";
+import { HeartPulse, Loader2, Save } from "lucide-react";
+
+const CRITICAL_SYSTOLIC = 180;
+const CRITICAL_DIASTOLIC = 120;
 
 export default function BloodPressureForm({ onAdd }) {
   const [high, setHigh] = useState("");
   const [low, setLow] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const isCritical =
+    Number(high) > CRITICAL_SYSTOLIC ||
+    Number(low) > CRITICAL_DIASTOLIC;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!high || !low) return;
+    if (!high || !low || isSaving) return;
 
-    await onAdd({
-      type: "bp",
-      High: high,
-      Low: low,
-    });
+    setIsSaving(true);
 
-    setHigh("");
-    setLow("");
+    try {
+      await onAdd({
+        type: "bp",
+        High: high,
+        Low: low,
+      });
+
+      setHigh("");
+      setLow("");
+    } catch (error) {
+      console.error("Failed to save blood pressure:", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -33,7 +49,7 @@ export default function BloodPressureForm({ onAdd }) {
       </div>
 
       <div>
-        <label>Systolic Pressure</label>
+        <label>Systolic Pressure (High)</label>
 
         <input
           type="number"
@@ -45,7 +61,7 @@ export default function BloodPressureForm({ onAdd }) {
       </div>
 
       <div>
-        <label>Diastolic Pressure</label>
+        <label>Diastolic Pressure (Low)</label>
 
         <input
           type="number"
@@ -60,9 +76,24 @@ export default function BloodPressureForm({ onAdd }) {
         Normal range: below 120 / 80 mmHg
       </p>
 
-      <button type="submit" className="btn-primary w-full">
-        <Save size={18} />
-        Save Blood Pressure
+      <button
+        type="submit"
+        className="btn-primary w-full"
+        disabled={isSaving}
+      >
+        {isSaving ? (
+          <>
+            <Loader2 size={18} className="animate-spin" />
+            {isCritical
+              ? "Emailing emergency contacts..."
+              : "Saving blood pressure..."}
+          </>
+        ) : (
+          <>
+            <Save size={18} />
+            Save Blood Pressure
+          </>
+        )}
       </button>
     </form>
   );

@@ -55,7 +55,7 @@ function buildBloodSugarEmail({
 ${pronouns.possessive} blood sugar is ${level}:
 ${glucose} mmol/L
 
-Measurement: ${timing}
+Measurement Type: ${timing}
 
 Please check on ${pronouns.object} and help ${pronouns.object} get medical care if needed.`,
   };
