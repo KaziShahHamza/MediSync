@@ -1,3 +1,5 @@
+// client/src/pages/Assistant.jsx
+
 import { useEffect, useState } from "react";
 import { Menu, PanelLeft } from "lucide-react";
 import { useChatbot } from "../context/ChatbotContext";

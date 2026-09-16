@@ -1,4 +1,7 @@
+// client/src/components/assistant/ChatMessage.jsx
+
 import { Bot, User } from "lucide-react";
+import { openEmergencyWhatsApp } from "../../utils/emergencyWhatsApp";
 
 function formatTime(date) {
   if (!date) return "";
@@ -15,18 +18,56 @@ function formatTime(date) {
   });
 }
 
-function renderText(text) {
+function renderText(text, isUser) {
   if (!text) return null;
 
-  const lines = text.split("\n");
+  /*
+   * Only assistant messages get clickable phone numbers.
+   *
+   * Supports common Bangladesh formats such as:
+   * 01867052533
+   * 01867 052533
+   * +8801867052533
+   * 8801867052533
+   */
+  if (isUser) {
+    return text;
+  }
 
-  return lines.map((line, index) => (
-    <span key={index}>
-      {line}
+  const phoneRegex =
+    /(?:\+?880[\s-]?1[3-9][\s-]?\d{2}[\s-]?\d{6}|01[3-9][\s-]?\d{2}[\s-]?\d{6})/g;
 
-      {index < lines.length - 1 && <br />}
-    </span>
-  ));
+  const parts = [];
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(phoneRegex)) {
+    const phone = match[0];
+    const start = match.index;
+
+    if (start > lastIndex) {
+      parts.push(text.slice(lastIndex, start));
+    }
+
+    parts.push(
+      <button
+        key={`${phone}-${start}`}
+        type="button"
+        onClick={() => openEmergencyWhatsApp(phone)}
+        className="font-medium text-blue-600 underline decoration-blue-300 underline-offset-2 transition hover:text-blue-700 hover:decoration-blue-500"
+        title="Message this contact on WhatsApp"
+      >
+        {phone}
+      </button>
+    );
+
+    lastIndex = start + phone.length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts;
 }
 
 export default function ChatMessage({
@@ -87,27 +128,8 @@ export default function ChatMessage({
               : "rounded-tl-md border border-slate-200 bg-slate-50 text-slate-700"
           }`}
         >
-          {message.imageUrls?.length > 0 && (
-            <div
-              className={`mb-3 grid gap-2 ${
-                message.imageUrls.length > 1
-                  ? "grid-cols-2"
-                  : "grid-cols-1"
-              }`}
-            >
-              {message.imageUrls.map((url, index) => (
-                <img
-                  key={`${url}-${index}`}
-                  src={url}
-                  alt={`Attachment ${index + 1}`}
-                  className="max-h-64 w-full rounded-xl object-cover"
-                />
-              ))}
-            </div>
-          )}
-
           <div className="whitespace-pre-wrap break-words">
-            {renderText(message.content)}
+            {renderText(message.content, isUser)}
           </div>
         </div>
 

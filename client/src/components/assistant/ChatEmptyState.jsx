@@ -1,3 +1,5 @@
+// client/src/components/assistant/ChatEmptyState.jsx
+
 import {
   Activity,
   HeartPulse,

@@ -42,9 +42,12 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   const isDocumentsActive =
-    location.pathname === "/prescriptions" || location.pathname === "/reports" || location.pathname === "/medicines" || location.pathname === "/doctors";
+    location.pathname === "/prescriptions" ||
+    location.pathname === "/reports" ||
+    location.pathname === "/medicines" ||
+    location.pathname === "/doctors";
 
-    const ishealthActive =
+  const ishealthActive =
     location.pathname === "/health" || location.pathname === "/lifestyle";
 
   const isAccountActive =
@@ -118,7 +121,7 @@ export default function Navbar() {
             }`}
           >
             <Droplets size={18} strokeWidth={2} />
-            <span>Blood Need?</span>
+            <span>Need Blood?</span>
           </Link>
 
           {!user && (
@@ -184,7 +187,9 @@ export default function Navbar() {
                     to="/assistant"
                     onClick={handleNavigation}
                     className={`navbar-dropdown-item ${
-                      isActive("/assistant") ? "navbar-dropdown-item-active" : ""
+                      isActive("/assistant")
+                        ? "navbar-dropdown-item-active"
+                        : ""
                     }`}
                   >
                     <Sparkles size={17} />
@@ -347,6 +352,10 @@ export default function Navbar() {
 
           {!user ? (
             <>
+              <Link to="/blood-need" className="nav-link">
+                Need Blood?
+              </Link>
+
               <Link to="/login" className="nav-link">
                 Login
               </Link>
@@ -381,7 +390,7 @@ export default function Navbar() {
         <div className="navbar-mobile-menu lg:hidden">
           <nav className="container py-4">
             <div className="navbar-mobile-list">
-              {navItem("/blood-need", "Blood Need", Droplets)}
+              {navItem("/blood-need", "Need Blood?", Droplets)}
 
               {user ? (
                 <>

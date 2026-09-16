@@ -1,3 +1,5 @@
+// client/src/components/assistant/ChatInput.jsx
+
 import { useEffect, useRef, useState } from "react";
 import {
   ImagePlus,

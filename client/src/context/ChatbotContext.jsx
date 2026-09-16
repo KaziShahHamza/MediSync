@@ -1,3 +1,5 @@
+// client/src/context/ChatbotContext.jsx
+
 import {
   createContext,
   useCallback,

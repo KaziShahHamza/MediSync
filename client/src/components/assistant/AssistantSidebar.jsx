@@ -1,3 +1,5 @@
+// client/src/components/assistant/AssistantSidebar.jsx
+
 import {
   MessageSquare,
   Plus,

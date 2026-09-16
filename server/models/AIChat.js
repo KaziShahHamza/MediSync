@@ -1,3 +1,5 @@
+// server/models/AIChat.js
+
 import mongoose from "mongoose";
 
 const aiChatMessageSchema = new mongoose.Schema(
