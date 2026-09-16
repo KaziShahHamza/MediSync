@@ -5,6 +5,7 @@ import HealthLog from "../models/HealthLog.js";
 import auth from "../middleware/auth.js";
 
 import { syncHealthToAIChatData } from "../services/aiChatDataService.js";
+import { checkHealthLogForEmergency } from "../services/emergencyService.js";
 
 const router = express.Router();
 
@@ -13,7 +14,6 @@ router.post("/", auth, async (req, res) => {
   try {
     const { type, recordedAt } = req.body;
 
-    // Blood sugar records require a measurement date.
     if (type === "diabetes") {
       if (!recordedAt) {
         return res.status(400).json({
@@ -33,17 +33,34 @@ router.post("/", auth, async (req, res) => {
       user: req.userId,
     });
 
+    // Emergency processing must never cause the health
+    // measurement itself to fail.
+    try {
+      await checkHealthLogForEmergency(log);
+    } catch (error) {
+      console.error(
+        "Failed to process health emergency:",
+        error
+      );
+    }
+
     try {
       await syncHealthToAIChatData(req.userId);
     } catch (error) {
-      console.error("Failed to sync health to AI chat data:", error);
+      console.error(
+        "Failed to sync health to AI chat data:",
+        error
+      );
     }
 
     res.json(log);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({
+      message: err.message,
+    });
   }
 });
+
 
 // get user logs
 router.get("/", auth, async (req, res) => {
@@ -53,6 +70,7 @@ router.get("/", auth, async (req, res) => {
 
   res.json(logs);
 });
+
 
 // delete log
 router.delete("/:id", auth, async (req, res) => {

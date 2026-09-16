@@ -32,7 +32,7 @@ function generateHealthSummary(data) {
 
     if (glucoseValues.length > 0) {
       const hasElevatedReading = glucoseValues.some(
-        (glucose) => glucose >= 126,
+        (glucose) => glucose >= 7.0, // mmol/L threshold for elevated blood sugar
       );
 
       if (hasElevatedReading) {

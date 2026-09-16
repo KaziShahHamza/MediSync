@@ -1,3 +1,5 @@
+// sever/utils/healthCalculations.js
+
 export function calculateBMI(weightKg, height) {
   if (!weightKg || !height?.feet) {
     return null;

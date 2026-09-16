@@ -93,8 +93,8 @@ export default function BloodSugarForm({ onAdd }) {
           onChange={(e) => setGlucoseTiming(e.target.value)}
         >
           <option value="fasting">Fasting</option>
+          <option value="random">Before Meal / Random</option>
           <option value="postMeal">2 Hours After Meal</option>
-          <option value="random">Random</option>
         </select>
       </div>
 
@@ -105,14 +105,14 @@ export default function BloodSugarForm({ onAdd }) {
           type="number"
           step="0.1"
           className="input"
-          placeholder="Example: 95"
+          placeholder="Example: 7.4"
           value={glucose}
           onChange={(e) => setGlucose(e.target.value)}
         />
       </div>
 
       <p className="text-sm text-slate-500">
-        Enter your blood glucose level in mg/dL.
+        Enter your blood glucose level in mmol/L.
       </p>
 
       <button type="submit" className="btn-primary w-full">

@@ -13,6 +13,11 @@ medicine_2/
 │   ├── package.json
 │   ├── vite.config.js
 │   ├── assets/
+│   │   ├── health_report.png
+│   │   ├── icon.png
+│   │   ├── icon_2.png
+│   │   ├── icon_3.png
+│   │   └── logo.png
 │   └── src/
 │       ├── App.jsx
 │       ├── index.css
@@ -73,6 +78,7 @@ medicine_2/
 │       │   ├── designations.json
 │       │   ├── districtsData.js
 │       │   ├── districtsData_2.js
+│       │   ├── hospitalsData.js
 │       │   ├── hospitals.json
 │       │   └── specialties.json
 │       ├── hooks/
