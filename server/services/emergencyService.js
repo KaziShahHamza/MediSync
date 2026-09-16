@@ -1,5 +1,7 @@
 import Profile from "../models/Profile.js";
+import User from "../models/User.js";
 import EmergencyAlert from "../models/EmergencyAlert.js";
+
 import {
   sendEmergencyEmails,
 } from "./emergencyEmailService.js";
@@ -40,7 +42,7 @@ function checkBloodPressure(high, low) {
 
 /**
  * Determine whether a blood glucose reading
- * has reached a critical alert threshold.
+ * has reached a critical threshold.
  */
 function checkBloodSugar(glucose, glucoseTiming) {
   const value = Number(glucose);
@@ -77,22 +79,20 @@ function checkBloodSugar(glucose, glucoseTiming) {
 /**
  * Check a newly-created HealthLog for an emergency condition.
  */
-export async function checkHealthLogForEmergency(
-  healthLog
-) {
+export async function checkHealthLogForEmergency(healthLog) {
   let emergency = null;
 
   if (healthLog.type === "bp") {
     emergency = checkBloodPressure(
       healthLog.High,
-      healthLog.Low
+      healthLog.Low,
     );
   }
 
   if (healthLog.type === "diabetes") {
     emergency = checkBloodSugar(
       healthLog.glucose,
-      healthLog.glucoseTiming
+      healthLog.glucoseTiming,
     );
   }
 
@@ -104,7 +104,7 @@ export async function checkHealthLogForEmergency(
 
   const { type, triggerData } = emergency;
 
-  // Idempotency check.
+  // Prevent duplicate alerts for the same health log.
   const existingAlert = await EmergencyAlert.findOne({
     user: healthLog.user,
     healthLog: healthLog._id,
@@ -125,7 +125,7 @@ export async function checkHealthLogForEmergency(
 
   if (!profile) {
     console.warn(
-      `No profile found for emergency alert user ${healthLog.user}`
+      `No profile found for emergency alert user ${healthLog.user}`,
     );
 
     return {
@@ -149,6 +149,36 @@ export async function checkHealthLogForEmergency(
       emailed: false,
       reason:
         "No emergency contacts with email addresses were found.",
+    };
+  }
+
+  const user = await User.findById(healthLog.user)
+    .select("name")
+    .lean();
+
+  const userName = user?.name?.trim() || "Your contact";
+
+  /*
+   * Determine pronouns from the user's profile gender.
+   *
+   * Male   -> him / his
+   * Female -> her / her
+   * Other/missing -> them / their
+   */
+  let pronouns = {
+    object: "them",
+    possessive: "their",
+  };
+
+  if (profile.gender === "Male") {
+    pronouns = {
+      object: "him",
+      possessive: "his",
+    };
+  } else if (profile.gender === "Female") {
+    pronouns = {
+      object: "her",
+      possessive: "her",
     };
   }
 
@@ -187,6 +217,8 @@ export async function checkHealthLogForEmergency(
     recipients: emailRecipients,
     type,
     triggerData,
+    userName,
+    pronouns,
   });
 
   const successfulRecipients = emailResult.recipients || [];
@@ -231,3 +263,4 @@ export {
   checkBloodPressure,
   checkBloodSugar,
 };
+

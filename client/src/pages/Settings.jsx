@@ -31,6 +31,7 @@ const relationOptions = [
   "Wife",
   "Brother",
   "Sister",
+  "Friend",
   "Doctor",
   "Personal Health Assistant",
   "Other",

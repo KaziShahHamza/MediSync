@@ -8,60 +8,56 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-function buildBloodPressureEmail({ high, low }) {
+function buildBloodPressureEmail({
+  high,
+  low,
+  userName,
+  pronouns,
+}) {
   return {
-    subject: "MediSync Blood Pressure",
+    subject: `${userName}'s - Health Status`,
 
-    text: `This is an automated MediSync health alert.
+    text: `Please contact ${userName}.
 
-A blood pressure reading entered in MediSync has reached a critically high level.
-
-Blood pressure:
+${pronouns.possessive} blood pressure is very high:
 ${high}/${low} mmHg
 
-Please contact the person who listed you as an emergency contact and make sure they are safe.
-
-If they are experiencing concerning symptoms such as chest pain, shortness of breath, back pain, weakness, numbness, vision changes, or difficulty speaking, seek emergency medical care immediately.
-
-This message was generated automatically by MediSync based on the recorded health measurement.
-
-This email is not a medical diagnosis.`,
+Please check on ${pronouns.object} and help ${pronouns.object} get medical care if needed.`,
   };
 }
 
 function buildBloodSugarEmail({
   glucose,
   glucoseTiming,
+  direction,
+  userName,
+  pronouns,
 }) {
   const timingLabels = {
     fasting: "Fasting",
-    random: "Before Meal / Random",
-    postMeal: "2 Hours After Meal",
+    random: "Random",
+    postMeal: "2 hours after meal",
   };
 
   const timing =
     timingLabels[glucoseTiming] || "Blood glucose";
 
+  const level =
+    direction === "low"
+      ? "very low"
+      : "very high";
+
   return {
-    subject: "MediSync Blood Glucose",
+    subject: `${userName}'s - Health Status`,
 
-    text: `This is an automated MediSync health alert.
+    text: `Please contact ${userName}.
 
-A blood glucose reading entered in MediSync has reached a critically abnormal level.
-
-Blood glucose:
+${pronouns.possessive} blood sugar is ${level}:
 ${glucose} mmol/L
 
-Measurement type:
-${timing}
+Measurement: ${timing}
 
-Please contact the person who listed you as an emergency contact and make sure they are safe.
-
-If they are confused, unconscious, having seizures, having difficulty breathing, vomiting repeatedly, or otherwise seriously unwell, seek emergency medical care immediately.
-
-This message was generated automatically by MediSync based on the recorded health measurement.
-
-This email is not a medical diagnosis.`,
+Please check on ${pronouns.object} and help ${pronouns.object} get medical care if needed.`,
   };
 }
 
@@ -81,10 +77,12 @@ export async function sendEmergencyEmails({
   recipients,
   type,
   triggerData,
+  userName,
+  pronouns,
 }) {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     throw new Error(
-      "Gmail credentials are not configured in environment variables."
+      "Gmail credentials are not configured in environment variables.",
     );
   }
 
@@ -92,54 +90,58 @@ export async function sendEmergencyEmails({
     return {
       sent: false,
       recipients: [],
-      reason: "No emergency contacts with email addresses were found.",
+      reason:
+        "No emergency contacts with email addresses were found.",
     };
   }
 
-  const email = buildEmailContent(type, triggerData);
+  const email = buildEmailContent(type, {
+    ...triggerData,
+    userName,
+    pronouns,
+  });
 
-  const results = [];
+  try {
+    /*
+     * Send ONE email.
+     *
+     * The Gmail account is the primary recipient.
+     * All emergency contacts are hidden in BCC.
+     */
+    const info = await transporter.sendMail({
+      from: `"${process.env.GMAIL_USER}" <${process.env.GMAIL_USER}>`,
+      to: process.env.GMAIL_USER,
+      bcc: recipients,
+      subject: email.subject,
+      text: email.text,
+    });
 
-  for (const recipient of recipients) {
-    try {
-      const info = await transporter.sendMail({
-        from: `"MediSync " <${process.env.GMAIL_USER}>`,
-        to: recipient,
-        subject: email.subject,
-        text: email.text,
-      });
-
-      results.push({
+    return {
+      sent: true,
+      recipients,
+      failedRecipients: [],
+      results: recipients.map((recipient) => ({
         recipient,
         success: true,
         messageId: info.messageId,
-      });
-    } catch (error) {
-      console.error(
-        `Failed to send emergency email to ${recipient}:`,
-        error
-      );
+      })),
+    };
+  } catch (error) {
+    console.error(
+      "Failed to send emergency email:",
+      error,
+    );
 
-      results.push({
+    return {
+      sent: false,
+      recipients: [],
+      failedRecipients: recipients,
+      results: recipients.map((recipient) => ({
         recipient,
         success: false,
         error: error.message,
-      });
-    }
+      })),
+    };
   }
-
-  const successfulRecipients = results
-    .filter((result) => result.success)
-    .map((result) => result.recipient);
-
-  const failedRecipients = results
-    .filter((result) => !result.success)
-    .map((result) => result.recipient);
-
-  return {
-    sent: successfulRecipients.length > 0,
-    recipients: successfulRecipients,
-    failedRecipients,
-    results,
-  };
 }
+
