@@ -1,5 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays, ImagePlus, Pill, Upload, X } from "lucide-react";
+import {
+  CalendarDays,
+  ImagePlus,
+  Pill,
+  X,
+} from "lucide-react";
+
+import {
+  getDailyMedicinePieces,
+  getMonthlyMedicinePieces,
+  getPricePerPiece,
+  getMonthlyMedicineCost,
+  formatMedicinePrice,
+} from "../utils/medicineCalculations";
 
 const MONTHS = [
   { value: "0", label: "January" },
@@ -31,10 +44,56 @@ const DOSAGE_OPTIONS = [
   },
 ];
 
+const MEDICINE_TYPES = [
+  {
+    value: "tablet",
+    label: "Tablet",
+  },
+  {
+    value: "capsule",
+    label: "Capsule",
+  },
+  {
+    value: "syrup",
+    label: "Syrup",
+  },
+  {
+    value: "antibiotic",
+    label: "Antibiotic",
+  },
+  {
+    value: "injection",
+    label: "Injection",
+  },
+  {
+    value: "cream",
+    label: "Cream",
+  },
+  {
+    value: "ointment",
+    label: "Ointment",
+  },
+  {
+    value: "drops",
+    label: "Drops",
+  },
+  {
+    value: "inhaler",
+    label: "Inhaler",
+  },
+  {
+    value: "other",
+    label: "Other",
+  },
+];
+
 function getYearOptions() {
   const currentYear = new Date().getFullYear();
 
-  return Array.from({ length: 11 }, (_, index) => currentYear - 10 + index);
+  return Array.from(
+    { length: 11 },
+    (_, index) => currentYear - 10 + index,
+  );
 }
 
 function getDateParts(dateValue) {
@@ -65,7 +124,11 @@ function createDateFromParts(month, year) {
     return null;
   }
 
-  return new Date(Number(year), Number(month), 1);
+  return new Date(
+    Number(year),
+    Number(month),
+    1,
+  );
 }
 
 function formatDateForPreview(month, year) {
@@ -73,9 +136,30 @@ function formatDateForPreview(month, year) {
     return "";
   }
 
-  const selectedMonth = MONTHS.find((item) => item.value === month);
+  const selectedMonth = MONTHS.find(
+    (item) => item.value === month,
+  );
 
   return `${selectedMonth?.label || ""} ${year}`;
+}
+
+function normalizeDosage(dosage = []) {
+  if (!Array.isArray(dosage)) {
+    return [];
+  }
+
+  return dosage
+    .filter(
+      (item) =>
+        item &&
+        DOSAGE_OPTIONS.some(
+          (option) => option.value === item.time,
+        ),
+    )
+    .map((item) => ({
+      time: item.time,
+      quantity: Number(item.quantity) || 1,
+    }));
 }
 
 export default function MedicineForm({
@@ -85,17 +169,27 @@ export default function MedicineForm({
   loading = false,
 }) {
   const currentYear = new Date().getFullYear();
-  const yearOptions = useMemo(() => getYearOptions(), []);
+
+  const yearOptions = useMemo(
+    () => getYearOptions(),
+    [],
+  );
 
   const [name, setName] = useState("");
-  const [dosageTimes, setDosageTimes] = useState([]);
+  const [type, setType] = useState("tablet");
+  const [dosage, setDosage] = useState([]);
+
+  const [pricePerStrip, setPricePerStrip] = useState("");
+  const [piecesPerStrip, setPiecesPerStrip] = useState("");
 
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
 
   const [startMonth, setStartMonth] = useState("");
-  const [startYear, setStartYear] = useState(String(currentYear));
+  const [startYear, setStartYear] = useState(
+    String(currentYear),
+  );
 
   const [endMonth, setEndMonth] = useState("");
   const [endYear, setEndYear] = useState("");
@@ -105,7 +199,11 @@ export default function MedicineForm({
 
   function resetForm() {
     setName("");
-    setDosageTimes([]);
+    setType("tablet");
+    setDosage([]);
+
+    setPricePerStrip("");
+    setPiecesPerStrip("");
 
     setImageUrl("");
     setImageFile(null);
@@ -129,18 +227,41 @@ export default function MedicineForm({
 
   useEffect(() => {
     if (editing) {
-      const startParts = getDateParts(editing.startDate);
-      const endParts = getDateParts(editing.endDate);
+      const startParts = getDateParts(
+        editing.startDate,
+      );
+
+      const endParts = getDateParts(
+        editing.endDate,
+      );
 
       setName(editing.name || "");
-      setDosageTimes(editing.dosageTimes || []);
+      setType(editing.type || "tablet");
+
+      setDosage(
+        normalizeDosage(editing.dosage),
+      );
+
+      setPricePerStrip(
+        editing.pricePerStrip != null
+          ? String(editing.pricePerStrip)
+          : "",
+      );
+
+      setPiecesPerStrip(
+        editing.piecesPerStrip != null
+          ? String(editing.piecesPerStrip)
+          : "",
+      );
 
       setImageUrl(editing.imageUrl || "");
       setImageFile(null);
       setImagePreview(editing.imageUrl || "");
 
       setStartMonth(startParts.month);
-      setStartYear(startParts.year || String(currentYear));
+      setStartYear(
+        startParts.year || String(currentYear),
+      );
 
       setEndMonth(endParts.month);
       setEndYear(endParts.year);
@@ -174,17 +295,50 @@ export default function MedicineForm({
 
   /*
    * ========================================================
-   * FORM HELPERS
+   * DOSAGE HELPERS
    * ========================================================
    */
 
   function handleDosageChange(value) {
-    setDosageTimes((previous) =>
-      previous.includes(value)
-        ? previous.filter((item) => item !== value)
-        : [...previous, value],
+    setDosage((previous) => {
+      const existing = previous.find(
+        (item) => item.time === value,
+      );
+
+      if (existing) {
+        return previous.filter(
+          (item) => item.time !== value,
+        );
+      }
+
+      return [
+        ...previous,
+        {
+          time: value,
+          quantity: 1,
+        },
+      ];
+    });
+  }
+
+  function handleDosageQuantityChange(time, value) {
+    setDosage((previous) =>
+      previous.map((item) =>
+        item.time === time
+          ? {
+              ...item,
+              quantity: value,
+            }
+          : item,
+      ),
     );
   }
+
+  /*
+   * ========================================================
+   * IMAGE
+   * ========================================================
+   */
 
   function handleImageChange(event) {
     const file = event.target.files?.[0];
@@ -214,18 +368,55 @@ export default function MedicineForm({
     setImagePreview("");
   }
 
+  /*
+   * ========================================================
+   * DATE HELPERS
+   * ========================================================
+   */
+
   function handleStartYearChange(value) {
     setStartYear(value);
 
-    if (endYear && Number(endYear) < Number(value)) {
+    if (
+      endYear &&
+      Number(endYear) < Number(value)
+    ) {
       setEndYear("");
       setEndMonth("");
     }
   }
 
+  /*
+   * ========================================================
+   * LIVE COST CALCULATION
+   * ========================================================
+   */
+
+  const dailyPieces = getDailyMedicinePieces(dosage);
+
+  const monthlyPieces = getMonthlyMedicinePieces(
+    dosage,
+  );
+
+  const pricePerPiece = getPricePerPiece(
+    pricePerStrip,
+    piecesPerStrip,
+  );
+
+  const monthlyCost = getMonthlyMedicineCost(
+    dosage,
+    pricePerStrip,
+    piecesPerStrip,
+  );
+
+  /*
+   * ========================================================
+   * SUBMIT
+   * ========================================================
+   */
+
   async function handleSubmit(event) {
     event.preventDefault();
-
     setError("");
 
     if (!name.trim()) {
@@ -233,59 +424,142 @@ export default function MedicineForm({
       return;
     }
 
+    if (!type) {
+      setError("Please select a medicine type.");
+      return;
+    }
+
+    if (dosage.length === 0) {
+      setError("Please select at least one dosage time.");
+      return;
+    }
+
+    const hasInvalidDosage = dosage.some(
+      (item) =>
+        !Number.isFinite(Number(item.quantity)) ||
+        Number(item.quantity) <= 0,
+    );
+
+    if (hasInvalidDosage) {
+      setError(
+        "Each dosage quantity must be greater than zero.",
+      );
+      return;
+    }
+
+    if (
+      pricePerStrip === "" ||
+      !Number.isFinite(Number(pricePerStrip)) ||
+      Number(pricePerStrip) < 0
+    ) {
+      setError(
+        "Please enter a valid price per strip/পাতা.",
+      );
+      return;
+    }
+
+    if (
+      piecesPerStrip === "" ||
+      !Number.isFinite(Number(piecesPerStrip)) ||
+      Number(piecesPerStrip) <= 0
+    ) {
+      setError(
+        "Please enter the number of pieces per strip/পাতা.",
+      );
+      return;
+    }
+
     if (startMonth === "" || startYear === "") {
-      setError("Please select the start month and year.");
+      setError(
+        "Please select the start month and year.",
+      );
       return;
     }
 
-    if (!isActive && (endMonth === "" || endYear === "")) {
-      setError("Please select the end month and year.");
+    if (
+      !isActive &&
+      (endMonth === "" || endYear === "")
+    ) {
+      setError(
+        "Please select the end month and year.",
+      );
       return;
     }
 
-    const startDate = createDateFromParts(startMonth, startYear);
+    const startDate = createDateFromParts(
+      startMonth,
+      startYear,
+    );
 
-    const endDate = isActive ? null : createDateFromParts(endMonth, endYear);
+    const endDate = isActive
+      ? null
+      : createDateFromParts(endMonth, endYear);
 
     if (!startDate) {
       setError("Please select a valid start date.");
       return;
     }
 
-    if (!isActive && (!endDate || endDate < startDate)) {
-      setError("End month cannot be earlier than the start month.");
+    if (
+      !isActive &&
+      (!endDate || endDate < startDate)
+    ) {
+      setError(
+        "End month cannot be earlier than the start month.",
+      );
       return;
     }
 
     try {
       await onSave({
         name: name.trim(),
-        dosageTimes,
+        type,
+        dosage: dosage.map((item) => ({
+          time: item.time,
+          quantity: Number(item.quantity),
+        })),
+
+        pricePerStrip: Number(pricePerStrip),
+        piecesPerStrip: Number(piecesPerStrip),
+
         imageUrl,
         imageFile,
+
         startDate,
         endDate,
         isActive,
       });
 
-      // Reset only after successful save
       resetForm();
     } catch (error) {
-      console.error("Medicine form save error:", error);
+      console.error(
+        "Medicine form save error:",
+        error,
+      );
 
-      setError(error.message || "Failed to save medicine.");
+      setError(
+        error.message ||
+          "Failed to save medicine.",
+      );
     }
   }
 
-  const startPreview = formatDateForPreview(startMonth, startYear);
+  const startPreview = formatDateForPreview(
+    startMonth,
+    startYear,
+  );
 
-  const endPreview = formatDateForPreview(endMonth, endYear);
+  const endPreview = formatDateForPreview(
+    endMonth,
+    endYear,
+  );
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 card">
-      {/* ==================================================
-          FORM HEADER
-      ================================================== */}
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 card"
+    >
+      {/* FORM HEADER */}
 
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
@@ -294,7 +568,9 @@ export default function MedicineForm({
 
         <div>
           <h2 className="text-lg font-semibold text-slate-900">
-            {editing ? "Edit medicine" : "Add medicine"}
+            {editing
+              ? "Edit medicine"
+              : "Add medicine"}
           </h2>
 
           <p className="mt-1 text-sm text-slate-500">
@@ -303,9 +579,7 @@ export default function MedicineForm({
         </div>
       </div>
 
-      {/* ==================================================
-          MEDICINE NAME
-      ================================================== */}
+      {/* MEDICINE NAME */}
 
       <div>
         <label
@@ -319,7 +593,9 @@ export default function MedicineForm({
           id="medicine-name"
           type="text"
           value={name}
-          onChange={(event) => setName(event.target.value)}
+          onChange={(event) =>
+            setName(event.target.value)
+          }
           placeholder="Enter medicine name"
           className="input"
           required
@@ -327,45 +603,238 @@ export default function MedicineForm({
         />
       </div>
 
-      {/* ==================================================
-          DOSAGE TIMES
-      ================================================== */}
+      {/* MEDICINE TYPE */}
 
       <div>
-        <p className="mb-2 text-sm font-medium text-slate-700">Dosage time</p>
+        <label
+          htmlFor="medicine-type"
+          className="mb-2 block text-sm font-medium text-slate-700"
+        >
+          Medicine type
+        </label>
 
-        <div className="grid gap-3 sm:grid-cols-3">
+        <select
+          id="medicine-type"
+          value={type}
+          onChange={(event) =>
+            setType(event.target.value)
+          }
+          className="input"
+          disabled={loading}
+        >
+          {MEDICINE_TYPES.map((option) => (
+            <option
+              key={option.value}
+              value={option.value}
+            >
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* DOSAGE */}
+
+      <div>
+        <p className="mb-2 text-sm font-medium text-slate-700">
+          Dosage schedule
+        </p>
+
+        <div className="space-y-3">
           {DOSAGE_OPTIONS.map((option) => {
-            const selected = dosageTimes.includes(option.value);
+            const selected = dosage.find(
+              (item) =>
+                item.time === option.value,
+            );
 
             return (
-              <label
+              <div
                 key={option.value}
-                className={[
-                  "flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-3 text-sm transition",
+                className={`rounded-xl border p-3 transition ${
                   selected
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-blue-300",
-                ].join(" ")}
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-slate-200 bg-white"
+                }`}
               >
-                <input
-                  type="checkbox"
-                  checked={selected}
-                  onChange={() => handleDosageChange(option.value)}
-                  className="h-4 w-4 accent-blue-600"
-                  disabled={loading}
-                />
+                <label className="flex cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(selected)}
+                    onChange={() =>
+                      handleDosageChange(
+                        option.value,
+                      )
+                    }
+                    className="h-4 w-4 accent-blue-600"
+                    disabled={loading}
+                  />
 
-                <span>{option.label}</span>
-              </label>
+                  <span
+                    className={`text-sm font-medium ${
+                      selected
+                        ? "text-blue-700"
+                        : "text-slate-700"
+                    }`}
+                  >
+                    {option.label}
+                  </span>
+                </label>
+
+                {selected && (
+                  <div className="mt-3 ml-6 flex items-center gap-3">
+                    <label
+                      htmlFor={`dosage-${option.value}`}
+                      className="text-sm text-slate-600"
+                    >
+                      Pieces per dose
+                    </label>
+
+                    <input
+                      id={`dosage-${option.value}`}
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      value={selected.quantity}
+                      onChange={(event) =>
+                        handleDosageQuantityChange(
+                          option.value,
+                          event.target.value,
+                        )
+                      }
+                      className="input w-28"
+                      disabled={loading}
+                    />
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
       </div>
 
-      {/* ==================================================
-          MEDICINE IMAGE
-      ================================================== */}
+      {/* PRICING */}
+
+      <div>
+        <p className="mb-3 text-sm font-medium text-slate-700">
+          Medicine pricing
+        </p>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label
+              htmlFor="price-per-strip"
+              className="mb-2 block text-xs font-medium text-slate-600"
+            >
+              Price per strip/পাতা
+            </label>
+
+            <div className="relative">
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">
+                ৳
+              </span>
+
+              <input
+                id="price-per-strip"
+                type="number"
+                min="0"
+                step="0.01"
+                value={pricePerStrip}
+                onChange={(event) =>
+                  setPricePerStrip(
+                    event.target.value,
+                  )
+                }
+                placeholder="20"
+                className="input !pl-8"
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="pieces-per-strip"
+              className="mb-2 block text-xs font-medium text-slate-600"
+            >
+              Pieces per strip/পাতা
+            </label>
+
+            <input
+              id="pieces-per-strip"
+              type="number"
+              min="1"
+              step="1"
+              value={piecesPerStrip}
+              onChange={(event) =>
+                setPiecesPerStrip(
+                  event.target.value,
+                )
+              }
+              placeholder="10"
+              className="input"
+              disabled={loading}
+            />
+          </div>
+        </div>
+
+        {/* COST PREVIEW */}
+
+        {(pricePerStrip !== "" ||
+          piecesPerStrip !== "" ||
+          dosage.length > 0) && (
+          <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50 p-4">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div>
+                <p className="text-xs text-slate-500">
+                  Price per piece
+                </p>
+
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {formatMedicinePrice(
+                    pricePerPiece,
+                  )}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs text-slate-500">
+                  Daily usage
+                </p>
+
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {dailyPieces} pieces
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs text-slate-500">
+                  Monthly usage
+                </p>
+
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {monthlyPieces} pieces
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 border-t border-blue-100 pt-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                Estimated monthly medicine cost
+              </p>
+
+              <p className="mt-1 text-2xl font-bold text-blue-700">
+                {formatMedicinePrice(monthlyCost)}
+              </p>
+
+              <p className="mt-1 text-xs text-slate-500">
+                Based on 30 days of medicine use.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* MEDICINE IMAGE */}
 
       <div>
         <p className="mb-2 text-sm font-medium text-slate-700">
@@ -419,9 +888,7 @@ export default function MedicineForm({
         )}
       </div>
 
-      {/* ==================================================
-          START MONTH
-      ================================================== */}
+      {/* START MONTH */}
 
       <div>
         <label className="mb-2 block text-sm font-medium text-slate-700">
@@ -437,15 +904,24 @@ export default function MedicineForm({
 
             <select
               value={startMonth}
-              onChange={(event) => setStartMonth(event.target.value)}
+              onChange={(event) =>
+                setStartMonth(
+                  event.target.value,
+                )
+              }
               className="input !pl-10"
               required
               disabled={loading}
             >
-              <option value="">Select month</option>
+              <option value="">
+                Select month
+              </option>
 
               {MONTHS.map((month) => (
-                <option key={month.value} value={month.value}>
+                <option
+                  key={month.value}
+                  value={month.value}
+                >
                   {month.label}
                 </option>
               ))}
@@ -454,15 +930,24 @@ export default function MedicineForm({
 
           <select
             value={startYear}
-            onChange={(event) => handleStartYearChange(event.target.value)}
+            onChange={(event) =>
+              handleStartYearChange(
+                event.target.value,
+              )
+            }
             className="input"
             required
             disabled={loading}
           >
-            <option value="">Select year</option>
+            <option value="">
+              Select year
+            </option>
 
             {yearOptions.map((year) => (
-              <option key={year} value={year}>
+              <option
+                key={year}
+                value={year}
+              >
                 {year}
               </option>
             ))}
@@ -476,16 +961,16 @@ export default function MedicineForm({
         )}
       </div>
 
-      {/* ==================================================
-          CURRENTLY TAKING
-      ================================================== */}
+      {/* CURRENTLY TAKING */}
 
       <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
         <input
           type="checkbox"
           checked={isActive}
           onChange={(event) => {
-            setIsActive(event.target.checked);
+            setIsActive(
+              event.target.checked,
+            );
 
             if (event.target.checked) {
               setEndMonth("");
@@ -507,9 +992,7 @@ export default function MedicineForm({
         </div>
       </label>
 
-      {/* ==================================================
-          END MONTH
-      ================================================== */}
+      {/* END MONTH */}
 
       {!isActive && (
         <div>
@@ -526,15 +1009,24 @@ export default function MedicineForm({
 
               <select
                 value={endMonth}
-                onChange={(event) => setEndMonth(event.target.value)}
+                onChange={(event) =>
+                  setEndMonth(
+                    event.target.value,
+                  )
+                }
                 className="input !pl-10"
                 required
                 disabled={loading}
               >
-                <option value="">Select month</option>
+                <option value="">
+                  Select month
+                </option>
 
                 {MONTHS.map((month) => (
-                  <option key={month.value} value={month.value}>
+                  <option
+                    key={month.value}
+                    value={month.value}
+                  >
                     {month.label}
                   </option>
                 ))}
@@ -543,15 +1035,24 @@ export default function MedicineForm({
 
             <select
               value={endYear}
-              onChange={(event) => setEndYear(event.target.value)}
+              onChange={(event) =>
+                setEndYear(
+                  event.target.value,
+                )
+              }
               className="input"
               required
               disabled={loading}
             >
-              <option value="">Select year</option>
+              <option value="">
+                Select year
+              </option>
 
               {yearOptions.map((year) => (
-                <option key={year} value={year}>
+                <option
+                  key={year}
+                  value={year}
+                >
                   {year}
                 </option>
               ))}
@@ -566,9 +1067,7 @@ export default function MedicineForm({
         </div>
       )}
 
-      {/* ==================================================
-          ERROR
-      ================================================== */}
+      {/* ERROR */}
 
       {error && (
         <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
@@ -576,9 +1075,7 @@ export default function MedicineForm({
         </p>
       )}
 
-      {/* ==================================================
-          ACTIONS
-      ================================================== */}
+      {/* ACTIONS */}
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         {editing && (

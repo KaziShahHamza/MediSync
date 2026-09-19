@@ -16,11 +16,14 @@ export default function Dashboard() {
   const token = localStorage.getItem("token");
 
   const fetchMeds = async () => {
-    const res = await fetch(`${API_URL}/api/medicines`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const res = await fetch(
+      `${API_URL}/api/medicines`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
 
     setMeds(await res.json());
   };
@@ -33,10 +36,15 @@ export default function Dashboard() {
     const formData = new FormData();
 
     formData.append("file", file);
-    formData.append("upload_preset", UPLOAD_PRESET);
+    formData.append(
+      "upload_preset",
+      UPLOAD_PRESET,
+    );
 
-    // Optional: organize medicine images in Cloudinary.
-    formData.append("folder", "MediSync/medicines");
+    formData.append(
+      "folder",
+      "MediSync/medicines",
+    );
 
     const uploadRes = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
@@ -49,10 +57,14 @@ export default function Dashboard() {
     if (!uploadRes.ok) {
       const errorData = await uploadRes.json();
 
-      console.error("Cloudinary upload error:", errorData);
+      console.error(
+        "Cloudinary upload error:",
+        errorData,
+      );
 
       throw new Error(
-        errorData.error?.message || "Failed to upload medicine image.",
+        errorData.error?.message ||
+          "Failed to upload medicine image.",
       );
     }
 
@@ -67,17 +79,28 @@ export default function Dashboard() {
     try {
       let imageUrl = data.imageUrl || "";
 
-      // Upload only when a new image was selected.
       if (data.imageFile) {
-        imageUrl = await uploadMedicineImage(data.imageFile);
+        imageUrl =
+          await uploadMedicineImage(
+            data.imageFile,
+          );
       }
 
       const medicineData = {
         name: data.name,
-        dosageTimes: data.dosageTimes,
+        type: data.type,
+        dosage: data.dosage,
+
+        pricePerStrip: data.pricePerStrip,
+        piecesPerStrip: data.piecesPerStrip,
+
         imageUrl,
+
         startDate: data.startDate,
-        endDate: data.isActive ? null : data.endDate,
+        endDate: data.isActive
+          ? null
+          : data.endDate,
+
         isActive: data.isActive,
       };
 
@@ -99,26 +122,39 @@ export default function Dashboard() {
       const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(result.message || "Failed to save medicine.");
+        throw new Error(
+          result.message ||
+            "Failed to save medicine.",
+        );
       }
 
       setEditing(null);
+
       await fetchMeds();
     } catch (err) {
       console.error(err);
-      alert(err.message || "Failed to save medicine.");
+
+      alert(
+        err.message ||
+          "Failed to save medicine.",
+      );
+
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
   const deleteMedicine = async (id) => {
-    await fetch(`${API_URL}/api/medicines/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
+    await fetch(
+      `${API_URL}/api/medicines/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
 
     fetchMeds();
   };
@@ -126,31 +162,44 @@ export default function Dashboard() {
   return (
     <div className="container page">
       {/* Header */}
+
       <section className="page-header">
         <div>
           <div className="flex items-center gap-3">
             <div className="icon-wrapper">
-              <Pill size={24} className="text-blue-600" />
+              <Pill
+                size={24}
+                className="text-blue-600"
+              />
             </div>
 
-            <h1 className="page-title">Medicines</h1>
+            <h1 className="page-title">
+              Medicines
+            </h1>
           </div>
 
           <p className="mt-3 text-slate-600">
-            Manage your medications, dosage schedules, and treatment
+            Manage your medications, dosage
+            schedules, and treatment
             information.
           </p>
         </div>
       </section>
 
       {/* Content */}
-      <section className="grid lg:grid-cols-2 gap-8 items-start">
-        {/* Medicine List */}
-        <div>
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="section-title">My Medicines</h2>
 
-            <span className="badge">{meds.length} Total</span>
+      <section className="grid items-start gap-8 lg:grid-cols-2">
+        {/* Medicine List */}
+
+        <div>
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="section-title">
+              My Medicines
+            </h2>
+
+            <span className="badge">
+              {meds.length} Total
+            </span>
           </div>
 
           <MedicineList
@@ -161,19 +210,27 @@ export default function Dashboard() {
         </div>
 
         {/* Form */}
+
         <div>
-          <div className="flex items-center gap-2 mb-5">
-            <PlusCircle size={22} className="text-blue-600" />
+          <div className="mb-5 flex items-center gap-2">
+            <PlusCircle
+              size={22}
+              className="text-blue-600"
+            />
 
             <h2 className="section-title">
-              {editing ? "Edit Medicine" : "Add Medicine"}
+              {editing
+                ? "Edit Medicine"
+                : "Add Medicine"}
             </h2>
           </div>
 
           <MedicineForm
             onSave={saveMedicine}
             editing={editing}
-            onCancel={() => setEditing(null)}
+            onCancel={() =>
+              setEditing(null)
+            }
             loading={loading}
           />
         </div>

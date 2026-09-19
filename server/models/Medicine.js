@@ -2,6 +2,23 @@
 
 import mongoose from "mongoose";
 
+const dosageSchema = new mongoose.Schema(
+  {
+    time: {
+      type: String,
+      enum: ["morning", "noon", "night"],
+      required: true,
+    },
+
+    quantity: {
+      type: Number,
+      required: true,
+      min: 0.01,
+    },
+  },
+  { _id: false },
+);
+
 const medicineSchema = new mongoose.Schema(
   {
     user: {
@@ -16,10 +33,38 @@ const medicineSchema = new mongoose.Schema(
       trim: true,
     },
 
-    dosageTimes: {
-      type: [String],
-      enum: ["morning", "noon", "night"],
+    type: {
+      type: String,
+      enum: [
+        "tablet",
+        "capsule",
+        "syrup",
+        "antibiotic",
+        "injection",
+        "cream",
+        "ointment",
+        "drops",
+        "inhaler",
+        "other",
+      ],
+      default: "tablet",
+    },
+
+    dosage: {
+      type: [dosageSchema],
       default: [],
+    },
+
+    pricePerStrip: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    piecesPerStrip: {
+      type: Number,
+      required: true,
+      min: 1,
     },
 
     imageUrl: {

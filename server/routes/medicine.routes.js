@@ -60,6 +60,93 @@ function validateMedicineDates({ startDate, endDate, isActive }) {
 
 /*
  * ==========================================================
+ * MEDICINE VALIDATION
+ * ==========================================================
+ */
+
+const MEDICINE_TYPES = [
+  "tablet",
+  "capsule",
+  "syrup",
+  "antibiotic",
+  "injection",
+  "cream",
+  "ointment",
+  "drops",
+  "inhaler",
+  "other",
+];
+
+const DOSAGE_TIMES = ["morning", "noon", "night"];
+
+function validateMedicineData({
+  type,
+  dosage,
+  pricePerStrip,
+  piecesPerStrip,
+}) {
+  if (!MEDICINE_TYPES.includes(type)) {
+    return {
+      error: "Invalid medicine type.",
+    };
+  }
+
+  if (!Array.isArray(dosage)) {
+    return {
+      error: "Dosage information must be an array.",
+    };
+  }
+
+  for (const item of dosage) {
+    if (!item || !DOSAGE_TIMES.includes(item.time)) {
+      return {
+        error: "Invalid dosage time.",
+      };
+    }
+
+    const quantity = Number(item.quantity);
+
+    if (!Number.isFinite(quantity) || quantity <= 0) {
+      return {
+        error: "Dosage quantity must be greater than zero.",
+      };
+    }
+  }
+
+  const normalizedPricePerStrip = Number(pricePerStrip);
+  const normalizedPiecesPerStrip = Number(piecesPerStrip);
+
+  if (
+    !Number.isFinite(normalizedPricePerStrip) ||
+    normalizedPricePerStrip < 0
+  ) {
+    return {
+      error: "Price per strip/পাতা must be a valid number.",
+    };
+  }
+
+  if (
+    !Number.isFinite(normalizedPiecesPerStrip) ||
+    normalizedPiecesPerStrip <= 0
+  ) {
+    return {
+      error: "Pieces per strip/পাতা must be greater than zero.",
+    };
+  }
+
+  return {
+    type,
+    dosage: dosage.map((item) => ({
+      time: item.time,
+      quantity: Number(item.quantity),
+    })),
+    pricePerStrip: normalizedPricePerStrip,
+    piecesPerStrip: normalizedPiecesPerStrip,
+  };
+}
+
+/*
+ * ==========================================================
  * GET ALL MEDICINES
  * ==========================================================
  */
@@ -93,7 +180,10 @@ router.post("/", authMiddleware, async (req, res) => {
   try {
     const {
       name,
-      dosageTimes,
+      type = "tablet",
+      dosage = [],
+      pricePerStrip,
+      piecesPerStrip,
       imageUrl,
       startDate,
       endDate,
@@ -118,11 +208,31 @@ router.post("/", authMiddleware, async (req, res) => {
       });
     }
 
+    const validatedMedicine = validateMedicineData({
+      type,
+      dosage,
+      pricePerStrip,
+      piecesPerStrip,
+    });
+
+    if (validatedMedicine.error) {
+      return res.status(400).json({
+        message: validatedMedicine.error,
+      });
+    }
+
     const medicine = await Medicine.create({
       user: req.userId,
       name: name.trim(),
-      dosageTimes: Array.isArray(dosageTimes) ? dosageTimes : [],
+
+      type: validatedMedicine.type,
+      dosage: validatedMedicine.dosage,
+
+      pricePerStrip: validatedMedicine.pricePerStrip,
+      piecesPerStrip: validatedMedicine.piecesPerStrip,
+
       imageUrl: imageUrl?.trim() || "",
+
       startDate: validatedDates.startDate,
       endDate: validatedDates.endDate,
       isActive: Boolean(isActive),
@@ -156,7 +266,10 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
     const {
       name,
-      dosageTimes,
+      type = "tablet",
+      dosage = [],
+      pricePerStrip,
+      piecesPerStrip,
       imageUrl,
       startDate,
       endDate,
@@ -181,6 +294,19 @@ router.put("/:id", authMiddleware, async (req, res) => {
       });
     }
 
+    const validatedMedicine = validateMedicineData({
+      type,
+      dosage,
+      pricePerStrip,
+      piecesPerStrip,
+    });
+
+    if (validatedMedicine.error) {
+      return res.status(400).json({
+        message: validatedMedicine.error,
+      });
+    }
+
     const medicine = await Medicine.findOneAndUpdate(
       {
         _id: id,
@@ -188,8 +314,15 @@ router.put("/:id", authMiddleware, async (req, res) => {
       },
       {
         name: name.trim(),
-        dosageTimes: Array.isArray(dosageTimes) ? dosageTimes : [],
+
+        type: validatedMedicine.type,
+        dosage: validatedMedicine.dosage,
+
+        pricePerStrip: validatedMedicine.pricePerStrip,
+        piecesPerStrip: validatedMedicine.piecesPerStrip,
+
         imageUrl: imageUrl?.trim() || "",
+
         startDate: validatedDates.startDate,
         endDate: validatedDates.endDate,
         isActive: Boolean(isActive),

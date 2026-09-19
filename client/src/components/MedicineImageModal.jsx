@@ -8,29 +8,82 @@ import {
   CalendarDays,
   Pill,
   ImageOff,
+  CircleDollarSign,
 } from "lucide-react";
+
+import {
+  getMonthlyMedicineCost,
+  getMonthlyMedicinePieces,
+  getPricePerPiece,
+  formatMedicinePrice,
+} from "../utils/medicineCalculations";
 
 const formatDate = (date) => {
   if (!date) return "—";
 
-  return new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(date));
+  return new Intl.DateTimeFormat(
+    "en-US",
+    {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    },
+  ).format(new Date(date));
 };
 
-export default function MedicineImageModal({ medicine, onClose }) {
+const getMedicineTypeLabel = (type) => {
+  const labels = {
+    tablet: "Tablet",
+    capsule: "Capsule",
+    syrup: "Syrup",
+    antibiotic: "Antibiotic",
+    injection: "Injection",
+    cream: "Cream",
+    ointment: "Ointment",
+    drops: "Drops",
+    inhaler: "Inhaler",
+    other: "Other",
+  };
+
+  return labels[type] || "Other";
+};
+
+export default function MedicineImageModal({
+  medicine,
+  onClose,
+}) {
   const [zoom, setZoom] = useState(1);
 
   if (!medicine) return null;
 
+  const monthlyPieces =
+    getMonthlyMedicinePieces(
+      medicine.dosage,
+    );
+
+  const pricePerPiece =
+    getPricePerPiece(
+      medicine.pricePerStrip,
+      medicine.piecesPerStrip,
+    );
+
+  const monthlyCost =
+    getMonthlyMedicineCost(
+      medicine.dosage,
+      medicine.pricePerStrip,
+      medicine.piecesPerStrip,
+    );
+
   const zoomIn = () => {
-    setZoom((prev) => Math.min(prev + 0.25, 3));
+    setZoom((prev) =>
+      Math.min(prev + 0.25, 3),
+    );
   };
 
   const zoomOut = () => {
-    setZoom((prev) => Math.max(prev - 0.25, 0.5));
+    setZoom((prev) =>
+      Math.max(prev - 0.25, 0.5),
+    );
   };
 
   const resetZoom = () => {
@@ -50,14 +103,20 @@ export default function MedicineImageModal({ medicine, onClose }) {
     >
       <div
         className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) =>
+          e.stopPropagation()
+        }
       >
         {/* Header */}
+
         <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-6 py-4">
           <div className="min-w-0">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50">
-                <Pill size={20} className="text-blue-600" />
+                <Pill
+                  size={20}
+                  className="text-blue-600"
+                />
               </div>
 
               <div className="min-w-0">
@@ -73,6 +132,7 @@ export default function MedicineImageModal({ medicine, onClose }) {
           </div>
 
           {/* Controls */}
+
           <div className="ml-4 flex shrink-0 items-center gap-1">
             <button
               type="button"
@@ -119,8 +179,10 @@ export default function MedicineImageModal({ medicine, onClose }) {
         </div>
 
         {/* Content */}
+
         <div className="grid min-h-0 flex-1 lg:grid-cols-[1fr_320px]">
           {/* Image Preview */}
+
           <div className="image-preview-scroll flex min-h-[50vh] items-start justify-center overflow-auto bg-slate-100 p-6 lg:h-[70vh]">
             {medicine.imageUrl ? (
               <img
@@ -130,7 +192,8 @@ export default function MedicineImageModal({ medicine, onClose }) {
                 style={{
                   width: `${zoom * 100}%`,
                   maxWidth: "none",
-                  transformOrigin: "top center",
+                  transformOrigin:
+                    "top center",
                 }}
               />
             ) : (
@@ -142,7 +205,8 @@ export default function MedicineImageModal({ medicine, onClose }) {
                   />
 
                   <p className="mt-3 text-sm text-slate-500">
-                    No medicine image available
+                    No medicine image
+                    available
                   </p>
                 </div>
               </div>
@@ -150,6 +214,7 @@ export default function MedicineImageModal({ medicine, onClose }) {
           </div>
 
           {/* Medicine Information */}
+
           <aside className="overflow-auto border-l border-slate-200 bg-white p-6">
             <h3 className="text-lg font-semibold text-slate-900">
               Medicine Information
@@ -157,6 +222,7 @@ export default function MedicineImageModal({ medicine, onClose }) {
 
             <div className="mt-5 space-y-5">
               {/* Medicine Name */}
+
               <div>
                 <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
                   Medicine
@@ -167,38 +233,154 @@ export default function MedicineImageModal({ medicine, onClose }) {
                 </p>
               </div>
 
-              {/* Dosage Times */}
+              {/* Type */}
+
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  Type
+                </p>
+
+                <p className="mt-1 text-sm font-medium text-slate-800">
+                  {getMedicineTypeLabel(
+                    medicine.type,
+                  )}
+                </p>
+              </div>
+
+              {/* Dosage */}
+
               <div>
                 <div className="flex items-center gap-2">
-                  <Clock3 size={17} className="text-blue-600" />
+                  <Clock3
+                    size={17}
+                    className="text-blue-600"
+                  />
 
                   <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
                     Dosage Schedule
                   </p>
                 </div>
 
-                {medicine.dosageTimes?.length > 0 ? (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {medicine.dosageTimes.map((time) => (
-                      <span
-                        key={time}
-                        className="rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700"
-                      >
-                        {time.charAt(0).toUpperCase() + time.slice(1)}
-                      </span>
-                    ))}
+                {medicine.dosage?.length >
+                0 ? (
+                  <div className="mt-2 space-y-2">
+                    {medicine.dosage.map(
+                      (item) => (
+                        <div
+                          key={item.time}
+                          className="flex items-center justify-between rounded-lg bg-blue-50 px-3 py-2"
+                        >
+                          <span className="text-sm font-medium text-blue-700">
+                            {item.time
+                              .charAt(0)
+                              .toUpperCase() +
+                              item.time.slice(
+                                1,
+                              )}
+                          </span>
+
+                          <span className="text-sm font-semibold text-blue-700">
+                            {item.quantity}{" "}
+                            pieces
+                          </span>
+                        </div>
+                      ),
+                    )}
                   </div>
                 ) : (
                   <p className="mt-2 text-sm text-slate-500">
-                    No dosage schedule recorded
+                    No dosage schedule
+                    recorded
                   </p>
                 )}
               </div>
 
-              {/* Treatment Period */}
+              {/* Pricing */}
+
               <div>
                 <div className="flex items-center gap-2">
-                  <CalendarDays size={17} className="text-blue-600" />
+                  <CircleDollarSign
+                    size={17}
+                    className="text-blue-600"
+                  />
+
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                    Pricing
+                  </p>
+                </div>
+
+                <div className="mt-3 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-500">
+                      Price per strip/পাতা
+                    </span>
+
+                    <span className="text-sm font-medium text-slate-800">
+                      {formatMedicinePrice(
+                        medicine.pricePerStrip,
+                      )}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-500">
+                      Pieces per strip/পাতা
+                    </span>
+
+                    <span className="text-sm font-medium text-slate-800">
+                      {
+                        medicine.piecesPerStrip
+                      }
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-500">
+                      Price per piece
+                    </span>
+
+                    <span className="text-sm font-medium text-slate-800">
+                      {formatMedicinePrice(
+                        pricePerPiece,
+                      )}
+                    </span>
+                  </div>
+
+                  <div className="border-t border-slate-200 pt-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-slate-600">
+                        Monthly usage
+                      </span>
+
+                      <span className="text-sm font-semibold text-slate-800">
+                        {monthlyPieces}{" "}
+                        pieces
+                      </span>
+                    </div>
+
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="text-sm font-medium text-slate-600">
+                        Monthly cost
+                      </span>
+
+                      <span className="text-lg font-bold text-blue-700">
+                        {formatMedicinePrice(
+                          monthlyCost,
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Treatment Period */}
+
+              <div>
+                <div className="flex items-center gap-2">
+                  <CalendarDays
+                    size={17}
+                    className="text-blue-600"
+                  />
 
                   <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
                     Treatment Period
@@ -207,15 +389,21 @@ export default function MedicineImageModal({ medicine, onClose }) {
 
                 <div className="mt-3 space-y-3">
                   <div>
-                    <p className="text-xs text-slate-400">Started</p>
+                    <p className="text-xs text-slate-400">
+                      Started
+                    </p>
 
                     <p className="mt-1 text-sm font-medium text-slate-800">
-                      {formatDate(medicine.startDate)}
+                      {formatDate(
+                        medicine.startDate,
+                      )}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-slate-400">Status</p>
+                    <p className="text-xs text-slate-400">
+                      Status
+                    </p>
 
                     <p
                       className={`mt-1 text-sm font-medium ${
@@ -230,25 +418,33 @@ export default function MedicineImageModal({ medicine, onClose }) {
                     </p>
                   </div>
 
-                  {!medicine.isActive && medicine.endDate && (
-                    <div>
-                      <p className="text-xs text-slate-400">Ended</p>
+                  {!medicine.isActive &&
+                    medicine.endDate && (
+                      <div>
+                        <p className="text-xs text-slate-400">
+                          Ended
+                        </p>
 
-                      <p className="mt-1 text-sm font-medium text-slate-800">
-                        {formatDate(medicine.endDate)}
-                      </p>
-                    </div>
-                  )}
+                        <p className="mt-1 text-sm font-medium text-slate-800">
+                          {formatDate(
+                            medicine.endDate,
+                          )}
+                        </p>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
 
             {/* Disclaimer */}
+
             <div className="mt-8 border-t border-slate-200 pt-4">
               <p className="text-xs leading-5 text-slate-400">
-                Medicine information shown here is based on the record you
-                saved in MediSync. Always follow your healthcare professional's
-                instructions.
+                Medicine information shown
+                here is based on the record
+                you saved in MediSync. Always
+                follow your healthcare
+                professional's instructions.
               </p>
             </div>
           </aside>
