@@ -1,5 +1,3 @@
-// server/models/Profile.js
-
 import mongoose from "mongoose";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,6 +46,13 @@ const profileSchema = new mongoose.Schema(
       ref: "User",
       required: true,
       unique: true,
+    },
+
+    // Profile photo
+    profilePhotoUrl: {
+      type: String,
+      default: "",
+      trim: true,
     },
 
     // Personal information
@@ -136,7 +141,17 @@ const profileSchema = new mongoose.Schema(
       trim: true,
     },
 
+    // Present location
     location: {
+      streetAddress: {
+        type: String,
+        default: "",
+        trim: true,
+        maxlength: 300,
+      },
+
+      // Keep these fields unchanged.
+      // They are required for blood donor search.
       district: {
         type: String,
         default: "",
@@ -178,6 +193,8 @@ profileSchema.pre("validate", function () {
     );
   }
 
+  // Do NOT change this.
+  // Blood donor search depends on district and upazila.
   if (isDonor) {
     if (!this.location?.district) {
       this.invalidate("location.district", "Please select your district.");

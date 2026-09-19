@@ -1,11 +1,16 @@
 // client/src/pages/Settings.jsx
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useProfile } from "../context/ProfileContext";
 import ProfileSection from "../components/profile/ProfileSection";
 import ProfileInput from "../components/profile/ProfileInput";
 import ProfileSelect from "../components/profile/ProfileSelect";
 import { districtsData } from "../data/districtsData";
+import { Camera, Trash2, Upload } from "lucide-react";
+
+const API_URL = import.meta.env.VITE_API_URL;
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 const illnessOptions = [
   "Diabetes (ডায়াবেটিস)",
@@ -75,6 +80,12 @@ const initialForm = {
 
   bloodGroup: "",
 
+  location: {
+    district: "",
+    upazila: "",
+    streetAddress: "",
+  },
+
   allergies: "",
   chronicIllnesses: [],
   surgeries: "",
@@ -90,14 +101,7 @@ const initialForm = {
   },
 
   bloodDonationContactNumber: "",
-
-  location: {
-    district: "",
-    upazila: "",
-  },
 };
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 function getDonationMonthYear(value) {
   if (!value) {
@@ -130,12 +134,30 @@ function buildDonationDate(month, year) {
   return new Date(Date.UTC(Number(year), Number(month) - 1, 1)).toISOString();
 }
 
+function getInitials(name) {
+  if (!name?.trim()) {
+    return "?";
+  }
+
+  const parts = name.trim().split(/\s+/);
+
+  if (parts.length === 1) {
+    return parts[0].charAt(0).toUpperCase();
+  }
+
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+}
+
 export default function Settings() {
   const { profile, userInfo, fetchProfile, setProfile, setUserInfo, loading } =
     useProfile();
 
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
+
+  const [photoLoading, setPhotoLoading] = useState(false);
+
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (!profile && !userInfo) return;
@@ -155,13 +177,17 @@ export default function Settings() {
       },
 
       bloodGroup: profile?.bloodGroup || "",
+
       location: {
         district: profile?.location?.district || "",
         upazila: profile?.location?.upazila || "",
+        streetAddress: profile?.location?.streetAddress || "",
       },
 
       allergies: profile?.allergies || "",
+
       chronicIllnesses: profile?.chronicIllnesses || [],
+
       surgeries: profile?.surgeries || "",
 
       emergencyContacts:
@@ -220,8 +246,8 @@ export default function Settings() {
       if (field === "district") {
         return {
           ...prev,
-
           location: {
+            ...prev.location,
             district: value,
             upazila: "",
           },
@@ -230,7 +256,6 @@ export default function Settings() {
 
       return {
         ...prev,
-
         location: {
           ...prev.location,
           [field]: value,
@@ -326,6 +351,7 @@ export default function Settings() {
       const selectedDate = new Date(Number(year), Number(month) - 1, 1);
 
       const now = new Date();
+
       const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
       if (selectedDate > currentMonth) {
@@ -335,6 +361,133 @@ export default function Settings() {
 
     return null;
   }
+
+  // =========================
+  // PROFILE PHOTO UPLOAD
+  // =========================
+
+  async function handlePhotoSelect(e) {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Profile photo must be smaller than 5 MB.");
+      return;
+    }
+
+    setPhotoLoading(true);
+
+    try {
+      const formData = new FormData();
+
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
+
+      formData.append("folder", "MediSync/profile-photos");
+
+      const uploadRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      if (!uploadRes.ok) {
+        throw new Error("Failed to upload profile photo.");
+      }
+
+      const uploadData = await uploadRes.json();
+
+      const token = localStorage.getItem("token");
+
+      const saveRes = await fetch(`${API_URL}/api/profile/photo`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          profilePhotoUrl: uploadData.secure_url,
+
+          profilePhotoPublicId: uploadData.public_id,
+        }),
+      });
+
+      const saveData = await saveRes.json();
+
+      if (!saveRes.ok) {
+        throw new Error(saveData.message || "Failed to save profile photo.");
+      }
+
+      setUserInfo(saveData.user);
+
+      alert("Profile photo updated successfully.");
+    } catch (err) {
+      console.error("Profile photo upload failed:", err);
+
+      alert(err.message || "Failed to update profile photo.");
+    } finally {
+      setPhotoLoading(false);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  }
+
+  // =========================
+  // REMOVE PROFILE PHOTO
+  // =========================
+
+  async function handleRemovePhoto() {
+    if (!userInfo?.profilePhotoUrl) {
+      return;
+    }
+
+    const confirmed = window.confirm("Remove your profile photo?");
+
+    if (!confirmed) return;
+
+    setPhotoLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${API_URL}/api/profile/photo`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to remove profile photo.");
+      }
+
+      setUserInfo(data.user);
+
+      alert("Profile photo removed.");
+    } catch (err) {
+      console.error("Profile photo removal failed:", err);
+
+      alert(err.message || "Failed to remove profile photo.");
+    } finally {
+      setPhotoLoading(false);
+    }
+  }
+
+  // =========================
+  // SAVE PROFILE
+  // =========================
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -349,6 +502,7 @@ export default function Settings() {
     setSaving(true);
 
     const token = localStorage.getItem("token");
+
     const method = profile ? "PUT" : "POST";
 
     const payload = {
@@ -374,8 +528,11 @@ export default function Settings() {
 
       emergencyContacts: form.emergencyContacts.map((contact) => ({
         relation: contact.relation.trim(),
+
         name: contact.name.trim(),
+
         phone: contact.phone.trim(),
+
         email: contact.email.trim(),
       })),
 
@@ -390,7 +547,10 @@ export default function Settings() {
 
       location: {
         district: form.location.district,
+
         upazila: form.location.upazila,
+
+        streetAddress: form.location.streetAddress.trim(),
       },
 
       bloodDonationContactNumber: form.bloodDonationContactNumber.trim(),
@@ -401,6 +561,7 @@ export default function Settings() {
         method,
         headers: {
           "Content-Type": "application/json",
+
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
@@ -427,6 +588,7 @@ export default function Settings() {
       }
     } catch (err) {
       console.error(err);
+
       alert("Something went wrong.");
     } finally {
       setSaving(false);
@@ -441,6 +603,8 @@ export default function Settings() {
     );
   }
 
+  const hasPhoto = Boolean(userInfo?.profilePhotoUrl);
+
   return (
     <div className="continer-profile-setting-page py-10">
       <div className="mb-10">
@@ -452,7 +616,82 @@ export default function Settings() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Personal Information */}
+        {/* =========================
+            PROFILE PHOTO
+        ========================== */}
+
+        <ProfileSection
+          title="Profile Photo"
+          description="Add a photo so your profile is easier to recognize."
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+            {/* Avatar */}
+            <div className="shrink-0">
+              {hasPhoto ? (
+                <img
+                  src={userInfo.profilePhotoUrl}
+                  alt="Profile"
+                  className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-md"
+                />
+              ) : (
+                <div className="w-28 h-28 rounded-full bg-slate-100 border-4 border-white shadow-md flex items-center justify-center">
+                  <span className="text-3xl font-semibold text-slate-500">
+                    {getInitials(userInfo?.name)}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Controls */}
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={photoLoading}
+                  className="btn-primary flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {hasPhoto ? <Camera size={17} /> : <Upload size={17} />}
+
+                  {photoLoading
+                    ? "Processing..."
+                    : hasPhoto
+                      ? "Change Photo"
+                      : "Add Photo"}
+                </button>
+
+                {hasPhoto && (
+                  <button
+                    type="button"
+                    onClick={handleRemovePhoto}
+                    disabled={photoLoading}
+                    className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <Trash2 size={17} />
+                    Remove Photo
+                  </button>
+                )}
+              </div>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/jpg,image/webp"
+                onChange={handlePhotoSelect}
+                className="hidden"
+              />
+
+              <p className="text-sm text-slate-500">
+                JPG, PNG or WebP. Maximum file size: 5 MB.
+              </p>
+            </div>
+          </div>
+        </ProfileSection>
+
+        {/* =========================
+            PERSONAL INFORMATION
+        ========================== */}
+
         <ProfileSection
           title="Personal Information"
           description="Basic details used for your health profile."
@@ -492,8 +731,11 @@ export default function Settings() {
               onChange={handleChange}
             >
               <option value="">Select</option>
+
               <option value="Male">Male</option>
+
               <option value="Female">Female</option>
+
               <option value="Other">Other</option>
             </ProfileSelect>
 
@@ -537,17 +779,64 @@ export default function Settings() {
               ))}
             </ProfileSelect>
 
-            <ProfileInput
-              label="Location"
-              name="location"
-              value={form.location}
-              onChange={handleChange}
-              placeholder="e.g. Mirpur, Dhaka"
-            />
+            {/* Street address */}
+            <div className="col-span-2">
+              <ProfileInput
+                label="Street Address"
+                name="streetAddress"
+                value={form.location.streetAddress}
+                onChange={(e) =>
+                  handleLocationChange("streetAddress", e.target.value)
+                }
+                placeholder="House/Road, Area, Village, etc."
+              />
+
+              <p className="text-xs text-slate-500 mt-2">
+                Your street address is private and will only be used in your
+                emergency card.
+              </p>
+            </div>
+
+            <ProfileSelect
+              label="Upazila / Sub-district"
+              value={form.location.upazila}
+              onChange={(e) => handleLocationChange("upazila", e.target.value)}
+              disabled={!form.location.district}
+            >
+              <option value="">
+                {form.location.district
+                  ? "Select upazila"
+                  : "Select district first"}
+              </option>
+
+              {availableUpazilas.map((upazila) => (
+                <option key={upazila} value={upazila}>
+                  {upazila}
+                </option>
+              ))}
+            </ProfileSelect>
+
+            {/* Zila / Upazila */}
+            <ProfileSelect
+              label="District / Zila"
+              value={form.location.district}
+              onChange={(e) => handleLocationChange("district", e.target.value)}
+            >
+              <option value="">Select district</option>
+
+              {districtsData.map((district) => (
+                <option key={district.name} value={district.name}>
+                  {district.name}
+                </option>
+              ))}
+            </ProfileSelect>
           </div>
         </ProfileSection>
 
-        {/* Medical Information */}
+        {/* =========================
+            MEDICAL INFORMATION
+        ========================== */}
+
         <ProfileSection
           title="Medical Information"
           description="Important medical history."
@@ -575,6 +864,7 @@ export default function Settings() {
           </div>
 
           <label className="block text-sm font-medium mt-5">Allergies</label>
+
           <input
             type="text"
             name="allergies"
@@ -585,6 +875,7 @@ export default function Settings() {
           />
 
           <label className="block text-sm font-medium mt-5">Surgeries</label>
+
           <input
             type="text"
             name="surgeries"
@@ -595,7 +886,10 @@ export default function Settings() {
           />
         </ProfileSection>
 
-        {/* Emergency Contacts */}
+        {/* =========================
+            EMERGENCY CONTACTS
+        ========================== */}
+
         <ProfileSection
           title="Emergency Contacts"
           description="People who can be contacted when you need urgent support."
@@ -699,7 +993,10 @@ export default function Settings() {
           </div>
         </ProfileSection>
 
-        {/* Blood Donation */}
+        {/* =========================
+            BLOOD DONATION
+        ========================== */}
+
         <ProfileSection
           title="Blood Donation"
           description="Manage your blood donation availability and contact information."
@@ -722,18 +1019,21 @@ export default function Settings() {
               </option>
             </ProfileSelect>
 
-            <ProfileSelect
-              label="Accepts honorarium/travel cost? (সম্মানী/গাড়ি ভাড়া)"
-              name="bloodDonationCompensation"
-              value={form.bloodDonationCompensation}
-              onChange={handleChange}
-              disabled={!["yes", "willingly"].includes(form.bloodDonorStatus)}
-            >
-              <option value="">Select</option>
-              <option value="500">Yes</option>
-              {/* <option value="1000">1000 Tk</option> */}
-              <option value="none">No</option>
-            </ProfileSelect>
+            <div>
+              {/* Blood donation contact */}
+              <ProfileInput
+                label="Contact Number"
+                type="tel"
+                name="bloodDonationContactNumber"
+                value={form.bloodDonationContactNumber}
+                onChange={handleChange}
+                placeholder="e.g. 017XXXXXXXX"
+              />
+
+              <p className="text-sm text-slate-500 mt-2">
+                This number will be shown in the blood donors page.
+              </p>
+            </div>
           </div>
 
           {/* Last donation */}
@@ -774,74 +1074,28 @@ export default function Settings() {
                   </option>
                 ))}
               </select>
-            </div>
-          </div>
-
-          {/* Location */}
-          <div className="mt-6">
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              Location
-            </label>
-
-            <div className="grid md:grid-cols-2 gap-5">
-              <ProfileSelect
-                label="District / Zila"
-                value={form.location.district}
-                onChange={(e) =>
-                  handleLocationChange("district", e.target.value)
-                }
-              >
-                <option value="">Select district</option>
-
-                {districtsData.map((district) => (
-                  <option key={district.name} value={district.name}>
-                    {district.name}
-                  </option>
-                ))}
-              </ProfileSelect>
 
               <ProfileSelect
-                label="Upazila / Upazila"
-                value={form.location.upazila}
-                onChange={(e) =>
-                  handleLocationChange("upazila", e.target.value)
-                }
-                disabled={!form.location.district}
+                label="Accepts honorarium/travel cost? (সম্মানী/গাড়ি ভাড়া)"
+                name="bloodDonationCompensation"
+                value={form.bloodDonationCompensation}
+                onChange={handleChange}
+                disabled={!["yes", "willingly"].includes(form.bloodDonorStatus)}
               >
-                <option value="">
-                  {form.location.district
-                    ? "Select upazila"
-                    : "Select district first"}
-                </option>
+                <option value="">Select</option>
 
-                {availableUpazilas.map((upazila) => (
-                  <option key={upazila} value={upazila}>
-                    {upazila}
-                  </option>
-                ))}
+                <option value="500">Yes</option>
+
+                <option value="none">No</option>
               </ProfileSelect>
             </div>
-          </div>
-
-          {/* Blood donation contact */}
-          <div className="mt-6 max-w-md">
-            <ProfileInput
-              label="Contact Number"
-              type="tel"
-              name="bloodDonationContactNumber"
-              value={form.bloodDonationContactNumber}
-              onChange={handleChange}
-              placeholder="e.g. 017XXXXXXXX"
-            />
-
-            <p className="text-sm text-slate-500 mt-2">
-              This number will be shown to people searching for eligible blood
-              donors.
-            </p>
           </div>
         </ProfileSection>
 
-        {/* Save */}
+        {/* =========================
+            SAVE
+        ========================== */}
+
         <div className="flex justify-end">
           <button type="submit" disabled={saving} className="btn-primary">
             {saving

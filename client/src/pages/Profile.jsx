@@ -33,10 +33,10 @@ export default function Profile() {
         profile={profile}
       />
 
-      <EmergencyCardExport
+      {/* <EmergencyCardExport
         userInfo={userInfo}
         profile={profile}
-      />
+      /> */}
     </div>
   );
 }

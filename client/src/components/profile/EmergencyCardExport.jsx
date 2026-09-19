@@ -36,7 +36,7 @@ export default function EmergencyCardExport({
   };
 
   return (
-    <section className="card w-full p-6 lg:p-8 mt-6">
+    <section className="card p-6 m-3">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-4">
           <div className="surface-muted w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
@@ -52,8 +52,7 @@ export default function EmergencyCardExport({
             </h2>
 
             <p className="text-sm text-muted mt-1 max-w-2xl">
-              Keep a printed copy of your important
-              emergency medical information in your
+              Keep a printed copy in your
               wallet.
             </p>
           </div>
@@ -73,7 +72,7 @@ export default function EmergencyCardExport({
         </button>
       </div>
 
-      <div className="mt-5 surface-muted rounded-xl p-4">
+      {/* <div className="mt-5 surface-muted rounded-xl p-4">
         <p className="text-sm text-slate-600 leading-6">
           The downloaded PDF contains the front and
           back of your emergency card at wallet-card
@@ -82,7 +81,7 @@ export default function EmergencyCardExport({
           along the card borders, and laminate both
           sides.
         </p>
-      </div>
+      </div> */}
 
       {error && (
         <p className="mt-3 text-sm text-red-600">

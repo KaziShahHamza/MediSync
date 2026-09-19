@@ -64,6 +64,7 @@ router.post("/signup", async (req, res) => {
       name: user.name,
       username: user.username,
       email: user.email,
+      profilePhotoUrl: user.profilePhotoUrl || "",
     };
 
     return res.status(201).json({
@@ -127,6 +128,7 @@ router.post("/login", async (req, res) => {
       name: user.name,
       username: user.username,
       email: user.email,
+      profilePhotoUrl: user.profilePhotoUrl || "",
     };
 
     return res.json({
