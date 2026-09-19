@@ -8,13 +8,47 @@ import {
   Trash2,
 } from "lucide-react";
 
-export default function DoctorCard({ doctor, onEdit, onDelete, onOpen }) {
+import DoctorChamber from "./DoctorChamber";
+import { formatVisitFee } from "../../utils/doctor/doctorFunctions";
+
+function Info({ icon, label, value }) {
+  if (!value) return null;
+
+  return (
+    <div className="flex items-start gap-2">
+      <div className="mt-0.5 shrink-0 text-slate-400">
+        {icon}
+      </div>
+
+      <div className="min-w-0">
+        <p className="text-xs text-slate-400">{label}</p>
+        <p className="break-words text-sm font-medium text-slate-700">
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function DoctorCard({
+  doctor,
+  onEdit,
+  onDelete,
+  onOpen,
+}) {
   const specialities = doctor.specialities || [];
   const degrees = doctor.degrees || [];
   const chambers = doctor.chambers || [];
 
+  const hasVisitFee = chambers.some(
+    (chamber) =>
+      chamber.visitFee !== null &&
+      chamber.visitFee !== undefined &&
+      chamber.visitFee !== "",
+  );
+
   return (
-    <div
+    <article
       role="button"
       tabIndex={0}
       onClick={() => onOpen(doctor)}
@@ -24,21 +58,50 @@ export default function DoctorCard({ doctor, onEdit, onDelete, onOpen }) {
           onOpen(doctor);
         }
       }}
-      className="card cursor-pointer transition hover:border-blue-200 hover:shadow-md"
+      className="group cursor-pointer rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <h3 className="text-xl font-semibold text-slate-900">
-            {doctor.name}
-          </h3>
+        <div className="flex min-w-0 items-start gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+            <Stethoscope size={22} />
+          </div>
 
-          <p className="mt-1 font-medium text-blue-600">
-            {doctor.designation || "Doctor"}
-          </p>
+          <div className="min-w-0">
+            <h3 className="truncate text-lg font-semibold text-slate-900">
+              {doctor.name}
+            </h3>
+
+            {doctor.designation && (
+              <p className="mt-0.5 text-sm text-slate-500">
+                {doctor.designation}
+              </p>
+            )}
+          </div>
         </div>
 
-        <Stethoscope size={24} className="shrink-0 text-blue-600" />
+        <div
+          className="flex shrink-0 gap-1 opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <button
+            type="button"
+            onClick={() => onEdit(doctor)}
+            className="rounded-lg p-2 text-slate-500 transition hover:bg-blue-50 hover:text-blue-600"
+            aria-label={`Edit ${doctor.name}`}
+          >
+            <Pencil size={17} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onDelete(doctor._id)}
+            className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600"
+            aria-label={`Delete ${doctor.name}`}
+          >
+            <Trash2 size={17} />
+          </button>
+        </div>
       </div>
 
       {/* Specialities */}
@@ -47,7 +110,7 @@ export default function DoctorCard({ doctor, onEdit, onDelete, onOpen }) {
           {specialities.map((speciality) => (
             <span
               key={speciality}
-              className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600"
+              className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700"
             >
               {speciality}
             </span>
@@ -55,106 +118,95 @@ export default function DoctorCard({ doctor, onEdit, onDelete, onOpen }) {
         </div>
       )}
 
-      {/* Professional Information */}
-      {degrees.length > 0 && (
-        <div className="mt-5">
+      {/* Professional information */}
+      <div className="mt-5 space-y-3">
+        <Info
+          icon={<GraduationCap size={16} />}
+          label="Degrees"
+          value={degrees.join(", ")}
+        />
+
+        <Info
+          icon={<Building2 size={16} />}
+          label="Primary Hospital"
+          value={doctor.primaryHospital}
+        />
+
+        {doctor.bmdcRegNo && (
           <Info
-            icon={<GraduationCap size={17} />}
-            label="Degrees"
-            value={degrees.join(", ")}
+            icon={<Stethoscope size={16} />}
+            label="BMDC Registration"
+            value={doctor.bmdcRegNo}
           />
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Chambers + Visit Fees */}
+      {/* Chambers */}
       {chambers.length > 0 && (
-        <div className="mt-5 space-y-2">
-          {chambers.map((chamber, index) => {
-            const hasVisitFee =
-              chamber.visitFee !== null &&
-              chamber.visitFee !== undefined &&
-              chamber.visitFee !== "";
+        <div className="mt-5 border-t border-slate-100 pt-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h4 className="text-sm font-semibold text-slate-800">
+              Chambers
+            </h4>
 
-            return (
-              <div
-                key={chamber._id || index}
-                className="flex items-start gap-3 rounded-xl bg-slate-50 p-3"
-              >
-                <Building2
-                  size={17}
-                  className="mt-1 shrink-0 text-blue-600"
-                />
+            <span className="text-xs text-slate-400">
+              {chambers.length}{" "}
+              {chambers.length === 1
+                ? "chamber"
+                : "chambers"}
+            </span>
+          </div>
 
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs text-slate-500">
-                    Chamber {index + 1}
-                  </p>
+          <div className="space-y-3">
+            {chambers.slice(0, 2).map((chamber, index) => (
+              <DoctorChamber
+                key={`${doctor._id}-chamber-${index}`}
+                chamber={chamber}
+                index={index}
+                compact
+              />
+            ))}
+          </div>
 
-                  <p className="mt-1 font-medium text-slate-800">
-                    {chamber.name || "Chamber"}
-                  </p>
-
-                  {chamber.district && (
-                    <p className="mt-0.5 text-sm text-slate-500">
-                      {chamber.district}
-                    </p>
-                  )}
-
-                  {hasVisitFee && (
-                    <p className="mt-1 text-sm font-medium text-blue-600">
-                      Visit Fee: ৳
-                      {Number(chamber.visitFee).toLocaleString("en-BD")}
-                    </p>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {chambers.length > 2 && (
+            <p className="mt-3 text-center text-xs font-medium text-blue-600">
+              +{chambers.length - 2} more chamber
+              {chambers.length - 2 > 1 ? "s" : ""}
+            </p>
+          )}
         </div>
       )}
 
-      {/* Actions */}
-      <div className="mt-6 flex gap-3">
-        <button
-          type="button"
-          onClick={(event) => {
-            event.stopPropagation();
-            onEdit(doctor);
-          }}
-          className="btn-secondary flex flex-1 items-center justify-center gap-2"
-        >
-          <Pencil size={16} />
-          Edit
-        </button>
+      {/* Footer */}
+      {(doctor.lastVisit || hasVisitFee) && (
+        <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 border-t border-slate-100 pt-4 text-xs text-slate-500">
+          {doctor.lastVisit && (
+            <span>
+              Last visit:{" "}
+              <strong className="font-medium text-slate-700">
+                {doctor.lastVisit}
+              </strong>
+            </span>
+          )}
 
-        <button
-          type="button"
-          onClick={(event) => {
-            event.stopPropagation();
-            onDelete(doctor._id);
-          }}
-          className="btn-danger flex flex-1 items-center justify-center gap-2"
-        >
-          <Trash2 size={16} />
-          Delete
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function Info({ icon, label, value }) {
-  return (
-    <div className="flex gap-3 rounded-xl bg-slate-50 p-3">
-      <div className="mt-1 shrink-0 text-blue-600">{icon}</div>
-
-      <div className="min-w-0">
-        <p className="text-xs text-slate-500">{label}</p>
-
-        <p className="mt-1 break-words font-medium text-slate-800">
-          {value}
-        </p>
-      </div>
-    </div>
+          {hasVisitFee && (
+            <span>
+              Visit fee:{" "}
+              <strong className="font-medium text-slate-700">
+                ৳
+                {formatVisitFee(
+                  chambers.find(
+                    (chamber) =>
+                      chamber.visitFee !== null &&
+                      chamber.visitFee !== undefined &&
+                      chamber.visitFee !== "",
+                  )?.visitFee,
+                )}
+              </strong>
+            </span>
+          )}
+        </div>
+      )}
+    </article>
   );
 }

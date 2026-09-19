@@ -1,67 +1,15 @@
-// client/src/components/doctor/DoctorForm.jsx
+import { X } from "lucide-react";
 
-import { MousePointer2, Plus, Trash2 } from "lucide-react";
+import ChamberForm from "./ChamberForm";
+import { MultiSelect, SelectField } from "./DoctorFormFields";
+
 import primaryHospitals from "../../data/primaryHospitals";
-import hospitalsData from "../../data/hospitalsData";
 import specialties from "../../data/specialties.json";
 import designations from "../../data/designations.json";
 import days from "../../data/days.json";
 import degrees from "../../data/degrees.json";
 
-const currentYear = new Date().getFullYear();
-
-const lastVisitYears = Array.from(
-  { length: 10 },
-  (_, index) => currentYear - index,
-);
-
-const chamberHospitals = Object.entries(hospitalsData).flatMap(
-  ([district, hospitals]) =>
-    hospitals.map((hospital, index) => ({
-      ...hospital,
-      district,
-      key: `${district}-${index}-${hospital.name}`,
-    })),
-);
-
-function getChamberHospitalValue(hospital) {
-  return `${hospital.name}|||${hospital.district}|||${hospital.address}`;
-}
-
-export const emptyChamber = {
-  name: "",
-  district: "",
-  address: "",
-  phone: "",
-  serialNumber: "",
-  visitFee: "",
-  visitingDays: [],
-  visitingTime: {
-    startHour: "6",
-    startPeriod: "PM",
-    endHour: "9",
-    endPeriod: "PM",
-  },
-};
-
-export const emptyForm = {
-  name: "",
-  bmdcRegNo: "",
-  degrees: [],
-  specialities: [],
-  designation: "",
-  primaryHospital: "",
-  lastVisit: "",
-  chambers: [{ ...emptyChamber }],
-  contactInfo: {
-    phones: [],
-    emails: [],
-    website: "",
-    facebook: "",
-    linkedin: "",
-  },
-  notes: "",
-};
+import { lastVisitYears } from "../../utils/doctor/doctorFormUtils";
 
 export default function DoctorForm({
   form,
@@ -70,116 +18,18 @@ export default function DoctorForm({
   onSubmit,
   onReset,
   setForm,
+  onClose,
 }) {
   function updateContact(type, index, value) {
-    setForm((prev) => {
-      const values = [...prev.contactInfo[type]];
-      values[index] = value;
-
-      return {
-        ...prev,
-        contactInfo: {
-          ...prev.contactInfo,
-          [type]: values,
-        },
-      };
-    });
-  }
-
-  function addContact(type) {
-    setForm((prev) => ({
-      ...prev,
+    setForm((previousForm) => ({
+      ...previousForm,
       contactInfo: {
-        ...prev.contactInfo,
-        [type]: [...prev.contactInfo[type], ""],
+        ...previousForm.contactInfo,
+        [type]: previousForm.contactInfo[type].map(
+          (item, itemIndex) =>
+            itemIndex === index ? value : item,
+        ),
       },
-    }));
-  }
-
-  function removeContact(type, index) {
-    setForm((prev) => ({
-      ...prev,
-      contactInfo: {
-        ...prev.contactInfo,
-        [type]: prev.contactInfo[type].filter((_, i) => i !== index),
-      },
-    }));
-  }
-
-  function updateChamber(index, field, value) {
-    setForm((prev) => {
-      const chambers = [...prev.chambers];
-
-      chambers[index] = {
-        ...chambers[index],
-        [field]: value,
-      };
-
-      return { ...prev, chambers };
-    });
-  }
-
-  function selectChamberHospital(index, value) {
-    const selectedHospital = chamberHospitals.find(
-      (hospital) => getChamberHospitalValue(hospital) === value,
-    );
-
-    if (!selectedHospital) {
-      updateChamber(index, "name", "");
-      updateChamber(index, "district", "");
-      return;
-    }
-
-    setForm((prev) => {
-      const chambers = [...prev.chambers];
-
-      chambers[index] = {
-        ...chambers[index],
-        name: selectedHospital.name,
-        district: selectedHospital.district,
-        address: selectedHospital.address,
-      };
-
-      return { ...prev, chambers };
-    });
-  }
-
-  function updateVisitingTime(index, field, value) {
-    setForm((prev) => {
-      const chambers = [...prev.chambers];
-
-      chambers[index] = {
-        ...chambers[index],
-        visitingTime: {
-          ...chambers[index].visitingTime,
-          [field]: value,
-        },
-      };
-
-      return { ...prev, chambers };
-    });
-  }
-
-  function addChamber() {
-    setForm((prev) => ({
-      ...prev,
-      chambers: [
-        ...prev.chambers,
-        {
-          ...emptyChamber,
-          visitingDays: [],
-          visitingTime: { ...emptyChamber.visitingTime },
-        },
-      ],
-    }));
-  }
-
-  function removeChamber(index) {
-    if (form.chambers.length === 1) return;
-
-    setForm((prev) => ({
-      ...prev,
-      chambers: prev.chambers.filter((_, i) => i !== index),
     }));
   }
 
@@ -189,490 +39,342 @@ export default function DoctorForm({
       (option) => option.value,
     );
 
-    setForm((prev) => ({
-      ...prev,
+    setForm((previousForm) => ({
+      ...previousForm,
       [field]: values,
     }));
   }
 
-  function getSelectedChamberHospital(chamber) {
-    if (!chamber.name || !chamber.district) return "";
-
-    const hospital = chamberHospitals.find(
-      (item) =>
-        item.name === chamber.name &&
-        item.district === chamber.district &&
-        item.address === chamber.address,
-    );
-
-    return hospital ? getChamberHospitalValue(hospital) : "";
+  function handleCancel() {
+    onReset();
+    onClose();
   }
 
   return (
-    <aside className="card sticky top-24">
-      <div className="mb-6">
-        <h2 className="card-title">
-          {editingId ? "Update Doctor" : "Add Doctor"}
-        </h2>
-
-        <p className="mt-1 text-sm text-slate-500">
-          Store professional, chamber, and contact details.
-        </p>
-      </div>
-
-      <form onSubmit={onSubmit} className="space-y-6">
-        {/* Basic + Professional Information */}
-        <div className="grid gap-4 sm:grid-cols-2">
-          {/* Doctor Name */}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+      onMouseDown={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="doctor-form-title"
+        className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+        onMouseDown={(event) =>
+          event.stopPropagation()
+        }
+      >
+        {/* Header */}
+        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 sm:px-6">
           <div>
-            <label>Doctor Name</label>
-
-            <input
-              name="name"
-              placeholder="Enter doctor name"
-              value={form.name}
-              onChange={onChange}
-              className="input"
-              required
-            />
-          </div>
-
-          {/* BMDC Registration */}
-          <div>
-            <label>BMDC Registration Number</label>
-
-            <input
-              name="bmdcRegNo"
-              placeholder="Example: A-66477"
-              value={form.bmdcRegNo}
-              onChange={onChange}
-              className="input"
-            />
-          </div>
-
-          {/* Designation */}
-          <SelectField
-            label="Designation"
-            name="designation"
-            value={form.designation}
-            onChange={onChange}
-            placeholder="Select designation"
-            options={designations}
-          />
-
-          {/* Primary Hospital */}
-          <SelectField
-            label="Primary Hospital"
-            name="primaryHospital"
-            value={form.primaryHospital}
-            onChange={onChange}
-            placeholder="Select Primary Hospital"
-            options={primaryHospitals.map((hospital) => ({
-              value: hospital.name,
-              label: `${hospital.name} — ${hospital.city}`,
-            }))}
-          />
-
-          {/* Last Visit */}
-          <SelectField
-            label="Last Visit"
-            name="lastVisit"
-            value={form.lastVisit}
-            onChange={onChange}
-            placeholder="Select last visit year"
-            options={lastVisitYears.map((year) => ({
-              value: String(year),
-              label: String(year),
-            }))}
-          />
-        </div>
-
-        {/* Degrees + Specialities */}
-        <div className="grid gap-6 sm:grid-cols-2">
-          {/* Degrees */}
-          <MultiSelect
-            label="Degrees"
-            value={form.degrees}
-            options={degrees}
-            onChange={(e) => updateMultiSelect("degrees", e)}
-            description="Hold Ctrl/Cmd to select more than one."
-          />
-
-          {/* Specialities */}
-          <MultiSelect
-            label="Specialities"
-            value={form.specialities}
-            options={specialties}
-            onChange={(e) => updateMultiSelect("specialities", e)}
-            description="Hold Ctrl/Cmd to select more than one."
-          />
-        </div>
-
-        {/* Chambers */}
-        <div>
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold text-slate-800">Chambers</h3>
-
-              <p className="mt-1 text-xs text-slate-500">
-                Add every chamber where the doctor sees patients.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={addChamber}
-              className="flex items-center gap-1 text-sm font-medium text-blue-600"
+            <h2
+              id="doctor-form-title"
+              className="text-xl font-semibold text-slate-900"
             >
-              <Plus size={16} />
-              Add
-            </button>
+              {editingId ? "Update Doctor" : "Add Doctor"}
+            </h2>
+
+            <p className="mt-1 text-sm text-slate-500">
+              {editingId
+                ? "Update the doctor's information below."
+                : "Add a doctor to your MediSync health record."}
+            </p>
           </div>
 
-          <div className="space-y-5">
-            {form.chambers.map((chamber, index) => (
-              <div
-                key={index}
-                className="rounded-xl border border-slate-200 p-4"
-              >
-                <div className="mb-4 flex items-center justify-between">
-                  <h4 className="font-medium text-slate-800">
-                    Chamber {index + 1}
-                  </h4>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="shrink-0 rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            aria-label="Close doctor form"
+          >
+            <X size={20} />
+          </button>
+        </div>
 
-                  {form.chambers.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeChamber(index)}
-                      className="text-slate-400 hover:text-red-600"
-                    >
-                      <Trash2 size={17} />
-                    </button>
-                  )}
+        {/* Form content */}
+        <div className="min-h-0 overflow-y-auto">
+          <form
+            id="doctor-form"
+            onSubmit={onSubmit}
+            className="grid gap-6 p-5 sm:p-6 lg:grid-cols-2"
+          >
+            {/* Basic Information */}
+            <section>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                Basic Information
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                    Doctor Name
+                  </label>
+
+                  <input
+                    type="text"
+                    name="name"
+                    value={form.name}
+                    onChange={onChange}
+                    placeholder="Dr. John Doe"
+                    className="input"
+                    required
+                  />
                 </div>
 
-                <div className="space-y-4">
-                  {/* Chamber Hospital + Phone */}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <SelectField
-                      label="Chamber Name"
-                      value={getSelectedChamberHospital(chamber)}
-                      onChange={(e) =>
-                        selectChamberHospital(index, e.target.value)
-                      }
-                      placeholder="Select Chamber / Hospital"
-                      options={chamberHospitals.map((hospital) => ({
-                        value: getChamberHospitalValue(hospital),
-                        label: `${hospital.name} — ${hospital.district}`,
-                      }))}
-                    />
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                    BMDC Registration No.
+                  </label>
 
-                    <div>
-                      <label>Chamber Phone</label>
+                  <input
+                    type="text"
+                    name="bmdcRegNo"
+                    value={form.bmdcRegNo}
+                    onChange={onChange}
+                    placeholder="A-12345"
+                    className="input"
+                  />
+                </div>
+
+                <SelectField
+                  label="Designation"
+                  name="designation"
+                  value={form.designation}
+                  onChange={onChange}
+                  options={designations}
+                  placeholder="Select designation"
+                />
+
+                <SelectField
+                  label="Primary Hospital"
+                  name="primaryHospital"
+                  value={form.primaryHospital}
+                  onChange={onChange}
+                  options={primaryHospitals}
+                  placeholder="Select primary hospital"
+                />
+
+                <SelectField
+                  label="Last Visit"
+                  name="lastVisit"
+                  value={form.lastVisit}
+                  onChange={onChange}
+                  options={lastVisitYears}
+                  placeholder="Select year"
+                />
+              </div>
+            </section>
+
+            {/* Professional Information */}
+            <section>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                Professional Information
+              </h3>
+
+              <div className="space-y-4">
+                <MultiSelect
+                  label="Degrees"
+                  options={degrees}
+                  value={form.degrees}
+                  onChange={(event) =>
+                    updateMultiSelect(
+                      "degrees",
+                      event,
+                    )
+                  }
+                  placeholder="Select degrees"
+                />
+
+                <MultiSelect
+                  label="Specialities"
+                  options={specialties}
+                  value={form.specialities}
+                  onChange={(event) =>
+                    updateMultiSelect(
+                      "specialities",
+                      event,
+                    )
+                  }
+                  placeholder="Select specialities"
+                />
+              </div>
+            </section>
+
+            {/* Chambers */}
+            <section className="lg:col-span-2">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                Chambers
+              </h3>
+
+              <ChamberForm
+                form={form}
+                setForm={setForm}
+                days={days}
+              />
+            </section>
+
+            {/* Contact Information */}
+            <section>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                Contact Information
+              </h3>
+
+              <div className="space-y-4">
+                {form.contactInfo.phones.map(
+                  (phone, index) => (
+                    <div key={`phone-${index}`}>
+                      <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                        Phone {index + 1}
+                      </label>
 
                       <input
                         type="tel"
-                        value={chamber.phone}
-                        onChange={(e) =>
-                          updateChamber(index, "phone", e.target.value)
+                        value={phone}
+                        onChange={(event) =>
+                          updateContact(
+                            "phones",
+                            index,
+                            event.target.value,
+                          )
                         }
-                        placeholder="Chamber phone number"
+                        placeholder="01XXXXXXXXX"
                         className="input"
                       />
                     </div>
-                  </div>
+                  ),
+                )}
 
-                  {/* District + Visit Fee */}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label>District</label>
-
-                      <input
-                        type="text"
-                        value={chamber.district}
-                        readOnly
-                        placeholder="Hospital district"
-                        className="input bg-slate-50"
-                      />
-                    </div>
-
-                    <div>
-                      <label>Visit Fee</label>
-
-                      <div className="relative">
-                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">
-                          ৳
-                        </span>
-
-                        <input
-                          type="number"
-                          min="0"
-                          step="1"
-                          value={chamber.visitFee}
-                          onChange={(e) =>
-                            updateChamber(index, "visitFee", e.target.value)
-                          }
-                          placeholder="Example: 800"
-                          className="input pl-8"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Visiting Days + Visiting Time */}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <MultiSelect
-                      label="Visiting Days"
-                      value={chamber.visitingDays}
-                      options={days}
-                      onChange={(e) => {
-                        const values = Array.from(
-                          e.target.selectedOptions,
-                          (option) => option.value,
-                        );
-
-                        updateChamber(index, "visitingDays", values);
-                      }}
-                      description="Select the days doctor visits this chamber."
-                    />
-
-                    <div>
-                      <label className="mb-2 block font-medium text-slate-700">
-                        Visiting Time
+                {form.contactInfo.emails.map(
+                  (email, index) => (
+                    <div key={`email-${index}`}>
+                      <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                        Email {index + 1}
                       </label>
 
-                      <div className="flex flex-col items-start gap-2">
-                        <div className="flex items-center gap-2">
-                          <label className="mb-2 block font-medium text-slate-700">
-                            From:
-                          </label>
-
-                          <TimeSelect
-                            value={chamber.visitingTime.startHour}
-                            onChange={(value) =>
-                              updateVisitingTime(index, "startHour", value)
-                            }
-                          />
-
-                          <PeriodSelect
-                            value={chamber.visitingTime.startPeriod}
-                            onChange={(value) =>
-                              updateVisitingTime(index, "startPeriod", value)
-                            }
-                          />
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <label className="mb-2 block font-medium text-slate-700">
-                            To:
-                          </label>
-
-                          <TimeSelect
-                            value={chamber.visitingTime.endHour}
-                            onChange={(value) =>
-                              updateVisitingTime(index, "endHour", value)
-                            }
-                          />
-
-                          <PeriodSelect
-                            value={chamber.visitingTime.endPeriod}
-                            onChange={(value) =>
-                              updateVisitingTime(index, "endPeriod", value)
-                            }
-                          />
-                        </div>
-                      </div>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(event) =>
+                          updateContact(
+                            "emails",
+                            index,
+                            event.target.value,
+                          )
+                        }
+                        placeholder="doctor@example.com"
+                        className="input"
+                      />
                     </div>
-                  </div>
+                  ),
+                )}
 
-                  {/* Full Address */}
-                  <div>
-                    <label>Chamber Address</label>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                    Website
+                  </label>
 
-                    <textarea
-                      value={chamber.address}
-                      onChange={(e) =>
-                        updateChamber(index, "address", e.target.value)
-                      }
-                      placeholder="Full chamber address"
-                      className="input !min-h-18"
-                    />
-                  </div>
+                  <input
+                    type="url"
+                    value={form.contactInfo.website}
+                    onChange={(event) =>
+                      setForm((previousForm) => ({
+                        ...previousForm,
+                        contactInfo: {
+                          ...previousForm.contactInfo,
+                          website: event.target.value,
+                        },
+                      }))
+                    }
+                    placeholder="https://example.com"
+                    className="input"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                    Facebook
+                  </label>
+
+                  <input
+                    type="url"
+                    value={form.contactInfo.facebook}
+                    onChange={(event) =>
+                      setForm((previousForm) => ({
+                        ...previousForm,
+                        contactInfo: {
+                          ...previousForm.contactInfo,
+                          facebook:
+                            event.target.value,
+                        },
+                      }))
+                    }
+                    placeholder="Facebook profile URL"
+                    className="input"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                    LinkedIn
+                  </label>
+
+                  <input
+                    type="url"
+                    value={form.contactInfo.linkedin}
+                    onChange={(event) =>
+                      setForm((previousForm) => ({
+                        ...previousForm,
+                        contactInfo: {
+                          ...previousForm.contactInfo,
+                          linkedin:
+                            event.target.value,
+                        },
+                      }))
+                    }
+                    placeholder="LinkedIn profile URL"
+                    className="input"
+                  />
                 </div>
               </div>
-            ))}
-          </div>
+            </section>
+
+            {/* Notes */}
+            <section>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                Notes
+              </h3>
+
+              <textarea
+                name="notes"
+                value={form.notes}
+                onChange={onChange}
+                rows={8}
+                placeholder="Additional notes about this doctor..."
+                className="input resize-none"
+              />
+            </section>
+          </form>
         </div>
 
-        {/* Contact Information */}
-        <div>
-          <h3 className="mb-1 font-semibold text-slate-800">
-            Doctor Contact Information
-          </h3>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label>Doctor Phone Number</label>
-
-              <input
-                type="tel"
-                value={form.contactInfo.phones[0] || ""}
-                onChange={(e) => updateContact("phones", 0, e.target.value)}
-                placeholder="Phone number"
-                className="input"
-              />
-            </div>
-
-            <div>
-              <label>Doctor Email Address</label>
-
-              <input
-                type="email"
-                value={form.contactInfo.emails[0] || ""}
-                onChange={(e) => updateContact("emails", 0, e.target.value)}
-                placeholder="Email address"
-                className="input"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="space-y-3">
-          <button type="submit" className="btn-primary w-full">
-            {editingId ? "Update Doctor" : "Add Doctor"}
+        {/* Footer */}
+        <div className="flex shrink-0 justify-end gap-3 border-t border-slate-200 bg-white px-5 py-4 sm:px-6">
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          >
+            Cancel
           </button>
 
-          {editingId && (
-            <button
-              type="button"
-              onClick={onReset}
-              className="btn-secondary w-full"
-            >
-              Cancel Edit
-            </button>
-          )}
+          <button
+            type="submit"
+            form="doctor-form"
+            className="btn-primary"
+          >
+            {editingId ? "Update Doctor" : "Add Doctor"}
+          </button>
         </div>
-      </form>
-    </aside>
-  );
-}
-
-function MultiSelect({
-  label,
-  value,
-  options,
-  onChange,
-  description,
-  hint = false,
-}) {
-  return (
-    <div>
-      <label className="mb-2 block font-medium text-slate-700">{label}</label>
-
-      <select
-        multiple
-        value={value}
-        onChange={onChange}
-        className="input min-h-40"
-      >
-        {options.map((option) => {
-          const value = typeof option === "string" ? option : option.value;
-          const label = typeof option === "string" ? option : option.label;
-
-          return (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          );
-        })}
-      </select>
-
-      {hint && (
-        <div className="mt-3 flex items-start gap-3 rounded-xl border border-blue-100 bg-blue-50 px-3 py-3">
-          <div className="degree-hint-icon">
-            <MousePointer2 size={17} />
-          </div>
-
-          <div>
-            <p className="text-sm font-semibold text-blue-700">
-              Select multiple degrees
-            </p>
-
-            <p className="mt-0.5 text-xs text-blue-600">
-              Hold <kbd className="degree-hint-key">Ctrl</kbd>
-              <span className="mx-1">/</span>
-              <kbd className="degree-hint-key">Cmd</kbd> and click to select
-              more than one.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {description && (
-        <p className="mt-1 text-sm text-slate-500">{description}</p>
-      )}
+      </div>
     </div>
-  );
-}
-
-function SelectField({
-  label,
-  name,
-  value,
-  onChange,
-  placeholder,
-  options,
-}) {
-  return (
-    <div>
-      <label>{label}</label>
-
-      <select name={name} value={value} onChange={onChange} className="input">
-        <option value="">{placeholder}</option>
-
-        {options.map((option) => {
-          const optionValue =
-            typeof option === "string" ? option : option.value;
-          const optionLabel =
-            typeof option === "string" ? option : option.label;
-
-          return (
-            <option key={optionValue} value={optionValue}>
-              {optionLabel}
-            </option>
-          );
-        })}
-      </select>
-    </div>
-  );
-}
-
-function TimeSelect({ value, onChange }) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="input flex-1"
-    >
-      {Array.from({ length: 12 }, (_, i) => i + 1).map((hour) => (
-        <option key={hour} value={hour}>
-          {hour}
-        </option>
-      ))}
-    </select>
-  );
-}
-
-function PeriodSelect({ value, onChange }) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="input flex-1 !min-w-[80px]"
-    >
-      <option value="AM">AM</option>
-      <option value="PM">PM</option>
-    </select>
   );
 }

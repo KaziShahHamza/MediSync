@@ -1,4 +1,4 @@
-// client/src/components/assistant/ChatMessage.jsx
+// client/src/components/ai-assistant/ChatMessage.jsx
 
 import { Bot, User } from "lucide-react";
 import { openEmergencyWhatsApp } from "../../utils/emergencyWhatsApp";

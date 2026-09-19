@@ -1,4 +1,4 @@
-// client/src/components/assistant/ChatInput.jsx
+// client/src/components/ai-assistant/ChatInput.jsx
 
 import { useEffect, useRef, useState } from "react";
 import {

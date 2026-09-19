@@ -1,4 +1,4 @@
-// client/src/components/assistant/ChatEmptyState.jsx
+// client/src/components/ai-assistant/ChatEmptyState.jsx
 
 import {
   Activity,

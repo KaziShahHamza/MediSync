@@ -1,4 +1,4 @@
-// client/src/components/assistant/AssistantSidebar.jsx
+// client/src/components/ai-assistant/AssistantSidebar.jsx
 
 import {
   MessageSquare,

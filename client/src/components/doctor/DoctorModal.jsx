@@ -1,18 +1,25 @@
 // client/src/components/doctor/DoctorModal.jsx
 
 import {
-  X,
-  Pencil,
-  GraduationCap,
   BadgeCheck,
   Building2,
   CalendarDays,
+  GraduationCap,
+  Pencil,
+  X,
 } from "lucide-react";
-import DoctorInfo from "./DoctorInfo";
-import DoctorChamber from "./DoctorChamber";
 
-export default function DoctorModal({ doctor, onClose, onEdit }) {
-  if (!doctor) return null;
+import DoctorChamber from "./DoctorChamber";
+import DoctorInfo from "./DoctorInfo";
+
+export default function DoctorModal({
+  doctor,
+  onClose,
+  onEdit,
+}) {
+  if (!doctor) {
+    return null;
+  }
 
   const degrees = doctor.degrees || [];
   const specialities = doctor.specialities || [];
@@ -21,79 +28,94 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
   const emails = doctor.contactInfo?.emails || [];
 
   const hasContactInfo =
-    phones.length > 0 || emails.length > 0 || doctor.contactInfo?.website;
+    phones.length > 0 ||
+    emails.length > 0 ||
+    Boolean(doctor.contactInfo?.website) ||
+    Boolean(doctor.contactInfo?.facebook) ||
+    Boolean(doctor.contactInfo?.linkedin);
 
   const hasProfessionalInfo =
     degrees.length > 0 ||
-    doctor.bmdcRegNo ||
-    doctor.primaryHospital ||
-    doctor.lastVisit;
+    Boolean(doctor.bmdcRegNo) ||
+    Boolean(doctor.primaryHospital) ||
+    Boolean(doctor.lastVisit);
 
-  const handleEdit = () => {
+  function handleEdit() {
     onClose();
     onEdit(doctor);
-  };
+  }
+
+  function Section({ title, children }) {
+    return (
+      <section>
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+          {title}
+        </h3>
+
+        {children}
+      </section>
+    );
+  }
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+      onMouseDown={onClose}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="doctor-modal-title"
         className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-xl"
-        onClick={(event) => event.stopPropagation()}
+        onMouseDown={(event) =>
+          event.stopPropagation()
+        }
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-slate-100 bg-white p-5">
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 sm:px-6">
           <div className="min-w-0">
-            <h2 className="text-2xl font-semibold text-slate-900">
+            <h2
+              id="doctor-modal-title"
+              className="text-xl font-semibold text-slate-900"
+            >
               {doctor.name}
             </h2>
 
-            <p className="mt-1 font-medium text-blue-600">
-              {doctor.designation || "Doctor"}
-            </p>
-          </div>
+            {doctor.designation && (
+              <p className="mt-1 text-sm text-slate-500">
+                {doctor.designation}
+              </p>
+            )}
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
-            aria-label="Close"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        <div className="space-y-6 p-5">
-          {/* Specialities */}
-          {specialities.length > 0 && (
-            <Section title="Specialities">
-              <div className="flex flex-wrap gap-2">
+            {specialities.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
                 {specialities.map((speciality) => (
                   <span
                     key={speciality}
-                    className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600"
+                    className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700"
                   >
                     {speciality}
                   </span>
                 ))}
               </div>
-            </Section>
-          )}
+            )}
+          </div>
 
-          {/* Professional Information */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="shrink-0 rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            aria-label="Close doctor details"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="space-y-7 p-5 sm:p-6">
           {hasProfessionalInfo && (
             <Section title="Professional Information">
               <div className="grid gap-3 sm:grid-cols-2">
-                {degrees.length > 0 && (
-                  <DoctorInfo
-                    icon={<GraduationCap size={18} />}
-                    label="Degrees"
-                    value={degrees.join(", ")}
-                  />
-                )}
-
                 {doctor.bmdcRegNo && (
                   <DoctorInfo
                     icon={<BadgeCheck size={18} />}
@@ -102,12 +124,19 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
                   />
                 )}
 
+                {degrees.length > 0 && (
+                  <DoctorInfo
+                    icon={<GraduationCap size={18} />}
+                    label="Degrees"
+                    value={degrees.join(", ")}
+                  />
+                )}
+
                 {doctor.primaryHospital && (
                   <DoctorInfo
                     icon={<Building2 size={18} />}
                     label="Primary Hospital"
                     value={doctor.primaryHospital}
-                    className="sm:col-span-2"
                   />
                 )}
 
@@ -122,13 +151,12 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
             </Section>
           )}
 
-          {/* Chambers */}
           {chambers.length > 0 && (
             <Section title="Chambers">
               <div className="space-y-3">
                 {chambers.map((chamber, index) => (
                   <DoctorChamber
-                    key={chamber._id || index}
+                    key={`${doctor._id}-modal-chamber-${index}`}
                     chamber={chamber}
                     index={index}
                   />
@@ -137,17 +165,22 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
             </Section>
           )}
 
-          {/* Contact Information */}
           {hasContactInfo && (
             <Section title="Contact Information">
-              <div className="space-y-3">
-                {phones.map((phone) => (
-                  <DoctorInfo key={phone} label="Phone" value={phone} />
-                ))}
+              <div className="grid gap-3 sm:grid-cols-2">
+                {phones.length > 0 && (
+                  <DoctorInfo
+                    label="Phone"
+                    value={phones.join(", ")}
+                  />
+                )}
 
-                {emails.map((email) => (
-                  <DoctorInfo key={email} label="Email" value={email} />
-                ))}
+                {emails.length > 0 && (
+                  <DoctorInfo
+                    label="Email"
+                    value={emails.join(", ")}
+                  />
+                )}
 
                 {doctor.contactInfo?.website && (
                   <DoctorInfo
@@ -155,50 +188,53 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
                     value={doctor.contactInfo.website}
                   />
                 )}
+
+                {doctor.contactInfo?.facebook && (
+                  <DoctorInfo
+                    label="Facebook"
+                    value={doctor.contactInfo.facebook}
+                  />
+                )}
+
+                {doctor.contactInfo?.linkedin && (
+                  <DoctorInfo
+                    label="LinkedIn"
+                    value={doctor.contactInfo.linkedin}
+                  />
+                )}
               </div>
             </Section>
           )}
 
-          {/* Notes */}
           {doctor.notes && (
             <Section title="Notes">
-              <div className="rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">
+              <div className="rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">
                 {doctor.notes}
               </div>
             </Section>
           )}
         </div>
 
-        {/* Actions */}
-        <div className="sticky bottom-0 flex gap-3 border-t border-slate-100 bg-white p-5">
+        {/* Footer */}
+        <div className="sticky bottom-0 flex justify-end gap-3 border-t border-slate-200 bg-white px-5 py-4 sm:px-6">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          >
+            Close
+          </button>
+
           <button
             type="button"
             onClick={handleEdit}
-            className="btn-primary flex flex-1 items-center justify-center gap-2"
+            className="btn-primary flex items-center gap-2"
           >
             <Pencil size={16} />
             Edit Doctor
           </button>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="btn-secondary flex-1"
-          >
-            Close
-          </button>
         </div>
       </div>
     </div>
-  );
-}
-
-function Section({ title, children }) {
-  return (
-    <section>
-      <h3 className="mb-3 font-semibold text-slate-800">{title}</h3>
-
-      {children}
-    </section>
   );
 }

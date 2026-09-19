@@ -1,274 +1,144 @@
 // client/src/pages/Doctors.jsx
 
+import { Plus, Stethoscope } from "lucide-react";
 import { useState } from "react";
+
 import { useDoctors } from "../context/DoctorContext";
+import { useDoctorForm } from "../hooks/doctor/useDoctorForm";
+
 import DoctorCard from "../components/doctor/DoctorCard";
-import DoctorForm, {
-  emptyForm,
-  emptyChamber,
-} from "../components/doctor/DoctorForm";
+import DoctorForm from "../components/doctor/DoctorForm";
 import DoctorModal from "../components/doctor/DoctorModal";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export default function Doctors() {
-  const { doctors, fetchDoctors } = useDoctors();
+  const [isFormModalOpen, setIsFormModalOpen] =
+    useState(false);
 
-  const [form, setForm] = useState(emptyForm);
-  const [editingId, setEditingId] = useState(null);
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const {
+    doctors,
+    fetchDoctors,
+  } = useDoctors();
 
-  function handleChange(e) {
-    const { name, value } = e.target;
+  const {
+    form,
+    setForm,
+    editingId,
+    selectedDoctor,
+    setSelectedDoctor,
+    handleChange,
+    editDoctor,
+    resetForm,
+    saveDoctor,
+    deleteDoctor,
+  } = useDoctorForm(
+    fetchDoctors,
+    () => setIsFormModalOpen(false),
+  );
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  function handleAddDoctor() {
+    resetForm();
+    setIsFormModalOpen(true);
   }
 
-  function editDoctor(doctor) {
-    setEditingId(doctor._id);
-
-    setForm({
-      name: doctor.name || "",
-      bmdcRegNo: doctor.bmdcRegNo || "",
-      degrees: doctor.degrees || [],
-      specialities: doctor.specialities || [],
-      designation: doctor.designation || "",
-      primaryHospital: doctor.primaryHospital || "",
-      lastVisit:
-        doctor.lastVisit !== null && doctor.lastVisit !== undefined
-          ? String(doctor.lastVisit)
-          : "",
-
-      chambers:
-        doctor.chambers?.length > 0
-          ? doctor.chambers.map((chamber) => ({
-              name: chamber.name || "",
-              district: chamber.district || "",
-              address: chamber.address || "",
-              phone: chamber.phone || "",
-              serialNumber: chamber.serialNumber || "",
-              visitFee:
-                chamber.visitFee !== null &&
-                chamber.visitFee !== undefined
-                  ? String(chamber.visitFee)
-                  : "",
-              visitingDays: chamber.visitingDays || [],
-              visitingTime: {
-                startHour:
-                  chamber.visitingTime?.startHour ?? "6",
-                startPeriod:
-                  chamber.visitingTime?.startPeriod ?? "PM",
-                endHour:
-                  chamber.visitingTime?.endHour ?? "9",
-                endPeriod:
-                  chamber.visitingTime?.endPeriod ?? "PM",
-              },
-            }))
-          : [
-              {
-                ...emptyChamber,
-                visitingDays: [],
-                visitingTime: {
-                  ...emptyChamber.visitingTime,
-                },
-              },
-            ],
-
-      contactInfo: {
-        phones: doctor.contactInfo?.phones || [],
-        emails: doctor.contactInfo?.emails || [],
-        website: doctor.contactInfo?.website || "",
-        facebook: doctor.contactInfo?.facebook || "",
-        linkedin: doctor.contactInfo?.linkedin || "",
-      },
-
-      notes: doctor.notes || "",
-    });
+  function handleEditDoctor(doctor) {
+    editDoctor(doctor);
+    setIsFormModalOpen(true);
   }
 
-  function resetForm() {
-    setForm({
-      ...emptyForm,
-      degrees: [],
-      specialities: [],
-      lastVisit: "",
-      chambers: [
-        {
-          ...emptyChamber,
-          visitingDays: [],
-          visitingTime: {
-            ...emptyChamber.visitingTime,
-          },
-        },
-      ],
-      contactInfo: {
-        phones: [],
-        emails: [],
-        website: "",
-        facebook: "",
-        linkedin: "",
-      },
-    });
-
-    setEditingId(null);
-  }
-
-  async function saveDoctor(e) {
-    e.preventDefault();
-
-    const token = localStorage.getItem("token");
-
-    const cleanedForm = {
-      ...form,
-
-      lastVisit: form.lastVisit ? Number(form.lastVisit) : null,
-
-      degrees: form.degrees.filter(
-        (degree) => degree.trim() !== "",
-      ),
-
-      specialities: form.specialities.filter(
-        (speciality) => speciality.trim() !== "",
-      ),
-
-      chambers: form.chambers.map((chamber) => ({
-        ...chamber,
-
-        district: chamber.district?.trim() || "",
-
-        visitFee:
-          chamber.visitFee !== "" &&
-          chamber.visitFee !== null &&
-          chamber.visitFee !== undefined
-            ? Number(chamber.visitFee)
-            : null,
-
-        visitingDays: chamber.visitingDays || [],
-      })),
-
-      contactInfo: {
-        ...form.contactInfo,
-
-        phones: form.contactInfo.phones.filter(
-          (phone) => phone.trim() !== "",
-        ),
-
-        emails: form.contactInfo.emails.filter(
-          (email) => email.trim() !== "",
-        ),
-      },
-    };
-
-    try {
-      const response = await fetch(
-        editingId
-          ? `${API_URL}/api/doctors/${editingId}`
-          : `${API_URL}/api/doctors`,
-        {
-          method: editingId ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(cleanedForm),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to save doctor");
-      }
-
-      resetForm();
-      await fetchDoctors();
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function deleteDoctor(id) {
-    const token = localStorage.getItem("token");
-
-    try {
-      const response = await fetch(
-        `${API_URL}/api/doctors/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to delete doctor");
-      }
-
-      if (selectedDoctor?._id === id) {
-        setSelectedDoctor(null);
-      }
-
-      await fetchDoctors();
-    } catch (error) {
-      console.error(error);
-    }
+  function handleCloseFormModal() {
+    resetForm();
+    setIsFormModalOpen(false);
   }
 
   return (
-    <div className="container page">
-      {/* Header */}
-      <section className="mb-10">
-        <h1 className="page-title">My Doctors</h1>
-
-        <p className="mt-3 text-slate-600">
-          Manage your healthcare providers, hospitals, chambers,
-          and contact information.
-        </p>
-      </section>
-
-      <div className="grid items-start gap-8 lg:grid-cols-[1fr_720px]">
-        {/* Doctor List */}
-        <section>
-          <div className="mb-5 flex items-center justify-between">
-            <div>
-              <h2 className="section-title">Doctor Records</h2>
-
-              <p className="mt-1 text-sm text-slate-500">
-                {doctors.length} doctor
-                {doctors.length === 1 ? "" : "s"} saved
-              </p>
-            </div>
+    <div className="container space-y-6 py-6">
+      {/* Page Header */}
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+            <Stethoscope size={22} />
           </div>
 
-          {doctors.length > 0 ? (
-            <div className="space-y-6">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">
+              Doctors
+            </h1>
+
+            <p className="mt-1 text-sm text-slate-500">
+              Manage your doctors, chambers, and professional
+              information.
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleAddDoctor}
+          className="btn-primary flex items-center justify-center gap-2 sm:w-auto"
+        >
+          <Plus size={18} />
+          Add Doctor
+        </button>
+      </header>
+
+      {/* Doctors List */}
+      <section>
+        {doctors.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+              <Stethoscope size={26} />
+            </div>
+
+            <h2 className="mt-4 text-lg font-semibold text-slate-900">
+              No doctors added yet
+            </h2>
+
+            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+              Add your doctor information to keep your
+              healthcare contacts organized in MediSync.
+            </p>
+
+            <button
+              type="button"
+              onClick={handleAddDoctor}
+              className="btn-primary mx-auto mt-5 inline-flex items-center gap-2"
+            >
+              <Plus size={17} />
+              Add Doctor
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="mb-4">
+              <h2 className="text-lg font-semibold text-slate-900">
+                Your Doctors
+              </h2>
+
+              <p className="mt-0.5 text-sm text-slate-500">
+                {doctors.length}{" "}
+                {doctors.length === 1
+                  ? "doctor"
+                  : "doctors"}
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
               {doctors.map((doctor) => (
                 <DoctorCard
                   key={doctor._id}
                   doctor={doctor}
-                  onEdit={editDoctor}
+                  onEdit={handleEditDoctor}
                   onDelete={deleteDoctor}
                   onOpen={setSelectedDoctor}
                 />
               ))}
             </div>
-          ) : (
-            <div className="card py-14 text-center">
-              <h3 className="text-xl font-semibold text-slate-800">
-                No doctors added
-              </h3>
+          </>
+        )}
+      </section>
 
-              <p className="mt-2 text-slate-500">
-                Add your doctors to keep healthcare contacts
-                organized.
-              </p>
-            </div>
-          )}
-        </section>
-
-        {/* Doctor Form */}
+      {/* Add / Edit Doctor Modal */}
+      {isFormModalOpen && (
         <DoctorForm
           form={form}
           editingId={editingId}
@@ -276,17 +146,16 @@ export default function Doctors() {
           onSubmit={saveDoctor}
           onReset={resetForm}
           setForm={setForm}
-        />
-      </div>
-
-      {/* Doctor Details Modal */}
-      {selectedDoctor && (
-        <DoctorModal
-          doctor={selectedDoctor}
-          onClose={() => setSelectedDoctor(null)}
-          onEdit={editDoctor}
+          onClose={handleCloseFormModal}
         />
       )}
+
+      {/* Doctor Details Modal */}
+      <DoctorModal
+        doctor={selectedDoctor}
+        onClose={() => setSelectedDoctor(null)}
+        onEdit={handleEditDoctor}
+      />
     </div>
   );
 }
