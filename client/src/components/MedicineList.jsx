@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import {
   Pill,
   Pencil,
@@ -13,22 +14,12 @@ import {
 import MedicineImageModal from "./MedicineImageModal";
 
 import {
-  getMonthlyMedicineCost,
+  getMedicinePricingType,
   getMonthlyMedicinePieces,
+  getPricePerPiece,
+  getMedicineMonthlyCost,
   formatMedicinePrice,
 } from "../utils/medicineCalculations";
-
-const formatMonthYear = (date) => {
-  if (!date) return "Present";
-
-  return new Intl.DateTimeFormat(
-    "en-US",
-    {
-      month: "long",
-      year: "numeric",
-    },
-  ).format(new Date(date));
-};
 
 const getMedicineTypeLabel = (type) => {
   const labels = {
@@ -47,234 +38,217 @@ const getMedicineTypeLabel = (type) => {
   return labels[type] || "Other";
 };
 
+const formatDate = (date) => {
+  if (!date) {
+    return "—";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(date));
+};
+
+const formatDosageTime = (time) => {
+  if (!time) {
+    return "";
+  }
+
+  return time.charAt(0).toUpperCase() + time.slice(1);
+};
+
 export default function MedicineList({
-  medicines,
+  medicines = [],
   onEdit,
   onDelete,
+  loading = false,
 }) {
-  const [selectedMedicine, setSelectedMedicine] =
-    useState(null);
+  const [selectedMedicine, setSelectedMedicine] = useState(null);
 
-  const activeMedicines =
-    medicines.filter(
-      (med) => med.isActive,
-    );
+  const activeMedicines = medicines.filter(
+    (medicine) => medicine.isActive !== false,
+  );
 
-  const pastMedicines =
-    medicines.filter(
-      (med) => !med.isActive,
-    );
+  const pastMedicines = medicines.filter(
+    (medicine) => medicine.isActive === false,
+  );
 
-  const renderMedicine = (med) => {
-    const monthlyPieces =
-      getMonthlyMedicinePieces(
-        med.dosage,
-      );
+  /*
+   * ========================================================
+   * MEDICINE CARD
+   * ========================================================
+   */
 
-    const monthlyCost =
-      getMonthlyMedicineCost(
-        med.dosage,
-        med.pricePerStrip,
-        med.piecesPerStrip,
-      );
+  const renderMedicine = (medicine) => {
+    const pricingType = getMedicinePricingType(medicine);
+
+    const isStripMedicine = pricingType === "strip";
+
+    const monthlyCost = getMedicineMonthlyCost(medicine);
+
+    const monthlyPieces = isStripMedicine
+      ? getMonthlyMedicinePieces(medicine.dosage)
+      : 0;
+
+    const pricePerPiece = isStripMedicine
+      ? getPricePerPiece(medicine.pricePerStrip, medicine.piecesPerStrip)
+      : 0;
 
     return (
-      <div
-        key={med._id}
-        className={`card ${
-          med.imageUrl
-            ? "cursor-pointer transition hover:border-blue-200 hover:shadow-md"
-            : ""
-        }`}
-        onClick={() => {
-          if (med.imageUrl) {
-            setSelectedMedicine(med);
-          }
-        }}
-        role={
-          med.imageUrl
-            ? "button"
-            : undefined
-        }
-        tabIndex={
-          med.imageUrl
-            ? 0
-            : undefined
-        }
-        onKeyDown={(e) => {
-          if (
-            med.imageUrl &&
-            (e.key === "Enter" ||
-              e.key === " ")
-          ) {
-            e.preventDefault();
-            setSelectedMedicine(med);
-          }
-        }}
-      >
-        <div className="flex items-center gap-5">
-          {/* Medicine Image */}
+      <article key={medicine._id} className="card overflow-hidden">
+        {/* HEADER */}
 
-          <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-            {med.imageUrl ? (
-              <img
-                src={med.imageUrl}
-                alt={med.name}
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display =
-                    "none";
-
-                  e.currentTarget.nextElementSibling.style.display =
-                    "flex";
-                }}
-              />
-            ) : null}
-
-            <div
-              className={`h-full w-full items-center justify-center ${
-                med.imageUrl
-                  ? "hidden"
-                  : "flex"
-              }`}
-            >
-              <ImageOff
-                size={28}
-                className="text-slate-400"
-              />
-            </div>
-          </div>
-
-          {/* Medicine Details */}
-
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-xl font-semibold text-slate-900">
-                {med.name}
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <h3 className="truncate text-lg font-semibold text-slate-900">
+                {medicine.name}
               </h3>
 
-              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
-                {getMedicineTypeLabel(
-                  med.type,
-                )}
+              <span className="shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+                {getMedicineTypeLabel(medicine.type)}
               </span>
             </div>
-
-            {/* Medicine Duration */}
 
             <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
-              <CalendarDays size={16} />
+              <CalendarDays size={15} />
 
-              <span>
-                {formatMonthYear(
-                  med.startDate,
-                )}{" "}
-                –{" "}
-                {med.isActive
-                  ? "Present"
-                  : formatMonthYear(
-                      med.endDate,
-                    )}
-              </span>
-            </div>
-
-            {/* Dosage Schedule */}
-
-            {med.dosage?.length > 0 && (
-              <div className="mt-2 flex items-start gap-2 text-sm text-slate-500">
-                <Clock3
-                  size={16}
-                  className="mt-0.5 shrink-0"
-                />
-
-                <span>
-                  {med.dosage
-                    .map(
-                      (item) =>
-                        `${
-                          item.time
-                            .charAt(0)
-                            .toUpperCase() +
-                          item.time.slice(1)
-                        } ${item.quantity}`,
-                    )
-                    .join(", ")}
-                </span>
-              </div>
-            )}
-
-            {/* Monthly Cost */}
-
-            <div className="mt-3 flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-1.5 text-sm font-medium text-blue-700">
-                <CircleDollarSign
-                  size={16}
-                />
-
-                <span>
-                  {formatMedicinePrice(
-                    monthlyCost,
-                  )}
-                  /month
-                </span>
-              </div>
-
-              <span className="text-xs text-slate-400">
-                {monthlyPieces} pieces/month
-              </span>
+              <span>Started {formatDate(medicine.startDate)}</span>
             </div>
           </div>
 
-          {/* Actions */}
+          {/* IMAGE */}
 
-          <div
-            className="flex shrink-0 flex-col gap-2"
-            onClick={(e) =>
-              e.stopPropagation()
-            }
-          >
+          {medicine.imageUrl ? (
             <button
-              onClick={() =>
-                onEdit(med)
-              }
-              className="btn-secondary px-3 py-2 text-sm"
+              type="button"
+              onClick={() => setSelectedMedicine(medicine)}
+              className="group relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
+              title="View medicine image"
             >
-              <Pencil size={16} />
-              Edit
+              <img
+                src={medicine.imageUrl}
+                alt={medicine.name}
+                className="h-full w-full object-contain transition group-hover:scale-105"
+              />
             </button>
-
+          ) : (
             <button
-              onClick={() =>
-                onDelete(med._id)
-              }
-              className="btn-danger px-3 py-2 text-sm"
+              type="button"
+              onClick={() => setSelectedMedicine(medicine)}
+              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400"
+              title="View medicine details"
             >
-              <Trash2 size={16} />
-              Delete
+              <ImageOff size={21} />
             </button>
-          </div>
+          )}
         </div>
-      </div>
+
+        {/* PRICING */}
+
+        {/* DOSAGE — STRIP MEDICINES ONLY */}
+
+        {isStripMedicine && (
+          <div className="mt-5">
+            <div className="flex items-center gap-2">
+              <Clock3 size={17} className="text-blue-600" />
+
+              <p className="text-sm font-semibold text-slate-800">
+                Dosage schedule
+              </p>
+
+              {/* STATUS */}
+              {medicine.isActive !== false ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  Currently taking
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
+                  <History size={13} />
+                  Treatment completed
+                </span>
+              )}
+            </div>
+
+            {medicine.dosage?.length > 0 ? (
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                {medicine.dosage.map((item) => (
+                  <div
+                    key={item.time}
+                    className="rounded-lg bg-blue-50 px-3 py-2"
+                  >
+                    <p className="text-sm font-medium text-blue-600">
+                      {formatDosageTime(item.time)}: {item.quantity}{" "}
+                      {Number(item.quantity) === 1 ? "piece" : "pieces"}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-2 text-sm text-slate-500">
+                No dosage schedule recorded.
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* ACTIONS */}
+
+        <div className="mt-2 flex items-center justify-end gap-2 border-t border-slate-200 pt-2">
+          <button
+            type="button"
+            onClick={() => setSelectedMedicine(medicine)}
+            className="btn-secondary inline-flex items-center gap-2"
+          >
+            View
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onEdit(medicine)}
+            disabled={loading}
+            className="btn-secondary inline-flex items-center gap-2"
+          >
+            <Pencil size={15} />
+            Edit
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onDelete(medicine._id)}
+            disabled={loading}
+            className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Trash2 size={15} />
+            Delete
+          </button>
+        </div>
+      </article>
     );
   };
 
-  if (!medicines.length) {
+  /*
+   * ========================================================
+   * EMPTY STATE
+   * ========================================================
+   */
+
+  if (medicines.length === 0) {
     return (
       <div className="card py-12 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50">
-          <Pill
-            size={32}
-            className="text-blue-600"
-          />
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+          <Pill size={23} />
         </div>
 
-        <h3 className="mt-5 text-xl font-semibold text-slate-900">
-          No medicines added
+        <h3 className="mt-4 text-lg font-semibold text-slate-900">
+          No medicines yet
         </h3>
 
-        <p className="mt-2 text-slate-500">
-          Add your medicines to keep track
-          of your medication history.
+        <p className="mx-auto mt-2 max-w-sm text-sm text-slate-500">
+          Add your medicines to keep track of dosage, pricing and estimated
+          monthly costs.
         </p>
       </div>
     );
@@ -282,82 +256,48 @@ export default function MedicineList({
 
   return (
     <>
-      <div className="space-y-10">
-        {/* Active Medicines */}
+      {/* ACTIVE MEDICINES */}
 
-        {activeMedicines.length > 0 && (
-          <section>
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
-                <Pill
-                  size={20}
-                  className="text-blue-600"
-                />
-              </div>
+      {activeMedicines.length > 0 && (
+        <section>
+          <div className="mb-4">
+            <h3 className="text-base font-semibold text-slate-900">
+              Current medicines
+            </h3>
 
-              <div>
-                <h2 className="text-xl font-semibold text-slate-900">
-                  Active Medicines
-                </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Medicines you are currently taking.
+            </p>
+          </div>
 
-                <p className="text-sm text-slate-500">
-                  Medicines you are
-                  currently taking
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              {activeMedicines.map(
-                renderMedicine,
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* Medicine History */}
-
-        {pastMedicines.length > 0 && (
-          <section>
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
-                <History
-                  size={20}
-                  className="text-slate-600"
-                />
-              </div>
-
-              <div>
-                <h2 className="text-xl font-semibold text-slate-900">
-                  Past Medicines
-                </h2>
-
-                <p className="text-sm text-slate-500">
-                  Medicines you have taken
-                  in the past
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              {pastMedicines.map(
-                renderMedicine,
-              )}
-            </div>
-          </section>
-        )}
-      </div>
-
-      {/* Medicine Image Modal */}
-
-      {selectedMedicine && (
-        <MedicineImageModal
-          medicine={selectedMedicine}
-          onClose={() =>
-            setSelectedMedicine(null)
-          }
-        />
+          <div className="space-y-5">{activeMedicines.map(renderMedicine)}</div>
+        </section>
       )}
+
+      {/* PAST MEDICINES */}
+
+      {pastMedicines.length > 0 && (
+        <section className={activeMedicines.length > 0 ? "mt-10" : ""}>
+          <div className="mb-4">
+            <h3 className="text-base font-semibold text-slate-900">
+              Past medicines
+            </h3>
+
+            <p className="mt-1 text-sm text-slate-500">
+              Medicines from completed treatments.
+            </p>
+          </div>
+
+          <div className="space-y-5">{pastMedicines.map(renderMedicine)}</div>
+        </section>
+      )}
+
+      {/* IMAGE / DETAIL MODAL */}
+
+      <MedicineImageModal
+        medicine={selectedMedicine}
+        onClose={() => setSelectedMedicine(null)}
+      />
     </>
   );
 }
