@@ -15,5 +15,26 @@
   "Oncology (Cancer)",
   "Ophthalmology (Eye)",
   "Orthopedics (Bone, Joint & Muscle)",
-  "General Surgery (Surgical)"
+  "General Surgery (Surgical)",
+
+  "Neurosurgery (Brain & Spine Surgery)",
+  "Pediatric Surgery (Children's Surgery)",
+  "Obstetrics (Pregnancy & Childbirth)",
+  "Endocrinology (Hormones & Metabolism)",
+  "Rheumatology (Arthritis & Autoimmune)",
+  "Hepatology (Liver)",
+  "Hematology (Blood Disorders)",
+  "Infectious Disease (Infections)",
+  "Anesthesiology (Anesthesia & Critical Care)",
+  "Radiology (Medical Imaging)",
+  "Physical Medicine & Rehabilitation",
+  "Plastic Surgery (Reconstructive & Cosmetic)",
+  "Vascular Surgery (Blood Vessels)",
+  "Colorectal Surgery (Colon & Rectum)",
+  "Dental & Oral Surgery",
+  "Maxillofacial Surgery (Jaw & Face)",
+  "Emergency Medicine",
+  "Family Medicine",
+  "Nuclear Medicine",
+  "Pathology (Laboratory & Disease Diagnosis)"
 ]

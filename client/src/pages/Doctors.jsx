@@ -37,14 +37,24 @@ export default function Doctors() {
       specialities: doctor.specialities || [],
       designation: doctor.designation || "",
       primaryHospital: doctor.primaryHospital || "",
+      lastVisit:
+        doctor.lastVisit !== null && doctor.lastVisit !== undefined
+          ? String(doctor.lastVisit)
+          : "",
 
       chambers:
         doctor.chambers?.length > 0
           ? doctor.chambers.map((chamber) => ({
               name: chamber.name || "",
+              district: chamber.district || "",
               address: chamber.address || "",
               phone: chamber.phone || "",
               serialNumber: chamber.serialNumber || "",
+              visitFee:
+                chamber.visitFee !== null &&
+                chamber.visitFee !== undefined
+                  ? String(chamber.visitFee)
+                  : "",
               visitingDays: chamber.visitingDays || [],
               visitingTime: {
                 startHour:
@@ -84,6 +94,7 @@ export default function Doctors() {
       ...emptyForm,
       degrees: [],
       specialities: [],
+      lastVisit: "",
       chambers: [
         {
           ...emptyChamber,
@@ -113,6 +124,8 @@ export default function Doctors() {
     const cleanedForm = {
       ...form,
 
+      lastVisit: form.lastVisit ? Number(form.lastVisit) : null,
+
       degrees: form.degrees.filter(
         (degree) => degree.trim() !== "",
       ),
@@ -123,6 +136,16 @@ export default function Doctors() {
 
       chambers: form.chambers.map((chamber) => ({
         ...chamber,
+
+        district: chamber.district?.trim() || "",
+
+        visitFee:
+          chamber.visitFee !== "" &&
+          chamber.visitFee !== null &&
+          chamber.visitFee !== undefined
+            ? Number(chamber.visitFee)
+            : null,
+
         visitingDays: chamber.visitingDays || [],
       })),
 

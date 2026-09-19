@@ -1,3 +1,5 @@
+// client/src/data/hospitalsData.js
+
 const hospitalsData = {
   // --- DHAKA DIVISION ---
   Dhaka: [

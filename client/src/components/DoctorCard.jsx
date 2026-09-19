@@ -1,7 +1,6 @@
 // client/src/components/DoctorCard.jsx
 
 import {
-  BadgeCheck,
   Building2,
   GraduationCap,
   Pencil,
@@ -12,6 +11,7 @@ import {
 export default function DoctorCard({ doctor, onEdit, onDelete, onOpen }) {
   const specialities = doctor.specialities || [];
   const degrees = doctor.degrees || [];
+  const chambers = doctor.chambers || [];
 
   return (
     <div
@@ -56,16 +56,60 @@ export default function DoctorCard({ doctor, onEdit, onDelete, onOpen }) {
       )}
 
       {/* Professional Information */}
-      {(degrees.length > 0) && (
-        <div className="mt-5 space-y-3">
-          {degrees.length > 0 && (
-            <Info
-              icon={<GraduationCap size={17} />}
-              label="Degrees"
-              value={degrees.join(", ")}
-            />
-          )}
+      {degrees.length > 0 && (
+        <div className="mt-5">
+          <Info
+            icon={<GraduationCap size={17} />}
+            label="Degrees"
+            value={degrees.join(", ")}
+          />
+        </div>
+      )}
 
+      {/* Chambers + Visit Fees */}
+      {chambers.length > 0 && (
+        <div className="mt-5 space-y-2">
+          {chambers.map((chamber, index) => {
+            const hasVisitFee =
+              chamber.visitFee !== null &&
+              chamber.visitFee !== undefined &&
+              chamber.visitFee !== "";
+
+            return (
+              <div
+                key={chamber._id || index}
+                className="flex items-start gap-3 rounded-xl bg-slate-50 p-3"
+              >
+                <Building2
+                  size={17}
+                  className="mt-1 shrink-0 text-blue-600"
+                />
+
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs text-slate-500">
+                    Chamber {index + 1}
+                  </p>
+
+                  <p className="mt-1 font-medium text-slate-800">
+                    {chamber.name || "Chamber"}
+                  </p>
+
+                  {chamber.district && (
+                    <p className="mt-0.5 text-sm text-slate-500">
+                      {chamber.district}
+                    </p>
+                  )}
+
+                  {hasVisitFee && (
+                    <p className="mt-1 text-sm font-medium text-blue-600">
+                      Visit Fee: ৳
+                      {Number(chamber.visitFee).toLocaleString("en-BD")}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -107,7 +151,9 @@ function Info({ icon, label, value }) {
       <div className="min-w-0">
         <p className="text-xs text-slate-500">{label}</p>
 
-        <p className="mt-1 break-words font-medium text-slate-800">{value}</p>
+        <p className="mt-1 break-words font-medium text-slate-800">
+          {value}
+        </p>
       </div>
     </div>
   );

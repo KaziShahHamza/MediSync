@@ -1,4 +1,13 @@
-import { X, Pencil, GraduationCap, BadgeCheck, Building2 } from "lucide-react";
+// client/src/components/DoctorModal.jsx
+
+import {
+  X,
+  Pencil,
+  GraduationCap,
+  BadgeCheck,
+  Building2,
+  CalendarDays,
+} from "lucide-react";
 import DoctorInfo from "./DoctorInfo";
 import DoctorChamber from "./DoctorChamber";
 
@@ -13,6 +22,12 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
 
   const hasContactInfo =
     phones.length > 0 || emails.length > 0 || doctor.contactInfo?.website;
+
+  const hasProfessionalInfo =
+    degrees.length > 0 ||
+    doctor.bmdcRegNo ||
+    doctor.primaryHospital ||
+    doctor.lastVisit;
 
   const handleEdit = () => {
     onClose();
@@ -68,9 +83,7 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
           )}
 
           {/* Professional Information */}
-          {(degrees.length > 0 ||
-            doctor.bmdcRegNo ||
-            doctor.primaryHospital) && (
+          {hasProfessionalInfo && (
             <Section title="Professional Information">
               <div className="grid gap-3 sm:grid-cols-2">
                 {degrees.length > 0 && (
@@ -95,6 +108,14 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
                     label="Primary Hospital"
                     value={doctor.primaryHospital}
                     className="sm:col-span-2"
+                  />
+                )}
+
+                {doctor.lastVisit && (
+                  <DoctorInfo
+                    icon={<CalendarDays size={18} />}
+                    label="Last Visit"
+                    value={String(doctor.lastVisit)}
                   />
                 )}
               </div>

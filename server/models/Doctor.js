@@ -10,6 +10,12 @@ const chamberSchema = new mongoose.Schema(
       trim: true,
     },
 
+    district: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
     address: {
       type: String,
       default: "",
@@ -26,6 +32,12 @@ const chamberSchema = new mongoose.Schema(
       type: String,
       default: "",
       trim: true,
+    },
+
+    visitFee: {
+      type: Number,
+      min: 0,
+      default: null,
     },
 
     visitingDays: {
@@ -63,7 +75,6 @@ const chamberSchema = new mongoose.Schema(
   },
   { _id: true },
 );
-
 const doctorSchema = new mongoose.Schema(
   {
     user: {
@@ -106,6 +117,11 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       default: "",
       trim: true,
+    },
+
+    lastVisit: {
+      type: Number,
+      default: null,
     },
 
     // Chamber information

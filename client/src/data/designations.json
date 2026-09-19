@@ -3,9 +3,13 @@
   "Associate Professor",
   "Assistant Professor",
   "Consultant",
+  "Head of Department",
   "Senior Consultant",
   "Chief Consultant",
-  "Chief Surgeon",
+  "Junior Consultant",
+  "Registrar",
   "Medical Officer",
+  "Resident Medical Officer",
+  "Civil Surgeon",
   "UH&FPO"
 ]
