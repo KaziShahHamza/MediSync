@@ -1,4 +1,4 @@
-// client/src/components/DoctorModal.jsx
+// client/src/components/doctor/DoctorModal.jsx
 
 import {
   X,

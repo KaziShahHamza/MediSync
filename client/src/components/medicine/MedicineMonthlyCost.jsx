@@ -2,15 +2,14 @@ import { CircleDollarSign, TrendingUp } from "lucide-react";
 import {
   getTotalMonthlyMedicineCost,
   formatMedicinePrice,
-} from "../utils/medicineCalculations";
+} from "../../utils/medicineCalculations";
 
 export default function MedicineMonthlyCost({ medicines = [] }) {
   const activeMedicines = medicines.filter(
     (medicine) => medicine?.isActive !== false,
   );
 
-  const totalMonthlyCost =
-    getTotalMonthlyMedicineCost(medicines);
+  const totalMonthlyCost = getTotalMonthlyMedicineCost(medicines);
 
   return (
     <section className="card mb-6">

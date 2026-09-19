@@ -16,7 +16,7 @@ import {
   getPricePerPiece,
   getMedicineMonthlyCost,
   formatMedicinePrice,
-} from "../utils/medicineCalculations";
+} from "../../utils/medicineCalculations";
 
 const MEDICINE_TYPE_LABELS = {
   tablet: "Tablet",
@@ -53,10 +53,7 @@ function formatDate(date) {
   });
 }
 
-export default function MedicineImageModal({
-  medicine,
-  onClose,
-}) {
+export default function MedicineImageModal({ medicine, onClose }) {
   const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
@@ -88,31 +85,20 @@ export default function MedicineImageModal({
   const pricingType = getMedicinePricingType(medicine);
   const isStripMedicine = pricingType === "strip";
 
-  const dosage = Array.isArray(medicine.dosage)
-    ? medicine.dosage
-    : [];
+  const dosage = Array.isArray(medicine.dosage) ? medicine.dosage : [];
 
-  const dailyPieces = isStripMedicine
-    ? getDailyMedicinePieces(dosage)
-    : 0;
+  const dailyPieces = isStripMedicine ? getDailyMedicinePieces(dosage) : 0;
 
-  const monthlyPieces = isStripMedicine
-    ? getMonthlyMedicinePieces(dosage)
-    : 0;
+  const monthlyPieces = isStripMedicine ? getMonthlyMedicinePieces(dosage) : 0;
 
   const pricePerPiece = isStripMedicine
-    ? getPricePerPiece(
-        medicine.pricePerStrip,
-        medicine.piecesPerStrip,
-      )
+    ? getPricePerPiece(medicine.pricePerStrip, medicine.piecesPerStrip)
     : 0;
 
   const monthlyCost = getMedicineMonthlyCost(medicine);
 
   const typeLabel =
-    MEDICINE_TYPE_LABELS[medicine.type] ||
-    medicine.type ||
-    "Medicine";
+    MEDICINE_TYPE_LABELS[medicine.type] || medicine.type || "Medicine";
 
   const handleZoomIn = () => {
     setZoom((current) => Math.min(current + 0.25, 3));
@@ -142,9 +128,7 @@ export default function MedicineImageModal({
               </h2>
             </div>
 
-            <p className="mt-1 text-sm text-slate-500">
-              {typeLabel}
-            </p>
+            <p className="mt-1 text-sm text-slate-500">{typeLabel}</p>
           </div>
 
           <button
@@ -269,15 +253,12 @@ export default function MedicineImageModal({
                           className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2"
                         >
                           <span className="text-sm text-slate-600">
-                            {DOSAGE_TIME_LABELS[dose.time] ||
-                              dose.time}
+                            {DOSAGE_TIME_LABELS[dose.time] || dose.time}
                           </span>
 
                           <span className="text-sm font-semibold text-slate-800">
                             {dose.quantity} piece
-                            {Number(dose.quantity) === 1
-                              ? ""
-                              : "s"}
+                            {Number(dose.quantity) === 1 ? "" : "s"}
                           </span>
                         </div>
                       ))}
@@ -301,22 +282,15 @@ export default function MedicineImageModal({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div className="rounded-lg bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">
-                        Price / strip
-                      </p>
+                      <p className="text-xs text-slate-500">Price / strip</p>
 
                       <p className="mt-1 font-semibold text-slate-800">
-                        ৳
-                        {formatMedicinePrice(
-                          medicine.pricePerStrip,
-                        )}
+                        ৳{formatMedicinePrice(medicine.pricePerStrip)}
                       </p>
                     </div>
 
                     <div className="rounded-lg bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">
-                        Pieces / strip
-                      </p>
+                      <p className="text-xs text-slate-500">Pieces / strip</p>
 
                       <p className="mt-1 font-semibold text-slate-800">
                         {medicine.piecesPerStrip || 0}
@@ -324,9 +298,7 @@ export default function MedicineImageModal({
                     </div>
 
                     <div className="rounded-lg bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">
-                        Price / piece
-                      </p>
+                      <p className="text-xs text-slate-500">Price / piece</p>
 
                       <p className="mt-1 font-semibold text-slate-800">
                         ৳{formatMedicinePrice(pricePerPiece)}
@@ -334,9 +306,7 @@ export default function MedicineImageModal({
                     </div>
 
                     <div className="rounded-lg bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">
-                        Daily usage
-                      </p>
+                      <p className="text-xs text-slate-500">Daily usage</p>
 
                       <p className="mt-1 font-semibold text-slate-800">
                         {dailyPieces} piece
@@ -380,29 +350,20 @@ export default function MedicineImageModal({
                 <div className="mb-4 flex items-center gap-2">
                   <Package className="h-5 w-5 text-sky-600" />
 
-                  <h3 className="font-semibold text-slate-800">
-                    Unit Pricing
-                  </h3>
+                  <h3 className="font-semibold text-slate-800">Unit Pricing</h3>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-lg bg-slate-50 p-3">
-                    <p className="text-xs text-slate-500">
-                      Price / unit
-                    </p>
+                    <p className="text-xs text-slate-500">Price / unit</p>
 
                     <p className="mt-1 font-semibold text-slate-800">
-                      ৳
-                      {formatMedicinePrice(
-                        medicine.pricePerUnit,
-                      )}
+                      ৳{formatMedicinePrice(medicine.pricePerUnit)}
                     </p>
                   </div>
 
                   <div className="rounded-lg bg-slate-50 p-3">
-                    <p className="text-xs text-slate-500">
-                      Units / month
-                    </p>
+                    <p className="text-xs text-slate-500">Units / month</p>
 
                     <p className="mt-1 font-semibold text-slate-800">
                       {medicine.unitsPerMonth || 0}
@@ -419,9 +380,7 @@ export default function MedicineImageModal({
 
                       <p className="mt-1 text-sm font-semibold text-slate-800">
                         {medicine.unitsPerMonth || 0} unit
-                        {Number(medicine.unitsPerMonth) === 1
-                          ? ""
-                          : "s"}
+                        {Number(medicine.unitsPerMonth) === 1 ? "" : "s"}
                       </p>
                     </div>
 
@@ -445,9 +404,9 @@ export default function MedicineImageModal({
 
             {/* Disclaimer */}
             <p className="text-xs leading-relaxed text-slate-400">
-              Medicine cost and usage shown here are estimates based on
-              the information entered in MediSync. They are not a
-              substitute for instructions from a doctor or pharmacist.
+              Medicine cost and usage shown here are estimates based on the
+              information entered in MediSync. They are not a substitute for
+              instructions from a doctor or pharmacist.
             </p>
           </div>
         </div>

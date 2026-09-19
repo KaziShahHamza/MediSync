@@ -1,4 +1,4 @@
-// client/src/components/BloodPressureChart.jsx
+// client/src/components/health/BloodPressureChart.jsx
 
 import {
   Chart as ChartJS,

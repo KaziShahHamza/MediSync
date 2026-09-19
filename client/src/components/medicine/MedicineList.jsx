@@ -19,7 +19,7 @@ import {
   getPricePerPiece,
   getMedicineMonthlyCost,
   formatMedicinePrice,
-} from "../utils/medicineCalculations";
+} from "../../utils/medicineCalculations";
 
 const getMedicineTypeLabel = (type) => {
   const labels = {

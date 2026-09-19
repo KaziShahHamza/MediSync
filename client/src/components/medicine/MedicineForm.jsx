@@ -1,3 +1,5 @@
+// client/src/components/medicine/MedicineForm.jsx
+
 import {
   useEffect,
   useMemo,
@@ -18,7 +20,7 @@ import {
   getPricePerPiece,
   getMedicineMonthlyCost,
   formatMedicinePrice,
-} from "../utils/medicineCalculations";
+} from "../../utils/medicineCalculations";
 
 const MONTHS = [
   { value: "0", label: "January" },

@@ -1,4 +1,4 @@
-// client/src/components/DoctorInfo.jsx
+// client/src/components/doctor/DoctorInfo.jsx
 
 export default function DoctorInfo({
   icon,

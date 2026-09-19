@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { Download, FileText } from "lucide-react";
 
-import { generateEmergencyCardPdf } from "../../utils/emergencyCardPdf";
+import { generateEmergencyCardPdf } from "../../utils/emergencyCard/emergencyCardPdf";
 
-export default function EmergencyCardExport({
-  profile,
-  userInfo,
-}) {
+export default function EmergencyCardExport({ profile, userInfo }) {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
 
@@ -17,19 +14,11 @@ export default function EmergencyCardExport({
       setError("");
       setGenerating(true);
 
-      await generateEmergencyCardPdf(
-        profile,
-        userInfo,
-      );
+      await generateEmergencyCardPdf(profile, userInfo);
     } catch (err) {
-      console.error(
-        "Failed to generate emergency card PDF:",
-        err,
-      );
+      console.error("Failed to generate emergency card PDF:", err);
 
-      setError(
-        "Unable to generate the PDF. Please try again.",
-      );
+      setError("Unable to generate the PDF. Please try again.");
     } finally {
       setGenerating(false);
     }
@@ -40,20 +29,14 @@ export default function EmergencyCardExport({
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-4">
           <div className="surface-muted w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
-            <FileText
-              size={21}
-              className="text-sky-600"
-            />
+            <FileText size={21} className="text-sky-600" />
           </div>
 
           <div>
-            <h2 className="card-title text-xl">
-              MediSync Emergency Card
-            </h2>
+            <h2 className="card-title text-xl">MediSync Emergency Card</h2>
 
             <p className="text-sm text-muted mt-1 max-w-2xl">
-              Keep a printed copy in your
-              wallet.
+              Keep a printed copy in your wallet.
             </p>
           </div>
         </div>
@@ -66,9 +49,7 @@ export default function EmergencyCardExport({
         >
           <Download size={17} />
 
-          {generating
-            ? "Generating PDF..."
-            : "Download Emergency Card"}
+          {generating ? "Generating PDF..." : "Download Emergency Card"}
         </button>
       </div>
 
@@ -83,11 +64,7 @@ export default function EmergencyCardExport({
         </p>
       </div> */}
 
-      {error && (
-        <p className="mt-3 text-sm text-red-600">
-          {error}
-        </p>
-      )}
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
     </section>
   );
 }

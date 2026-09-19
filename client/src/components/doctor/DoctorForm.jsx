@@ -1,12 +1,12 @@
-// client/src/components/DoctorForm.jsx
+// client/src/components/doctor/DoctorForm.jsx
 
 import { MousePointer2, Plus, Trash2 } from "lucide-react";
-import primaryHospitals from "../data/primaryHospitals";
-import hospitalsData from "../data/hospitalsData";
-import specialties from "../data/specialties.json";
-import designations from "../data/designations.json";
-import days from "../data/days.json";
-import degrees from "../data/degrees.json";
+import primaryHospitals from "../../data/primaryHospitals";
+import hospitalsData from "../../data/hospitalsData";
+import specialties from "../../data/specialties.json";
+import designations from "../../data/designations.json";
+import days from "../../data/days.json";
+import degrees from "../../data/degrees.json";
 
 const currentYear = new Date().getFullYear();
 

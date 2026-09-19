@@ -5,17 +5,17 @@ import useHealthLogs from "../hooks/useHealthLogs";
 import { useProfile } from "../context/ProfileContext";
 import { useLifestyle } from "../context/LifestyleContext";
 
-import LifestyleScoreCard from "../components/LifestyleScoreCard";
-import LifestyleScoreChart from "../components/LifestyleScoreChart";
+import LifestyleScoreCard from "../components/health/LifestyleScoreCard";
+import LifestyleScoreChart from "../components/health/charts/LifestyleScoreChart";
 
-import BMIForm from "../components/BMIForm";
-import BMIChart from "../components/BMIChart";
+import BMIForm from "../components/health/forms/BMIForm";
+import BMIChart from "../components/health/charts/BMIChart";
 
-import BloodPressureForm from "../components/BloodPressureForm";
-import BloodPressureChart from "../components/BloodPressureChart";
+import BloodPressureForm from "../components/health/forms/BloodPressureForm";
+import BloodPressureChart from "../components/health/charts/BloodPressureChart";
 
-import BloodSugarForm from "../components/BloodSugarForm";
-import BloodSugarChart from "../components/BloodSugarChart";
+import BloodSugarForm from "../components/health/forms/BloodSugarForm";
+import BloodSugarChart from "../components/health/charts/BloodSugarChart";
 
 export default function Health() {
   const { logs, addLog } = useHealthLogs();

@@ -1,10 +1,10 @@
-// client/src/components/BMIForm.jsx
+// client/src/components/health/BMIForm.jsx
 
 import { useMemo, useState } from "react";
 import { Scale, Save, Ruler, Weight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import BMIResult from "./BMIResult";
-import { useProfile } from "../context/ProfileContext";
+import BMIResult from "../BMIResult";
+import { useProfile } from "../../../context/ProfileContext";
 
 export default function BMIForm({ onAdd }) {
   const { profile } = useProfile();

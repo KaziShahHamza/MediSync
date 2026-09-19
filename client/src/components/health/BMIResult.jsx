@@ -1,4 +1,4 @@
-// client/src/components/BMIResult.jsx
+// client/src/components/health/BMIResult.jsx
 
 export default function BMIResult({ bmi }) {
   if (!bmi) {

@@ -1,7 +1,7 @@
 // client/src/pages/TestPage.jsx
 
 import TestReminderPage from "./TestReminderPage";
-import { useMedicines } from "../context/MedicineContext";
+import { useMedicines } from "../../context/MedicineContext";
 
 export default function TestPage() {
   const { medicines } = useMedicines();

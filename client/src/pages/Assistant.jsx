@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { Menu, PanelLeft } from "lucide-react";
 import { useChatbot } from "../context/ChatbotContext";
-import AssistantSidebar from "../components/assistant/AssistantSidebar";
-import ChatMessage from "../components/assistant/ChatMessage";
-import ChatInput from "../components/assistant/ChatInput";
-import ChatEmptyState from "../components/assistant/ChatEmptyState";
+import AssistantSidebar from "../components/ai-assistant/AssistantSidebar";
+import ChatMessage from "../components/ai-assistant/ChatMessage";
+import ChatInput from "../components/ai-assistant/ChatInput";
+import ChatEmptyState from "../components/ai-assistant/ChatEmptyState";
 
 export default function Assistant() {
   const {

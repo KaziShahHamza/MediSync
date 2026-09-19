@@ -12,9 +12,9 @@ import { ReportProvider } from "./context/ReportContext";
 import { LifestyleProvider } from "./context/LifestyleContext";
 import { ChatbotProvider } from "./context/ChatbotContext";
 
-import ProtectedRoute from "./components/ProtectedRoute";
-import Navbar from "./components/Navbar";
-import ScrollToTop from "./components/ScrollToTop";
+import Navbar from "./components/navbar/Navbar";
+import ProtectedRoute from "./components/navbar/ProtectedRoute";
+import ScrollToTop from "./components/navbar/ScrollToTop";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -28,10 +28,9 @@ import Reports from "./pages/Reports";
 import Doctors from "./pages/Doctors";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
-import LifestyleScore from "./pages/lifestyle/LifestyleScore";
+import LifestyleScore from "./pages/LifestyleScore";
 import Assistant from "./pages/Assistant";
 import BloodNeed from "./pages/BloodNeed";
-
 
 export default function App() {
   useEffect(() => {

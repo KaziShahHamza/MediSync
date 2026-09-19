@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Pill, PlusCircle } from "lucide-react";
 
-import MedicineForm from "../components/MedicineForm";
-import MedicineList from "../components/MedicineList";
-import MedicineMonthlyCost from "../components/MedicineMonthlyCost";
+import MedicineForm from "../components/medicine/MedicineForm";
+import MedicineList from "../components/medicine/MedicineList";
+import MedicineMonthlyCost from "../components/medicine/MedicineMonthlyCost";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

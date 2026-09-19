@@ -1,4 +1,4 @@
-// client/src/components/DoctorChamber.jsx
+// client/src/components/doctor/DoctorChamber.jsx
 
 import {
   Building2,

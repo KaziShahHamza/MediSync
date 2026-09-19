@@ -1,7 +1,6 @@
 // client/src/pages/Dashboard.jsx
 
 import { useEffect, useState } from "react";
-
 import {
   Activity,
   Droplets,
@@ -15,12 +14,14 @@ import {
 } from "lucide-react";
 
 import HealthSummaryCard from "../components/dashboard/HealthSummaryCard";
+import LifestyleScoreCard from "../components/health/LifestyleScoreCard";
+
 import StatCard from "../components/dashboard/StatCard";
 import QuickLinkCard from "../components/dashboard/QuickLinkCard";
-import { useAuth } from "../context/AuthContext";
 
+import { useAuth } from "../context/AuthContext";
 import { useLifestyle } from "../context/LifestyleContext";
-import LifestyleScoreCard from "../components/LifestyleScoreCard";
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 

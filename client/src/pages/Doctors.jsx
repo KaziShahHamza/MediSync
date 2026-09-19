@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useDoctors } from "../context/DoctorContext";
-import DoctorCard from "../components/DoctorCard";
+import DoctorCard from "../components/doctor/DoctorCard";
 import DoctorForm, {
   emptyForm,
   emptyChamber,
-} from "../components/DoctorForm";
-import DoctorModal from "../components/DoctorModal";
+} from "../components/doctor/DoctorForm";
+import DoctorModal from "../components/doctor/DoctorModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
