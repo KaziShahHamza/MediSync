@@ -1,11 +1,14 @@
 // client/src/components/doctor/DoctorInfo.jsx
 
+// Displays a reusable icon, label, and value block for doctor details.
+
 export default function DoctorInfo({
   icon,
   label,
   value,
   className = "",
 }) {
+  // Hide empty information blocks so the details modal stays clean.
   if (!value) {
     return null;
   }

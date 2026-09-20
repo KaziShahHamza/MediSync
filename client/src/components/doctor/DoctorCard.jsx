@@ -1,5 +1,7 @@
 // client/src/components/doctor/DoctorCard.jsx
 
+// Displays a compact doctor summary card with actions and chamber information.
+
 import {
   Building2,
   GraduationCap,
@@ -11,6 +13,7 @@ import {
 import DoctorChamber from "./DoctorChamber";
 import { formatVisitFee } from "../../utils/doctor/doctorFunctions";
 
+// Reusable labeled information row used inside the doctor card.
 function Info({ icon, label, value }) {
   if (!value) return null;
 
@@ -30,6 +33,7 @@ function Info({ icon, label, value }) {
   );
 }
 
+// Main doctor card: summary, edit/delete actions, and chamber preview.
 export default function DoctorCard({
   doctor,
   onEdit,
@@ -40,6 +44,7 @@ export default function DoctorCard({
   const degrees = doctor.degrees || [];
   const chambers = doctor.chambers || [];
 
+  // Used to decide whether the footer should show a visit fee.
   const hasVisitFee = chambers.some(
     (chamber) =>
       chamber.visitFee !== null &&
@@ -80,6 +85,7 @@ export default function DoctorCard({
           </div>
         </div>
 
+        {/* Card actions stay hidden on desktop until the card is hovered. */}
         <div
           className="flex shrink-0 gap-1 opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100"
           onClick={(event) => event.stopPropagation()}

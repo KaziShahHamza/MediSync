@@ -1,5 +1,8 @@
 // client/src/components/doctor/DoctorModal.jsx
 
+// Displays complete doctor information in a modal.
+// Reuses DoctorInfo and DoctorChamber for consistent doctor details.
+
 import {
   BadgeCheck,
   Building2,
@@ -17,6 +20,7 @@ export default function DoctorModal({
   onClose,
   onEdit,
 }) {
+  // Do not render the modal when no doctor is selected.
   if (!doctor) {
     return null;
   }
@@ -27,6 +31,7 @@ export default function DoctorModal({
   const phones = doctor.contactInfo?.phones || [];
   const emails = doctor.contactInfo?.emails || [];
 
+  // Check whether any contact information is available.
   const hasContactInfo =
     phones.length > 0 ||
     emails.length > 0 ||
@@ -34,17 +39,20 @@ export default function DoctorModal({
     Boolean(doctor.contactInfo?.facebook) ||
     Boolean(doctor.contactInfo?.linkedin);
 
+  // Check whether professional information has anything to display.
   const hasProfessionalInfo =
     degrees.length > 0 ||
     Boolean(doctor.bmdcRegNo) ||
     Boolean(doctor.primaryHospital) ||
     Boolean(doctor.lastVisit);
 
+  // Close the details modal before opening the edit form.
   function handleEdit() {
     onClose();
     onEdit(doctor);
   }
 
+  // Reusable section wrapper for modal content.
   function Section({ title, children }) {
     return (
       <section>
@@ -71,7 +79,7 @@ export default function DoctorModal({
           event.stopPropagation()
         }
       >
-        {/* Header */}
+        {/* Modal header */}
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 sm:px-6">
           <div className="min-w-0">
             <h2
@@ -87,6 +95,7 @@ export default function DoctorModal({
               </p>
             )}
 
+            {/* Doctor speciality badges */}
             {specialities.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {specialities.map((speciality) => (
@@ -101,6 +110,7 @@ export default function DoctorModal({
             )}
           </div>
 
+          {/* Close button */}
           <button
             type="button"
             onClick={onClose}
@@ -111,8 +121,9 @@ export default function DoctorModal({
           </button>
         </div>
 
-        {/* Content */}
+        {/* Modal content */}
         <div className="space-y-7 p-5 sm:p-6">
+          {/* Professional information */}
           {hasProfessionalInfo && (
             <Section title="Professional Information">
               <div className="grid gap-3 sm:grid-cols-2">
@@ -151,6 +162,7 @@ export default function DoctorModal({
             </Section>
           )}
 
+          {/* Chamber information */}
           {chambers.length > 0 && (
             <Section title="Chambers">
               <div className="space-y-3">
@@ -165,6 +177,7 @@ export default function DoctorModal({
             </Section>
           )}
 
+          {/* Contact information */}
           {hasContactInfo && (
             <Section title="Contact Information">
               <div className="grid gap-3 sm:grid-cols-2">
@@ -206,6 +219,7 @@ export default function DoctorModal({
             </Section>
           )}
 
+          {/* Doctor notes */}
           {doctor.notes && (
             <Section title="Notes">
               <div className="rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">
@@ -215,8 +229,9 @@ export default function DoctorModal({
           )}
         </div>
 
-        {/* Footer */}
+        {/* Modal footer actions */}
         <div className="sticky bottom-0 flex justify-end gap-3 border-t border-slate-200 bg-white px-5 py-4 sm:px-6">
+          {/* Close without editing */}
           <button
             type="button"
             onClick={onClose}
@@ -225,6 +240,7 @@ export default function DoctorModal({
             Close
           </button>
 
+          {/* Open doctor in edit form */}
           <button
             type="button"
             onClick={handleEdit}

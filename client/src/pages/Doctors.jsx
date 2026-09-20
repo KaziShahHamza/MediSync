@@ -1,5 +1,7 @@
 // client/src/pages/Doctors.jsx
 
+// Doctor management page: lists doctors and controls add/edit/detail modals.
+
 import { Plus, Stethoscope } from "lucide-react";
 import { useState } from "react";
 
@@ -11,14 +13,13 @@ import DoctorForm from "../components/doctor/DoctorForm";
 import DoctorModal from "../components/doctor/DoctorModal";
 
 export default function Doctors() {
+  // Controls whether the add/edit doctor form modal is visible.
   const [isFormModalOpen, setIsFormModalOpen] =
     useState(false);
 
-  const {
-    doctors,
-    fetchDoctors,
-  } = useDoctors();
+  const { doctors, fetchDoctors } = useDoctors();
 
+  // Centralizes doctor form state, editing, saving, and deletion logic.
   const {
     form,
     setForm,
@@ -35,16 +36,19 @@ export default function Doctors() {
     () => setIsFormModalOpen(false),
   );
 
+  // Opens a clean form for creating a new doctor.
   function handleAddDoctor() {
     resetForm();
     setIsFormModalOpen(true);
   }
 
+  // Loads the selected doctor into the form and opens the modal.
   function handleEditDoctor(doctor) {
     editDoctor(doctor);
     setIsFormModalOpen(true);
   }
 
+  // Resets form state and closes the add/edit modal.
   function handleCloseFormModal() {
     resetForm();
     setIsFormModalOpen(false);
@@ -122,6 +126,7 @@ export default function Doctors() {
               </p>
             </div>
 
+            {/* Responsive doctor card grid. */}
             <div className="grid gap-4 md:grid-cols-3">
               {doctors.map((doctor) => (
                 <DoctorCard

@@ -1,5 +1,10 @@
+// client/src/components/doctor/DoctorFormFields.jsx
+
+// Provides reusable select, multi-select, and time input components for doctor forms.
+
 import { MousePointer2 } from "lucide-react";
 
+// Normalizes different option formats into a value usable by HTML select.
 function getOptionValue(option) {
   if (typeof option === "string" || typeof option === "number") {
     return String(option);
@@ -13,6 +18,7 @@ function getOptionValue(option) {
   );
 }
 
+// Normalizes different option formats into the visible select label.
 function getOptionLabel(option) {
   if (typeof option === "string" || typeof option === "number") {
     return String(option);
@@ -26,6 +32,7 @@ function getOptionLabel(option) {
   );
 }
 
+// Standard single-value select used throughout the doctor form.
 export function SelectField({
   label,
   name,
@@ -70,6 +77,7 @@ export function SelectField({
   );
 }
 
+// Multi-value select for fields such as degrees and specialities.
 export function MultiSelect({
   label,
   options = [],
@@ -122,6 +130,7 @@ export function MultiSelect({
   );
 }
 
+// Generates the 12-hour values used by chamber visiting times.
 export function TimeSelect({
   value,
   onChange,
@@ -147,6 +156,7 @@ export function TimeSelect({
   );
 }
 
+// Provides the AM/PM selector for chamber visiting times.
 export function PeriodSelect({
   value,
   onChange,

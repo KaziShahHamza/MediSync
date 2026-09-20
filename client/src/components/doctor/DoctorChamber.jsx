@@ -1,3 +1,7 @@
+// client/src/components/doctor/DoctorChamber.jsx
+
+// Renders chamber details such as location, contact, fee, days, and visiting time.
+
 import {
   Building2,
   CircleDollarSign,
@@ -9,6 +13,7 @@ import {
 
 import { formatVisitFee } from "../../utils/doctor/doctorFunctions";
 
+// Displays one chamber with optional compact styling for cards.
 export default function DoctorChamber({
   chamber,
   index = 0,
@@ -21,6 +26,7 @@ export default function DoctorChamber({
   const visitingDays = chamber.visitingDays || [];
   const visitingTime = chamber.visitingTime || {};
 
+  // Only show visiting time when all four time fields are available.
   const hasVisitingTime =
     visitingTime.startHour &&
     visitingTime.startPeriod &&
@@ -125,9 +131,7 @@ export default function DoctorChamber({
             />
 
             <div>
-              <span>
-                {visitingDays.join(", ")}
-              </span>
+              <span>{visitingDays.join(", ")}</span>
 
               {hasVisitingTime && (
                 <span className="ml-1">
@@ -142,6 +146,7 @@ export default function DoctorChamber({
         )}
       </div>
 
+      {/* Fallback shown when the chamber has no optional details. */}
       {!chamber.address &&
         !chamber.phone &&
         !chamber.serialNumber &&

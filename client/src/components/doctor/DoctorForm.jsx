@@ -1,6 +1,12 @@
+// client/src/components/doctor/DoctorForm.jsx
+
+// Renders the add/edit doctor form inside a modal.
+// Combines doctor information, professional details, and chamber management.
+
 import { X } from "lucide-react";
 
 import ChamberForm from "./ChamberForm";
+import DoctorFormSection from "./DoctorFormSection";
 import { MultiSelect, SelectField } from "./DoctorFormFields";
 
 import primaryHospitals from "../../data/primaryHospitals";
@@ -20,6 +26,7 @@ export default function DoctorForm({
   setForm,
   onClose,
 }) {
+  // Updates one phone or email entry inside contact information.
   function updateContact(type, index, value) {
     setForm((previousForm) => ({
       ...previousForm,
@@ -33,6 +40,7 @@ export default function DoctorForm({
     }));
   }
 
+  // Updates a multi-select field with all currently selected values.
   function updateMultiSelect(field, event) {
     const values = Array.from(
       event.target.selectedOptions,
@@ -45,12 +53,14 @@ export default function DoctorForm({
     }));
   }
 
+  // Resets the form and closes the modal.
   function handleCancel() {
     onReset();
     onClose();
   }
 
   return (
+    // Modal shell: keeps the form responsive and scrollable on smaller screens.
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
       onMouseDown={onClose}
@@ -60,12 +70,10 @@ export default function DoctorForm({
         aria-modal="true"
         aria-labelledby="doctor-form-title"
         className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
-        onMouseDown={(event) =>
-          event.stopPropagation()
-        }
+        onMouseDown={(event) => event.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 sm:px-6">
+        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-6">
           <div>
             <h2
               id="doctor-form-title"
@@ -81,6 +89,7 @@ export default function DoctorForm({
             </p>
           </div>
 
+          {/* Closes the doctor form modal. */}
           <button
             type="button"
             onClick={handleCancel}
@@ -91,24 +100,18 @@ export default function DoctorForm({
           </button>
         </div>
 
-        {/* Form content */}
+        {/* Two-column desktop / one-column mobile form. */}
         <div className="min-h-0 overflow-y-auto">
           <form
             id="doctor-form"
             onSubmit={onSubmit}
             className="grid gap-6 p-5 sm:p-6 lg:grid-cols-2"
           >
-            {/* Basic Information */}
-            <section>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
-                Basic Information
-              </h3>
-
+            <DoctorFormSection title="Basic Information">
               <div className="space-y-4">
+                {/* Captures the doctor's basic identity. */}
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                    Doctor Name
-                  </label>
+                  <label>Doctor Name</label>
 
                   <input
                     type="text"
@@ -121,10 +124,9 @@ export default function DoctorForm({
                   />
                 </div>
 
+                {/* Captures the doctor's BMDC registration number. */}
                 <div>
-                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                    BMDC Registration No.
-                  </label>
+                  <label>BMDC Registration No.</label>
 
                   <input
                     type="text"
@@ -136,6 +138,7 @@ export default function DoctorForm({
                   />
                 </div>
 
+                {/* Selects the doctor's professional designation. */}
                 <SelectField
                   label="Designation"
                   name="designation"
@@ -145,6 +148,7 @@ export default function DoctorForm({
                   placeholder="Select designation"
                 />
 
+                {/* Selects the doctor's primary hospital. */}
                 <SelectField
                   label="Primary Hospital"
                   name="primaryHospital"
@@ -154,6 +158,7 @@ export default function DoctorForm({
                   placeholder="Select primary hospital"
                 />
 
+                {/* Records the year of the user's last visit. */}
                 <SelectField
                   label="Last Visit"
                   name="lastVisit"
@@ -163,187 +168,115 @@ export default function DoctorForm({
                   placeholder="Select year"
                 />
               </div>
-            </section>
+            </DoctorFormSection>
 
-            {/* Professional Information */}
-            <section>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
-                Professional Information
-              </h3>
-
+            <DoctorFormSection title="Professional Information">
               <div className="space-y-4">
+                {/* Selects one or more professional degrees. */}
                 <MultiSelect
                   label="Degrees"
                   options={degrees}
                   value={form.degrees}
                   onChange={(event) =>
-                    updateMultiSelect(
-                      "degrees",
-                      event,
-                    )
+                    updateMultiSelect("degrees", event)
                   }
                   placeholder="Select degrees"
                 />
 
+                {/* Selects one or more medical specialities. */}
                 <MultiSelect
                   label="Specialities"
                   options={specialties}
                   value={form.specialities}
                   onChange={(event) =>
-                    updateMultiSelect(
-                      "specialities",
-                      event,
-                    )
+                    updateMultiSelect("specialities", event)
                   }
                   placeholder="Select specialities"
                 />
               </div>
-            </section>
+            </DoctorFormSection>
 
-            {/* Chambers */}
-            <section className="lg:col-span-2">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
-                Chambers
-              </h3>
-
+            {/* Renders all chamber-related fields. */}
+            <DoctorFormSection
+              title="Chambers"
+              className="lg:col-span-2"
+            >
               <ChamberForm
                 form={form}
                 setForm={setForm}
                 days={days}
               />
-            </section>
+            </DoctorFormSection>
 
-            {/* Contact Information */}
-            <section>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
-                Contact Information
-              </h3>
-
+            {/* <DoctorFormSection title="Contact Information">
               <div className="space-y-4">
-                {form.contactInfo.phones.map(
-                  (phone, index) => (
-                    <div key={`phone-${index}`}>
-                      <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                        Phone {index + 1}
-                      </label>
+                {form.contactInfo.phones.map((phone, index) => (
+                  <div key={`phone-${index}`}>
+                    <label>Phone {index + 1}</label>
 
-                      <input
-                        type="tel"
-                        value={phone}
-                        onChange={(event) =>
-                          updateContact(
-                            "phones",
-                            index,
-                            event.target.value,
-                          )
-                        }
-                        placeholder="01XXXXXXXXX"
-                        className="input"
-                      />
-                    </div>
-                  ),
-                )}
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(event) =>
+                        updateContact(
+                          "phones",
+                          index,
+                          event.target.value,
+                        )
+                      }
+                      placeholder="01XXXXXXXXX"
+                      className="input"
+                    />
+                  </div>
+                ))}
 
-                {form.contactInfo.emails.map(
-                  (email, index) => (
-                    <div key={`email-${index}`}>
-                      <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                        Email {index + 1}
-                      </label>
+                {form.contactInfo.emails.map((email, index) => (
+                  <div key={`email-${index}`}>
+                    <label>Email {index + 1}</label>
 
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(event) =>
-                          updateContact(
-                            "emails",
-                            index,
-                            event.target.value,
-                          )
-                        }
-                        placeholder="doctor@example.com"
-                        className="input"
-                      />
-                    </div>
-                  ),
-                )}
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(event) =>
+                        updateContact(
+                          "emails",
+                          index,
+                          event.target.value,
+                        )
+                      }
+                      placeholder="doctor@example.com"
+                      className="input"
+                    />
+                  </div>
+                ))}
 
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                    Website
-                  </label>
+                {["website", "facebook", "linkedin"].map((field) => (
+                  <div key={field}>
+                    <label className="capitalize">
+                      {field}
+                    </label>
 
-                  <input
-                    type="url"
-                    value={form.contactInfo.website}
-                    onChange={(event) =>
-                      setForm((previousForm) => ({
-                        ...previousForm,
-                        contactInfo: {
-                          ...previousForm.contactInfo,
-                          website: event.target.value,
-                        },
-                      }))
-                    }
-                    placeholder="https://example.com"
-                    className="input"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                    Facebook
-                  </label>
-
-                  <input
-                    type="url"
-                    value={form.contactInfo.facebook}
-                    onChange={(event) =>
-                      setForm((previousForm) => ({
-                        ...previousForm,
-                        contactInfo: {
-                          ...previousForm.contactInfo,
-                          facebook:
-                            event.target.value,
-                        },
-                      }))
-                    }
-                    placeholder="Facebook profile URL"
-                    className="input"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
-                    LinkedIn
-                  </label>
-
-                  <input
-                    type="url"
-                    value={form.contactInfo.linkedin}
-                    onChange={(event) =>
-                      setForm((previousForm) => ({
-                        ...previousForm,
-                        contactInfo: {
-                          ...previousForm.contactInfo,
-                          linkedin:
-                            event.target.value,
-                        },
-                      }))
-                    }
-                    placeholder="LinkedIn profile URL"
-                    className="input"
-                  />
-                </div>
+                    <input
+                      type="url"
+                      value={form.contactInfo[field]}
+                      onChange={(event) =>
+                        setForm((previousForm) => ({
+                          ...previousForm,
+                          contactInfo: {
+                            ...previousForm.contactInfo,
+                            [field]: event.target.value,
+                          },
+                        }))
+                      }
+                      placeholder={`${field} URL`}
+                      className="input"
+                    />
+                  </div>
+                ))}
               </div>
-            </section>
-
-            {/* Notes */}
-            <section>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
-                Notes
-              </h3>
-
+            </DoctorFormSection> */}
+{/* 
+            <DoctorFormSection title="Notes">
               <textarea
                 name="notes"
                 value={form.notes}
@@ -352,12 +285,13 @@ export default function DoctorForm({
                 placeholder="Additional notes about this doctor..."
                 className="input resize-none"
               />
-            </section>
+            </DoctorFormSection> */}
           </form>
         </div>
 
-        {/* Footer */}
-        <div className="flex shrink-0 justify-end gap-3 border-t border-slate-200 bg-white px-5 py-4 sm:px-6">
+        {/* Footer: actions stay visible while the form content scrolls. */}
+        <div className="flex shrink-0 justify-end gap-3 border-t border-slate-200 px-5 py-4 sm:px-6">
+          {/* Cancels editing and closes the form. */}
           <button
             type="button"
             onClick={handleCancel}
@@ -366,6 +300,7 @@ export default function DoctorForm({
             Cancel
           </button>
 
+          {/* Submits either a new or updated doctor. */}
           <button
             type="submit"
             form="doctor-form"
@@ -378,3 +313,4 @@ export default function DoctorForm({
     </div>
   );
 }
+
