@@ -13,21 +13,15 @@ import {
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export function useDoctorForm(
-  fetchDoctors,
-  onClose,
-) {
+export function useDoctorForm(fetchDoctors, onClose) {
   // Store the current doctor form values.
-  const [form, setForm] =
-    useState(resetDoctorForm);
+  const [form, setForm] = useState(resetDoctorForm);
 
   // Track the doctor currently being edited.
-  const [editingId, setEditingId] =
-    useState(null);
+  const [editingId, setEditingId] = useState(null);
 
   // Track the doctor currently opened in the details modal.
-  const [selectedDoctor, setSelectedDoctor] =
-    useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   // Handles standard text, select, and textarea fields.
   function handleChange(event) {
@@ -56,40 +50,33 @@ export function useDoctorForm(
     event.preventDefault();
 
     try {
-      const token =
-        localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       // Stop the request when authentication is unavailable.
       if (!token) {
         return false;
       }
 
-      const cleanedForm =
-        cleanDoctorForm(form);
+      const cleanedForm = cleanDoctorForm(form);
 
       // Use the appropriate endpoint for create/update.
       const url = editingId
         ? `${API_URL}/api/doctors/${editingId}`
         : `${API_URL}/api/doctors`;
 
-      const method = editingId
-        ? "PUT"
-        : "POST";
+      const method = editingId ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
         headers: {
-          "Content-Type":
-            "application/json",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(cleanedForm),
       });
 
       if (!response.ok) {
-        throw new Error(
-          "Failed to save doctor",
-        );
+        throw new Error("Failed to save doctor");
       }
 
       // Reset the form and refresh the doctor list after saving.
@@ -101,10 +88,7 @@ export function useDoctorForm(
 
       return true;
     } catch (error) {
-      console.error(
-        "Failed to save doctor:",
-        error,
-      );
+      console.error("Failed to save doctor:", error);
 
       return false;
     }
@@ -113,45 +97,33 @@ export function useDoctorForm(
   // Deletes a doctor and refreshes the doctor list.
   async function deleteDoctor(id) {
     try {
-      const token =
-        localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       // Stop the request when authentication is unavailable.
       if (!token) {
         return;
       }
 
-      const response = await fetch(
-        `${API_URL}/api/doctors/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await fetch(`${API_URL}/api/doctors/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       if (!response.ok) {
-        throw new Error(
-          "Failed to delete doctor",
-        );
+        throw new Error("Failed to delete doctor");
       }
 
       // Close the details modal if the deleted doctor was open.
-      setSelectedDoctor(
-        (currentDoctor) =>
-          currentDoctor?._id === id
-            ? null
-            : currentDoctor,
+      setSelectedDoctor((currentDoctor) =>
+        currentDoctor?._id === id ? null : currentDoctor,
       );
 
       // Refresh the list after successful deletion.
       await fetchDoctors();
     } catch (error) {
-      console.error(
-        "Failed to delete doctor:",
-        error,
-      );
+      console.error("Failed to delete doctor:", error);
     }
   }
 

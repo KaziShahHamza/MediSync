@@ -15,38 +15,23 @@ import {
 
 import ChamberItem from "./ChamberItem";
 
-export default function ChamberForm({
-  form,
-  setForm,
-  days,
-}) {
+export default function ChamberForm({ form, setForm, days }) {
   // Updates a specific field inside a chamber.
   const handleChange = (index, field, value) => {
-    setForm((previousForm) =>
-      updateChamber(previousForm, index, field, value),
-    );
+    setForm((previousForm) => updateChamber(previousForm, index, field, value));
   };
 
   // Updates the selected hospital for a chamber.
   const handleHospitalChange = (index, value) => {
     setForm((previousForm) =>
-      selectChamberHospital(
-        previousForm,
-        index,
-        value,
-      ),
+      selectChamberHospital(previousForm, index, value),
     );
   };
 
   // Updates a specific visiting-time field.
   const handleTimeChange = (index, field, value) => {
     setForm((previousForm) =>
-      updateVisitingTime(
-        previousForm,
-        index,
-        field,
-        value,
-      ),
+      updateVisitingTime(previousForm, index, field, value),
     );
   };
 
@@ -57,9 +42,7 @@ export default function ChamberForm({
 
   // Removes a chamber from the form.
   const handleRemove = (index) => {
-    setForm((previousForm) =>
-      removeChamber(previousForm, index),
-    );
+    setForm((previousForm) => removeChamber(previousForm, index));
   };
 
   return (

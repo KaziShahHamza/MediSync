@@ -1,3 +1,5 @@
+// client/src/components/medicine/MedicineList.jsx
+
 import { useState } from "react";
 
 import {

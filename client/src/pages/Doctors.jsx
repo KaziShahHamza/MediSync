@@ -14,8 +14,7 @@ import DoctorModal from "../components/doctor/DoctorModal";
 
 export default function Doctors() {
   // Controls whether the add/edit doctor form modal is visible.
-  const [isFormModalOpen, setIsFormModalOpen] =
-    useState(false);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
 
   const { doctors, fetchDoctors } = useDoctors();
 
@@ -31,10 +30,7 @@ export default function Doctors() {
     resetForm,
     saveDoctor,
     deleteDoctor,
-  } = useDoctorForm(
-    fetchDoctors,
-    () => setIsFormModalOpen(false),
-  );
+  } = useDoctorForm(fetchDoctors, () => setIsFormModalOpen(false));
 
   // Opens a clean form for creating a new doctor.
   function handleAddDoctor() {
@@ -64,13 +60,10 @@ export default function Doctors() {
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">
-              Doctors
-            </h1>
+            <h1 className="text-2xl font-bold text-slate-900">Doctors</h1>
 
             <p className="mt-1 text-sm text-slate-500">
-              Manage your doctors, chambers, and professional
-              information.
+              Manage your doctors, chambers, and professional information.
             </p>
           </div>
         </div>
@@ -98,8 +91,8 @@ export default function Doctors() {
             </h2>
 
             <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
-              Add your doctor information to keep your
-              healthcare contacts organized in MediSync.
+              Add your doctor information to keep your healthcare contacts
+              organized in MediSync.
             </p>
 
             <button
@@ -119,10 +112,7 @@ export default function Doctors() {
               </h2>
 
               <p className="mt-0.5 text-sm text-slate-500">
-                {doctors.length}{" "}
-                {doctors.length === 1
-                  ? "doctor"
-                  : "doctors"}
+                {doctors.length} {doctors.length === 1 ? "doctor" : "doctors"}
               </p>
             </div>
 

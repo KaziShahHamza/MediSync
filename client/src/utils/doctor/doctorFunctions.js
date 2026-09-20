@@ -62,8 +62,7 @@ export function updateVisitingTime(form, index, field, value) {
 // Selects a predefined hospital and fills its chamber details.
 export function selectChamberHospital(form, index, value) {
   const selectedHospital = chamberHospitals.find(
-    (hospital) =>
-      getChamberHospitalValue(hospital) === value,
+    (hospital) => getChamberHospitalValue(hospital) === value,
   );
 
   // Clear hospital fields when the selection is invalid or empty.
@@ -95,10 +94,7 @@ export function selectChamberHospital(form, index, value) {
 export function addChamber(form) {
   return {
     ...form,
-    chambers: [
-      ...form.chambers,
-      createEmptyChamber(),
-    ],
+    chambers: [...form.chambers, createEmptyChamber()],
   };
 }
 
@@ -110,10 +106,7 @@ export function removeChamber(form, index) {
 
   return {
     ...form,
-    chambers: form.chambers.filter(
-      (_, chamberIndex) =>
-        chamberIndex !== index,
-    ),
+    chambers: form.chambers.filter((_, chamberIndex) => chamberIndex !== index),
   };
 }
 
@@ -127,8 +120,7 @@ export function createFormFromDoctor(doctor) {
     designation: doctor.designation || "",
     primaryHospital: doctor.primaryHospital || "",
     lastVisit:
-      doctor.lastVisit !== null &&
-      doctor.lastVisit !== undefined
+      doctor.lastVisit !== null && doctor.lastVisit !== undefined
         ? String(doctor.lastVisit)
         : "",
 
@@ -140,28 +132,17 @@ export function createFormFromDoctor(doctor) {
             district: chamber.district || "",
             address: chamber.address || "",
             phone: chamber.phone || "",
-            serialNumber:
-              chamber.serialNumber || "",
+            serialNumber: chamber.serialNumber || "",
             visitFee:
-              chamber.visitFee !== null &&
-              chamber.visitFee !== undefined
+              chamber.visitFee !== null && chamber.visitFee !== undefined
                 ? String(chamber.visitFee)
                 : "",
-            visitingDays:
-              chamber.visitingDays || [],
+            visitingDays: chamber.visitingDays || [],
             visitingTime: {
-              startHour:
-                chamber.visitingTime?.startHour ||
-                "6",
-              startPeriod:
-                chamber.visitingTime?.startPeriod ||
-                "PM",
-              endHour:
-                chamber.visitingTime?.endHour ||
-                "9",
-              endPeriod:
-                chamber.visitingTime?.endPeriod ||
-                "PM",
+              startHour: chamber.visitingTime?.startHour || "6",
+              startPeriod: chamber.visitingTime?.startPeriod || "PM",
+              endHour: chamber.visitingTime?.endHour || "9",
+              endPeriod: chamber.visitingTime?.endPeriod || "PM",
             },
           }))
         : [createEmptyChamber()],
@@ -170,12 +151,9 @@ export function createFormFromDoctor(doctor) {
     contactInfo: {
       phones: doctor.contactInfo?.phones || [],
       emails: doctor.contactInfo?.emails || [],
-      website:
-        doctor.contactInfo?.website || "",
-      facebook:
-        doctor.contactInfo?.facebook || "",
-      linkedin:
-        doctor.contactInfo?.linkedin || "",
+      website: doctor.contactInfo?.website || "",
+      facebook: doctor.contactInfo?.facebook || "",
+      linkedin: doctor.contactInfo?.linkedin || "",
     },
 
     notes: doctor.notes || "",
@@ -188,14 +166,10 @@ export function cleanDoctorForm(form) {
     ...form,
 
     // Convert the selected year back into a number.
-    lastVisit: form.lastVisit
-      ? Number(form.lastVisit)
-      : null,
+    lastVisit: form.lastVisit ? Number(form.lastVisit) : null,
 
     // Remove empty degree values before saving.
-    degrees: form.degrees.filter(
-      (degree) => degree.trim() !== "",
-    ),
+    degrees: form.degrees.filter((degree) => degree.trim() !== ""),
 
     // Remove empty speciality values before saving.
     specialities: form.specialities.filter(
@@ -206,8 +180,7 @@ export function cleanDoctorForm(form) {
     chambers: form.chambers.map((chamber) => ({
       ...chamber,
 
-      district:
-        chamber.district?.trim() || "",
+      district: chamber.district?.trim() || "",
 
       visitFee:
         chamber.visitFee !== "" &&
@@ -216,32 +189,23 @@ export function cleanDoctorForm(form) {
           ? Number(chamber.visitFee)
           : null,
 
-      visitingDays:
-        chamber.visitingDays || [],
+      visitingDays: chamber.visitingDays || [],
     })),
 
     // Remove empty contact entries before saving.
     contactInfo: {
       ...form.contactInfo,
 
-      phones: form.contactInfo.phones.filter(
-        (phone) => phone.trim() !== "",
-      ),
+      phones: form.contactInfo.phones.filter((phone) => phone.trim() !== ""),
 
-      emails: form.contactInfo.emails.filter(
-        (email) => email.trim() !== "",
-      ),
+      emails: form.contactInfo.emails.filter((email) => email.trim() !== ""),
     },
   };
 }
 
 // Formats a chamber visit fee for Bangladesh currency display.
 export function formatVisitFee(value) {
-  if (
-    value === null ||
-    value === undefined ||
-    value === ""
-  ) {
+  if (value === null || value === undefined || value === "") {
     return "";
   }
 

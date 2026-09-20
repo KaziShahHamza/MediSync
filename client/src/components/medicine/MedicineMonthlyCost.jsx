@@ -1,3 +1,5 @@
+// client/src/components/medicine/MedicineMonthlyCost.jsx
+
 import { CircleDollarSign, TrendingUp } from "lucide-react";
 import {
   getTotalMonthlyMedicineCost,

@@ -15,11 +15,7 @@ import {
 import DoctorChamber from "./DoctorChamber";
 import DoctorInfo from "./DoctorInfo";
 
-export default function DoctorModal({
-  doctor,
-  onClose,
-  onEdit,
-}) {
+export default function DoctorModal({ doctor, onClose, onEdit }) {
   // Do not render the modal when no doctor is selected.
   if (!doctor) {
     return null;
@@ -75,9 +71,7 @@ export default function DoctorModal({
         aria-modal="true"
         aria-labelledby="doctor-modal-title"
         className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-xl"
-        onMouseDown={(event) =>
-          event.stopPropagation()
-        }
+        onMouseDown={(event) => event.stopPropagation()}
       >
         {/* Modal header */}
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 sm:px-6">
@@ -178,7 +172,7 @@ export default function DoctorModal({
           )}
 
           {/* Contact information */}
-          {hasContactInfo && (
+          {/* {hasContactInfo && (
             <Section title="Contact Information">
               <div className="grid gap-3 sm:grid-cols-2">
                 {phones.length > 0 && (
@@ -217,16 +211,16 @@ export default function DoctorModal({
                 )}
               </div>
             </Section>
-          )}
+          )} */}
 
           {/* Doctor notes */}
-          {doctor.notes && (
+          {/* {doctor.notes && (
             <Section title="Notes">
               <div className="rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">
                 {doctor.notes}
               </div>
             </Section>
-          )}
+          )} */}
         </div>
 
         {/* Modal footer actions */}

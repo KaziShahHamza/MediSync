@@ -6,8 +6,7 @@
 import hospitalsData from "../../data/hospitalsData";
 
 // Current year used for generating the last-visit options.
-export const currentYear =
-  new Date().getFullYear();
+export const currentYear = new Date().getFullYear();
 
 // Generates the current year and previous nine years.
 export const lastVisitYears = Array.from(
@@ -16,15 +15,14 @@ export const lastVisitYears = Array.from(
 );
 
 // Converts hospital data into a flat list for select inputs.
-export const chamberHospitals =
-  Object.entries(hospitalsData).flatMap(
-    ([district, hospitals]) =>
-      hospitals.map((hospital, index) => ({
-        ...hospital,
-        district,
-        key: `${district}-${index}-${hospital.name}`,
-      })),
-  );
+export const chamberHospitals = Object.entries(hospitalsData).flatMap(
+  ([district, hospitals]) =>
+    hospitals.map((hospital, index) => ({
+      ...hospital,
+      district,
+      key: `${district}-${index}-${hospital.name}`,
+    })),
+);
 
 // Creates a stable select value for a hospital.
 export function getChamberHospitalValue(hospital) {
@@ -72,13 +70,10 @@ export function createEmptyForm() {
   };
 }
 
-/*
- * Legacy aliases kept for compatibility with existing imports.
- * New code should use createEmptyChamber() and createEmptyForm()
- * so nested form data is freshly created every time.
- */
-export const emptyChamber =
-  createEmptyChamber();
+// Legacy aliases kept for compatibility with existing imports.
+// New code should use createEmptyChamber() and createEmptyForm()
+// so nested form data is freshly created every time.
 
-export const emptyForm =
-  createEmptyForm();
+export const emptyChamber = createEmptyChamber();
+
+export const emptyForm = createEmptyForm();

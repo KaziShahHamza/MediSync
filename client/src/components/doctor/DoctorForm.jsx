@@ -32,9 +32,8 @@ export default function DoctorForm({
       ...previousForm,
       contactInfo: {
         ...previousForm.contactInfo,
-        [type]: previousForm.contactInfo[type].map(
-          (item, itemIndex) =>
-            itemIndex === index ? value : item,
+        [type]: previousForm.contactInfo[type].map((item, itemIndex) =>
+          itemIndex === index ? value : item,
         ),
       },
     }));
@@ -177,9 +176,7 @@ export default function DoctorForm({
                   label="Degrees"
                   options={degrees}
                   value={form.degrees}
-                  onChange={(event) =>
-                    updateMultiSelect("degrees", event)
-                  }
+                  onChange={(event) => updateMultiSelect("degrees", event)}
                   placeholder="Select degrees"
                 />
 
@@ -188,24 +185,15 @@ export default function DoctorForm({
                   label="Specialities"
                   options={specialties}
                   value={form.specialities}
-                  onChange={(event) =>
-                    updateMultiSelect("specialities", event)
-                  }
+                  onChange={(event) => updateMultiSelect("specialities", event)}
                   placeholder="Select specialities"
                 />
               </div>
             </DoctorFormSection>
 
             {/* Renders all chamber-related fields. */}
-            <DoctorFormSection
-              title="Chambers"
-              className="lg:col-span-2"
-            >
-              <ChamberForm
-                form={form}
-                setForm={setForm}
-                days={days}
-              />
+            <DoctorFormSection title="Chambers" className="lg:col-span-2">
+              <ChamberForm form={form} setForm={setForm} days={days} />
             </DoctorFormSection>
 
             {/* <DoctorFormSection title="Contact Information">
@@ -275,7 +263,7 @@ export default function DoctorForm({
                 ))}
               </div>
             </DoctorFormSection> */}
-{/* 
+            {/* 
             <DoctorFormSection title="Notes">
               <textarea
                 name="notes"
@@ -301,11 +289,7 @@ export default function DoctorForm({
           </button>
 
           {/* Submits either a new or updated doctor. */}
-          <button
-            type="submit"
-            form="doctor-form"
-            className="btn-primary"
-          >
+          <button type="submit" form="doctor-form" className="btn-primary">
             {editingId ? "Update Doctor" : "Add Doctor"}
           </button>
         </div>
@@ -313,4 +297,3 @@ export default function DoctorForm({
     </div>
   );
 }
-

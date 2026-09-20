@@ -19,9 +19,7 @@ function Info({ icon, label, value }) {
 
   return (
     <div className="flex items-start gap-2">
-      <div className="mt-0.5 shrink-0 text-slate-400">
-        {icon}
-      </div>
+      <div className="mt-0.5 shrink-0 text-slate-400">{icon}</div>
 
       <div className="min-w-0">
         <p className="text-xs text-slate-400">{label}</p>
@@ -34,12 +32,7 @@ function Info({ icon, label, value }) {
 }
 
 // Main doctor card: summary, edit/delete actions, and chamber preview.
-export default function DoctorCard({
-  doctor,
-  onEdit,
-  onDelete,
-  onOpen,
-}) {
+export default function DoctorCard({ doctor, onEdit, onDelete, onOpen }) {
   const specialities = doctor.specialities || [];
   const degrees = doctor.degrees || [];
   const chambers = doctor.chambers || [];
@@ -151,15 +144,10 @@ export default function DoctorCard({
       {chambers.length > 0 && (
         <div className="mt-5 border-t border-slate-100 pt-4">
           <div className="mb-3 flex items-center justify-between">
-            <h4 className="text-sm font-semibold text-slate-800">
-              Chambers
-            </h4>
+            <h4 className="text-sm font-semibold text-slate-800">Chambers</h4>
 
             <span className="text-xs text-slate-400">
-              {chambers.length}{" "}
-              {chambers.length === 1
-                ? "chamber"
-                : "chambers"}
+              {chambers.length} {chambers.length === 1 ? "chamber" : "chambers"}
             </span>
           </div>
 

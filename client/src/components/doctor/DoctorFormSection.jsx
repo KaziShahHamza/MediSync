@@ -2,11 +2,7 @@
 
 // Provides a reusable section wrapper for organizing doctor form fields.
 
-export default function DoctorFormSection({
-  title,
-  children,
-  className = "",
-}) {
+export default function DoctorFormSection({ title, children, className = "" }) {
   return (
     // Applies optional layout classes while rendering the section title.
     <section className={className}>
@@ -18,4 +14,3 @@ export default function DoctorFormSection({
     </section>
   );
 }
-

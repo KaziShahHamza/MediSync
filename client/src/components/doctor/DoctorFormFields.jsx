@@ -10,12 +10,7 @@ function getOptionValue(option) {
     return String(option);
   }
 
-  return String(
-    option.value ??
-      option.name ??
-      option.label ??
-      "",
-  );
+  return String(option.value ?? option.name ?? option.label ?? "");
 }
 
 // Normalizes different option formats into the visible select label.
@@ -24,12 +19,7 @@ function getOptionLabel(option) {
     return String(option);
   }
 
-  return String(
-    option.label ??
-      option.name ??
-      option.value ??
-      "",
-  );
+  return String(option.label ?? option.name ?? option.value ?? "");
 }
 
 // Standard single-value select used throughout the doctor form.
@@ -64,10 +54,7 @@ export function SelectField({
           }
 
           return (
-            <option
-              key={`${optionValue}-${index}`}
-              value={optionValue}
-            >
+            <option key={`${optionValue}-${index}`} value={optionValue}>
               {optionLabel}
             </option>
           );
@@ -107,10 +94,7 @@ export function MultiSelect({
             }
 
             return (
-              <option
-                key={`${optionValue}-${index}`}
-                value={optionValue}
-              >
+              <option key={`${optionValue}-${index}`} value={optionValue}>
                 {optionLabel}
               </option>
             );
@@ -131,14 +115,8 @@ export function MultiSelect({
 }
 
 // Generates the 12-hour values used by chamber visiting times.
-export function TimeSelect({
-  value,
-  onChange,
-}) {
-  const hours = Array.from(
-    { length: 12 },
-    (_, index) => String(index + 1),
-  );
+export function TimeSelect({ value, onChange }) {
+  const hours = Array.from({ length: 12 }, (_, index) => String(index + 1));
 
   return (
     <select
@@ -157,10 +135,7 @@ export function TimeSelect({
 }
 
 // Provides the AM/PM selector for chamber visiting times.
-export function PeriodSelect({
-  value,
-  onChange,
-}) {
+export function PeriodSelect({ value, onChange }) {
   return (
     <select
       value={value}

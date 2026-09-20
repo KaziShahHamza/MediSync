@@ -14,11 +14,7 @@ import {
 import { formatVisitFee } from "../../utils/doctor/doctorFunctions";
 
 // Displays one chamber with optional compact styling for cards.
-export default function DoctorChamber({
-  chamber,
-  index = 0,
-  compact = false,
-}) {
+export default function DoctorChamber({ chamber, index = 0, compact = false }) {
   if (!chamber) {
     return null;
   }
@@ -60,18 +56,12 @@ export default function DoctorChamber({
           </h4>
 
           {chamber.district && (
-            <p className="mt-0.5 text-xs text-slate-500">
-              {chamber.district}
-            </p>
+            <p className="mt-0.5 text-xs text-slate-500">{chamber.district}</p>
           )}
         </div>
       </div>
 
-      <div
-        className={`mt-3 space-y-2 ${
-          compact ? "text-xs" : "text-sm"
-        }`}
-      >
+      <div className={`mt-3 space-y-2 ${compact ? "text-xs" : "text-sm"}`}>
         {chamber.address && (
           <div className="flex items-start gap-2 text-slate-600">
             <MapPin
@@ -101,9 +91,7 @@ export default function DoctorChamber({
               className="shrink-0 text-slate-400"
             />
 
-            <span>
-              Serial: {chamber.serialNumber}
-            </span>
+            <span>Serial: {chamber.serialNumber}</span>
           </div>
         )}
 
@@ -135,10 +123,8 @@ export default function DoctorChamber({
 
               {hasVisitingTime && (
                 <span className="ml-1">
-                  · {visitingTime.startHour}{" "}
-                  {visitingTime.startPeriod} –{" "}
-                  {visitingTime.endHour}{" "}
-                  {visitingTime.endPeriod}
+                  · {visitingTime.startHour} {visitingTime.startPeriod} –{" "}
+                  {visitingTime.endHour} {visitingTime.endPeriod}
                 </span>
               )}
             </div>
