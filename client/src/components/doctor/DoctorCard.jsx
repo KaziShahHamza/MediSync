@@ -10,7 +10,7 @@ import {
   Trash2,
 } from "lucide-react";
 
-import DoctorChamber from "./DoctorChamber";
+import DoctorChamber from "./chamber/DoctorChamber";
 import { formatVisitFee } from "../../utils/doctor/doctorFunctions";
 
 // Reusable labeled information row used inside the doctor card.

@@ -11,7 +11,7 @@ import {
   selectChamberHospital,
   updateChamber,
   updateVisitingTime,
-} from "../../utils/doctor/doctorFunctions";
+} from "../../../utils/doctor/doctorFunctions";
 
 import ChamberItem from "./ChamberItem";
 

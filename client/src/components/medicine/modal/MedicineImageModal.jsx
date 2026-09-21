@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 
-import MedicineImageViewer from "./MedicineImageViewer";
+import MedicineImageViewer from "../MedicineImageViewer";
 
 import {
   getMedicinePricingType,
@@ -28,7 +28,7 @@ import {
   formatDateLong,
   formatDosageTime,
   getMedicineTypeLabel,
-} from "../../utils/medicine/medicineHelpers";
+} from "../../../utils/medicine/medicineHelpers";
 
 // Renders full details, dosage schedule, pricing calculations, and interactive image for a medicine.
 export default function MedicineImageModal({ medicine, onClose }) {

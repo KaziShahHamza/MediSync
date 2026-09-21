@@ -18,7 +18,7 @@ import {
   getMonthlyMedicinePieces,
   getMedicineMonthlyCost,
   formatMedicinePrice,
-} from "../../utils/medicineCalculations";
+} from "../../utils/medicine/medicineCalculations";
 
 import {
   formatDate,

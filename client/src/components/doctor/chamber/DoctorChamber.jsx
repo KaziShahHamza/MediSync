@@ -11,7 +11,7 @@ import {
   Stethoscope,
 } from "lucide-react";
 
-import { formatVisitFee } from "../../utils/doctor/doctorFunctions";
+import { formatVisitFee } from "../../../utils/doctor/doctorFunctions";
 
 // Displays one chamber with optional compact styling for cards.
 export default function DoctorChamber({ chamber, index = 0, compact = false }) {

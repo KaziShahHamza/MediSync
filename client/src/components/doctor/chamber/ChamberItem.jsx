@@ -8,11 +8,11 @@ import { Trash2 } from "lucide-react";
 import {
   chamberHospitals,
   getChamberHospitalValue,
-} from "../../utils/doctor/doctorFormUtils";
+} from "../../../utils/doctor/doctorFormUtils";
 
-import { getSelectedChamberHospital } from "../../utils/doctor/doctorFunctions";
+import { getSelectedChamberHospital } from "../../../utils/doctor/doctorFunctions";
 
-import { TimeSelect, PeriodSelect } from "./DoctorFormFields";
+import { TimeSelect, PeriodSelect } from "../DoctorFormFields";
 
 export default function ChamberItem({
   chamber,
@@ -227,5 +227,3 @@ function Field({ label, value, onChange, placeholder, type = "text" }) {
     </div>
   );
 }
-
-

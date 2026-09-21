@@ -5,17 +5,17 @@
 
 import { X } from "lucide-react";
 
-import ChamberForm from "./ChamberForm";
+import ChamberForm from "./chamber/ChamberForm";
 import DoctorFormSection from "./DoctorFormSection";
 import { MultiSelect, SelectField } from "./DoctorFormFields";
 
-import primaryHospitals from "../../data/primaryHospitals";
+import primaryHospitals from "../../data/doctor/primaryHospitals";
 import {
   days,
   designations,
   degrees,
   specialties,
-} from "../../data/doctorData";
+} from "../../data/doctor/doctorData";
 
 import { lastVisitYears } from "../../utils/doctor/doctorFormUtils";
 

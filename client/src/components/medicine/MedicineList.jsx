@@ -6,7 +6,7 @@
 import { useState } from "react";
 
 import MedicineCard from "./MedicineCard";
-import MedicineImageModal from "./MedicineImageModal";
+import MedicineImageModal from "./modal/MedicineImageModal";
 
 // Manages rendering for grouped collections of active and past medicine items.
 export default function MedicineList({

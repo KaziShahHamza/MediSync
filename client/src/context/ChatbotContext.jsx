@@ -1,11 +1,6 @@
 // client/src/context/ChatbotContext.jsx
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useState,
-} from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 
 const ChatbotContext = createContext();
 
@@ -62,12 +57,9 @@ export function ChatbotProvider({ children }) {
       setLoadingChat(true);
       setError("");
 
-      const response = await fetch(
-        `${API_URL}/chats/${chatId}`,
-        {
-          headers: getHeaders(),
-        }
-      );
+      const response = await fetch(`${API_URL}/chats/${chatId}`, {
+        headers: getHeaders(),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to load chat.");
@@ -122,18 +114,12 @@ export function ChatbotProvider({ children }) {
   }, []);
 
   const sendMessage = useCallback(
-    async ({
-      content,
-      imageUrls = [],
-    }) => {
+    async ({ content, imageUrls = [] }) => {
       if (!currentChat?._id) {
         return null;
       }
 
-      const trimmedContent =
-        typeof content === "string"
-          ? content.trim()
-          : "";
+      const trimmedContent = typeof content === "string" ? content.trim() : "";
 
       if (!trimmedContent && imageUrls.length === 0) {
         return null;
@@ -152,16 +138,13 @@ export function ChatbotProvider({ children }) {
               content: trimmedContent,
               imageUrls,
             }),
-          }
+          },
         );
 
         if (!response.ok) {
           const data = await response.json().catch(() => null);
 
-          throw new Error(
-            data?.message ||
-              "Failed to send message."
-          );
+          throw new Error(data?.message || "Failed to send message.");
         }
 
         const data = await response.json();
@@ -177,29 +160,22 @@ export function ChatbotProvider({ children }) {
                     title: data.chat.title,
                     updatedAt: data.chat.updatedAt,
                   }
-                : chat
+                : chat,
             )
-            .sort(
-              (a, b) =>
-                new Date(b.updatedAt) -
-                new Date(a.updatedAt)
-            )
+            .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)),
         );
 
         return data.message;
       } catch (error) {
         console.error(error);
-        setError(
-          error.message ||
-            "Unable to send your message."
-        );
+        setError(error.message || "Unable to send your message.");
 
         return null;
       } finally {
         setSending(false);
       }
     },
-    [currentChat]
+    [currentChat],
   );
 
   const deleteChat = useCallback(
@@ -209,23 +185,16 @@ export function ChatbotProvider({ children }) {
       try {
         setError("");
 
-        const response = await fetch(
-          `${API_URL}/chats/${chatId}`,
-          {
-            method: "DELETE",
-            headers: getHeaders(),
-          }
-        );
+        const response = await fetch(`${API_URL}/chats/${chatId}`, {
+          method: "DELETE",
+          headers: getHeaders(),
+        });
 
         if (!response.ok) {
           throw new Error("Failed to delete chat.");
         }
 
-        setChats((previous) =>
-          previous.filter(
-            (chat) => chat._id !== chatId
-          )
-        );
+        setChats((previous) => previous.filter((chat) => chat._id !== chatId));
 
         if (currentChat?._id === chatId) {
           setCurrentChat(null);
@@ -238,7 +207,7 @@ export function ChatbotProvider({ children }) {
         return false;
       }
     },
-    [currentChat]
+    [currentChat],
   );
 
   const clearCurrentChat = useCallback(() => {
@@ -264,9 +233,7 @@ export function ChatbotProvider({ children }) {
   };
 
   return (
-    <ChatbotContext.Provider value={value}>
-      {children}
-    </ChatbotContext.Provider>
+    <ChatbotContext.Provider value={value}>{children}</ChatbotContext.Provider>
   );
 }
 
@@ -274,9 +241,7 @@ export function useChatbot() {
   const context = useContext(ChatbotContext);
 
   if (!context) {
-    throw new Error(
-      "useChatbot must be used inside ChatbotProvider"
-    );
+    throw new Error("useChatbot must be used inside ChatbotProvider");
   }
 
   return context;

@@ -7,11 +7,11 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Pill, X } from "lucide-react";
 
-import MedicineBasicInfo from "./MedicineBasicInfo";
-import MedicinePricing from "./MedicinePricing";
-import MedicineTreatment from "./MedicineTreatment";
+import MedicineBasicInfo from "../MedicineBasicInfo";
+import MedicinePricing from "../MedicinePricing";
+import MedicineTreatment from "../MedicineTreatment";
 
-import { isStripMedicineType } from "../../data/medicine/medicineTypes";
+import { isStripMedicineType } from "../../../data/medicine/medicineTypes";
 
 import {
   createDateFromParts,
@@ -19,9 +19,9 @@ import {
   getPricingTypeForType,
   getYearOptions,
   normalizeDosage,
-} from "../../utils/medicine/medicineHelpers";
+} from "../../../utils/medicine/medicineHelpers";
 
-import { validateMedicineForm } from "../../utils/medicine/medicineValidation";
+import { validateMedicineForm } from "../../../utils/medicine/medicineValidation";
 
 // Renders the wrapper form for creating or updating medicine records
 export default function MedicineForm({

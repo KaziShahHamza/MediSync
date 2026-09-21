@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { Pill, PlusCircle } from "lucide-react";
 
-import MedicineFormModal from "../components/medicine/MedicineFormModal";
+import MedicineFormModal from "../components/medicine/modal/MedicineFormModal";
 import MedicineList from "../components/medicine/MedicineList";
 import MedicineMonthlyCost from "../components/medicine/MedicineMonthlyCost";
 
