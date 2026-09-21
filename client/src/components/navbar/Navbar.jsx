@@ -149,7 +149,7 @@ export default function Navbar() {
               </Link>
 
               <Link
-                to="/blod-request"
+                to="/blood-request"
                 onClick={handleNavigation}
                 className={`navbar-dropdown-item ${
                   isActive("/blood-request")
