@@ -11,7 +11,7 @@ import {
   getPricePerPiece,
   getMedicineMonthlyCost,
   formatMedicinePrice,
-} from "../../utils/medicineCalculations";
+} from "../../utils/medicine/medicineCalculations";
 
 // Renders the medicine pricing input fields and monthly cost preview.
 export default function MedicinePricing({

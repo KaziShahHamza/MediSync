@@ -4,7 +4,7 @@ import { CircleDollarSign, TrendingUp } from "lucide-react";
 import {
   getTotalMonthlyMedicineCost,
   formatMedicinePrice,
-} from "../../utils/medicineCalculations";
+} from "../../utils/medicine/medicineCalculations";
 
 // Displays aggregated monthly estimated costs across active medicines.
 export default function MedicineMonthlyCost({ medicines = [] }) {

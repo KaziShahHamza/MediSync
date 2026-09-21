@@ -114,7 +114,7 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center ">
           {/* Public navigation */}
 
-          <Link
+          {/* <Link
             to="/blood-need"
             className={`nav-link ${
               isActive("/blood-need") ? "nav-link-active" : ""
@@ -122,7 +122,59 @@ export default function Navbar() {
           >
             <Droplets size={18} strokeWidth={2} />
             <span>Need Blood?</span>
-          </Link>
+          </Link> */}
+
+          <div className="navbar-dropdown-wrapper">
+            <button
+              type="button"
+              className={`nav-link ${ishealthActive ? "nav-link-active" : ""}`}
+            >
+              <Droplets size={18} strokeWidth={2} />
+
+              <span>Need Blood?</span>
+
+              <ChevronDown size={15} strokeWidth={2} />
+            </button>
+
+            <div className="navbar-dropdown">
+              <Link
+                to="/blood-search"
+                onClick={handleNavigation}
+                className={`navbar-dropdown-item ${
+                  isActive("/blood-search") ? "navbar-dropdown-item-active" : ""
+                }`}
+              >
+                <Activity size={17} />
+                <span>Find Blood</span>
+              </Link>
+
+              <Link
+                to="/blod-request"
+                onClick={handleNavigation}
+                className={`navbar-dropdown-item ${
+                  isActive("/blood-request")
+                    ? "navbar-dropdown-item-active"
+                    : ""
+                }`}
+              >
+                <Sparkles size={17} />
+                <span>Request Blood</span>
+              </Link>
+
+              <Link
+                to="/blood-need"
+                onClick={handleNavigation}
+                className={`navbar-dropdown-item ${
+                  isActive("/blood-need")
+                    ? "navbar-dropdown-item-active"
+                    : ""
+                }`}
+              >
+                <Sparkles size={17} />
+                <span>Need Blood?</span>
+              </Link>
+            </div>
+          </div>
 
           {!user && (
             <>

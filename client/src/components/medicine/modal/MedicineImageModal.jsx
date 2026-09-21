@@ -22,7 +22,7 @@ import {
   getPricePerPiece,
   getMedicineMonthlyCost,
   formatMedicinePrice,
-} from "../../utils/medicineCalculations";
+} from "../../../utils/medicine/medicineCalculations";
 
 import {
   formatDateLong,

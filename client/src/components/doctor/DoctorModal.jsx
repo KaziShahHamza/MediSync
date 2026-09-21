@@ -12,7 +12,7 @@ import {
   X,
 } from "lucide-react";
 
-import DoctorChamber from "./DoctorChamber";
+import DoctorChamber from "./chamber/DoctorChamber";
 import DoctorInfo from "./DoctorInfo";
 
 export default function DoctorModal({ doctor, onClose, onEdit }) {

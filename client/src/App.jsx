@@ -31,6 +31,8 @@ import Settings from "./pages/Settings";
 import LifestyleScore from "./pages/LifestyleScore";
 import Assistant from "./pages/Assistant";
 import BloodNeed from "./pages/BloodNeed";
+import BloodSearch from "./pages/BloodSearch";
+import BloodRequest from "./pages/BloodRequest";
 
 export default function App() {
   useEffect(() => {
@@ -62,6 +64,8 @@ export default function App() {
                         <Route path="/signup" element={<Signup />} />
                         <Route path="/lifestyle" element={<LifestyleScore />} />
                         <Route path="/blood-need" element={<BloodNeed />} />
+                        <Route path="/blood-search" element={<BloodSearch />} />
+                        <Route path="/blood-request" element={<BloodRequest />} />
 
                         {/* Protected Routes */}
                         <Route
