@@ -1,66 +1,52 @@
 // client/src/components/medicine/MedicineImageModal.jsx
 
+// Displays detailed medicine information inside a modal.
+// Combines the medicine image viewer with treatment, dosage, and pricing details.
+
 import { useEffect, useState } from "react";
+
 import {
-  X,
-  ZoomIn,
-  ZoomOut,
-  Pill,
   CalendarDays,
-  Clock3,
   CircleDollarSign,
+  Clock3,
   Package,
+  Pill,
+  X,
 } from "lucide-react";
+
+import MedicineImageViewer from "./MedicineImageViewer";
+
 import {
   getMedicinePricingType,
-  getDailyMedicinePieces,
   getMonthlyMedicinePieces,
   getPricePerPiece,
   getMedicineMonthlyCost,
   formatMedicinePrice,
 } from "../../utils/medicineCalculations";
 
-const MEDICINE_TYPE_LABELS = {
-  tablet: "Tablet",
-  capsule: "Capsule",
-  syrup: "Syrup",
-  antibiotic: "Antibiotic",
-  injection: "Injection",
-  cream: "Cream",
-  ointment: "Ointment",
-  drops: "Drops",
-  inhaler: "Inhaler",
-  other: "Other",
-};
+import {
+  formatDateLong,
+  formatDosageTime,
+  getMedicineTypeLabel,
+} from "../../utils/medicine/medicineHelpers";
 
-const DOSAGE_TIME_LABELS = {
-  morning: "Morning",
-  noon: "Noon",
-  night: "Night",
-};
-
-function formatDate(date) {
-  if (!date) return "Not set";
-
-  const parsedDate = new Date(date);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return "Not set";
-  }
-
-  return parsedDate.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
-
+// Renders full details, dosage schedule, pricing calculations, and interactive image for a medicine.
 export default function MedicineImageModal({ medicine, onClose }) {
+  // Manages image zoom level state.
   const [zoom, setZoom] = useState(1);
 
+  // Resets zoom level when a new medicine is selected.
   useEffect(() => {
     if (!medicine) return;
 
+    setZoom(1);
+  }, [medicine]);
+
+  // Registers keyboard shortcut listener for Escape key to close modal.
+  useEffect(() => {
+    if (!medicine) return;
+
+    // Handles the Escape keypress event.
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         onClose();
@@ -74,24 +60,21 @@ export default function MedicineImageModal({ medicine, onClose }) {
     };
   }, [medicine, onClose]);
 
-  useEffect(() => {
-    if (!medicine) return;
-
-    setZoom(1);
-  }, [medicine]);
-
+  // Prevents rendering if no medicine is selected.
   if (!medicine) {
     return null;
   }
 
+  // Determines medicine pricing structure and active status calculations.
   const pricingType = getMedicinePricingType(medicine);
+
   const isStripMedicine = pricingType === "strip";
 
   const dosage = Array.isArray(medicine.dosage) ? medicine.dosage : [];
 
-  const dailyPieces = isStripMedicine ? getDailyMedicinePieces(dosage) : 0;
-
-  const monthlyPieces = isStripMedicine ? getMonthlyMedicinePieces(dosage) : 0;
+  const monthlyPieces = isStripMedicine
+    ? getMonthlyMedicinePieces(dosage)
+    : Number(medicine.unitsPerMonth) || 0;
 
   const pricePerPiece = isStripMedicine
     ? getPricePerPiece(medicine.pricePerStrip, medicine.piecesPerStrip)
@@ -99,316 +82,243 @@ export default function MedicineImageModal({ medicine, onClose }) {
 
   const monthlyCost = getMedicineMonthlyCost(medicine);
 
-  const typeLabel =
-    MEDICINE_TYPE_LABELS[medicine.type] || medicine.type || "Medicine";
+  const isActive = medicine.isActive !== false;
 
+  // Increases image zoom scale up to maximum limit.
   const handleZoomIn = () => {
     setZoom((current) => Math.min(current + 0.25, 3));
   };
 
+  // Decreases image zoom scale down to minimum limit.
   const handleZoomOut = () => {
     setZoom((current) => Math.max(current - 0.25, 0.5));
   };
 
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
-      onClick={onClose}
-    >
-      <div
-        className="relative flex max-h-[95vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
-        onClick={(event) => event.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <Pill className="h-5 w-5 shrink-0 text-sky-600" />
+  // Closes modal when clicking directly on overlay backdrop.
+  const handleOverlayClick = (event) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
 
-              <h2 className="truncate text-lg font-semibold text-slate-800">
-                {medicine.name}
-              </h2>
+  return (
+    // Modal backdrop shell
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4"
+      onMouseDown={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${medicine.name} details`}
+    >
+      <div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
+        {/* Modal Header */}
+        <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-4">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2">
+                <Pill size={18} className="text-sky-600" />
+
+                <h2 className="truncate text-base font-semibold text-slate-900">
+                  {medicine.name || "Medicine details"}
+                </h2>
+              </div>
+
+              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
+                {getMedicineTypeLabel(medicine.type)}
+              </span>
             </div>
 
-            <p className="mt-1 text-sm text-slate-500">{typeLabel}</p>
+            <p className="mt-1 text-xs text-slate-500">
+              Detailed medicine information
+            </p>
           </div>
 
+          {/* Modal close button */}
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
-            aria-label="Close"
+            className="ml-4 shrink-0 rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            aria-label="Close medicine details"
           >
-            <X className="h-5 w-5" />
+            <X size={20} />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="grid min-h-0 flex-1 overflow-y-auto lg:grid-cols-2">
-          {/* Image */}
-          <div className="flex min-h-[320px] items-center justify-center overflow-hidden bg-slate-100 p-6">
-            {medicine.imageUrl ? (
-              <div className="flex h-full w-full flex-col items-center justify-center gap-4">
-                <div className="flex max-h-[65vh] w-full items-center justify-center overflow-auto">
-                  <img
-                    src={medicine.imageUrl}
-                    alt={medicine.name}
-                    className="max-h-[60vh] max-w-full rounded-xl object-contain shadow-sm transition-transform duration-200"
-                    style={{
-                      transform: `scale(${zoom})`,
-                    }}
-                  />
-                </div>
-
-                <div className="flex items-center gap-2 rounded-xl bg-white p-2 shadow-sm">
-                  <button
-                    type="button"
-                    onClick={handleZoomOut}
-                    disabled={zoom <= 0.5}
-                    className="rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
-                    aria-label="Zoom out"
-                  >
-                    <ZoomOut className="h-5 w-5" />
-                  </button>
-
-                  <span className="min-w-[55px] text-center text-sm font-medium text-slate-600">
-                    {Math.round(zoom * 100)}%
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={handleZoomIn}
-                    disabled={zoom >= 3}
-                    className="rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
-                    aria-label="Zoom in"
-                  >
-                    <ZoomIn className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center text-center text-slate-400">
-                <Pill className="mb-3 h-14 w-14" />
-
-                <p className="text-sm font-medium">
-                  No medicine image available
-                </p>
-              </div>
-            )}
+        {/* Modal content body grid */}
+        <div className="grid min-h-0 overflow-y-auto lg:grid-cols-2">
+          {/* Image viewer pane */}
+          <div className="p-5">
+            <MedicineImageViewer
+              imageUrl={medicine.imageUrl}
+              medicineName={medicine.name}
+              zoom={zoom}
+              onZoomIn={handleZoomIn}
+              onZoomOut={handleZoomOut}
+            />
           </div>
 
-          {/* Details */}
-          <div className="space-y-5 p-5 sm:p-6">
-            {/* Treatment period */}
-            <section className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          {/* Medicine information pane */}
+          <div className="space-y-5 border-t border-slate-100 p-5 lg:border-l lg:border-t-0">
+            {/* Treatment period summary section */}
+            <div>
               <div className="mb-3 flex items-center gap-2">
-                <CalendarDays className="h-5 w-5 text-sky-600" />
+                <CalendarDays size={17} className="text-sky-600" />
 
-                <h3 className="font-semibold text-slate-800">
-                  Treatment Period
+                <h3 className="text-sm font-semibold text-slate-900">
+                  Treatment period
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Start Date
-                  </p>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                <div className="rounded-xl bg-slate-50 p-3">
+                  <p className="text-xs text-slate-500">Started</p>
 
-                  <p className="mt-1 text-sm font-medium text-slate-700">
-                    {formatDate(medicine.startDate)}
+                  <p className="mt-1 text-sm font-medium text-slate-800">
+                    {formatDateLong(medicine.startDate)}
                   </p>
                 </div>
 
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    End Date
-                  </p>
+                <div className="rounded-xl bg-slate-50 p-3">
+                  <p className="text-xs text-slate-500">Status</p>
 
-                  <p className="mt-1 text-sm font-medium text-slate-700">
-                    {medicine.endDate
-                      ? formatDate(medicine.endDate)
-                      : "Ongoing"}
+                  <p className="mt-1 text-sm font-medium text-slate-800">
+                    {isActive ? "Currently taking" : "Completed"}
                   </p>
                 </div>
+
+                {/* Conditional end date for completed treatments */}
+                {!isActive && (
+                  <div className="rounded-xl bg-slate-50 p-3 sm:col-span-2 lg:col-span-1 xl:col-span-2">
+                    <p className="text-xs text-slate-500">Ended</p>
+
+                    <p className="mt-1 text-sm font-medium text-slate-800">
+                      {formatDateLong(medicine.endDate)}
+                    </p>
+                  </div>
+                )}
               </div>
-            </section>
+            </div>
 
-            {/* Strip medicine details */}
-            {isStripMedicine ? (
-              <>
-                {/* Dosage schedule */}
-                <section className="rounded-xl border border-slate-200 p-4">
-                  <div className="mb-3 flex items-center gap-2">
-                    <Clock3 className="h-5 w-5 text-sky-600" />
+            {/* Dosage schedule list section */}
+            {isStripMedicine && (
+              <div>
+                <div className="mb-3 flex items-center gap-2">
+                  <Clock3 size={17} className="text-sky-600" />
 
-                    <h3 className="font-semibold text-slate-800">
-                      Dosage Schedule
-                    </h3>
-                  </div>
-
-                  {dosage.length > 0 ? (
-                    <div className="space-y-2">
-                      {dosage.map((dose, index) => (
-                        <div
-                          key={`${dose.time}-${index}`}
-                          className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2"
-                        >
-                          <span className="text-sm text-slate-600">
-                            {DOSAGE_TIME_LABELS[dose.time] || dose.time}
-                          </span>
-
-                          <span className="text-sm font-semibold text-slate-800">
-                            {dose.quantity} piece
-                            {Number(dose.quantity) === 1 ? "" : "s"}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-slate-500">
-                      No dosage schedule available.
-                    </p>
-                  )}
-                </section>
-
-                {/* Strip pricing */}
-                <section className="rounded-xl border border-slate-200 p-4">
-                  <div className="mb-4 flex items-center gap-2">
-                    <CircleDollarSign className="h-5 w-5 text-sky-600" />
-
-                    <h3 className="font-semibold text-slate-800">
-                      Strip / পাতার Pricing
-                    </h3>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-lg bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">Price / strip</p>
-
-                      <p className="mt-1 font-semibold text-slate-800">
-                        ৳{formatMedicinePrice(medicine.pricePerStrip)}
-                      </p>
-                    </div>
-
-                    <div className="rounded-lg bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">Pieces / strip</p>
-
-                      <p className="mt-1 font-semibold text-slate-800">
-                        {medicine.piecesPerStrip || 0}
-                      </p>
-                    </div>
-
-                    <div className="rounded-lg bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">Price / piece</p>
-
-                      <p className="mt-1 font-semibold text-slate-800">
-                        ৳{formatMedicinePrice(pricePerPiece)}
-                      </p>
-                    </div>
-
-                    <div className="rounded-lg bg-slate-50 p-3">
-                      <p className="text-xs text-slate-500">Daily usage</p>
-
-                      <p className="mt-1 font-semibold text-slate-800">
-                        {dailyPieces} piece
-                        {dailyPieces === 1 ? "" : "s"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-3 rounded-lg border border-sky-100 bg-sky-50 p-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <p className="text-xs font-medium text-sky-700">
-                          Estimated monthly usage
-                        </p>
-
-                        <p className="mt-1 text-sm font-semibold text-slate-800">
-                          {monthlyPieces} pieces
-                        </p>
-                      </div>
-
-                      <div className="text-right">
-                        <p className="text-xs font-medium text-sky-700">
-                          Estimated monthly cost
-                        </p>
-
-                        <p className="mt-1 text-lg font-bold text-slate-800">
-                          ৳{formatMedicinePrice(monthlyCost)}
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="mt-2 text-xs text-slate-500">
-                      Estimated using a 30-day month.
-                    </p>
-                  </div>
-                </section>
-              </>
-            ) : (
-              /* Unit medicine details */
-              <section className="rounded-xl border border-slate-200 p-4">
-                <div className="mb-4 flex items-center gap-2">
-                  <Package className="h-5 w-5 text-sky-600" />
-
-                  <h3 className="font-semibold text-slate-800">Unit Pricing</h3>
+                  <h3 className="text-sm font-semibold text-slate-900">
+                    Dosage schedule
+                  </h3>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-lg bg-slate-50 p-3">
-                    <p className="text-xs text-slate-500">Price / unit</p>
+                {dosage.length > 0 ? (
+                  <div className="space-y-2">
+                    {/* Maps each dosage entry */}
+                    {dosage.map((item) => (
+                      <div
+                        key={item.time}
+                        className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5"
+                      >
+                        <span className="text-sm font-medium text-slate-700">
+                          {formatDosageTime(item.time)}
+                        </span>
 
-                    <p className="mt-1 font-semibold text-slate-800">
+                        <span className="text-sm text-slate-500">
+                          {item.quantity}{" "}
+                          {Number(item.quantity) === 1 ? "piece" : "pieces"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  // Fallback state when dosage schedule is empty
+                  <p className="rounded-xl bg-slate-50 px-3 py-3 text-sm text-slate-500">
+                    No dosage schedule recorded.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Pricing break-down section */}
+            <div>
+              <div className="mb-3 flex items-center gap-2">
+                <CircleDollarSign size={17} className="text-sky-600" />
+
+                <h3 className="text-sm font-semibold text-slate-900">
+                  Pricing
+                </h3>
+              </div>
+
+              {/* Dynamic layout based on strip vs unit pricing type */}
+              {isStripMedicine ? (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl bg-slate-50 p-3">
+                    <p className="text-xs text-slate-500">Price per strip</p>
+
+                    <p className="mt-1 text-sm font-semibold text-slate-800">
+                      ৳{formatMedicinePrice(medicine.pricePerStrip)}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl bg-slate-50 p-3">
+                    <p className="text-xs text-slate-500">Pieces per strip</p>
+
+                    <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-slate-800">
+                      <Package size={14} />
+                      {medicine.piecesPerStrip || 0}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl bg-slate-50 p-3">
+                    <p className="text-xs text-slate-500">Price per piece</p>
+
+                    <p className="mt-1 text-sm font-semibold text-slate-800">
+                      ৳{formatMedicinePrice(pricePerPiece)}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl bg-slate-50 p-3">
+                    <p className="text-xs text-slate-500">Monthly usage</p>
+
+                    <p className="mt-1 text-sm font-semibold text-slate-800">
+                      {monthlyPieces} pieces
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl bg-slate-50 p-3">
+                    <p className="text-xs text-slate-500">Price per unit</p>
+
+                    <p className="mt-1 text-sm font-semibold text-slate-800">
                       ৳{formatMedicinePrice(medicine.pricePerUnit)}
                     </p>
                   </div>
 
-                  <div className="rounded-lg bg-slate-50 p-3">
-                    <p className="text-xs text-slate-500">Units / month</p>
+                  <div className="rounded-xl bg-slate-50 p-3">
+                    <p className="text-xs text-slate-500">Monthly usage</p>
 
-                    <p className="mt-1 font-semibold text-slate-800">
-                      {medicine.unitsPerMonth || 0}
+                    <p className="mt-1 text-sm font-semibold text-slate-800">
+                      {monthlyPieces} units
                     </p>
                   </div>
                 </div>
+              )}
 
-                <div className="mt-3 rounded-lg border border-sky-100 bg-sky-50 p-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-xs font-medium text-sky-700">
-                        Estimated monthly usage
-                      </p>
+              {/* Total estimated cost block */}
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-sky-100 bg-sky-50 px-4 py-3">
+                <span className="text-sm text-slate-600">
+                  Estimated monthly cost
+                </span>
 
-                      <p className="mt-1 text-sm font-semibold text-slate-800">
-                        {medicine.unitsPerMonth || 0} unit
-                        {Number(medicine.unitsPerMonth) === 1 ? "" : "s"}
-                      </p>
-                    </div>
+                <span className="text-base font-bold text-sky-700">
+                  ৳{formatMedicinePrice(monthlyCost)}
+                </span>
+              </div>
+            </div>
 
-                    <div className="text-right">
-                      <p className="text-xs font-medium text-sky-700">
-                        Estimated monthly cost
-                      </p>
-
-                      <p className="mt-1 text-lg font-bold text-slate-800">
-                        ৳{formatMedicinePrice(monthlyCost)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="mt-2 text-xs text-slate-500">
-                    Based on the monthly units entered for this medicine.
-                  </p>
-                </div>
-              </section>
-            )}
-
-            {/* Disclaimer */}
-            <p className="text-xs leading-relaxed text-slate-400">
-              Medicine cost and usage shown here are estimates based on the
-              information entered in MediSync. They are not a substitute for
-              instructions from a doctor or pharmacist.
+            <p className="border-t border-slate-100 pt-4 text-xs leading-5 text-slate-400">
+              Monthly cost is an estimate based on the recorded dosage or
+              monthly usage and the medicine price entered in MediSync.
             </p>
           </div>
         </div>

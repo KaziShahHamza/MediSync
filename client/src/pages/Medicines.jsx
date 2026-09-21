@@ -1,241 +1,66 @@
 // client/src/pages/Medicines.jsx
 
-import { useEffect, useState } from "react";
+// Composes the medicine page from the shared medicine data layer and UI components.
+// Handles page-level medicine actions and controls the add/edit form modal.
+
+import { useState } from "react";
+
 import { Pill, PlusCircle } from "lucide-react";
 
-import MedicineForm from "../components/medicine/MedicineForm";
+import MedicineFormModal from "../components/medicine/MedicineFormModal";
 import MedicineList from "../components/medicine/MedicineList";
 import MedicineMonthlyCost from "../components/medicine/MedicineMonthlyCost";
 
-const API_URL = import.meta.env.VITE_API_URL;
+import useMedicines from "../hooks/useMedicines";
 
-const CLOUD_NAME =
-  import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+// Renders the main medicines management page.
+export default function Medicines() {
+  // Accesses medicine CRUD operations and global state.
+  const { medicines, loading, createMedicine, updateMedicine, deleteMedicine } =
+    useMedicines();
 
-const UPLOAD_PRESET =
-  import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+  // Controls modal visibility.
+  const [formOpen, setFormOpen] = useState(false);
 
-export default function Dashboard() {
-  const [meds, setMeds] = useState([]);
+  // Holds medicine record currently being edited.
   const [editing, setEditing] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  const token = localStorage.getItem("token");
+  // Opens modal in creation mode.
+  function openAddForm() {
+    setEditing(null);
+    setFormOpen(true);
+  }
 
-  /*
-   * ========================================================
-   * FETCH MEDICINES
-   * ========================================================
-   */
+  // Opens modal populated with selected medicine for editing.
+  function openEditForm(medicine) {
+    setEditing(medicine);
+    setFormOpen(true);
+  }
 
-  const fetchMeds = async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        `${API_URL}/api/medicines`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message ||
-            "Failed to fetch medicines.",
-        );
-      }
-
-      setMeds(
-        Array.isArray(data) ? data : [],
-      );
-    } catch (error) {
-      console.error(
-        "Failed to fetch medicines:",
-        error,
-      );
-    } finally {
-      setLoading(false);
+  // Closes form modal and clears edit state.
+  function closeForm() {
+    if (loading) {
+      return;
     }
-  };
 
-  useEffect(() => {
-    fetchMeds();
-  }, []);
+    setFormOpen(false);
+    setEditing(null);
+  }
 
-  /*
-   * ========================================================
-   * SAVE MEDICINE
-   * ========================================================
-   */
-
-  const saveMedicine = async (data) => {
-    setLoading(true);
-
-    try {
-      let imageUrl = data.imageUrl || "";
-
-      /*
-       * ------------------------------------------------------
-       * Upload new image to Cloudinary
-       * ------------------------------------------------------
-       */
-
-      if (data.imageFile) {
-        const formData = new FormData();
-
-        formData.append(
-          "file",
-          data.imageFile,
-        );
-
-        formData.append(
-          "upload_preset",
-          UPLOAD_PRESET,
-        );
-
-        const uploadResponse =
-          await fetch(
-            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-            {
-              method: "POST",
-              body: formData,
-            },
-          );
-
-        const uploadData =
-          await uploadResponse.json();
-
-        if (!uploadResponse.ok) {
-          throw new Error(
-            uploadData.error?.message ||
-              "Failed to upload medicine image.",
-          );
-        }
-
-        imageUrl =
-          uploadData.secure_url || "";
-      }
-
-      /*
-       * ------------------------------------------------------
-       * Build medicine payload
-       * ------------------------------------------------------
-       *
-       * Only send the pricing fields that belong to the
-       * selected pricing type.
-       */
-
-      const medicineData = {
-        name: data.name,
-        type: data.type,
-        pricingType: data.pricingType,
-
-        dosage:
-          data.pricingType === "strip"
-            ? data.dosage
-            : [],
-
-        pricePerStrip:
-          data.pricingType === "strip"
-            ? Number(data.pricePerStrip)
-            : null,
-
-        piecesPerStrip:
-          data.pricingType === "strip"
-            ? Number(data.piecesPerStrip)
-            : null,
-
-        pricePerUnit:
-          data.pricingType === "unit"
-            ? Number(data.pricePerUnit)
-            : null,
-
-        unitsPerMonth:
-          data.pricingType === "unit"
-            ? Number(data.unitsPerMonth)
-            : null,
-
-        imageUrl,
-
-        startDate: data.startDate,
-
-        endDate: data.isActive
-          ? null
-          : data.endDate,
-
-        isActive: data.isActive,
-      };
-
-      /*
-       * ------------------------------------------------------
-       * Create / update
-       * ------------------------------------------------------
-       */
-
-      const url = editing
-        ? `${API_URL}/api/medicines/${editing._id}`
-        : `${API_URL}/api/medicines`;
-
-      const method = editing
-        ? "PUT"
-        : "POST";
-
-      const response = await fetch(url, {
-        method,
-
-        headers: {
-          "Content-Type":
-            "application/json",
-
-          Authorization: `Bearer ${token}`,
-        },
-
-        body: JSON.stringify(
-          medicineData,
-        ),
-      });
-
-      const result =
-        await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.message ||
-            "Failed to save medicine.",
-        );
-      }
-
-      /*
-       * Refresh list after save.
-       */
-
-      await fetchMeds();
-
-      setEditing(null);
-    } catch (error) {
-      console.error(
-        "Failed to save medicine:",
-        error,
-      );
-
-      throw error;
-    } finally {
-      setLoading(false);
+  // Handles saving new or updated medicine records.
+  async function handleSave(medicineData) {
+    if (editing?._id) {
+      await updateMedicine(editing._id, medicineData);
+    } else {
+      await createMedicine(medicineData);
     }
-  };
 
-  /*
-   * ========================================================
-   * DELETE
-   * ========================================================
-   */
+    setFormOpen(false);
+    setEditing(null);
+  }
 
-  const deleteMedicine = async (id) => {
+  // Confirms and processes medicine deletion.
+  async function handleDelete(id) {
     const confirmed = window.confirm(
       "Are you sure you want to delete this medicine?",
     );
@@ -245,177 +70,68 @@ export default function Dashboard() {
     }
 
     try {
-      setLoading(true);
-
-      const response = await fetch(
-        `${API_URL}/api/medicines/${id}`,
-        {
-          method: "DELETE",
-
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message ||
-            "Failed to delete medicine.",
-        );
-      }
-
-      setMeds((previous) =>
-        previous.filter(
-          (medicine) =>
-            medicine._id !== id,
-        ),
-      );
-
-      /*
-       * If the deleted medicine was being
-       * edited, close the form.
-       */
+      await deleteMedicine(id);
 
       if (editing?._id === id) {
+        setFormOpen(false);
         setEditing(null);
       }
     } catch (error) {
-      console.error(
-        "Failed to delete medicine:",
-        error,
-      );
+      console.error("Failed to delete medicine:", error);
 
-      window.alert(
-        error.message ||
-          "Failed to delete medicine.",
-      );
-    } finally {
-      setLoading(false);
+      window.alert(error?.message || "Failed to delete medicine.");
     }
-  };
-
-  /*
-   * ========================================================
-   * EDIT
-   * ========================================================
-   */
-
-  const handleEdit = (medicine) => {
-    setEditing(medicine);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
-  /*
-   * ========================================================
-   * CANCEL EDIT
-   * ========================================================
-   */
-
-  const handleCancelEdit = () => {
-    setEditing(null);
-  };
-
-  /*
-   * ========================================================
-   * RENDER
-   * ========================================================
-   */
+  }
 
   return (
-    <div className="container page">
-      {/* PAGE HEADER */}
+    <main className="container space-y-6 py-6">
+      {/* Header section with page title and action button */}
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+            <Pill size={22} />
+          </div>
 
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-              <Pill size={22} />
-            </div>
+          <div>
+            <h1 className="text-xl font-bold text-slate-900">Medicines</h1>
 
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">
-                Medicines
-              </h1>
-
-              <p className="mt-1 text-sm text-slate-500">
-                Manage your medicines,
-                dosage and monthly costs.
-              </p>
-            </div>
+            <p className="mt-1 text-sm text-slate-500">
+              Manage your medicines, dosage schedules, treatment periods, and
+              costs.
+            </p>
           </div>
         </div>
 
-        {!editing && (
-          <button
-            type="button"
-            onClick={() => {
-              setEditing(null);
+        {/* Trigger button for adding a new medicine */}
+        <button
+          type="button"
+          onClick={openAddForm}
+          className="btn-primary inline-flex items-center justify-center gap-2"
+        >
+          <PlusCircle size={18} />
+          Add Medicine
+        </button>
+      </header>
 
-              window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-              });
-            }}
-            className="btn-primary inline-flex items-center justify-center gap-2"
-          >
-            <PlusCircle size={18} />
-            Add medicine
-          </button>
-        )}
-      </div>
+      {/* Aggregate monthly expenditure summary card */}
+      <MedicineMonthlyCost medicines={medicines} />
 
-      {/* CONTENT */}
+      {/* Primary list displaying active and inactive medicines */}
+      <MedicineList
+        medicines={medicines}
+        onEdit={openEditForm}
+        onDelete={handleDelete}
+        loading={loading}
+      />
 
-      <section className="grid items-start gap-8 lg:grid-cols-2">
-        {/* LEFT */}
-
-        <div>
-          <div className="mb-5 flex items-center justify-between">
-            <h2 className="section-title">
-              My Medicines
-            </h2>
-
-            <span className="text-sm text-slate-500">
-              {meds.length} Total
-            </span>
-          </div>
-
-          {/* MONTHLY COST */}
-
-          <div className="mb-5">
-            <MedicineMonthlyCost
-              medicines={meds}
-            />
-          </div>
-
-          {/* MEDICINE LIST */}
-
-          <MedicineList
-            medicines={meds}
-            onEdit={handleEdit}
-            onDelete={deleteMedicine}
-            loading={loading}
-          />
-        </div>
-
-        {/* RIGHT */}
-
-        <div>
-          <MedicineForm
-            onSave={saveMedicine}
-            editing={editing}
-            onCancel={handleCancelEdit}
-            loading={loading}
-          />
-        </div>
-      </section>
-    </div>
+      {/* Modal dialog for creating and updating medicine entries */}
+      <MedicineFormModal
+        medicine={editing}
+        editing={formOpen}
+        onSave={handleSave}
+        onClose={closeForm}
+        loading={loading}
+      />
+    </main>
   );
 }

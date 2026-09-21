@@ -141,7 +141,7 @@ export default function DoctorCard({ doctor, onEdit, onDelete, onOpen }) {
       </div>
 
       {/* Chambers */}
-      {chambers.length > 0 && (
+      {/* {chambers.length > 0 && (
         <div className="mt-5 border-t border-slate-100 pt-4">
           <div className="mb-3 flex items-center justify-between">
             <h4 className="text-sm font-semibold text-slate-800">Chambers</h4>
@@ -169,7 +169,7 @@ export default function DoctorCard({ doctor, onEdit, onDelete, onOpen }) {
             </p>
           )}
         </div>
-      )}
+      )} */}
 
       {/* Footer */}
       {(doctor.lastVisit || hasVisitFee) && (

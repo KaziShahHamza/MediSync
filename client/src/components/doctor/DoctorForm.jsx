@@ -10,10 +10,12 @@ import DoctorFormSection from "./DoctorFormSection";
 import { MultiSelect, SelectField } from "./DoctorFormFields";
 
 import primaryHospitals from "../../data/primaryHospitals";
-import specialties from "../../data/specialties.json";
-import designations from "../../data/designations.json";
-import days from "../../data/days.json";
-import degrees from "../../data/degrees.json";
+import {
+  days,
+  designations,
+  degrees,
+  specialties,
+} from "../../data/doctorData";
 
 import { lastVisitYears } from "../../utils/doctor/doctorFormUtils";
 
@@ -195,85 +197,6 @@ export default function DoctorForm({
             <DoctorFormSection title="Chambers" className="lg:col-span-2">
               <ChamberForm form={form} setForm={setForm} days={days} />
             </DoctorFormSection>
-
-            {/* <DoctorFormSection title="Contact Information">
-              <div className="space-y-4">
-                {form.contactInfo.phones.map((phone, index) => (
-                  <div key={`phone-${index}`}>
-                    <label>Phone {index + 1}</label>
-
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(event) =>
-                        updateContact(
-                          "phones",
-                          index,
-                          event.target.value,
-                        )
-                      }
-                      placeholder="01XXXXXXXXX"
-                      className="input"
-                    />
-                  </div>
-                ))}
-
-                {form.contactInfo.emails.map((email, index) => (
-                  <div key={`email-${index}`}>
-                    <label>Email {index + 1}</label>
-
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(event) =>
-                        updateContact(
-                          "emails",
-                          index,
-                          event.target.value,
-                        )
-                      }
-                      placeholder="doctor@example.com"
-                      className="input"
-                    />
-                  </div>
-                ))}
-
-                {["website", "facebook", "linkedin"].map((field) => (
-                  <div key={field}>
-                    <label className="capitalize">
-                      {field}
-                    </label>
-
-                    <input
-                      type="url"
-                      value={form.contactInfo[field]}
-                      onChange={(event) =>
-                        setForm((previousForm) => ({
-                          ...previousForm,
-                          contactInfo: {
-                            ...previousForm.contactInfo,
-                            [field]: event.target.value,
-                          },
-                        }))
-                      }
-                      placeholder={`${field} URL`}
-                      className="input"
-                    />
-                  </div>
-                ))}
-              </div>
-            </DoctorFormSection> */}
-            {/* 
-            <DoctorFormSection title="Notes">
-              <textarea
-                name="notes"
-                value={form.notes}
-                onChange={onChange}
-                rows={8}
-                placeholder="Additional notes about this doctor..."
-                className="input resize-none"
-              />
-            </DoctorFormSection> */}
           </form>
         </div>
 
