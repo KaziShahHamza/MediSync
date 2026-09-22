@@ -1,6 +1,5 @@
-// src/context/LifestyleContext.jsx
-
 import { createContext, useContext, useEffect, useState } from "react";
+
 import { useAuth } from "./AuthContext";
 
 const LifestyleContext = createContext(null);
@@ -17,10 +16,20 @@ export function LifestyleProvider({ children }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchAssessments = async () => {
+  const getAuthHeaders = () => {
     const token = localStorage.getItem("token");
 
-    if (!user || !token) {
+    return token
+      ? {
+          Authorization: `Bearer ${token}`,
+        }
+      : null;
+  };
+
+  const fetchAssessments = async () => {
+    const headers = getAuthHeaders();
+
+    if (!user || !headers) {
       setAssessments([]);
       return;
     }
@@ -30,9 +39,7 @@ export function LifestyleProvider({ children }) {
       setError("");
 
       const response = await fetch(`${API_URL}/api/lifestyle`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
       });
 
       const data = await response.json();
@@ -52,9 +59,9 @@ export function LifestyleProvider({ children }) {
   };
 
   const fetchLatestAssessment = async () => {
-    const token = localStorage.getItem("token");
+    const headers = getAuthHeaders();
 
-    if (!user || !token) {
+    if (!user || !headers) {
       setLatestAssessment(null);
       return;
     }
@@ -64,9 +71,7 @@ export function LifestyleProvider({ children }) {
       setError("");
 
       const response = await fetch(`${API_URL}/api/lifestyle/latest`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
       });
 
       const data = await response.json();
@@ -88,9 +93,9 @@ export function LifestyleProvider({ children }) {
   };
 
   const saveAssessment = async (answers) => {
-    const token = localStorage.getItem("token");
+    const headers = getAuthHeaders();
 
-    if (!user || !token) {
+    if (!user || !headers) {
       throw new Error("Please log in to save your lifestyle assessment.");
     }
 
@@ -101,8 +106,8 @@ export function LifestyleProvider({ children }) {
       const response = await fetch(`${API_URL}/api/lifestyle`, {
         method: "POST",
         headers: {
+          ...headers,
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           answers,
@@ -119,15 +124,15 @@ export function LifestyleProvider({ children }) {
 
       setLatestAssessment(savedAssessment);
 
-      setAssessments((previous) => {
-        const updated = [
+      setAssessments((previousAssessments) => {
+        const updatedAssessments = [
           savedAssessment,
-          ...previous.filter(
+          ...previousAssessments.filter(
             (assessment) => assessment._id !== savedAssessment._id,
           ),
         ];
 
-        return updated.slice(0, 10);
+        return updatedAssessments.slice(0, 10);
       });
 
       return savedAssessment;
@@ -160,6 +165,7 @@ export function LifestyleProvider({ children }) {
     loading,
     saving,
     error,
+
     saveAssessment,
     fetchAssessments,
     fetchLatestAssessment,

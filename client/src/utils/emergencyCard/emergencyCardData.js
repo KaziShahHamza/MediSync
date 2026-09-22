@@ -1,3 +1,5 @@
+// client/src/utils/emergencyCard/emergencyCardData.js
+
 const normalize = (value) => {
   if (value === null || value === undefined) {
     return "";

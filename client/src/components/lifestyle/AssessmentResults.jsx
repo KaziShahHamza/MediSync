@@ -1,5 +1,3 @@
-// client/src/components/lifestyle/AssessmentResults.jsx
-
 import { Activity, CheckCircle2 } from "lucide-react";
 
 export function AssessmentResult({
@@ -36,9 +34,7 @@ export function AssessmentResult({
                 {totalScore}
               </strong>
 
-              <span className="text-sm text-slate-500">
-                / 100
-              </span>
+              <span className="text-sm text-slate-500">/ 100</span>
             </div>
 
             <span className="badge badge-success mt-2 inline-flex">
@@ -56,6 +52,8 @@ export function AssessmentResult({
                 ? Math.round((result.score / result.max) * 100)
                 : 0;
 
+            const safePercentage = Math.min(100, Math.max(0, percentage));
+
             return (
               <div
                 key={category}
@@ -66,10 +64,7 @@ export function AssessmentResult({
                     {category}
                   </p>
 
-                  <CheckCircle2
-                    size={18}
-                    className="text-blue-600 shrink-0"
-                  />
+                  <CheckCircle2 size={18} className="text-blue-600 shrink-0" />
                 </div>
 
                 <div className="flex items-baseline gap-1 mt-4">
@@ -77,16 +72,14 @@ export function AssessmentResult({
                     {result.score}
                   </strong>
 
-                  <span className="text-sm text-slate-500">
-                    / {result.max}
-                  </span>
+                  <span className="text-sm text-slate-500">/ {result.max}</span>
                 </div>
 
                 <div className="mt-3 h-2 rounded-full bg-slate-200 overflow-hidden">
                   <div
                     className="h-full rounded-full bg-blue-600 transition-all duration-300"
                     style={{
-                      width: `${Math.min(100, Math.max(0, percentage))}%`,
+                      width: `${safePercentage}%`,
                     }}
                   />
                 </div>
@@ -102,9 +95,7 @@ export function AssessmentResult({
         <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
           <p className="small-label">Feedback</p>
 
-          <p className="text-sm leading-6 text-slate-600 mt-2">
-            {feedback}
-          </p>
+          <p className="text-sm leading-6 text-slate-600 mt-2">{feedback}</p>
         </div>
       </div>
     </section>
@@ -112,7 +103,7 @@ export function AssessmentResult({
 }
 
 export function GradeReference() {
-  const GRADES = [
+  const grades = [
     ["A+", "80–100", "Excellent"],
     ["A", "70–79", "Very good"],
     ["A-", "60–69", "Good"],
@@ -132,7 +123,7 @@ export function GradeReference() {
 
       <div className="card-content">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {GRADES.map(([letter, range, description]) => (
+          {grades.map(([letter, range, description]) => (
             <div
               key={letter}
               className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center"
@@ -155,4 +146,3 @@ export function GradeReference() {
     </section>
   );
 }
-
