@@ -2,7 +2,7 @@
 
 import { useProfile } from "../context/ProfileContext";
 import ProfileSummary from "../components/profile/ProfileSummary";
-import EmergencyCardExport from "../components/profile/EmergencyCardExport";
+
 
 export default function Profile() {
   const { profile, userInfo, loading } = useProfile();

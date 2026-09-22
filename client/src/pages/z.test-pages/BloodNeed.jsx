@@ -22,9 +22,9 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-import { districtsData } from "../data/districtsData";
-import hospitalsData from "../data/hospitalsData";
-import { useAuth } from "../context/AuthContext";
+import { districtsData } from "../../data/districtsData";
+import hospitalsData from "../../data/hospitalsData";
+import { useAuth } from "../../context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

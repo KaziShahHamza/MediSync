@@ -1,6 +1,4 @@
-// client/src/App.jsx
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { useEffect } from "react";
 
 import { AuthProvider } from "./context/AuthContext";
@@ -12,9 +10,10 @@ import { ReportProvider } from "./context/ReportContext";
 import { LifestyleProvider } from "./context/LifestyleContext";
 import { ChatbotProvider } from "./context/ChatbotContext";
 
-import Navbar from "./components/navbar/Navbar";
-import ProtectedRoute from "./components/navbar/ProtectedRoute";
-import ScrollToTop from "./components/navbar/ScrollToTop";
+import Navbar, {
+  ProtectedRoute,
+  ScrollToTop,
+} from "./components/navbar/Navbar";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -30,7 +29,7 @@ import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import LifestyleScore from "./pages/LifestyleScore";
 import Assistant from "./pages/Assistant";
-import BloodNeed from "./pages/BloodNeed";
+// import BloodNeed from "./pages/z.test-pages/BloodNeed";
 import BloodSearch from "./pages/BloodSearch";
 import BloodRequest from "./pages/BloodRequest";
 
@@ -52,102 +51,66 @@ export default function App() {
                   <ChatbotProvider>
                     <BrowserRouter>
                       <ScrollToTop />
+
                       <Navbar />
 
                       {/* Background reminder engine */}
                       {/* <ReminderWrapper /> */}
 
                       <Routes>
-                        {/* Public Routes */}
+                        {/* =================================================
+                            PUBLIC ROUTES
+                        ================================================== */}
+
                         <Route path="/" element={<Home />} />
+
                         <Route path="/login" element={<Login />} />
+
                         <Route path="/signup" element={<Signup />} />
+
                         <Route path="/lifestyle" element={<LifestyleScore />} />
-                        <Route path="/blood-need" element={<BloodNeed />} />
+{/* 
+                        <Route path="/blood-need" element={<BloodNeed />} /> */}
+
                         <Route path="/blood-search" element={<BloodSearch />} />
-                        <Route path="/blood-request" element={<BloodRequest />} />
-
-                        {/* Protected Routes */}
-                        <Route
-                          path="/dashboard"
-                          element={
-                            <ProtectedRoute>
-                              <Dashboard />
-                            </ProtectedRoute>
-                          }
-                        />
 
                         <Route
-                          path="/medicines"
-                          element={
-                            <ProtectedRoute>
-                              <Medicines />
-                            </ProtectedRoute>
-                          }
+                          path="/blood-request"
+                          element={<BloodRequest />}
                         />
 
-                        <Route
-                          path="/health"
-                          element={
-                            <ProtectedRoute>
-                              <Health />
-                            </ProtectedRoute>
-                          }
-                        />
+                        {/* =================================================
+                            PROTECTED ROUTES
+                        ================================================== */}
 
                         <Route
-                          path="/prescriptions"
                           element={
                             <ProtectedRoute>
-                              <Prescriptions />
+                              <Outlet />
                             </ProtectedRoute>
                           }
-                        />
+                        >
+                          <Route path="/dashboard" element={<Dashboard />} />
 
-                        <Route
-                          path="/assistant"
-                          element={
-                            <ProtectedRoute>
-                              <Assistant />
-                            </ProtectedRoute>
-                          }
-                        />
+                          <Route path="/medicines" element={<Medicines />} />
 
-                        <Route
-                          path="/reports"
-                          element={
-                            <ProtectedRoute>
-                              <Reports />
-                            </ProtectedRoute>
-                          }
-                        />
+                          <Route path="/health" element={<Health />} />
 
-                        <Route
-                          path="/doctors"
-                          element={
-                            <ProtectedRoute>
-                              <Doctors />
-                            </ProtectedRoute>
-                          }
-                        />
+                          <Route
+                            path="/prescriptions"
+                            element={<Prescriptions />}
+                          />
 
-                        <Route
-                          path="/profile"
-                          element={
-                            <ProtectedRoute>
-                              <Profile />
-                            </ProtectedRoute>
-                          }
-                        />
+                          <Route path="/assistant" element={<Assistant />} />
 
-                        <Route
-                          path="/settings"
-                          element={
-                            <ProtectedRoute>
-                              <Settings />
-                            </ProtectedRoute>
-                          }
-                        />
+                          <Route path="/reports" element={<Reports />} />
+
+                          <Route path="/doctors" element={<Doctors />} />
+
+                          <Route path="/profile" element={<Profile />} />
+
+                          <Route path="/settings" element={<Settings />} />
+                        </Route>
                       </Routes>
                     </BrowserRouter>
                   </ChatbotProvider>
