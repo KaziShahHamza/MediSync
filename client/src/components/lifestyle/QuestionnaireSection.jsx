@@ -1,3 +1,5 @@
+// client/src/components/lifestyle/QuestionnaireSection.jsx
+
 import React from "react";
 export function DemoSelector({ demoUsers, onSelect }) {
   return (

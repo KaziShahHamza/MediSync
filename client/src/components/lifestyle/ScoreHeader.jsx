@@ -1,3 +1,5 @@
+// client/src/components/lifestyle/ScoreHeader.jsx
+
 import React from "react";
 export default function Header() {
   return (

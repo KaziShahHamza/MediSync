@@ -1,3 +1,8 @@
+// client/src/utils/settings/settingsHelpers.js
+
+// Helper utility functions for form state generation, formatting, date construction, and validation.
+
+// Generates an empty contact template structure
 export const createEmptyContact = () => ({
   relation: "",
   name: "",
@@ -5,6 +10,7 @@ export const createEmptyContact = () => ({
   email: "",
 });
 
+// Default initial state structure for settings form
 export const initialForm = {
   name: "",
   dob: "",
@@ -40,6 +46,7 @@ export const initialForm = {
   bloodDonationContactNumber: "",
 };
 
+// Extracts month and year string parameters from ISO date
 export function getDonationMonthYear(value) {
   if (!value) {
     return {
@@ -63,6 +70,7 @@ export function getDonationMonthYear(value) {
   };
 }
 
+// Converts selected month and year values into ISO date string
 export function buildDonationDate(month, year) {
   if (!month || !year) {
     return null;
@@ -71,6 +79,7 @@ export function buildDonationDate(month, year) {
   return new Date(Date.UTC(Number(year), Number(month) - 1, 1)).toISOString();
 }
 
+// Derives uppercase initials from user name
 export function getInitials(name) {
   if (!name?.trim()) {
     return "?";
@@ -85,7 +94,9 @@ export function getInitials(name) {
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
+// Performs business rule validation over settings inputs
 export function validateSettingsForm(form) {
+  // Validate emergency contacts list inputs
   for (const contact of form.emergencyContacts) {
     if (!contact.relation.trim()) {
       return "Please select a relation for every emergency contact.";
@@ -109,10 +120,12 @@ export function validateSettingsForm(form) {
 
   const { month, year } = form.lastBloodDonation;
 
+  // Validate complete blood donation date selection
   if ((month && !year) || (!month && year)) {
     return "Please select both the month and year of the last blood donation.";
   }
 
+  // Ensure donation date is not in future
   if (month && year) {
     const selectedDate = new Date(Number(year), Number(month) - 1, 1);
 
@@ -128,6 +141,7 @@ export function validateSettingsForm(form) {
   return null;
 }
 
+// Maps profile and user object values into form state shape
 export function createFormFromProfile(profile, userInfo) {
   return {
     name: userInfo?.name || "",
@@ -173,6 +187,7 @@ export function createFormFromProfile(profile, userInfo) {
   };
 }
 
+// Transforms form state data into database profile payload
 export function buildProfilePayload(form) {
   return {
     name: form.name,

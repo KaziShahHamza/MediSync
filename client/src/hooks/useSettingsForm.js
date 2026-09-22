@@ -1,3 +1,7 @@
+// client/src/hooks/useSettingsForm.js
+
+// Custom hook to manage user settings state, location cascading, image uploads, and form submission.
+
 import { useEffect, useRef, useState } from "react";
 import { useProfile } from "../context/ProfileContext";
 import { districtsData } from "../data/districtsData";
@@ -10,20 +14,25 @@ import {
   validateSettingsForm,
 } from "../utils/settings/settingsHelpers";
 
+// External API configuration constants
 const API_URL = import.meta.env.VITE_API_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
+// Custom hook for settings form state management and logic
 export default function useSettingsForm() {
   const { profile, userInfo, fetchProfile, setProfile, setUserInfo, loading } =
     useProfile();
 
+  // Local component states
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
   const [photoLoading, setPhotoLoading] = useState(false);
 
+  // Hidden file input reference
   const fileInputRef = useRef(null);
 
+  // Synchronize form state with fetched profile and user data
   useEffect(() => {
     if (!profile && !userInfo) return;
 
@@ -36,12 +45,14 @@ export default function useSettingsForm() {
     return () => clearTimeout(timer);
   }, [profile, userInfo]);
 
+  // Derived location values based on chosen district
   const selectedDistrict = districtsData.find(
     (district) => district.name === form.location.district,
   );
 
   const availableUpazilas = selectedDistrict?.upazilas || [];
 
+  // Universal input change handler
   function handleChange(e) {
     const { name, value } = e.target;
 
@@ -51,6 +62,7 @@ export default function useSettingsForm() {
     }));
   }
 
+  // Updates height measurements
   function handleHeightChange(e) {
     const { name, value } = e.target;
 
@@ -63,6 +75,7 @@ export default function useSettingsForm() {
     }));
   }
 
+  // Updates district/upazila address hierarchy
   function handleLocationChange(field, value) {
     setForm((prev) => {
       if (field === "district") {
@@ -86,6 +99,7 @@ export default function useSettingsForm() {
     });
   }
 
+  // Toggles chronic illness checkbox selection
   function toggleIllness(name) {
     setForm((prev) => {
       const exists = prev.chronicIllnesses.includes(name);
@@ -99,6 +113,7 @@ export default function useSettingsForm() {
     });
   }
 
+  // Appends a new blank emergency contact entry
   function addEmergencyContact() {
     if (form.emergencyContacts.length >= 3) return;
 
@@ -108,6 +123,7 @@ export default function useSettingsForm() {
     }));
   }
 
+  // Removes emergency contact by index
   function removeEmergencyContact(index) {
     setForm((prev) => ({
       ...prev,
@@ -117,6 +133,7 @@ export default function useSettingsForm() {
     }));
   }
 
+  // Updates individual emergency contact fields
   function handleEmergencyContactChange(index, field, value) {
     setForm((prev) => ({
       ...prev,
@@ -131,6 +148,7 @@ export default function useSettingsForm() {
     }));
   }
 
+  // Updates last blood donation date selection
   function handleDonationDateChange(field, value) {
     setForm((prev) => ({
       ...prev,
@@ -141,16 +159,19 @@ export default function useSettingsForm() {
     }));
   }
 
+  // Handles Cloudinary image selection and upload pipeline
   async function handlePhotoSelect(e) {
     const file = e.target.files?.[0];
 
     if (!file) return;
 
+    // Validate uploaded file type
     if (!file.type.startsWith("image/")) {
       alert("Please select an image file.");
       return;
     }
 
+    // Validate image file size constraint
     if (file.size > 5 * 1024 * 1024) {
       alert("Profile photo must be smaller than 5 MB.");
       return;
@@ -165,6 +186,7 @@ export default function useSettingsForm() {
       formData.append("upload_preset", UPLOAD_PRESET);
       formData.append("folder", "MediSync/profile-photos");
 
+      // Upload file directly to Cloudinary
       const uploadRes = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
         {
@@ -181,6 +203,7 @@ export default function useSettingsForm() {
 
       const token = localStorage.getItem("token");
 
+      // Save updated photo metadata to user account
       const saveRes = await fetch(`${API_URL}/api/profile/photo`, {
         method: "PUT",
         headers: {
@@ -216,6 +239,7 @@ export default function useSettingsForm() {
     }
   }
 
+  // Handles profile picture deletion
   async function handleRemovePhoto() {
     if (!userInfo?.profilePhotoUrl) {
       return;
@@ -230,6 +254,7 @@ export default function useSettingsForm() {
     try {
       const token = localStorage.getItem("token");
 
+      // Request removal of profile photo from server
       const res = await fetch(`${API_URL}/api/profile/photo`, {
         method: "DELETE",
         headers: {
@@ -255,9 +280,11 @@ export default function useSettingsForm() {
     }
   }
 
+  // Validates form input and submits saved profile details
   async function handleSubmit(e) {
     e.preventDefault();
 
+    // Client-side validation check
     const validationError = validateSettingsForm(form);
 
     if (validationError) {
@@ -274,6 +301,7 @@ export default function useSettingsForm() {
     const payload = buildProfilePayload(form);
 
     try {
+      // Send profile payload to backend endpoint
       const res = await fetch(`${API_URL}/api/profile`, {
         method,
         headers: {
@@ -307,6 +335,7 @@ export default function useSettingsForm() {
     }
   }
 
+  // Expose hook state values and handler utilities
   return {
     profile,
     userInfo,

@@ -1,9 +1,15 @@
+// client/src/components/settings/PersonalInfoSection.jsx
+
+// Renders personal information settings form inputs.
+// Manages identity details, physical traits, blood group, and address/location hierarchy.
+
 import ProfileSection from "../profile/ProfileSection";
 import ProfileInput from "../profile/ProfileInput";
 import ProfileSelect from "../profile/ProfileSelect";
 import { districtsData } from "../../data/districtsData";
 import { bloodGroups } from "../../data/settingsData";
 
+// Renders input fields for personal profile metadata
 export default function PersonalInfoSection({
   userInfo,
   form,
@@ -13,19 +19,24 @@ export default function PersonalInfoSection({
   onLocationChange,
 }) {
   return (
+    // Profile section container for personal background details
     <ProfileSection
       title="Personal Information"
       description="Basic details used for your health profile."
     >
+      {/* Grid container arranging personal details form fields */}
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+        {/* Read-only field displaying assigned username */}
         <ProfileInput
           label="Username"
           value={userInfo?.username || ""}
           disabled
         />
 
+        {/* Read-only field displaying account email */}
         <ProfileInput label="Email" value={userInfo?.email || ""} disabled />
 
+        {/* Editable input field for user's full name */}
         <ProfileInput
           label="Name"
           value={form.name}
@@ -33,6 +44,7 @@ export default function PersonalInfoSection({
           onChange={onChange}
         />
 
+        {/* Date picker input for birth date */}
         <ProfileInput
           label="Date of Birth"
           type="date"
@@ -41,6 +53,7 @@ export default function PersonalInfoSection({
           onChange={onChange}
         />
 
+        {/* Dropdown selector for user gender identification */}
         <ProfileSelect
           label="Gender"
           name="gender"
@@ -53,10 +66,14 @@ export default function PersonalInfoSection({
           <option value="Other">Other</option>
         </ProfileSelect>
 
+        {/* Multi-input group for height measurement */}
         <div>
+          {/* Form label for height input group */}
           <label className="block text-sm font-medium mb-2">Height</label>
 
+          {/* Flexbox layout for imperial height controls */}
           <div className="flex gap-3">
+            {/* Number input for height feet measurement */}
             <input
               type="number"
               name="feet"
@@ -67,6 +84,7 @@ export default function PersonalInfoSection({
               className="input w-full"
             />
 
+            {/* Number input for height inches measurement */}
             <input
               type="number"
               name="inches"
@@ -80,12 +98,14 @@ export default function PersonalInfoSection({
           </div>
         </div>
 
+        {/* Select dropdown for user blood group type */}
         <ProfileSelect
           label="Blood Group"
           name="bloodGroup"
           value={form.bloodGroup}
           onChange={onChange}
         >
+          {/* Dynamic rendering of valid blood type choices */}
           {bloodGroups.map((group) => (
             <option key={group} value={group}>
               {group || "Select"}
@@ -93,6 +113,7 @@ export default function PersonalInfoSection({
           ))}
         </ProfileSelect>
 
+        {/* Input container for street-level residential address */}
         <div className="col-span-2">
           <ProfileInput
             label="Street Address"
@@ -102,12 +123,14 @@ export default function PersonalInfoSection({
             placeholder="House/Road, Area, Village, etc."
           />
 
+          {/* Context note regarding address privacy scope */}
           <p className="text-xs text-slate-500 mt-2">
             Your street address is private and will only be used in your
             emergency card.
           </p>
         </div>
 
+        {/* Dependent dropdown selector for sub-district area */}
         <ProfileSelect
           label="Upazila / Sub-district"
           value={form.location.upazila}
@@ -120,6 +143,7 @@ export default function PersonalInfoSection({
               : "Select district first"}
           </option>
 
+          {/* Dynamic rendering of available upazila locations */}
           {availableUpazilas.map((upazila) => (
             <option key={upazila} value={upazila}>
               {upazila}
@@ -127,6 +151,7 @@ export default function PersonalInfoSection({
           ))}
         </ProfileSelect>
 
+        {/* Dropdown selector for district location */}
         <ProfileSelect
           label="District / Zila"
           value={form.location.district}
@@ -134,6 +159,7 @@ export default function PersonalInfoSection({
         >
           <option value="">Select district</option>
 
+          {/* Dynamic list rendering of districts */}
           {districtsData.map((district) => (
             <option key={district.name} value={district.name}>
               {district.name}

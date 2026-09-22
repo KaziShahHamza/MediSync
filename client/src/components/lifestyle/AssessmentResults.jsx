@@ -1,3 +1,5 @@
+// client/src/components/lifestyle/AssessmentResults.jsx
+
 import { Activity, CheckCircle2 } from "lucide-react";
 
 export function AssessmentResult({
