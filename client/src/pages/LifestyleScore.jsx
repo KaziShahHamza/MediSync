@@ -1,3 +1,8 @@
+// client/src/pages/LifestyleScore.jsx
+
+// Main application page for completing the MediSync Lifestyle Assessment.
+// Integrates score counters, interactive questionnaire, results display, and history tracking.
+
 import { Activity } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
@@ -17,6 +22,7 @@ import AssessmentHistory from "../components/lifestyle/AssessmentHistory";
 
 import { QUESTIONS } from "../data/lifestyle/lifestyleQuestions";
 
+// Main lifestyle score page component
 export default function LifestyleScore() {
   const { user } = useAuth();
 
@@ -53,7 +59,6 @@ export default function LifestyleScore() {
 
   return (
     <main className="container page">
-      {/* Page Header */}
       <LifestyleHeader />
 
       {/* Assessment Introduction */}
@@ -73,7 +78,7 @@ export default function LifestyleScore() {
         </div>
       </section>
 
-      {/* Current Score */}
+      {/* Score Progress Bar */}
       <section className="section">
         <StickyScoreBar
           totalScore={totalScore}
@@ -83,7 +88,7 @@ export default function LifestyleScore() {
         />
       </section>
 
-      {/* Questionnaire */}
+      {/* Questions List */}
       <section className="section">
         <Questionnaire
           categories={categories}
@@ -95,7 +100,7 @@ export default function LifestyleScore() {
         />
       </section>
 
-      {/* Assessment Result */}
+      {/* Analysis Output */}
       <section className="section">
         <AssessmentResult
           totalScore={totalScore}
@@ -105,12 +110,12 @@ export default function LifestyleScore() {
         />
       </section>
 
-      {/* Grade Reference */}
+      {/* Grading Key */}
       <section className="section">
         <GradeReference />
       </section>
 
-      {/* Assessment Controls */}
+      {/* Form Action Controls */}
       <section className="section">
         <AssessmentControls
           user={user}
@@ -125,7 +130,7 @@ export default function LifestyleScore() {
         />
       </section>
 
-      {/* Latest Assessment + History */}
+      {/* Historical Record */}
       {user && (
         <section className="section">
           <AssessmentHistory

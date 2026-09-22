@@ -1,3 +1,8 @@
+// client/src/components/lifestyle/ScoreHeader.jsx
+
+// Displays the static intro header and a sticky score bar tracking current evaluation progress.
+
+// Static informational header component
 export default function Header() {
   return (
     <header className="card">
@@ -16,6 +21,7 @@ export default function Header() {
   );
 }
 
+// Progress widget displaying live total score, current grade, and completion bar
 export function StickyScoreBar({
   totalScore,
   grade,
@@ -49,6 +55,7 @@ export function StickyScoreBar({
           </div>
         </div>
 
+        {/* Progress bar container */}
         <div className="mt-6">
           <div
             className="h-2.5 rounded-full bg-slate-100 overflow-hidden"

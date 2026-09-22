@@ -1,4 +1,8 @@
-// client/src/utils/emergencyCard/emergencyCardTemplates.js
+// client/src/utils/emergencyCard/emergencyCardTemplates.js;
+
+// Builds HTML template strings for front and back layouts of emergency medical cards.
+// Combines profile, medical, and contact data into printable HTML structures with embedded styles.
+
 
 import {
   escapeHtml,
@@ -17,6 +21,7 @@ import { getStyles } from "./emergencyCardStyles";
 const FONT_REGULAR = "/fonts/NotoSansBengali-Regular.ttf";
 const FONT_BOLD = "/fonts/NotoSansBengali-Bold.ttf";
 
+// Generates HTML markup for single contact entry
 const createContact = (contact) => {
   const name = contact.name || "Not provided";
   const relation = contact.relation || "Emergency Contact";
@@ -37,6 +42,7 @@ const createContact = (contact) => {
   `;
 };
 
+// Generates HTML markup for location details
 const createLocation = (profile) => {
   const { streetAddress, upazila, district } = getLocationParts(profile);
 
@@ -51,14 +57,12 @@ const createLocation = (profile) => {
           ? `
             <div class="location-line">
               <span class="location-value">
-                ${escapeHtml(streetAddress)},  ${escapeHtml(upazila)}, ${escapeHtml(district)}  
+                ${escapeHtml(streetAddress)},  ${escapeHtml(upazila)},${escapeHtml(district)}  
               </span>
             </div>
           `
           : ""
       }
-
-
 
       ${
         !streetAddress && !upazila && !district
@@ -73,6 +77,7 @@ const createLocation = (profile) => {
   `;
 };
 
+// Generates HTML markup for profile picture or letter fallback
 const createPhoto = (userInfo) => {
   const photoUrl = getProfilePhoto(userInfo);
 
@@ -95,6 +100,7 @@ const createPhoto = (userInfo) => {
   `;
 };
 
+// Constructs full front side HTML template of emergency card
 export const buildFrontHtml = ({ profile, userInfo, frontContacts }) => {
   const fullName = getFullName(userInfo);
   const bloodGroup = getBloodGroup(profile);
@@ -145,8 +151,6 @@ export const buildFrontHtml = ({ profile, userInfo, frontContacts }) => {
             <div class="name">
               ${escapeHtml(fullName)}
             </div>
-
-           
 
             <div class="basic-info">
 
@@ -203,6 +207,7 @@ export const buildFrontHtml = ({ profile, userInfo, frontContacts }) => {
   `;
 };
 
+// Constructs full back side HTML template of emergency card
 export const buildBackHtml = ({ profile, backContacts }) => {
   const { chronicIllnesses, allergies, surgeries } =
     getMedicalInformation(profile);
@@ -311,7 +316,7 @@ export const buildBackHtml = ({ profile, backContacts }) => {
   `;
 };
 
-
+// Wraps card HTML markup inside complete document structure
 export const buildCardDocument = (html) => {
   return `
     <!DOCTYPE html>

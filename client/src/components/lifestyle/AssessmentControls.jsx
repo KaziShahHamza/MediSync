@@ -1,3 +1,9 @@
+// client/src/components/lifestyle/AssessmentControls.jsx
+
+// UI controls for managing lifestyle assessment actions.
+// Toggles scoring details, triggers saves or resets, and displays status/error feedback.
+
+// Controls UI component
 export default function AssessmentControls({
   user,
   saving,
@@ -33,6 +39,7 @@ export default function AssessmentControls({
           </span>
         </label>
 
+        {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-3 mt-6">
           {user && (
             <button
@@ -50,6 +57,7 @@ export default function AssessmentControls({
           </button>
         </div>
 
+        {/* Guest Warning */}
         {!user && (
           <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
             <p className="text-sm text-slate-600">
@@ -59,6 +67,7 @@ export default function AssessmentControls({
           </div>
         )}
 
+        {/* Success Alert */}
         {saveMessage && (
           <div
             className="mt-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3"
@@ -68,6 +77,7 @@ export default function AssessmentControls({
           </div>
         )}
 
+        {/* Error Alert */}
         {(saveError || lifestyleError) && (
           <div
             className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3"

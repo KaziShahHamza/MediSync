@@ -1,8 +1,12 @@
-// client/src/utils/emergencyCard/emergencyCardStyles.js
+// client/src/utils/emergencyCard/emergencyCardStyles.js;
+
+// Generates CSS styling rules for rendering printable/exportable emergency medical cards.
+// Sets up custom Bengali fonts, physical card dimensions, identity layouts, and medical data grids.
 
 const FONT_REGULAR = "/fonts/NotoSansBengali-Regular.ttf";
 const FONT_BOLD = "/fonts/NotoSansBengali-Bold.ttf";
 
+// Generates and returns CSS styles as a single string template
 export const getStyles = () => `
   @font-face {
     font-family: "NotoBengali";
@@ -35,6 +39,7 @@ export const getStyles = () => `
     font-family: "NotoBengali", Arial, sans-serif;
   }
 
+  /* Main preview and print rendering area */
   .render-area {
     width: 1000px;
     min-height: 1000px;
@@ -42,6 +47,7 @@ export const getStyles = () => `
     background: #ffffff;
   }
 
+  /* Physical dimensions for emergency card */
   .card {
     width: 85.6mm;
     height: 53.98mm;
@@ -57,6 +63,7 @@ export const getStyles = () => `
     font-family: "NotoBengali", Arial, sans-serif;
   }
 
+  /* Card top branding strip */
   .top-strip {
     height: 10.5mm;
     padding: 2.2mm 3.5mm;
@@ -117,6 +124,7 @@ export const getStyles = () => `
     letter-spacing: 0.15mm;
   }
 
+  /* Front card layout elements */
   .front-content {
     padding: 2.6mm 3.5mm 1.5mm;
   }
@@ -387,8 +395,7 @@ export const getStyles = () => `
     color: #94a3b8;
   }
 
-  /* BACK */
-
+  /* Back card layout elements */
   .back-title {
     font-size: 3mm;
     color: #0f172a;

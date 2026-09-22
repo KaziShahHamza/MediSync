@@ -1,3 +1,9 @@
+// client/src/components/lifestyle/AssessmentHistory.jsx
+
+// Displays previous lifestyle assessment records including the most recent score
+// and an aggregate history list of past assessments.
+
+// Renders the most recently saved assessment details
 function LatestAssessment({ assessment }) {
   if (!assessment) {
     return null;
@@ -38,6 +44,7 @@ function LatestAssessment({ assessment }) {
   );
 }
 
+// Renders the list of historical lifestyle assessment records
 function HistoryList({ assessments }) {
   if (!assessments?.length) {
     return null;
@@ -87,6 +94,7 @@ function HistoryList({ assessments }) {
   );
 }
 
+// Container component for latest and historical assessment views
 export default function AssessmentHistory({ latestAssessment, assessments }) {
   if (!latestAssessment && !assessments?.length) {
     return null;

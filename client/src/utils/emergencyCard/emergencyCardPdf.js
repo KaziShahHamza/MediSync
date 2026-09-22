@@ -1,5 +1,8 @@
 // client/src/utils/emergencyCard/emergencyCardPdf.js
 
+// Handles HTML rendering and canvas conversion to generate an A4 PDF document.
+// Includes layout, positioning, cutting guides, and font/image loading helpers.
+
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
@@ -18,6 +21,7 @@ const A4_WIDTH_MM = 210;
 
 const CARD_SCALE = 4;
 
+// Creates isolated off-screen iframe for clean HTML rendering
 const createIsolatedDocument = () => {
   const iframe = document.createElement("iframe");
 
@@ -51,6 +55,7 @@ const createIsolatedDocument = () => {
   };
 };
 
+// Waits for custom web fonts to be completely loaded
 const waitForFonts = async (doc) => {
   if (!doc.fonts) {
     return;
@@ -67,6 +72,7 @@ const waitForFonts = async (doc) => {
   }
 };
 
+// Ensures all document images finish loading
 const waitForImages = async (doc) => {
   const images = Array.from(doc.images || []);
 
@@ -91,6 +97,7 @@ const waitForImages = async (doc) => {
   );
 };
 
+// Allows browser layout engine to complete render cycle
 const waitForRender = async (iframe) => {
   const requestAnimationFrame = iframe.contentWindow?.requestAnimationFrame;
 
@@ -105,6 +112,7 @@ const waitForRender = async (iframe) => {
   });
 };
 
+// Renders raw HTML string into canvas element inside hidden iframe
 const renderCard = async (html) => {
   const { iframe, document: iframeDocument } = createIsolatedDocument();
 
@@ -160,6 +168,7 @@ const renderCard = async (html) => {
   }
 };
 
+// Adds image canvas into jsPDF instance at given coordinates
 const addCardToPdf = (pdf, canvas, x, y) => {
   const imageData = canvas.toDataURL("image/png", 1.0);
 
@@ -175,6 +184,7 @@ const addCardToPdf = (pdf, canvas, x, y) => {
   );
 };
 
+// Main generator function creating downloadable emergency card PDF
 export async function generateEmergencyCardPdf(profile, userInfo) {
   if (!profile && !userInfo) {
     throw new Error("Profile information is unavailable.");
@@ -197,6 +207,7 @@ export async function generateEmergencyCardPdf(profile, userInfo) {
   let backCanvas;
 
   try {
+    // Render front and back card images in parallel
     [frontCanvas, backCanvas] = await Promise.all([
       renderCard(frontHtml),
       renderCard(backHtml),
@@ -214,13 +225,11 @@ export async function generateEmergencyCardPdf(profile, userInfo) {
     const frontY = 55;
     const backY = 155;
 
-    // FRONT
+    // Position cards on page
     addCardToPdf(pdf, frontCanvas, cardX, frontY);
-
-    // BACK
     addCardToPdf(pdf, backCanvas, cardX, backY);
 
-    // Cutting guides
+    // Draw print cutting guidelines
     pdf.setDrawColor(148, 163, 184);
 
     pdf.setLineWidth(0.2);
@@ -229,7 +238,7 @@ export async function generateEmergencyCardPdf(profile, userInfo) {
 
     pdf.rect(cardX, backY, CARD_WIDTH_MM, CARD_HEIGHT_MM);
 
-    // Printing instructions
+    // Add user print instructions text
     pdf.setFont("helvetica", "normal");
 
     pdf.setFontSize(8);

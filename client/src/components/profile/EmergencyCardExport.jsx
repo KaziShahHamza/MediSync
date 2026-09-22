@@ -1,14 +1,19 @@
 // client/src/components/profile/EmergencyCardExport.jsx
 
+// UI card component for exporting user medical profile data.
+// Displays card information and handles the PDF generation download process.
+
 import { useState } from "react";
 import { Download, FileText } from "lucide-react";
 
 import { generateEmergencyCardPdf } from "../../utils/emergencyCard/emergencyCardPdf";
 
+// Export component for downloading emergency cards
 export default function EmergencyCardExport({ profile, userInfo }) {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
 
+  // Handles PDF generation and download state
   const handleDownload = async () => {
     if (generating) return;
 
@@ -28,6 +33,7 @@ export default function EmergencyCardExport({ profile, userInfo }) {
 
   return (
     <section className="card p-6 m-3">
+      {/* Primary header and action section */}
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-4">
           <div className="surface-muted w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
@@ -43,6 +49,7 @@ export default function EmergencyCardExport({ profile, userInfo }) {
           </div>
         </div>
 
+        {/* PDF Download Trigger Button */}
         <button
           type="button"
           onClick={handleDownload}
@@ -54,17 +61,6 @@ export default function EmergencyCardExport({ profile, userInfo }) {
           {generating ? "Generating PDF..." : "Download Emergency Card"}
         </button>
       </div>
-
-      {/* <div className="mt-5 surface-muted rounded-xl p-4">
-        <p className="text-sm text-slate-600 leading-6">
-          The downloaded PDF contains the front and
-          back of your emergency card at wallet-card
-          dimensions. Print it at{" "}
-          <strong>100% / Actual Size</strong>, cut
-          along the card borders, and laminate both
-          sides.
-        </p>
-      </div> */}
 
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
     </section>

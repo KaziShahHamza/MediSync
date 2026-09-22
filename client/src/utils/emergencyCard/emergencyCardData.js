@@ -1,5 +1,9 @@
 // client/src/utils/emergencyCard/emergencyCardData.js
 
+// Utility functions for parsing, formatting, and sanitizing user emergency data.
+// Prepares medical history, emergency contacts, and personal information for display.
+
+// Normalizes null/undefined values to clean trimmed strings
 const normalize = (value) => {
   if (value === null || value === undefined) {
     return "";
@@ -8,6 +12,7 @@ const normalize = (value) => {
   return String(value).trim();
 };
 
+// Escapes special characters for safe HTML insertion
 export const escapeHtml = (value) => {
   return normalize(value)
     .replace(/&/g, "&amp;")
@@ -17,6 +22,7 @@ export const escapeHtml = (value) => {
     .replace(/'/g, "&#039;");
 };
 
+// Extracts display full name from user info
 export const getFullName = (userInfo) => {
   return (
     normalize(userInfo?.name) ||
@@ -26,6 +32,7 @@ export const getFullName = (userInfo) => {
   );
 };
 
+// Formats date strings into DD MMM YYYY format
 export const formatDate = (value) => {
   if (!value) {
     return "Not provided";
@@ -44,28 +51,31 @@ export const formatDate = (value) => {
   });
 };
 
+// Gets blood group string
 export const getBloodGroup = (profile) => {
   return normalize(profile?.bloodGroup) || "Not provided";
 };
 
+// Gets gender string
 export const getGender = (profile) => {
   return normalize(profile?.gender) || "Not provided";
 };
 
+// Gets profile photo URL
 export const getProfilePhoto = (userInfo) => {
   return normalize(userInfo?.profilePhotoUrl);
 };
 
+// Parses chronic illnesses list
 export const getChronicIllnesses = (profile) => {
   if (!Array.isArray(profile?.chronicIllnesses)) {
     return [];
   }
 
-  return profile.chronicIllnesses
-    .map(normalize)
-    .filter(Boolean);
+  return profile.chronicIllnesses.map(normalize).filter(Boolean);
 };
 
+// Filters and limits emergency contacts list
 export const getEmergencyContacts = (profile) => {
   if (!Array.isArray(profile?.emergencyContacts)) {
     return [];
@@ -80,23 +90,12 @@ export const getEmergencyContacts = (profile) => {
     }))
     .filter(
       (contact) =>
-        contact.name ||
-        contact.phone ||
-        contact.relation ||
-        contact.email,
+        contact.name || contact.phone || contact.relation || contact.email,
     )
     .slice(0, 3);
 };
 
-/*
- * Front page has room for a maximum of two emergency contacts.
- *
- * If the user has:
- * 0 → front 0, back 0
- * 1 → front 1, back 0
- * 2 → front 2, back 0
- * 3 → front 2, back 1
- */
+// Splits emergency contacts between card front and back
 export const splitEmergencyContacts = (profile) => {
   const contacts = getEmergencyContacts(profile);
 
@@ -106,6 +105,7 @@ export const splitEmergencyContacts = (profile) => {
   };
 };
 
+// Extracts individual location attributes
 export const getLocationParts = (profile) => {
   return {
     streetAddress: normalize(profile?.location?.streetAddress),
@@ -114,28 +114,26 @@ export const getLocationParts = (profile) => {
   };
 };
 
+// Builds single address string from components
 export const getLocation = (profile) => {
-  const { streetAddress, upazila, district } =
-    getLocationParts(profile);
+  const { streetAddress, upazila, district } = getLocationParts(profile);
 
-  return [streetAddress, upazila, district]
-    .filter(Boolean)
-    .join(", ") || "Not provided";
+  return (
+    [streetAddress, upazila, district].filter(Boolean).join(", ") ||
+    "Not provided"
+  );
 };
 
+// Formats comprehensive medical history strings
 export const getMedicalInformation = (profile) => {
   const illnesses = getChronicIllnesses(profile);
 
   return {
     chronicIllnesses: illnesses,
-    illnessText: illnesses.length
-      ? illnesses.join(", ")
-      : "None provided",
+    illnessText: illnesses.length ? illnesses.join(", ") : "None provided",
 
-    allergies:
-      normalize(profile?.allergies) || "None provided",
+    allergies: normalize(profile?.allergies) || "None provided",
 
-    surgeries:
-      normalize(profile?.surgeries) || "None provided",
+    surgeries: normalize(profile?.surgeries) || "None provided",
   };
 };

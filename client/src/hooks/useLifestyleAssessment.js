@@ -1,18 +1,26 @@
+// client/src/hooks/useLifestyleAssessment.js
+
+// Custom hook for managing lifestyle assessment form state and calculations.
+// Computes scores, feedback, grades, and handles reset, save, and demo functions.
+
 import { useMemo, useState } from "react";
 
 import { QUESTIONS, DEMO_USERS } from "../data/lifestyle/lifestyleQuestions";
 import { getGrade, getFeedback } from "../utils/lifestyle/lifestyleScoring";
 
+// Hook handling assessment logic
 export default function useLifestyleAssessment({ user, saveAssessment }) {
   const [answers, setAnswers] = useState({});
   const [showScoring, setShowScoring] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [saveError, setSaveError] = useState("");
 
+  // Extract unique category names
   const categories = useMemo(() => {
     return [...new Set(QUESTIONS.map((question) => question.category))];
   }, []);
 
+  // Compute category scores and maximum possible scores
   const categoryResults = useMemo(() => {
     const results = {};
 
@@ -79,6 +87,7 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
     return results;
   }, [answers, categories]);
 
+  // Derive total score across all categories
   const totalScore = useMemo(() => {
     return Math.round(
       Object.values(categoryResults).reduce(
@@ -88,14 +97,17 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
     );
   }, [categoryResults]);
 
+  // Derive letter grade
   const grade = useMemo(() => {
     return getGrade(totalScore);
   }, [totalScore]);
 
+  // Derive contextual feedback
   const feedback = useMemo(() => {
     return getFeedback(totalScore);
   }, [totalScore]);
 
+  // Count answered questions
   const answeredCount = useMemo(() => {
     return QUESTIONS.filter((question) => {
       const value = answers[question.id];
@@ -108,6 +120,7 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
     }).length;
   }, [answers]);
 
+  // Updates single question answer
   const handleAnswerChange = (questionId, value) => {
     setAnswers((previousAnswers) => ({
       ...previousAnswers,
@@ -118,6 +131,7 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
     setSaveError("");
   };
 
+  // Populates answers using pre-configured demo user profile
   const loadDemo = (demoName) => {
     const selectedDemo = DEMO_USERS[demoName];
 
@@ -130,6 +144,7 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
     setSaveError("");
   };
 
+  // Resets all current form entries
   const resetAssessment = () => {
     setAnswers({});
     setShowScoring(false);
@@ -137,6 +152,7 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
     setSaveError("");
   };
 
+  // Validates state and invokes context save routine
   const handleSaveAssessment = async () => {
     if (!user) {
       setSaveError("Please log in to save your lifestyle assessment.");

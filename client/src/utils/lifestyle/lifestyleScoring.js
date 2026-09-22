@@ -1,7 +1,11 @@
 // client/src/pages/lifestyle/lifestyleScoring.js
 
+// Utility functions for evaluating lifestyle scores.
+// Maps numeric scores to corresponding letter grades and actionable feedback messages.
+
 export { getGrade, getFeedback };
 
+// Evaluates letter grade from numerical score
 function getGrade(score) {
   if (score >= 80) return "A+";
   if (score >= 70) return "A";
@@ -10,6 +14,7 @@ function getGrade(score) {
   return "C";
 }
 
+// Generates textual health feedback based on overall score range
 function getFeedback(score) {
   if (score >= 90) {
     return "Your lifestyle pattern is very strong overall. Continue maintaining balanced eating, regular physical activity, healthy sleep habits, hydration, and low-risk daily routines while making small improvements where needed.";

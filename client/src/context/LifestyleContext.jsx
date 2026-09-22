@@ -1,3 +1,8 @@
+// client/src/context/LifestyleContext.jsx
+
+// React context providing global state and API interactions for lifestyle assessments.
+// Fetches existing history, posts new submissions, and exposes state hooks.
+
 import { createContext, useContext, useEffect, useState } from "react";
 
 import { useAuth } from "./AuthContext";
@@ -6,6 +11,7 @@ const LifestyleContext = createContext(null);
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Context provider component
 export function LifestyleProvider({ children }) {
   const { user } = useAuth();
 
@@ -16,6 +22,7 @@ export function LifestyleProvider({ children }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  // Gets JWT authorization header from local storage
   const getAuthHeaders = () => {
     const token = localStorage.getItem("token");
 
@@ -26,6 +33,7 @@ export function LifestyleProvider({ children }) {
       : null;
   };
 
+  // Fetches user assessment history from API
   const fetchAssessments = async () => {
     const headers = getAuthHeaders();
 
@@ -58,6 +66,7 @@ export function LifestyleProvider({ children }) {
     }
   };
 
+  // Fetches single most recent assessment from API
   const fetchLatestAssessment = async () => {
     const headers = getAuthHeaders();
 
@@ -92,6 +101,7 @@ export function LifestyleProvider({ children }) {
     }
   };
 
+  // Persists submitted assessment answers to server
   const saveAssessment = async (answers) => {
     const headers = getAuthHeaders();
 
@@ -147,6 +157,7 @@ export function LifestyleProvider({ children }) {
     }
   };
 
+  // Synchronize state when authentication status changes
   useEffect(() => {
     if (!user) {
       setAssessments([]);
@@ -178,6 +189,7 @@ export function LifestyleProvider({ children }) {
   );
 }
 
+// Hook to consume lifestyle context
 export function useLifestyle() {
   const context = useContext(LifestyleContext);
 
