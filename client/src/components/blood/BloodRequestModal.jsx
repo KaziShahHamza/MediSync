@@ -1,8 +1,12 @@
+// client/src/components/blood/BloodRequestModal.jsx
+// Modal component for creating or editing a blood request. Provides overlay, headers, error/success notifications, and embedded request form.
+
 import { AlertCircle, CheckCircle2, X } from "lucide-react";
 
 import ManagementTokenNotice from "./ManagementTokenNotice";
 import BloodRequestForm from "./BloodRequestForm";
 
+// Modal component wrapping blood request creation/editing form
 export default function BloodRequestModal({
   user,
   editingRequest,
@@ -25,19 +29,19 @@ export default function BloodRequestModal({
   onClose,
 }) {
   return (
+    // Modal overlay container with backdrop click detection
     <div
       className="modal-overlay"
       onMouseDown={(event) => {
+        // Close modal when clicking directly on overlay background
         if (event.target === event.currentTarget) {
           onClose();
         }
       }}
     >
+      {/* Modal dialog wrapper */}
       <div className="modal max-w-3xl max-h-[90vh] overflow-y-auto">
-        {/* ==================================================
-            Header
-        ================================================== */}
-
+        {/* Sticky modal header with title and close button */}
         <div className="modal-header sticky top-0 bg-white z-10">
           <div>
             <h2 className="card-title">
@@ -49,6 +53,7 @@ export default function BloodRequestModal({
             </p>
           </div>
 
+          {/* Close modal button */}
           <button
             type="button"
             onClick={onClose}
@@ -59,12 +64,10 @@ export default function BloodRequestModal({
           </button>
         </div>
 
+        {/* Form container wrapping modal body and actions */}
         <form onSubmit={onSubmit}>
           <div className="modal-body">
-            {/* ==================================================
-                Error
-            ================================================== */}
-
+            {/* Error alert banner */}
             {requestError && (
               <div className="alert alert-danger mb-6">
                 <div className="flex items-start gap-2">
@@ -75,19 +78,18 @@ export default function BloodRequestModal({
               </div>
             )}
 
-            {/* ==================================================
-                Success
-            ================================================== */}
-
+            {/* Success alert banner or management token viewer */}
             {requestSuccess && (
               <div className="mb-6">
                 {requestSuccess.managementToken ? (
+                  // Management token display card
                   <ManagementTokenNotice
                     managementToken={requestSuccess.managementToken}
                     copied={copied}
                     onCopy={onCopyToken}
                   />
                 ) : (
+                  // Standard success alert
                   <div className="alert alert-success">
                     <div className="flex items-start gap-3">
                       <CheckCircle2 size={19} className="shrink-0 mt-0.5" />
@@ -99,10 +101,7 @@ export default function BloodRequestModal({
               </div>
             )}
 
-            {/* ==================================================
-                Form
-            ================================================== */}
-
+            {/* Main form input fields component */}
             <BloodRequestForm
               user={user}
               requestForm={requestForm}
@@ -113,11 +112,9 @@ export default function BloodRequestModal({
             />
           </div>
 
-          {/* ==================================================
-              Footer
-          ================================================== */}
-
+          {/* Sticky modal footer actions */}
           <div className="modal-footer sticky bottom-0 bg-white">
+            {/* Cancel action button */}
             <button
               type="button"
               onClick={onClose}
@@ -127,6 +124,7 @@ export default function BloodRequestModal({
               Cancel
             </button>
 
+            {/* Submit action button */}
             <button
               type="submit"
               className="btn-primary"

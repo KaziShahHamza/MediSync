@@ -1,14 +1,13 @@
+// client/src/hooks/useBloodSearch.js
+
 import { useEffect, useMemo, useState } from "react";
 
 import { districtsData } from "../data/districtsData";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Custom hook to handle donor search filters, API requests, and result states
 export default function useBloodSearch() {
-  // ========================================================
-  // Search State
-  // ========================================================
-
   const [bloodGroup, setBloodGroup] = useState("");
 
   const [district, setDistrict] = useState("");
@@ -25,10 +24,7 @@ export default function useBloodSearch() {
 
   const [error, setError] = useState("");
 
-  // ========================================================
-  // Search Location
-  // ========================================================
-
+  // Retrieves selected district object matching current selection
   const selectedDistrict = useMemo(
     () => districtsData.find((item) => item.name === district),
     [district],
@@ -36,18 +32,12 @@ export default function useBloodSearch() {
 
   const upazilas = selectedDistrict?.upazilas || [];
 
-  // ========================================================
-  // Reset Upazila When District Changes
-  // ========================================================
-
+  // Resets upazila filter whenever district value changes
   useEffect(() => {
     setUpazila("");
   }, [district]);
 
-  // ========================================================
-  // Donor Search
-  // ========================================================
-
+  // Fetches blood donors from API matching set filter criteria
   const fetchDonors = async () => {
     try {
       setLoading(true);
@@ -55,6 +45,7 @@ export default function useBloodSearch() {
 
       const params = new URLSearchParams();
 
+      // Constructs query parameters from non-empty filter values
       if (bloodGroup) {
         params.set("bloodGroup", bloodGroup);
       }
@@ -99,16 +90,14 @@ export default function useBloodSearch() {
     }
   };
 
+  // Form submission handler to execute donor query
   const handleSearch = (event) => {
     event.preventDefault();
 
     fetchDonors();
   };
 
-  // ========================================================
-  // Reset
-  // ========================================================
-
+  // Clears all search filter parameters and search results
   const handleReset = () => {
     setBloodGroup("");
     setDistrict("");

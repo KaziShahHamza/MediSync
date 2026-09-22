@@ -1,3 +1,6 @@
+// client/src/utils/blood/bloodRequestHelpers.js
+
+// Formats creation date string relative to current time
 export function formatTimeAgo(dateString) {
   const date = new Date(dateString);
 
@@ -5,6 +8,7 @@ export function formatTimeAgo(dateString) {
 
   const minutes = Math.floor(diff / 60000);
 
+  // Formats relative time elapsed
   if (minutes < 1) {
     return "Just now";
   }
@@ -22,11 +26,13 @@ export function formatTimeAgo(dateString) {
   return "Recently";
 }
 
+// Calculates remaining time until request expiration
 export function formatExpiry(dateString) {
   const expiresAt = new Date(dateString);
 
   const diff = expiresAt.getTime() - Date.now();
 
+  // Evaluates expiration threshold
   if (diff <= 0) {
     return "Expired";
   }

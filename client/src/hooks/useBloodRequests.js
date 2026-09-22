@@ -1,3 +1,5 @@
+// client/src/hooks/useBloodRequests.js
+
 import { useEffect, useMemo, useState } from "react";
 
 import { useAuth } from "../context/AuthContext";
@@ -19,36 +21,28 @@ import {
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Custom hook to manage blood requests state, fetching, submitting, editing, and modal state
 export default function useBloodRequests() {
   const { user } = useAuth();
 
-  // Request form
   const [requestForm, setRequestForm] = useState(EMPTY_BLOOD_REQUEST_FORM);
 
-  // Modal
   const [requestModalOpen, setRequestModalOpen] = useState(false);
 
-  // Submit state
   const [requestSubmitting, setRequestSubmitting] = useState(false);
   const [requestError, setRequestError] = useState("");
   const [requestSuccess, setRequestSuccess] = useState(null);
 
-  // Requests
   const [bloodRequests, setBloodRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(false);
   const [requestsError, setRequestsError] = useState("");
 
-  // Editing
   const [editingRequest, setEditingRequest] = useState(null);
 
-  // Management token
   const [managementToken, setManagementToken] = useState("");
   const [copied, setCopied] = useState(false);
 
-  // ---------------------------------------------------------------------------
-  // Request location data
-  // ---------------------------------------------------------------------------
-
+  // Computes selected district object from request form state
   const selectedDistrict = useMemo(
     () => districtsData.find((item) => item.name === requestForm.district),
     [requestForm.district],
@@ -58,6 +52,7 @@ export default function useBloodRequests() {
 
   const selectedHospitalList = hospitalsData[requestForm.district] || [];
 
+  // Resets dependent location inputs when selected district changes
   useEffect(() => {
     setRequestForm((previous) => ({
       ...previous,
@@ -67,18 +62,12 @@ export default function useBloodRequests() {
     }));
   }, [requestForm.district]);
 
-  // ---------------------------------------------------------------------------
-  // Device ID
-  // ---------------------------------------------------------------------------
-
+  // Initializes device identifier on initial render
   useEffect(() => {
     getDeviceId();
   }, []);
 
-  // ---------------------------------------------------------------------------
-  // Fetch blood requests
-  // ---------------------------------------------------------------------------
-
+  // Fetches list of all active blood requests from API
   const fetchBloodRequests = async () => {
     try {
       setRequestsLoading(true);
@@ -102,6 +91,7 @@ export default function useBloodRequests() {
     }
   };
 
+  // Triggers blood request fetch on mount and polls periodically
   useEffect(() => {
     fetchBloodRequests();
 
@@ -110,10 +100,7 @@ export default function useBloodRequests() {
     return () => clearInterval(interval);
   }, []);
 
-  // ---------------------------------------------------------------------------
-  // Request form changes
-  // ---------------------------------------------------------------------------
-
+  // Handles text input changes for request form
   const handleRequestChange = (event) => {
     const { name, value } = event.target;
 
@@ -123,13 +110,11 @@ export default function useBloodRequests() {
     }));
   };
 
-  // ---------------------------------------------------------------------------
-  // Hospital selection
-  // ---------------------------------------------------------------------------
-
+  // Handles dropdown selection for hospital inputs
   const handleHospitalChange = (event) => {
     const value = event.target.value;
 
+    // Clears hospital name and address for custom input option
     if (value === OTHER_HOSPITAL) {
       setRequestForm((previous) => ({
         ...previous,
@@ -157,22 +142,21 @@ export default function useBloodRequests() {
     ? requestForm.hospitalName
     : OTHER_HOSPITAL;
 
-  // ---------------------------------------------------------------------------
-  // Reset / modal controls
-  // ---------------------------------------------------------------------------
-
+  // Clears request form inputs and validation errors
   const resetRequestForm = () => {
     setRequestForm(EMPTY_BLOOD_REQUEST_FORM);
     setRequestError("");
     setEditingRequest(null);
   };
 
+  // Opens request modal with clean state
   const openRequestModal = () => {
     resetRequestForm();
     setRequestSuccess(null);
     setRequestModalOpen(true);
   };
 
+  // Closes request modal unless form is currently submitting
   const closeRequestModal = () => {
     if (requestSubmitting) return;
 
@@ -180,10 +164,7 @@ export default function useBloodRequests() {
     resetRequestForm();
   };
 
-  // ---------------------------------------------------------------------------
-  // Create / update blood request
-  // ---------------------------------------------------------------------------
-
+  // Submits blood request payload for creation or updates
   const submitBloodRequest = async (event) => {
     event.preventDefault();
 
@@ -194,6 +175,7 @@ export default function useBloodRequests() {
       const deviceId = getDeviceId();
       const token = localStorage.getItem("token");
 
+      // Prepares request body structure
       const body = {
         bloodGroup: requestForm.bloodGroup,
         bagsNeeded: Number(requestForm.bagsNeeded),
@@ -208,6 +190,7 @@ export default function useBloodRequests() {
         deviceId,
       };
 
+      // Attaches management token for guest edits
       if (!user && managementToken) {
         body.managementToken = managementToken;
       }
@@ -233,7 +216,7 @@ export default function useBloodRequests() {
         throw new Error(data.message || "Failed to save blood request.");
       }
 
-      // Updating an existing request
+      // Handles state updates for modified existing requests
       if (editingRequest) {
         setBloodRequests((previous) =>
           previous.map((item) =>
@@ -252,7 +235,7 @@ export default function useBloodRequests() {
         return;
       }
 
-      // Creating a new request
+      // Saves new request token locally for guest management
       if (data.managementToken) {
         saveManagementToken(data.request.id, data.managementToken);
 
@@ -278,13 +261,11 @@ export default function useBloodRequests() {
     }
   };
 
-  // ---------------------------------------------------------------------------
-  // Edit blood request
-  // ---------------------------------------------------------------------------
-
+  // Pre-fills form fields to edit selected request
   const handleEditRequest = (request) => {
     const savedToken = getManagementToken(request.id);
 
+    // Verifies management authorization before editing
     if (!user && !savedToken) {
       setRequestError(
         "You do not have the management access for this request.",
@@ -314,13 +295,11 @@ export default function useBloodRequests() {
     setRequestModalOpen(true);
   };
 
-  // ---------------------------------------------------------------------------
-  // Delete blood request
-  // ---------------------------------------------------------------------------
-
+  // Removes blood request entry via API call
   const handleDeleteRequest = async (request) => {
     const savedToken = getManagementToken(request.id);
 
+    // Verifies management authorization before deletion
     if (!user && !savedToken) {
       window.alert("You do not have permission to delete this request.");
 
@@ -368,10 +347,7 @@ export default function useBloodRequests() {
     }
   };
 
-  // ---------------------------------------------------------------------------
-  // Copy management token
-  // ---------------------------------------------------------------------------
-
+  // Copies active management token string to clipboard
   const copyManagementToken = async () => {
     if (!managementToken) return;
 
@@ -389,43 +365,35 @@ export default function useBloodRequests() {
   };
 
   return {
-    // Auth
     user,
 
-    // Requests
     bloodRequests,
     requestsLoading,
     requestsError,
     fetchBloodRequests,
 
-    // Form
     requestForm,
     setRequestForm,
     handleRequestChange,
 
-    // Location
     requestUpazilas,
     selectedHospitalList,
     hospitalSelectValue,
     handleHospitalChange,
 
-    // Modal
     requestModalOpen,
     openRequestModal,
     closeRequestModal,
 
-    // Submission
     requestSubmitting,
     requestError,
     requestSuccess,
     submitBloodRequest,
 
-    // Editing / deleting
     editingRequest,
     handleEditRequest,
     handleDeleteRequest,
 
-    // Management token
     managementToken,
     copied,
     copyManagementToken,

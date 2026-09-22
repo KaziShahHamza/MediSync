@@ -1,3 +1,5 @@
+// client/src/utils/blood/bloodConstants.js
+
 export const BLOOD_GROUPS = [
   "A+",
   "A-",

@@ -1,3 +1,9 @@
+// client/src/components/blood/BloodRequestItem.jsx
+
+// Displays an individual blood request card with location, hospital, and contact info.
+// Adapts responsively between desktop table-row layouts and mobile card views.
+// Conditionally displays management actions (edit/delete) based on user authorization or tokens.
+
 import { Clock, Droplets, Phone, Pencil, Trash2 } from "lucide-react";
 
 import {
@@ -7,20 +13,19 @@ import {
 
 import { getManagementToken } from "../../utils/blood/bloodRequestStorage";
 
+// Render single blood request item card/row
 export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
+  // Check local storage for anonymous request authorization token
   const savedToken = getManagementToken(request.id);
 
+  // Evaluate authorization rights to show edit and delete actions
   const canManage = Boolean(savedToken) || Boolean(user && request.hasAccount);
 
   return (
     <div className="px-5 py-5 md:px-6">
-      {/* ====================================================
-          Desktop
-      ==================================================== */}
-
+      {/* Desktop tabular view section */}
       <div className="hidden lg:grid lg:grid-cols-[1fr_1fr_1.5fr_1.8fr_1fr_1fr] gap-4 items-center">
-        {/* Blood */}
-
+        {/* Required blood type indicator */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
             <Droplets size={19} />
@@ -35,8 +40,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
           </div>
         </div>
 
-        {/* Bags */}
-
+        {/* Quantity requested and compensation status badge */}
         <div>
           <p className="text-sm font-semibold text-slate-800">
             {request.bagsNeeded} bag
@@ -54,8 +58,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
           </span>
         </div>
 
-        {/* Location */}
-
+        {/* Target district and upazila */}
         <div>
           <p className="text-sm font-medium text-slate-800">
             {request.district}
@@ -64,8 +67,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
           <p className="text-xs text-muted mt-1">{request.upazila}</p>
         </div>
 
-        {/* Hospital */}
-
+        {/* Hospital name and address block */}
         <div>
           <p className="text-sm font-semibold text-slate-800">
             {request.hospital?.name}
@@ -76,8 +78,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
           </p>
         </div>
 
-        {/* Posted */}
-
+        {/* Request creation time and expiration timer */}
         <div>
           <p className="text-xs text-slate-500">
             {formatTimeAgo(request.createdAt)}
@@ -88,8 +89,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
           </p>
         </div>
 
-        {/* Contact */}
-
+        {/* Desktop call-to-action button */}
         <div className="flex justify-end">
           <a href={`tel:${request.contactPhone}`} className="btn-primary">
             <Phone size={16} />
@@ -98,11 +98,9 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
         </div>
       </div>
 
-      {/* ====================================================
-          Mobile
-      ==================================================== */}
-
+      {/* Mobile stacked card view section */}
       <div className="lg:hidden">
+        {/* Mobile request header */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
@@ -126,7 +124,9 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
           </span>
         </div>
 
+        {/* Mobile details breakdown */}
         <div className="mt-5 space-y-4">
+          {/* Location summary */}
           <div>
             <p className="small-label">Location</p>
 
@@ -137,6 +137,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
             </p>
           </div>
 
+          {/* Hospital summary */}
           <div>
             <p className="small-label">Hospital</p>
 
@@ -149,6 +150,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
             </p>
           </div>
 
+          {/* Status badges row */}
           <div className="flex flex-wrap items-center gap-2">
             <span
               className={`badge ${
@@ -168,6 +170,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
           </div>
         </div>
 
+        {/* Mobile phone contact button */}
         <a
           href={`tel:${request.contactPhone}`}
           className="btn-primary w-full mt-5"
@@ -177,12 +180,10 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
         </a>
       </div>
 
-      {/* ====================================================
-          Management
-      ==================================================== */}
-
+      {/* Edit and delete controls for authorized users */}
       {canManage && (
         <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-slate-100">
+          {/* Edit action button */}
           <button
             type="button"
             onClick={() => onEdit(request)}
@@ -192,6 +193,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
             Edit
           </button>
 
+          {/* Delete action button */}
           <button
             type="button"
             onClick={() => onDelete(request)}

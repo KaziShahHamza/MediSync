@@ -4,163 +4,67 @@
 
 ```text
 medicine_2/
-├── 101.txt
-├── client/
-│   ├── .gitignore
-│   ├── package-lock.json
-│   ├── eslint.config.js
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── assets/
-│   │   ├── health_report.png
-│   │   ├── icon.png
-│   │   ├── icon_2.png
-│   │   ├── icon_3.png
-│   │   └── logo.png
-│   └── src/
-│       ├── App.jsx
-│       ├── index.css
-│       ├── main.jsx
-│       ├── components/
-│       │   ├── assistant/
-│       │   │   ├── AssistantSidebar.jsx
-│       │   │   ├── ChatEmptyState.jsx
-│       │   │   ├── ChatInput.jsx
-│       │   │   └── ChatMessage.jsx
-│       │   ├── auth/
-│       │   │   └── AuthLayout.jsx
-│       │   ├── dashboard/
-│       │   │   ├── HealthSummaryCard.jsx
-│       │   │   ├── QuickLinkCard.jsx
-│       │   │   └── StatCard.jsx
-│       │   ├── profile/
-│       │   │   ├── ProfileInput.jsx
-│       │   │   ├── ProfileSection.jsx
-│       │   │   ├── ProfileSelect.jsx
-│       │   │   └── ProfileSummary.jsx
-│       │   ├── BMIChart.jsx
-│       │   ├── BMIForm.jsx
-│       │   ├── BMIResult.jsx
-│       │   ├── BloodPressureChart.jsx
-│       │   ├── BloodPressureForm.jsx
-│       │   ├── BloodSugarChart.jsx
-│       │   ├── BloodSugarForm.jsx
-│       │   ├── DoctorCard.jsx
-│       │   ├── DoctorChamber.jsx
-│       │   ├── DoctorForm.jsx
-│       │   ├── DoctorInfo.jsx
-│       │   ├── DoctorModal.jsx
-│       │   ├── HealthCharts.jsx
-│       │   ├── HealthLogForm.jsx
-│       │   ├── LifestyleScoreCard.jsx
-│       │   ├── LifestyleScoreChart.jsx
-│       │   ├── MedicineForm.jsx
-│       │   ├── MedicineImageModal.jsx
-│       │   ├── MedicineList.jsx
-│       │   ├── Navbar.jsx
-│       │   ├── PrescriptionCard.jsx
-│       │   ├── ProtectedRoute.jsx
-│       │   ├── ReportCard.jsx
-│       │   └── ScrollToTop.jsx
-│       ├── context/
-│       │   ├── AuthContext.jsx
-│       │   ├── ChatbotContext.jsx
-│       │   ├── DoctorContext.jsx
-│       │   ├── LifestyleContext.jsx
-│       │   ├── MedicineContext.jsx
-│       │   ├── PrescriptionContext.jsx
-│       │   ├── ProfileContext.jsx
-│       │   └── ReportContext.jsx
-│       ├── data/
-│       │   ├── days.json
-│       │   ├── degrees.json
-│       │   ├── designations.json
-│       │   ├── districtsData.js
-│       │   ├── districtsData_2.js
-│       │   ├── hospitalsData.js
-│       │   ├── hospitals.json
-│       │   └── specialties.json
-│       ├── hooks/
-│       │   ├── useHealthLogs.js
-│       │   └── useMedicineReminder.js
-│       ├── pages/
-│       │   ├── Assistant.jsx
-│       │   ├── Dashboard.jsx
-│       │   ├── Doctors.jsx
-│       │   ├── Health.jsx
-│       │   ├── Home.jsx
-│       │   ├── Login.jsx
-│       │   ├── Medicines.jsx
-│       │   ├── Prescriptions.jsx
-│       │   ├── Profile.jsx
-│       │   ├── Reports.jsx
-│       │   ├── Settings.jsx
-│       │   ├── Signup.jsx
-│       │   ├── TestPage.jsx
-│       │   ├── TestReminderPage.jsx
-│       │   └── lifestyle/
-│       │       ├── AssessmentResults.jsx
-│       │       ├── LifestyleScore.jsx
-│       │       ├── QuestionnaireSection.jsx
-│       │       ├── ScoreHeader.jsx
-│       │       ├── lifestyleQuestions.js
-│       │       ├── lifestyleScoring.js
-│       │       └── styles.css
-│       └── utils/
-│           └── timeMap.js
+├── .gitignore
 ├── .docs/
 │   ├── ARCHITECTURE.md
 │   ├── CODEBASE_MAP.md
 │   ├── DATA_API_REFERENCE.md
 │   ├── DEVELOPMENT_GUIDE.md
 │   └── PROJECT_CONTEXT.md
-├── server/
+├── client/
+│   ├── assets/ (health_report.png, icon.png, icon_2.png, icon_3.png, logo.png)
+│   ├── eslint.config.js
+│   ├── index.html
 │   ├── package-lock.json
 │   ├── package.json
-│   ├── server.js
-│   ├── fonts/
-│   │   ├── NotoSansBengali-Bold.ttf
-│   │   └── NotoSansBengali-Regular.ttf
-│   ├── middleware/
-│   │   └── auth.js
-│   ├── models/
-│   │   ├── AIChat.js
-│   │   ├── AIChatData.js
-│   │   ├── AIReport.js
-│   │   ├── Doctor.js
-│   │   ├── HealthLog.js
-│   │   ├── LifestyleAssessment.js
-│   │   ├── Medicine.js
-│   │   ├── Prescription.js
-│   │   ├── Profile.js
-│   │   ├── Report.js
-│   │   └── User.js
-│   ├── routes/
-│   │   ├── ai.routes.js
-│   │   ├── auth.routes.js
-│   │   ├── dashboard.routes.js
-│   │   ├── doctor.routes.js
-│   │   ├── export.routes.js
-│   │   ├── health.routes.js
-│   │   ├── lifestyle.routes.js
-│   │   ├── medicine.routes.js
-│   │   ├── prescription.routes.js
-│   │   ├── profile.routes.js
-│   │   └── report.routes.js
-│   ├── services/
-│   │   ├── aiChatDataService.js
-│   │   ├── aiChatService.js
-│   │   ├── aiService.js
-│   │   ├── dashboardService.js
-│   │   ├── healthSummaryService.js
-│   │   ├── pdfService.js
-│   │   ├── prescriptionAiService.js
-│   │   └── reportAiService.js
-│   └── utils/
-│       ├── healthCalculations.js
-│       └── lifestyleScoring.js
-└── .git/
+│   ├── public/fonts/ (NotoSansBengali-Bold.ttf, NotoSansBengali-Regular.ttf)
+│   ├── vite.config.js
+│   └── src/
+│       ├── App.jsx
+│       ├── index.css
+│       ├── main.jsx
+│       ├── components/
+│       │   ├── ai-assistant/ (AssistantSidebar, ChatEmptyState, ChatInput, ChatMessage)
+│       │   ├── blood/ (BloodRequestForm, BloodRequestItem, BloodRequestList, BloodRequestModal, BloodSearchForm, DonorResultItem, DonorResults, ManagementTokenNotice)
+│       │   ├── dashboard/ (HealthSummaryCard, QuickLinkCard, StatCard)
+│       │   ├── doctor/ (DoctorCard, DoctorForm, DoctorFormFields, DoctorFormSection, DoctorInfo, DoctorModal)
+│       │   ├── health/ (BMIResult, LifestyleScoreCard)
+│       │   ├── lifestyle/ (AssessmentResults, lifestyleQuestions, lifestyleScoring, QuestionnaireSection, ScoreHeader)
+│       │   ├── medicine/ (MedicineBasicInfo, MedicineCard, MedicineImageViewer, MedicineList, MedicineMonthlyCost, MedicinePricing, MedicineTreatment)
+│       │   ├── navbar/ (Navbar, ProtectedRoute, ScrollToTop)
+│       │   ├── profile/ (EmergencyCardExport, ProfileInput, ProfileSection, ProfileSelect, ProfileSummary)
+│       │   ├── AuthLayout.jsx
+│       │   ├── PrescriptionCard.jsx
+│       │   ├── ReportCard.jsx
+│       │   └── z.test-components/ (HealthCharts, HealthLogForm)
+│       ├── context/ (AuthContext, ChatbotContext, DoctorContext, LifestyleContext, MedicineContext, PrescriptionContext, ProfileContext, ReportContext)
+│       ├── data/
+│       │   ├── doctor/ (doctorData, primaryHospitals)
+│       │   ├── medicine/ (dosageOptions, medicineMonths, medicineTypes)
+│       │   ├── z.test-data/ (districtsData_2)
+│       │   ├── districtsData.js
+│       │   └── hospitalsData.js
+│       ├── hooks/ (useBloodRequests, useBloodSearch, useHealthLogs, useMedicineReminder, useMedicines)
+│       │   └── doctor/useDoctorForm.js
+│       ├── pages/ (Assistant, BloodNeed, BloodRequest, BloodSearch, Dashboard, Doctors, Health, Home, LifestyleScore, Login, Medicines, Prescriptions, Profile, Reports, Settings, Signup)
+│       │   └── z.test-pages/ (TestPage, TestReminderPage)
+│       └── utils/
+│           ├── blood/ (bloodConstants, bloodRequestHelpers, bloodRequestStorage)
+│           ├── doctor/ (doctorFormUtils, doctorFunctions)
+│           ├── emergencyCard/ (emergencyCardData, emergencyCardPdf, emergencyCardTemplates)
+│           ├── medicine/ (medicineCalculations, medicineHelpers, medicineValidation)
+│           ├── emergencyWhatsApp.js
+│           └── timeMap.js
+└── server/
+    ├── fonts/ (NotoSansBengali-Bold.ttf, NotoSansBengali-Regular.ttf)
+    ├── middleware/auth.js
+    ├── models/ (AIChat, AIChatData, AIReport, BloodRequest, BloodRequestRateLimit, Doctor, EmergencyAlert, HealthLog, LifestyleAssessment, Medicine, Prescription, Profile, Report, User)
+    ├── package-lock.json
+    ├── package.json
+    ├── routes/ (ai, auth, blood, dashboard, doctor, export, health, lifestyle, medicine, prescription, profile, report)
+    ├── server.js
+    ├── services/ (aiChatDataService, aiChatService, aiService, dashboardService, emergencyEmailService, emergencyService, healthSummaryService, pdfService, prescriptionAiService, reportAiService)
+    └── utils/ (healthCalculations, lifestyleScoring)
 ```
 
 ## 2. Most important files to inspect
@@ -169,7 +73,7 @@ medicine_2/
 
 - `client/src/App.jsx`
 - `client/src/context/AuthContext.jsx`
-- `client/src/components/ProtectedRoute.jsx`
+- `client/src/components/navbar/ProtectedRoute.jsx`
 - `server/middleware/auth.js`
 - `server/routes/auth.routes.js`
 - `server/models/User.js`
@@ -178,9 +82,7 @@ medicine_2/
 
 - `client/src/pages/Health.jsx`
 - `client/src/hooks/useHealthLogs.js`
-- `client/src/components/BMIForm.jsx`
-- `client/src/components/BloodPressureChart.jsx`
-- `client/src/components/BloodSugarChart.jsx`
+- `client/src/components/health/BMIResult.jsx`
 - `server/routes/health.routes.js`
 - `server/models/HealthLog.js`
 - `server/utils/healthCalculations.js`
@@ -189,8 +91,8 @@ medicine_2/
 
 - `client/src/pages/Medicines.jsx`
 - `client/src/context/MedicineContext.jsx`
-- `client/src/components/MedicineForm.jsx`
-- `client/src/components/MedicineList.jsx`
+- `client/src/components/medicine/MedicineCard.jsx`
+- `client/src/components/medicine/MedicineList.jsx`
 - `server/routes/medicine.routes.js`
 - `server/models/Medicine.js`
 
@@ -204,16 +106,29 @@ medicine_2/
 
 ### Lifestyle feature
 
-- `client/src/pages/lifestyle/`
+- `client/src/pages/LifestyleScore.jsx`
+- `client/src/components/lifestyle/`
 - `client/src/context/LifestyleContext.jsx`
 - `server/routes/lifestyle.routes.js`
 - `server/models/LifestyleAssessment.js`
 - `server/utils/lifestyleScoring.js`
 
+### Blood feature
+
+- `client/src/pages/BloodNeed.jsx`
+- `client/src/pages/BloodRequest.jsx`
+- `client/src/pages/BloodSearch.jsx`
+- `client/src/hooks/useBloodRequests.js`
+- `client/src/hooks/useBloodSearch.js`
+- `server/routes/blood.routes.js`
+- `server/models/BloodRequest.js`
+- `server/models/BloodRequestRateLimit.js`
+
 ### Doctors
 
 - `client/src/pages/Doctors.jsx`
 - `client/src/context/DoctorContext.jsx`
+- `client/src/components/doctor/`
 - `server/routes/doctor.routes.js`
 - `server/models/Doctor.js`
 
@@ -241,19 +156,14 @@ medicine_2/
 
 - `client/src/pages/Assistant.jsx`
 - `client/src/context/ChatbotContext.jsx`
-- `client/src/components/assistant/AssistantSidebar.jsx`
-- `client/src/components/assistant/ChatEmptyState.jsx`
-- `client/src/components/assistant/ChatInput.jsx`
-- `client/src/components/assistant/ChatMessage.jsx`
+- `client/src/components/ai-assistant/`
 - `server/routes/ai.routes.js`
 - `server/models/AIChat.js`
 - `server/models/AIChatData.js`
 - `server/services/aiChatService.js`
 - `server/services/aiChatDataService.js`
 
-The assistant is available at the protected `/assistant` client route. Its API
-is mounted at `/api/ai` and supports cached summaries plus authenticated chat
-history and messaging endpoints:
+The assistant is available at the protected `/assistant` client route. Its API is mounted at `/api/ai` and supports cached summaries plus authenticated chat history and messaging endpoints:
 
 - `GET /api/ai/chats`
 - `GET /api/ai/chats/:chatId`
@@ -261,9 +171,7 @@ history and messaging endpoints:
 - `POST /api/ai/chats/:chatId/messages`
 - `DELETE /api/ai/chats/:chatId`
 
-`AIChatData` stores an assistant-specific snapshot of profile, lifestyle,
-health, and saved doctor data. Medicines, prescriptions, reports, and medical
-documents are intentionally excluded from the assistant context.
+`AIChatData` stores an assistant-specific snapshot of profile, lifestyle, health, and saved doctor data. Medicines, prescriptions, reports, and medical documents are intentionally excluded from the assistant context.
 
 ## 3. Responsibility boundaries
 
@@ -290,7 +198,7 @@ documents are intentionally excluded from the assistant context.
 
 ## 4. Where a change usually starts
 
-If a future agent asks, “which files should I inspect before changing feature X?” the correct starting points are:
+If a future agent asks which files to inspect before changing feature X, the correct starting points are:
 
 1. route file in `server/routes/`
 2. model file in `server/models/`
@@ -324,15 +232,15 @@ The app is organized around feature-local contracts, not a global service layer.
 
 ## 6. Dependency / Responsibility Notes
 
-Page → Context → API → Route → Model
+Page -> Context -> API -> Route -> Model
 
 Examples:
 
-- `client/src/pages/Doctors.jsx` → `DoctorContext.jsx` → `GET /api/doctors` → `server/routes/doctor.routes.js` → `server/models/Doctor.js`
-- `client/src/pages/Health.jsx` → `useHealthLogs.js` → `GET/POST /api/health` → `server/routes/health.routes.js` → `server/models/HealthLog.js`
-- `client/src/pages/Medicines.jsx` → `MedicineContext.jsx` / direct fetch → `GET/POST/PUT/DELETE /api/medicines` → `server/routes/medicine.routes.js` → `server/models/Medicine.js`
-- `client/src/pages/Dashboard.jsx` → `LifestyleContext.jsx` + direct fetches → `/api/dashboard`, `/api/ai/summary`, `/api/export/health-report` → `server/routes/*` → `server/models/*` / `server/services/*`
-- `client/src/pages/Reports.jsx` → direct Cloudinary upload + API call → `POST /api/reports`, `POST /api/reports/:id/analyze` → `server/models/Report.js` → `server/services/reportAiService.js`
+- `client/src/pages/Doctors.jsx` -> `DoctorContext.jsx` -> `GET /api/doctors` -> `server/routes/doctor.routes.js` -> `server/models/Doctor.js`
+- `client/src/pages/Health.jsx` -> `useHealthLogs.js` -> `GET/POST /api/health` -> `server/routes/health.routes.js` -> `server/models/HealthLog.js`
+- `client/src/pages/Medicines.jsx` -> `MedicineContext.jsx` / direct fetch -> `GET/POST/PUT/DELETE /api/medicines` -> `server/routes/medicine.routes.js` -> `server/models/Medicine.js`
+- `client/src/pages/Dashboard.jsx` -> `LifestyleContext.jsx` + direct fetches -> `/api/dashboard`, `/api/ai/summary`, `/api/export/health-report` -> `server/routes/*` -> `server/models/*` / `server/services/*`
+- `client/src/pages/Reports.jsx` -> direct Cloudinary upload + API call -> `POST /api/reports`, `POST /api/reports/:id/analyze` -> `server/models/Report.js` -> `server/services/reportAiService.js`
 
 ## 7. Refactoring Hotspots
 
@@ -341,7 +249,6 @@ Examples:
 - Context fetch behavior is similar across `DoctorContext.jsx`, `MedicineContext.jsx`, `PrescriptionContext.jsx`, and `ReportContext.jsx`.
 - Some route logic is business-logic-heavy and could be moved into service/controller patterns later.
 - The app mixes business logic in route handlers and some UI call sites rather than using one consistent API layer.
-- The `Home.jsx` page retains placeholder content and is not yet a fully representative app page.
 - UI styling is broadly spread through utility classes and custom classes rather than a component library.
 
 ## 8. Agent File-Inspection Strategy

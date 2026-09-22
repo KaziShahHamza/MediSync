@@ -161,7 +161,7 @@ export default function Navbar() {
                 <span>Request Blood</span>
               </Link>
 
-              <Link
+              {/* <Link
                 to="/blood-need"
                 onClick={handleNavigation}
                 className={`navbar-dropdown-item ${
@@ -172,7 +172,7 @@ export default function Navbar() {
               >
                 <Sparkles size={17} />
                 <span>Need Blood?</span>
-              </Link>
+              </Link> */}
             </div>
           </div>
 

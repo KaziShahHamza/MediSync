@@ -1,3 +1,9 @@
+// client/src/components/blood/BloodRequestForm.jsx
+
+// Form component for creating or editing blood requests.
+// Captures details such as blood group, required quantity, location, hospital information, and contact info.
+// Displays contextual fields based on user selection and auth status.
+
 import { Droplets, Hospital, MapPin, Phone, ShieldCheck } from "lucide-react";
 
 import { BLOOD_GROUPS } from "../../utils/blood/bloodConstants";
@@ -5,6 +11,7 @@ import { BLOOD_GROUPS } from "../../utils/blood/bloodConstants";
 import { districtsData } from "../../data/districtsData";
 import hospitalsData from "../../data/hospitalsData";
 
+// Render form to create or edit a blood request
 export default function BloodRequestForm({
   user,
   requestForm,
@@ -13,17 +20,17 @@ export default function BloodRequestForm({
   onRequestChange,
   onHospitalChange,
 }) {
+  // Retrieve available hospitals based on selected district
   const selectedHospitalList = hospitalsData[requestForm.district] || [];
 
+  // Sentinel value representing custom hospital input
   const OTHER_HOSPITAL = "__other__";
 
   return (
     <>
-      {/* ====================================================
-          Basic Request
-      ==================================================== */}
-
+      {/* Basic blood requirement section */}
       <div className="mb-8">
+        {/* Section header */}
         <div className="flex items-center gap-3 mb-5">
           <div className="icon-wrapper">
             <Droplets size={19} className="icon-primary" />
@@ -36,9 +43,10 @@ export default function BloodRequestForm({
           </div>
         </div>
 
+        {/* Blood details form controls */}
         <div className="grid md:grid-cols-2 gap-5">
-          {/* Blood Group */}
 
+          {/* Blood group selection dropdown */}
           <div>
             <label htmlFor="request-blood-group" className="block mb-2">
               Blood Group *
@@ -54,6 +62,7 @@ export default function BloodRequestForm({
             >
               <option value="">Select blood group</option>
 
+              {/* Render options for blood groups */}
               {BLOOD_GROUPS.map((group) => (
                 <option key={group} value={group}>
                   {group}
@@ -62,8 +71,8 @@ export default function BloodRequestForm({
             </select>
           </div>
 
-          {/* Bags */}
 
+          {/* Quantity of blood bags required */}
           <div>
             <label htmlFor="bags-needed" className="block mb-2">
               Number of Bags *
@@ -84,8 +93,8 @@ export default function BloodRequestForm({
           </div>
         </div>
 
-        {/* Compensation */}
 
+        {/* Honorarium/travel expense offering selector */}
         <div className="mt-5">
           <label htmlFor="compensation-offered" className="block mb-2">
             Will you provide honorarium / travel cost? *
@@ -108,11 +117,9 @@ export default function BloodRequestForm({
         </div>
       </div>
 
-      {/* ====================================================
-          Location
-      ==================================================== */}
-
+      {/* Location information section */}
       <div className="mb-8">
+        {/* Section header */}
         <div className="flex items-center gap-3 mb-5">
           <div className="icon-wrapper">
             <MapPin size={19} className="icon-primary" />
@@ -127,9 +134,10 @@ export default function BloodRequestForm({
           </div>
         </div>
 
+        {/* Region controls */}
         <div className="grid md:grid-cols-2 gap-5">
-          {/* District */}
 
+          {/* District selection dropdown */}
           <div>
             <label htmlFor="request-district" className="block mb-2">
               District *
@@ -145,6 +153,7 @@ export default function BloodRequestForm({
             >
               <option value="">Select district</option>
 
+              {/* Render district options */}
               {districtsData.map((item) => (
                 <option key={item.name} value={item.name}>
                   {item.name}
@@ -153,8 +162,7 @@ export default function BloodRequestForm({
             </select>
           </div>
 
-          {/* Upazila */}
-
+          {/* Upazila select based on chosen district */}
           <div>
             <label htmlFor="request-upazila" className="block mb-2">
               Upazila *
@@ -175,6 +183,7 @@ export default function BloodRequestForm({
                   : "Select district first"}
               </option>
 
+              {/* Render upazila options */}
               {requestUpazilas.map((item) => (
                 <option key={item} value={item}>
                   {item}
@@ -185,11 +194,9 @@ export default function BloodRequestForm({
         </div>
       </div>
 
-      {/* ====================================================
-          Hospital
-      ==================================================== */}
-
+      {/* Target hospital details section */}
       <div className="mb-8">
+        {/* Section header */}
         <div className="flex items-center gap-3 mb-5">
           <div className="icon-wrapper">
             <Hospital size={19} className="icon-primary" />
@@ -202,6 +209,7 @@ export default function BloodRequestForm({
           </div>
         </div>
 
+        {/* Primary hospital dropdown */}
         <div>
           <label htmlFor="hospital" className="block mb-2">
             Hospital *
@@ -221,6 +229,7 @@ export default function BloodRequestForm({
                 : "Select district first"}
             </option>
 
+            {/* Render district-specific hospital options */}
             {selectedHospitalList.map((hospital) => (
               <option key={hospital.name} value={hospital.name}>
                 {hospital.name}
@@ -231,10 +240,11 @@ export default function BloodRequestForm({
           </select>
         </div>
 
-        {/* Other hospital */}
 
+        {/* Custom hospital input fields for unlisted items */}
         {hospitalSelectValue === OTHER_HOSPITAL && (
           <div className="grid md:grid-cols-2 gap-5 mt-5">
+            {/* Custom hospital name field */}
             <div>
               <label htmlFor="hospital-name" className="block mb-2">
                 Hospital Name *
@@ -253,6 +263,7 @@ export default function BloodRequestForm({
               />
             </div>
 
+            {/* Custom hospital address field */}
             <div>
               <label htmlFor="hospital-address" className="block mb-2">
                 Hospital Address *
@@ -273,8 +284,8 @@ export default function BloodRequestForm({
           </div>
         )}
 
-        {/* Selected hospital */}
 
+        {/* Read-only preview card for selected existing hospital */}
         {hospitalSelectValue !== OTHER_HOSPITAL && requestForm.hospitalName && (
           <div className="surface-muted p-4 mt-4">
             <p className="text-sm font-semibold text-slate-800">
@@ -288,11 +299,9 @@ export default function BloodRequestForm({
         )}
       </div>
 
-      {/* ====================================================
-          Contact
-      ==================================================== */}
-
+      {/* Requester contact information section */}
       <div className="mb-8">
+        {/* Section header */}
         <div className="flex items-center gap-3 mb-5">
           <div className="icon-wrapper">
             <Phone size={19} className="icon-primary" />
@@ -309,7 +318,9 @@ export default function BloodRequestForm({
           </div>
         </div>
 
+        {/* Contact input fields */}
         <div className="grid md:grid-cols-2 gap-5">
+          {/* Phone number input field */}
           <div>
             <label htmlFor="contact-phone" className="block mb-2">
               Contact Phone *
@@ -328,6 +339,7 @@ export default function BloodRequestForm({
             />
           </div>
 
+          {/* Requester name input field */}
           <div>
             <label htmlFor="requester-name" className="block mb-2">
               Requester Name
@@ -347,10 +359,7 @@ export default function BloodRequestForm({
         </div>
       </div>
 
-      {/* ====================================================
-          Notes
-      ==================================================== */}
-
+      {/* Optional additional notes textarea */}
       <div>
         <label htmlFor="request-notes" className="block mb-2">
           Additional Information
@@ -367,10 +376,7 @@ export default function BloodRequestForm({
         />
       </div>
 
-      {/* ====================================================
-          Public notice
-      ==================================================== */}
-
+      {/* Guest user informational notice regarding post management */}
       {!user && (
         <div className="surface-muted p-4 mt-6">
           <div className="flex items-start gap-3">
@@ -396,6 +402,7 @@ export default function BloodRequestForm({
   );
 }
 
+// Inline SVG icon component for safety checkmark
 function ShieldCheckIcon() {
   return (
     <svg

@@ -1,9 +1,13 @@
+// client/src/components/blood/BloodSearchForm.jsx
+// Form component for filtering blood donors by blood group, district, upazila, and travel allowance support.
+
 import { RotateCcw, Search } from "lucide-react";
 
 import { BLOOD_GROUPS } from "../../utils/blood/bloodConstants";
 
 import { districtsData } from "../../data/districtsData";
 
+// Search filter form component for finding blood donors
 export default function BloodSearchForm({
   bloodGroup,
   setBloodGroup,
@@ -25,7 +29,9 @@ export default function BloodSearchForm({
   onReset,
 }) {
   return (
+    // Filter card container
     <section className="card p-6 lg:p-8 mb-8">
+      {/* Form section header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
           <Search size={20} />
@@ -40,10 +46,11 @@ export default function BloodSearchForm({
         </div>
       </div>
 
+      {/* Filter submission form */}
       <form onSubmit={onSearch}>
+        {/* Input fields grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Blood Group */}
-
+          {/* Blood group dropdown selector */}
           <div>
             <label htmlFor="blood-group" className="small-label block mb-2">
               Blood Group
@@ -65,8 +72,7 @@ export default function BloodSearchForm({
             </select>
           </div>
 
-          {/* District */}
-
+          {/* District dropdown selector */}
           <div>
             <label htmlFor="district" className="small-label block mb-2">
               District
@@ -88,8 +94,7 @@ export default function BloodSearchForm({
             </select>
           </div>
 
-          {/* Upazila */}
-
+          {/* Upazila dropdown selector */}
           <div>
             <label htmlFor="upazila" className="small-label block mb-2">
               Upazila
@@ -114,8 +119,7 @@ export default function BloodSearchForm({
             </select>
           </div>
 
-          {/* Compensation */}
-
+          {/* Compensation dropdown selector */}
           <div>
             <label htmlFor="compensation" className="small-label block mb-2">
               Will you Provide travel cost? (সম্মানী)
@@ -136,15 +140,16 @@ export default function BloodSearchForm({
           </div>
         </div>
 
-        {/* Actions */}
-
+        {/* Form control buttons */}
         <div className="flex flex-wrap gap-3 mt-6">
+          {/* Submit search button */}
           <button type="submit" className="btn-primary" disabled={loading}>
             <Search size={17} />
 
             {loading ? "Searching..." : "Find Donors"}
           </button>
 
+          {/* Reset form button */}
           <button
             type="button"
             onClick={onReset}
