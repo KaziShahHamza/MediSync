@@ -1,4 +1,4 @@
-// client/src/components/medicine/MedicineFormModal.jsx
+// client/src/components/medicine/modal/MedicineFormModal.jsx
 
 // Provides the modal container for adding or editing a medicine.
 // Keeps modal behavior separate from the medicine form itself.

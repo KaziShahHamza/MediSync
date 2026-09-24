@@ -1,4 +1,3 @@
-// client/src/components/navbar/NavbarMobile.jsx
 
 // Mobile navigation header component handling mobile action buttons and responsive drawer state.
 
@@ -27,6 +26,8 @@ export default function NavbarMobile({
   mobileOpen,
   setMobileOpen,
   onLogout,
+  headerOnly = false,
+  drawerOnly = false,
 }) {
   // Closes mobile menu drawer on navigation selection
   const handleNavigation = () => {
@@ -35,24 +36,26 @@ export default function NavbarMobile({
 
   // Helper component to render menu navigation links
   const navItem = (path, label, Icon) => (
-    <Link to={path} onClick={handleNavigation} className="nav-link">
+    <Link
+      to={path}
+      onClick={handleNavigation}
+      className="nav-link"
+    >
       <Icon size={18} strokeWidth={2} />
       <span>{label}</span>
     </Link>
   );
 
-  return (
-    <>
-      {/* Mobile view header actions and toggle controls */}
+  // Render only the mobile header controls
+  if (headerOnly) {
+    return (
       <div className="flex lg:hidden items-center gap-3">
-        {/* User greeting label */}
         {user && (
           <span className="text-sm font-medium text-slate-700 truncate max-w-[140px]">
             Welcome, {username}
           </span>
         )}
 
-        {/* Public authentication buttons or mobile menu toggle button */}
         {!user ? (
           <>
             <Link to="/blood-need" className="nav-link">
@@ -83,71 +86,117 @@ export default function NavbarMobile({
           </button>
         )}
       </div>
+    );
+  }
 
-      {/* Expandable mobile navigation menu drawer */}
-      {mobileOpen && (
-        <div className="navbar-mobile-menu lg:hidden">
-          <nav className="container py-4">
-            <div className="navbar-mobile-list">
-              {/* Blood donation request link */}
-              {navItem("/blood-need", "Need Blood?", Droplets)}
+  // Render only the mobile drawer
+  if (drawerOnly) {
+    return (
+      <>
+        {mobileOpen && (
+          <div className="navbar-mobile-menu lg:hidden">
+            <nav className="container py-4">
+              <div className="navbar-mobile-list">
+                {navItem("/blood-need", "Need Blood?", Droplets)}
 
-              {/* Render navigation options for logged in vs guest users */}
-              {user ? (
-                <>
-                  {navItem("/dashboard", "Dashboard", LayoutDashboard)}
+                {user ? (
+                  <>
+                    {navItem(
+                      "/dashboard",
+                      "Dashboard",
+                      LayoutDashboard
+                    )}
 
-                  {navItem("/health", "Health Charts", Activity)}
+                    {navItem(
+                      "/health",
+                      "Health Charts",
+                      Activity
+                    )}
 
-                  {navItem("/assistant", "AI Chat", Sparkles)}
+                    {navItem(
+                      "/assistant",
+                      "AI Chat",
+                      Sparkles
+                    )}
 
-                  {navItem("/lifestyle", "Lifestyle Score", Coffee)}
+                    {navItem(
+                      "/lifestyle",
+                      "Lifestyle Score",
+                      Coffee
+                    )}
 
-                  {navItem("/medicines", "My Medicines", Pill)}
+                    {navItem(
+                      "/medicines",
+                      "My Medicines",
+                      Pill
+                    )}
 
-                  {navItem("/doctors", "My Doctors", Stethoscope)}
+                    {navItem(
+                      "/doctors",
+                      "My Doctors",
+                      Stethoscope
+                    )}
 
-                  {navItem("/prescriptions", "My Prescriptions", FileImage)}
+                    {navItem(
+                      "/prescriptions",
+                      "My Prescriptions",
+                      FileImage
+                    )}
 
-                  {navItem("/reports", "My Reports", FileBarChart)}
+                    {navItem(
+                      "/reports",
+                      "My Reports",
+                      FileBarChart
+                    )}
 
-                  {navItem("/profile", "Profile", UserRound)}
+                    {navItem(
+                      "/profile",
+                      "Profile",
+                      UserRound
+                    )}
 
-                  {navItem("/settings", "Settings", Settings)}
+                    {navItem(
+                      "/settings",
+                      "Settings",
+                      Settings
+                    )}
 
-                  {/* Mobile logout trigger button */}
-                  <button
-                    type="button"
-                    onClick={onLogout}
-                    className="nav-link navbar-mobile-logout"
-                  >
-                    <LogOut size={18} strokeWidth={2} />
-                    <span>Logout</span>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    onClick={handleNavigation}
-                    className="nav-link"
-                  >
-                    Login
-                  </Link>
+                    <button
+                      type="button"
+                      onClick={onLogout}
+                      className="nav-link navbar-mobile-logout"
+                    >
+                      <LogOut size={18} strokeWidth={2} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      onClick={handleNavigation}
+                      className="nav-link"
+                    >
+                      Login
+                    </Link>
 
-                  <Link
-                    to="/signup"
-                    onClick={handleNavigation}
-                    className="nav-link"
-                  >
-                    Create Account
-                  </Link>
-                </>
-              )}
-            </div>
-          </nav>
-        </div>
-      )}
-    </>
-  );
+                    <Link
+                      to="/signup"
+                      onClick={handleNavigation}
+                      className="nav-link"
+                    >
+                      Create Account
+                    </Link>
+                  </>
+                )}
+              </div>
+            </nav>
+          </div>
+        )}
+      </>
+    );
+  }
+
+  return null;
 }
+

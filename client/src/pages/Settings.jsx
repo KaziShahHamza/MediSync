@@ -1,6 +1,6 @@
 // client/src/pages/Settings.jsx
 
-// Main user Settings page component aggregating form sections and state actions.
+// Main Settings page for managing profile, medical, emergency, and donation information.
 
 import ProfileSection from "../components/profile/ProfileSection";
 
@@ -10,11 +10,10 @@ import MedicalInfoSection from "../components/settings/MedicalInfoSection";
 import EmergencyContactsSection from "../components/settings/EmergencyContactsSection";
 import BloodDonationSection from "../components/settings/BloodDonationSection";
 
-import useSettingsForm from "../hooks/useSettingsForm";
+import useSettingsForm from "../hooks/settings/useSettingsForm";
 
-// Renders the user profile settings page container
 export default function Settings() {
-  // Destructure custom hook state and management handlers
+  // Get settings state and handlers from the custom hook.
   const {
     profile,
     userInfo,
@@ -45,7 +44,7 @@ export default function Settings() {
     handleSubmit,
   } = useSettingsForm();
 
-  // Render loading feedback state
+  // Show loading state while profile data is being fetched.
   if (loading) {
     return (
       <div className="continer-profile-setting-page py-12">
@@ -54,10 +53,10 @@ export default function Settings() {
     );
   }
 
-  // Render settings page layout and form controls
+  // Render the complete settings form.
   return (
     <div className="continer-profile-setting-page py-10">
-      {/* Page header title block */}
+      {/* Page heading */}
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-slate-800">Settings</h1>
 
@@ -66,9 +65,9 @@ export default function Settings() {
         </p>
       </div>
 
-      {/* Main settings profile form */}
+      {/* Main profile settings form */}
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Profile photo management section */}
+        {/* Profile photo section */}
         <ProfilePhotoSection
           userInfo={userInfo}
           photoLoading={photoLoading}
@@ -77,7 +76,7 @@ export default function Settings() {
           onRemovePhoto={handleRemovePhoto}
         />
 
-        {/* Personal details form inputs */}
+        {/* Personal information section */}
         <PersonalInfoSection
           userInfo={userInfo}
           form={form}
@@ -87,14 +86,14 @@ export default function Settings() {
           onLocationChange={handleLocationChange}
         />
 
-        {/* Medical history form inputs */}
+        {/* Medical information section */}
         <MedicalInfoSection
           form={form}
           onChange={handleChange}
           onToggleIllness={toggleIllness}
         />
 
-        {/* Dynamic emergency contact inputs */}
+        {/* Emergency contacts section */}
         <EmergencyContactsSection
           form={form}
           onAdd={addEmergencyContact}
@@ -102,14 +101,14 @@ export default function Settings() {
           onChange={handleEmergencyContactChange}
         />
 
-        {/* Blood donation status inputs */}
+        {/* Blood donation section */}
         <BloodDonationSection
           form={form}
           onChange={handleChange}
           onDonationDateChange={handleDonationDateChange}
         />
 
-        {/* Form submit button wrapper */}
+        {/* Save profile button */}
         <div className="flex justify-end">
           <button type="submit" disabled={saving} className="btn-primary">
             {saving

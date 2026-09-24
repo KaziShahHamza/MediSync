@@ -1,5 +1,3 @@
-// client/src/components/navbar/Navbar.jsx
-
 // Main navigation header component containing subcomponents for scroll management, routes, and dropdowns.
 
 import { useState, useEffect } from "react";
@@ -8,7 +6,6 @@ import {
   useLocation,
   useNavigate,
   Navigate,
-  Outlet,
 } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
@@ -32,7 +29,6 @@ export function ScrollToTop() {
 export function ProtectedRoute({ children }) {
   const { user } = useAuth();
 
-  // Evaluates auth state to render content or redirect
   return user ? children : <Navigate to="/login" />;
 }
 
@@ -41,7 +37,6 @@ export function NavbarDropdown({
   children,
   className = "",
 }) {
-  // Renders container div with custom styling classes
   return (
     <div className={`navbar-dropdown-wrapper ${className}`}>
       {children}
@@ -51,7 +46,6 @@ export function NavbarDropdown({
 
 // Renders application branding logo link
 export function NavbarLogo({ onNavigation }) {
-  // Renders brand logo image and typography links
   return (
     <Link
       to="/"
@@ -81,7 +75,7 @@ export function NavbarLogo({ onNavigation }) {
   );
 }
 
-// Top-level navigation bar bar assembling desktop and mobile views
+// Top-level navigation bar assembling desktop and mobile views
 export default function Navbar() {
   const { user, logout } = useAuth();
 
@@ -107,6 +101,7 @@ export default function Navbar() {
   // Renders sticky navigation header layout
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+      {/* Main navbar row */}
       <div className="container h-[67px] flex items-center justify-between gap-4">
         {/* Navigation logo element */}
         <NavbarLogo onNavigation={handleNavigation} />
@@ -119,15 +114,27 @@ export default function Navbar() {
           onLogout={handleLogout}
         />
 
-        {/* Mobile view navigation menu */}
+        {/* Mobile header controls */}
         <NavbarMobile
           user={user}
           username={username}
           mobileOpen={mobileOpen}
           setMobileOpen={setMobileOpen}
           onLogout={handleLogout}
+          headerOnly
         />
       </div>
+
+      {/* Mobile drawer is outside the 67px navbar row */}
+      <NavbarMobile
+        user={user}
+        username={username}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+        onLogout={handleLogout}
+        drawerOnly
+      />
     </header>
   );
 }
+

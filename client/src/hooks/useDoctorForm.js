@@ -9,7 +9,7 @@ import {
   cleanDoctorForm,
   createFormFromDoctor,
   resetDoctorForm,
-} from "../../utils/doctor/doctorFunctions";
+} from "../utils/doctor/doctorFunctions";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

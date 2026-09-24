@@ -6,7 +6,7 @@ import { Plus, Stethoscope } from "lucide-react";
 import { useState } from "react";
 
 import { useDoctors } from "../context/DoctorContext";
-import { useDoctorForm } from "../hooks/doctor/useDoctorForm";
+import { useDoctorForm } from "../hooks/useDoctorForm";
 
 import DoctorCard from "../components/doctor/DoctorCard";
 import DoctorForm from "../components/doctor/DoctorForm";
