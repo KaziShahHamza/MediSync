@@ -4,7 +4,7 @@ import express from "express";
 
 import Doctor from "../models/Doctor.js";
 
-import auth from "../middleware/auth.js";
+import auth from "../middlewares/auth.js";
 
 import { syncDoctorsToAIChatData } from "../services/aiChatDataService.js";
 
@@ -122,7 +122,7 @@ router.delete("/:id", auth, async (req, res) => {
     } catch (error) {
       console.error("Failed to sync doctors to AI chat data:", error);
     }
-    
+
     res.json({
       success: true,
     });

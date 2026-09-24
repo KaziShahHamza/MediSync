@@ -104,7 +104,7 @@ The actual auth contract is:
 - client stores `localStorage.token` and `localStorage.user`
 - `Authorization: Bearer <token>` is sent to protected API routes
 
-The server auth gate is `server/middleware/auth.js` and it sets `req.userId` after verifying the JWT.
+The server auth gate is `server/middlewares/auth.js` and it sets `req.userId` after verifying the JWT.
 
 ## 4. Backend structure
 
@@ -124,7 +124,7 @@ The server auth gate is `server/middleware/auth.js` and it sets `req.userId` aft
 
 ### Middleware and route logic
 
-- `server/middleware/auth.js`: JWT verification and `req.userId`
+- `server/middlewares/auth.js`: JWT verification and `req.userId`
 - route files under `server/routes/` handle CRUD and user-scoped filtering
 - there is no central API router beyond route mounting in `server/server.js`
 
@@ -240,7 +240,7 @@ Frontend:
 
 - `Login.jsx`, `Signup.jsx`, `AuthContext.jsx`, `ProtectedRoute.jsx`
   Backend:
-- `server/routes/auth.routes.js`, `server/middleware/auth.js`, `server/models/User.js`
+- `server/routes/auth.routes.js`, `server/middlewares/auth.js`, `server/models/User.js`
   Data:
 - user document with hashed password, username, email, name
   Flow:
@@ -399,7 +399,7 @@ Actual implemented security measures:
 
 - Passwords are hashed with `bcryptjs` in `server/routes/auth.routes.js`
 - JWTs are used for authenticated requests
-- `server/middleware/auth.js` verifies the token and sets `req.userId`
+- `server/middlewares/auth.js` verifies the token and sets `req.userId`
 - User-specific routes filter by `user: req.userId` to enforce resource ownership
 - `ProtectedRoute` prevents protected pages from rendering for unauthenticated users
 - Environment variables are expected for `MONGO_URI`, `JWT_SECRET`, Cloudinary values, and Gemini keys
@@ -442,7 +442,7 @@ These are the rules the current repo is effectively built around and should be p
 - Current situation: `AuthContext` reads `localStorage` directly and assumes the stored user is valid.
 - Why it could be improved: stale or invalid sessions are not revalidated on reload.
 - Suggested direction: server-side session verification or a lightweight auth bootstrap endpoint.
-- Files/areas affected: `client/src/context/AuthContext.jsx`, `server/middleware/auth.js`
+- Files/areas affected: `client/src/context/AuthContext.jsx`, `server/middlewares/auth.js`
 
 3. Upload logic is duplicated across features
 

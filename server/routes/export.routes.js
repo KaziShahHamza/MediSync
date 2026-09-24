@@ -2,7 +2,7 @@
 
 import express from "express";
 
-import auth from "../middleware/auth.js";
+import auth from "../middlewares/auth.js";
 
 import User from "../models/User.js";
 import Profile from "../models/Profile.js";

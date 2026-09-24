@@ -46,7 +46,7 @@ export default function BloodRequest() {
 
   return (
     <main className="container py-10 lg:py-14">
-      // Page heading and blood request introduction.
+      {/* Page heading and blood request introduction. */}
       <div className="page-header">
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-red-50 text-red-600 mb-4">
           <Droplets size={25} strokeWidth={2} />
@@ -58,7 +58,7 @@ export default function BloodRequest() {
           Post a blood requirement and manage your active blood requests.
         </p>
       </div>
-      // Provides the primary action for creating a new request.
+      {/* Provides the primary action for creating a new request. */}
       <section className="card p-6 lg:p-8 mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
           <div className="flex items-start gap-4">
@@ -86,11 +86,11 @@ export default function BloodRequest() {
           </button>
         </div>
       </section>
-      // Displays errors that occur while loading blood requests.
+      {/* Displays errors that occur while loading blood requests. */}
       {requestsError && (
         <div className="alert alert-danger mb-8">{requestsError}</div>
       )}
-      // Displays the active blood request list and its actions.
+      {/* Displays the active blood request list and its actions. */}
       <BloodRequestList
         requests={bloodRequests}
         loading={requestsLoading}
@@ -99,7 +99,7 @@ export default function BloodRequest() {
         user={user}
         onCreate={openRequestModal}
       />
-      // Displays the request form modal when it is open.
+      {/* Displays the request form modal when it is open. */}
       {requestModalOpen && (
         <BloodRequestModal
           user={user}

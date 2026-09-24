@@ -74,7 +74,7 @@ medicine_2/
 - `client/src/App.jsx`
 - `client/src/context/AuthContext.jsx`
 - `client/src/components/navbar/ProtectedRoute.jsx`
-- `server/middleware/auth.js`
+- `server/middlewares/auth.js`
 - `server/routes/auth.routes.js`
 - `server/models/User.js`
 
@@ -215,7 +215,7 @@ The app is organized around feature-local contracts, not a global service layer.
 - Global app bootstrap, route mounting, and DB connection.
 - A change here affects the whole backend runtime.
 
-### `server/middleware/auth.js`
+### `server/middlewares/auth.js`
 
 - Guards all authenticated API routes.
 - Critical for user validation and permission handling.

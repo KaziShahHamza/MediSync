@@ -1,6 +1,13 @@
 // server/models/AIChatData.js
 
+// Defines the main AI chat context model.
+// Combines profile, health, lifestyle, and doctor information for each user.
+
 import mongoose from "mongoose";
+
+import profileSchema from "./aiChatData/profileSchema.js";
+import healthSchema from "./aiChatData/healthSchema.js";
+import doctorSchema from "./aiChatData/doctorSchema.js";
 
 const aiChatDataSchema = new mongoose.Schema(
   {
@@ -13,83 +20,8 @@ const aiChatDataSchema = new mongoose.Schema(
     },
 
     profile: {
-      dob: {
-        type: Date,
-        default: null,
-      },
-
-      gender: {
-        type: String,
-        default: "",
-      },
-
-      height: {
-        feet: {
-          type: Number,
-          default: null,
-        },
-        inches: {
-          type: Number,
-          default: null,
-        },
-      },
-
-      bloodGroup: {
-        type: String,
-        default: "",
-      },
-
-      allergies: {
-        type: String,
-        default: "",
-      },
-
-      chronicIllnesses: {
-        type: [String],
-        default: [],
-      },
-
-      surgeries: {
-        type: String,
-        default: "",
-      },
-
-      emergencyContacts: {
-        type: [
-          {
-            relation: {
-              type: String,
-              default: "",
-            },
-
-            name: {
-              type: String,
-              default: "",
-            },
-
-            phone: {
-              type: String,
-              default: "",
-            },
-
-            email: {
-              type: String,
-              default: "",
-            },
-          },
-        ],
-        default: [],
-      },
-
-      bloodDonorStatus: {
-        type: String,
-        default: "",
-      },
-
-      lastBloodDonation: {
-        type: Date,
-        default: null,
-      },
+      type: profileSchema,
+      default: {},
     },
 
     lifestyle: {
@@ -125,165 +57,14 @@ const aiChatDataSchema = new mongoose.Schema(
     },
 
     health: {
-      latestWeight: {
-        value: {
-          type: Number,
-          default: null,
-        },
-        recordedAt: {
-          type: String,
-          default: "",
-        },
-      },
-
-      bmi: {
-        value: {
-          type: Number,
-          default: null,
-        },
-        category: {
-          type: String,
-          default: "",
-        },
-      },
-
-      bloodPressure: {
-        high: {
-          type: Number,
-          default: null,
-        },
-        low: {
-          type: Number,
-          default: null,
-        },
-        recordedAt: {
-          type: String,
-          default: "",
-        },
-      },
-
-      bloodSugar: {
-        fasting: {
-          glucose: {
-            type: Number,
-            default: null,
-          },
-          recordedAt: {
-            type: String,
-            default: "",
-          },
-        },
-
-        postMeal: {
-          glucose: {
-            type: Number,
-            default: null,
-          },
-          recordedAt: {
-            type: String,
-            default: "",
-          },
-        },
-
-        random: {
-          glucose: {
-            type: Number,
-            default: null,
-          },
-          recordedAt: {
-            type: String,
-            default: "",
-          },
-        },
-      },
+      type: healthSchema,
+      default: {},
     },
 
-    doctors: [
-      {
-        doctorId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Doctor",
-        },
-
-        name: {
-          type: String,
-          default: "",
-        },
-
-        specialities: {
-          type: [String],
-          default: [],
-        },
-
-        designation: {
-          type: String,
-          default: "",
-        },
-
-        primaryHospital: {
-          type: String,
-          default: "",
-        },
-
-        chambers: [
-          {
-            name: {
-              type: String,
-              default: "",
-            },
-
-            address: {
-              type: String,
-              default: "",
-            },
-
-            phone: {
-              type: String,
-              default: "",
-            },
-
-            visitingDays: {
-              type: [String],
-              default: [],
-            },
-
-            visitingTime: {
-              startHour: {
-                type: Number,
-                default: null,
-              },
-
-              startPeriod: {
-                type: String,
-                default: null,
-              },
-
-              endHour: {
-                type: Number,
-                default: null,
-              },
-
-              endPeriod: {
-                type: String,
-                default: null,
-              },
-            },
-          },
-        ],
-
-        contactInfo: {
-          phones: {
-            type: [String],
-            default: [],
-          },
-
-          emails: {
-            type: [String],
-            default: [],
-          },
-        },
-      },
-    ],
+    doctors: {
+      type: [doctorSchema],
+      default: [],
+    },
 
     contextVersion: {
       type: Number,

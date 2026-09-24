@@ -1,6 +1,6 @@
 import express from "express";
 import Report from "../models/Report.js";
-import auth from "../middleware/auth.js";
+import auth from "../middlewares/auth.js";
 
 import { generateReportSummary } from "../services/reportAiService.js";
 

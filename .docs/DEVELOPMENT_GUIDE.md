@@ -46,7 +46,7 @@ Most features follow this pattern:
 
 ### Auth and route rules
 
-- `server/middleware/auth.js` is the expected auth gate
+- `server/middlewares/auth.js` is the expected auth gate
 - protected routes should call it before reading or mutating user-owned data
 - the server uses `req.userId` after JWT verification
 
@@ -135,7 +135,7 @@ This is the shortest route to the actual contract.
 - `client/src/App.jsx`
 - `client/src/context/AuthContext.jsx`
 - `server/routes/auth.routes.js`
-- `server/middleware/auth.js`
+- `server/middlewares/auth.js`
 - `server/models/User.js`
 
 ### Medicines

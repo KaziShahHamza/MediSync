@@ -1,7 +1,7 @@
 // server/routes/profile.routes.js
 
 import express from "express";
-import auth from "../middleware/auth.js";
+import auth from "../middlewares/auth.js";
 import Profile from "../models/Profile.js";
 import User from "../models/User.js";
 import { v2 as cloudinary } from "cloudinary";
@@ -43,9 +43,7 @@ const allowedProfileFields = [
 function getProfileData(body) {
   return Object.fromEntries(
     allowedProfileFields
-      .filter((field) =>
-        Object.prototype.hasOwnProperty.call(body, field),
-      )
+      .filter((field) => Object.prototype.hasOwnProperty.call(body, field))
       .map((field) => [field, body[field]]),
   );
 }
@@ -109,10 +107,7 @@ router.post("/", auth, async (req, res) => {
     try {
       await syncProfileToAIChatData(req.userId);
     } catch (error) {
-      console.error(
-        "Failed to sync profile to AI chat data:",
-        error,
-      );
+      console.error("Failed to sync profile to AI chat data:", error);
     }
 
     const user = await User.findById(req.userId).select("-password");
@@ -166,10 +161,7 @@ router.put("/", auth, async (req, res) => {
     try {
       await syncProfileToAIChatData(req.userId);
     } catch (error) {
-      console.error(
-        "Failed to sync profile to AI chat data:",
-        error,
-      );
+      console.error("Failed to sync profile to AI chat data:", error);
     }
 
     const user = await User.findById(req.userId).select("-password");
@@ -249,12 +241,9 @@ router.delete("/photo", auth, async (req, res) => {
     // Delete from Cloudinary if a public ID exists.
     if (user.profilePhotoPublicId) {
       try {
-        await cloudinary.uploader.destroy(
-          user.profilePhotoPublicId,
-          {
-            resource_type: "image",
-          },
-        );
+        await cloudinary.uploader.destroy(user.profilePhotoPublicId, {
+          resource_type: "image",
+        });
       } catch (cloudinaryError) {
         console.error(
           "Failed to delete profile photo from Cloudinary:",
@@ -272,9 +261,7 @@ router.delete("/photo", auth, async (req, res) => {
 
     await user.save();
 
-    const safeUser = await User.findById(req.userId).select(
-      "-password",
-    );
+    const safeUser = await User.findById(req.userId).select("-password");
 
     res.json({
       message: "Profile photo removed successfully.",

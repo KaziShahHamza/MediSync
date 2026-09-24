@@ -3,7 +3,7 @@
 ## 1. Database and auth rules
 
 - MongoDB is the data store; `server/server.js` connects with `mongoose.connect(process.env.MONGO_URI)`.
-- The app uses JWT auth. `server/middleware/auth.js` reads `Authorization: Bearer <token>` and sets `req.userId` on successful verification.
+- The app uses JWT auth. `server/middlewares/auth.js` reads `Authorization: Bearer <token>` and sets `req.userId` on successful verification.
 - The JWT payload is `{ id: user._id }`.
 - User-owned records in MongoDB are scoped by a `user` field and are usually filtered by `req.userId` in route handlers.
 

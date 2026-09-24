@@ -2,7 +2,7 @@
 
 import express from "express";
 import HealthLog from "../models/HealthLog.js";
-import auth from "../middleware/auth.js";
+import auth from "../middlewares/auth.js";
 
 import { syncHealthToAIChatData } from "../services/aiChatDataService.js";
 import { checkHealthLogForEmergency } from "../services/emergencyService.js";
@@ -38,19 +38,13 @@ router.post("/", auth, async (req, res) => {
     try {
       await checkHealthLogForEmergency(log);
     } catch (error) {
-      console.error(
-        "Failed to process health emergency:",
-        error
-      );
+      console.error("Failed to process health emergency:", error);
     }
 
     try {
       await syncHealthToAIChatData(req.userId);
     } catch (error) {
-      console.error(
-        "Failed to sync health to AI chat data:",
-        error
-      );
+      console.error("Failed to sync health to AI chat data:", error);
     }
 
     res.json(log);
@@ -61,7 +55,6 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-
 // get user logs
 router.get("/", auth, async (req, res) => {
   const logs = await HealthLog.find({
@@ -70,7 +63,6 @@ router.get("/", auth, async (req, res) => {
 
   res.json(logs);
 });
-
 
 // delete log
 router.delete("/:id", auth, async (req, res) => {

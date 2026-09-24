@@ -1,7 +1,7 @@
 // server/routes/ai.routes.js
 
 import express from "express";
-import auth from "../middleware/auth.js";
+import auth from "../middlewares/auth.js";
 import AIReport from "../models/AIReport.js";
 import { getAIHealthData } from "../services/dashboardService.js";
 import { generateAIHealthSummary } from "../services/aiService.js";

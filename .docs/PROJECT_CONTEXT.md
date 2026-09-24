@@ -45,7 +45,7 @@ This repository is not a multi-tenant system and does not define role-based acce
 - `client/src/pages/Login.jsx`, `Signup.jsx`
 - `client/src/context/AuthContext.jsx`
 - `server/routes/auth.routes.js`
-- `server/middleware/auth.js`
+- `server/middlewares/auth.js`
 
 Behavior:
 

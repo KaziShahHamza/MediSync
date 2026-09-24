@@ -2,7 +2,7 @@
 
 import express from "express";
 import Prescription from "../models/Prescription.js";
-import auth from "../middleware/auth.js";
+import auth from "../middlewares/auth.js";
 
 import { generatePrescriptionSummary } from "../services/prescriptionAiService.js";
 

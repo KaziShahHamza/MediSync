@@ -4,7 +4,7 @@ import express from "express";
 import mongoose from "mongoose";
 
 import Medicine from "../models/Medicine.js";
-import auth from "../middleware/auth.js";
+import auth from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -23,11 +23,7 @@ const MEDICINE_TYPES = [
 
 const STRIP_MEDICINE_TYPES = ["tablet", "capsule"];
 
-const DOSAGE_TIMES = [
-  "morning",
-  "noon",
-  "night",
-];
+const DOSAGE_TIMES = ["morning", "noon", "night"];
 
 /*
  * ============================================================
@@ -36,9 +32,7 @@ const DOSAGE_TIMES = [
  */
 
 function getPricingTypeForMedicine(type) {
-  return STRIP_MEDICINE_TYPES.includes(type)
-    ? "strip"
-    : "unit";
+  return STRIP_MEDICINE_TYPES.includes(type) ? "strip" : "unit";
 }
 
 function normalizeDate(value) {
@@ -55,13 +49,8 @@ function normalizeDate(value) {
   return date;
 }
 
-function validateMedicineDates({
-  startDate,
-  endDate,
-  isActive,
-}) {
-  const normalizedStartDate =
-    normalizeDate(startDate);
+function validateMedicineDates({ startDate, endDate, isActive }) {
+  const normalizedStartDate = normalizeDate(startDate);
 
   if (!normalizedStartDate) {
     return {
@@ -71,25 +60,19 @@ function validateMedicineDates({
   }
 
   if (!isActive) {
-    const normalizedEndDate =
-      normalizeDate(endDate);
+    const normalizedEndDate = normalizeDate(endDate);
 
     if (!normalizedEndDate) {
       return {
         valid: false,
-        error:
-          "A valid end date is required for a past medicine.",
+        error: "A valid end date is required for a past medicine.",
       };
     }
 
-    if (
-      normalizedEndDate <
-      normalizedStartDate
-    ) {
+    if (normalizedEndDate < normalizedStartDate) {
       return {
         valid: false,
-        error:
-          "End date cannot be earlier than the start date.",
+        error: "End date cannot be earlier than the start date.",
       };
     }
 
@@ -141,16 +124,12 @@ function validateMedicineData({
    * ----------------------------------------------------------
    */
 
-  const expectedPricingType =
-    getPricingTypeForMedicine(type);
+  const expectedPricingType = getPricingTypeForMedicine(type);
 
-  if (
-    pricingType !== expectedPricingType
-  ) {
+  if (pricingType !== expectedPricingType) {
     return {
       valid: false,
-      error:
-        "Invalid pricing type for the selected medicine type.",
+      error: "Invalid pricing type for the selected medicine type.",
     };
   }
 
@@ -168,16 +147,14 @@ function validateMedicineData({
     if (!Array.isArray(dosage)) {
       return {
         valid: false,
-        error:
-          "Dosage schedule must be an array.",
+        error: "Dosage schedule must be an array.",
       };
     }
 
     if (dosage.length === 0) {
       return {
         valid: false,
-        error:
-          "Please select at least one dosage time.",
+        error: "Please select at least one dosage time.",
       };
     }
 
@@ -191,19 +168,14 @@ function validateMedicineData({
         };
       }
 
-      if (
-        !DOSAGE_TIMES.includes(item.time)
-      ) {
+      if (!DOSAGE_TIMES.includes(item.time)) {
         return {
           valid: false,
-          error:
-            "Invalid dosage time.",
+          error: "Invalid dosage time.",
         };
       }
 
-      const quantity = Number(
-        item.quantity,
-      );
+      const quantity = Number(item.quantity);
 
       if (
         !Number.isFinite(quantity) ||
@@ -212,8 +184,7 @@ function validateMedicineData({
       ) {
         return {
           valid: false,
-          error:
-            "Each dosage quantity must be a positive integer.",
+          error: "Each dosage quantity must be a positive integer.",
         };
       }
 
@@ -227,19 +198,15 @@ function validateMedicineData({
      * Strip price
      */
 
-    const normalizedPricePerStrip =
-      Number(pricePerStrip);
+    const normalizedPricePerStrip = Number(pricePerStrip);
 
     if (
-      !Number.isFinite(
-        normalizedPricePerStrip,
-      ) ||
+      !Number.isFinite(normalizedPricePerStrip) ||
       normalizedPricePerStrip <= 0
     ) {
       return {
         valid: false,
-        error:
-          "Please enter a valid price per strip/পাতা.",
+        error: "Please enter a valid price per strip/পাতা.",
       };
     }
 
@@ -247,22 +214,16 @@ function validateMedicineData({
      * Pieces per strip
      */
 
-    const normalizedPiecesPerStrip =
-      Number(piecesPerStrip);
+    const normalizedPiecesPerStrip = Number(piecesPerStrip);
 
     if (
-      !Number.isFinite(
-        normalizedPiecesPerStrip,
-      ) ||
-      !Number.isInteger(
-        normalizedPiecesPerStrip,
-      ) ||
+      !Number.isFinite(normalizedPiecesPerStrip) ||
+      !Number.isInteger(normalizedPiecesPerStrip) ||
       normalizedPiecesPerStrip < 1
     ) {
       return {
         valid: false,
-        error:
-          "Pieces per strip/পাতা must be a positive integer.",
+        error: "Pieces per strip/পাতা must be a positive integer.",
       };
     }
 
@@ -274,11 +235,9 @@ function validateMedicineData({
 
       dosage: normalizedDosage,
 
-      pricePerStrip:
-        normalizedPricePerStrip,
+      pricePerStrip: normalizedPricePerStrip,
 
-      piecesPerStrip:
-        normalizedPiecesPerStrip,
+      piecesPerStrip: normalizedPiecesPerStrip,
 
       /*
        * Unit pricing is not applicable.
@@ -299,14 +258,10 @@ function validateMedicineData({
    * Unit medicines must not have dosage pricing data.
    */
 
-  if (
-    Array.isArray(dosage) &&
-    dosage.length > 0
-  ) {
+  if (Array.isArray(dosage) && dosage.length > 0) {
     return {
       valid: false,
-      error:
-        "Unit medicines cannot have a dosage schedule for pricing.",
+      error: "Unit medicines cannot have a dosage schedule for pricing.",
     };
   }
 
@@ -314,19 +269,12 @@ function validateMedicineData({
    * Price per unit
    */
 
-  const normalizedPricePerUnit =
-    Number(pricePerUnit);
+  const normalizedPricePerUnit = Number(pricePerUnit);
 
-  if (
-    !Number.isFinite(
-      normalizedPricePerUnit,
-    ) ||
-    normalizedPricePerUnit <= 0
-  ) {
+  if (!Number.isFinite(normalizedPricePerUnit) || normalizedPricePerUnit <= 0) {
     return {
       valid: false,
-      error:
-        "Please enter a valid price per unit.",
+      error: "Please enter a valid price per unit.",
     };
   }
 
@@ -334,22 +282,16 @@ function validateMedicineData({
    * Units needed per month
    */
 
-  const normalizedUnitsPerMonth =
-    Number(unitsPerMonth);
+  const normalizedUnitsPerMonth = Number(unitsPerMonth);
 
   if (
-    !Number.isFinite(
-      normalizedUnitsPerMonth,
-    ) ||
-    !Number.isInteger(
-      normalizedUnitsPerMonth,
-    ) ||
+    !Number.isFinite(normalizedUnitsPerMonth) ||
+    !Number.isInteger(normalizedUnitsPerMonth) ||
     normalizedUnitsPerMonth < 1
   ) {
     return {
       valid: false,
-      error:
-        "Units needed per month must be a positive integer.",
+      error: "Units needed per month must be a positive integer.",
     };
   }
 
@@ -373,11 +315,9 @@ function validateMedicineData({
     pricePerStrip: null,
     piecesPerStrip: null,
 
-    pricePerUnit:
-      normalizedPricePerUnit,
+    pricePerUnit: normalizedPricePerUnit,
 
-    unitsPerMonth:
-      normalizedUnitsPerMonth,
+    unitsPerMonth: normalizedUnitsPerMonth,
   };
 }
 
@@ -387,33 +327,24 @@ function validateMedicineData({
  * ============================================================
  */
 
-router.get(
-  "/",
-  auth,
-  async (req, res) => {
-    try {
-      const medicines =
-        await Medicine.find({
-          user: req.userId,
-        }).sort({
-          isActive: -1,
-          startDate: -1,
-        });
+router.get("/", auth, async (req, res) => {
+  try {
+    const medicines = await Medicine.find({
+      user: req.userId,
+    }).sort({
+      isActive: -1,
+      startDate: -1,
+    });
 
-      res.json(medicines);
-    } catch (error) {
-      console.error(
-        "Failed to fetch medicines:",
-        error,
-      );
+    res.json(medicines);
+  } catch (error) {
+    console.error("Failed to fetch medicines:", error);
 
-      res.status(500).json({
-        message:
-          "Failed to fetch medicines.",
-      });
-    }
-  },
-);
+    res.status(500).json({
+      message: "Failed to fetch medicines.",
+    });
+  }
+});
 
 /*
  * ============================================================
@@ -421,150 +352,123 @@ router.get(
  * ============================================================
  */
 
-router.post(
-  "/",
-  auth,
-  async (req, res) => {
-    try {
-      const {
-        name,
-        type = "tablet",
-        pricingType,
-        dosage = [],
+router.post("/", auth, async (req, res) => {
+  try {
+    const {
+      name,
+      type = "tablet",
+      pricingType,
+      dosage = [],
 
-        pricePerStrip,
-        piecesPerStrip,
+      pricePerStrip,
+      piecesPerStrip,
 
-        pricePerUnit,
-        unitsPerMonth,
+      pricePerUnit,
+      unitsPerMonth,
 
-        imageUrl = "",
+      imageUrl = "",
 
-        startDate,
-        endDate,
-        isActive = true,
-      } = req.body;
+      startDate,
+      endDate,
+      isActive = true,
+    } = req.body;
 
-      /*
-       * --------------------------------------------------------
-       * Name
-       * --------------------------------------------------------
-       */
+    /*
+     * --------------------------------------------------------
+     * Name
+     * --------------------------------------------------------
+     */
 
-      if (
-        typeof name !== "string" ||
-        !name.trim()
-      ) {
-        return res.status(400).json({
-          message:
-            "Medicine name is required.",
-        });
-      }
-
-      /*
-       * --------------------------------------------------------
-       * Dates
-       * --------------------------------------------------------
-       */
-
-      const dateValidation =
-        validateMedicineDates({
-          startDate,
-          endDate,
-          isActive,
-        });
-
-      if (!dateValidation.valid) {
-        return res.status(400).json({
-          message: dateValidation.error,
-        });
-      }
-
-      /*
-       * --------------------------------------------------------
-       * Medicine data
-       * --------------------------------------------------------
-       */
-
-      const medicineValidation =
-        validateMedicineData({
-          type,
-          pricingType,
-          dosage,
-
-          pricePerStrip,
-          piecesPerStrip,
-
-          pricePerUnit,
-          unitsPerMonth,
-        });
-
-      if (!medicineValidation.valid) {
-        return res.status(400).json({
-          message:
-            medicineValidation.error,
-        });
-      }
-
-      /*
-       * --------------------------------------------------------
-       * Create
-       * --------------------------------------------------------
-       */
-
-      const medicine =
-        await Medicine.create({
-          user: req.userId,
-
-          name: name.trim(),
-
-          type: medicineValidation.type,
-          pricingType:
-            medicineValidation.pricingType,
-
-          dosage:
-            medicineValidation.dosage,
-
-          pricePerStrip:
-            medicineValidation.pricePerStrip,
-
-          piecesPerStrip:
-            medicineValidation.piecesPerStrip,
-
-          pricePerUnit:
-            medicineValidation.pricePerUnit,
-
-          unitsPerMonth:
-            medicineValidation.unitsPerMonth,
-
-          imageUrl:
-            typeof imageUrl === "string"
-              ? imageUrl.trim()
-              : "",
-
-          startDate:
-            dateValidation.startDate,
-
-          endDate:
-            dateValidation.endDate,
-
-          isActive: Boolean(isActive),
-        });
-
-      res.status(201).json(medicine);
-    } catch (error) {
-      console.error(
-        "Failed to create medicine:",
-        error,
-      );
-
-      res.status(500).json({
-        message:
-          "Failed to create medicine.",
+    if (typeof name !== "string" || !name.trim()) {
+      return res.status(400).json({
+        message: "Medicine name is required.",
       });
     }
-  },
-);
+
+    /*
+     * --------------------------------------------------------
+     * Dates
+     * --------------------------------------------------------
+     */
+
+    const dateValidation = validateMedicineDates({
+      startDate,
+      endDate,
+      isActive,
+    });
+
+    if (!dateValidation.valid) {
+      return res.status(400).json({
+        message: dateValidation.error,
+      });
+    }
+
+    /*
+     * --------------------------------------------------------
+     * Medicine data
+     * --------------------------------------------------------
+     */
+
+    const medicineValidation = validateMedicineData({
+      type,
+      pricingType,
+      dosage,
+
+      pricePerStrip,
+      piecesPerStrip,
+
+      pricePerUnit,
+      unitsPerMonth,
+    });
+
+    if (!medicineValidation.valid) {
+      return res.status(400).json({
+        message: medicineValidation.error,
+      });
+    }
+
+    /*
+     * --------------------------------------------------------
+     * Create
+     * --------------------------------------------------------
+     */
+
+    const medicine = await Medicine.create({
+      user: req.userId,
+
+      name: name.trim(),
+
+      type: medicineValidation.type,
+      pricingType: medicineValidation.pricingType,
+
+      dosage: medicineValidation.dosage,
+
+      pricePerStrip: medicineValidation.pricePerStrip,
+
+      piecesPerStrip: medicineValidation.piecesPerStrip,
+
+      pricePerUnit: medicineValidation.pricePerUnit,
+
+      unitsPerMonth: medicineValidation.unitsPerMonth,
+
+      imageUrl: typeof imageUrl === "string" ? imageUrl.trim() : "",
+
+      startDate: dateValidation.startDate,
+
+      endDate: dateValidation.endDate,
+
+      isActive: Boolean(isActive),
+    });
+
+    res.status(201).json(medicine);
+  } catch (error) {
+    console.error("Failed to create medicine:", error);
+
+    res.status(500).json({
+      message: "Failed to create medicine.",
+    });
+  }
+});
 
 /*
  * ============================================================
@@ -572,175 +476,142 @@ router.post(
  * ============================================================
  */
 
-router.put(
-  "/:id",
-  auth,
-  async (req, res) => {
-    try {
-      const { id } = req.params;
+router.put("/:id", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
 
-      if (
-        !mongoose.Types.ObjectId.isValid(id)
-      ) {
-        return res.status(400).json({
-          message:
-            "Invalid medicine ID.",
-        });
-      }
-
-      const existingMedicine =
-        await Medicine.findOne({
-          _id: id,
-          user: req.userId,
-        });
-
-      if (!existingMedicine) {
-        return res.status(404).json({
-          message:
-            "Medicine not found.",
-        });
-      }
-
-      const {
-        name,
-        type = existingMedicine.type,
-        pricingType,
-        dosage = [],
-
-        pricePerStrip,
-        piecesPerStrip,
-
-        pricePerUnit,
-        unitsPerMonth,
-
-        imageUrl = "",
-
-        startDate,
-        endDate,
-        isActive = true,
-      } = req.body;
-
-      /*
-       * --------------------------------------------------------
-       * Name
-       * --------------------------------------------------------
-       */
-
-      if (
-        typeof name !== "string" ||
-        !name.trim()
-      ) {
-        return res.status(400).json({
-          message:
-            "Medicine name is required.",
-        });
-      }
-
-      /*
-       * --------------------------------------------------------
-       * Dates
-       * --------------------------------------------------------
-       */
-
-      const dateValidation =
-        validateMedicineDates({
-          startDate,
-          endDate,
-          isActive,
-        });
-
-      if (!dateValidation.valid) {
-        return res.status(400).json({
-          message: dateValidation.error,
-        });
-      }
-
-      /*
-       * --------------------------------------------------------
-       * Medicine data
-       * --------------------------------------------------------
-       */
-
-      const medicineValidation =
-        validateMedicineData({
-          type,
-          pricingType,
-          dosage,
-
-          pricePerStrip,
-          piecesPerStrip,
-
-          pricePerUnit,
-          unitsPerMonth,
-        });
-
-      if (!medicineValidation.valid) {
-        return res.status(400).json({
-          message:
-            medicineValidation.error,
-        });
-      }
-
-      /*
-       * --------------------------------------------------------
-       * Update
-       * --------------------------------------------------------
-       */
-
-      existingMedicine.name =
-        name.trim();
-
-      existingMedicine.type =
-        medicineValidation.type;
-
-      existingMedicine.pricingType =
-        medicineValidation.pricingType;
-
-      existingMedicine.dosage =
-        medicineValidation.dosage;
-
-      existingMedicine.pricePerStrip =
-        medicineValidation.pricePerStrip;
-
-      existingMedicine.piecesPerStrip =
-        medicineValidation.piecesPerStrip;
-
-      existingMedicine.pricePerUnit =
-        medicineValidation.pricePerUnit;
-
-      existingMedicine.unitsPerMonth =
-        medicineValidation.unitsPerMonth;
-
-      existingMedicine.imageUrl =
-        typeof imageUrl === "string"
-          ? imageUrl.trim()
-          : "";
-
-      existingMedicine.startDate =
-        dateValidation.startDate;
-
-      existingMedicine.endDate =
-        dateValidation.endDate;
-
-      existingMedicine.isActive =
-        Boolean(isActive);
-
-      await existingMedicine.save();
-
-      res.json(existingMedicine);
-    } catch (error) {
-      console.error(
-        "Failed to update medicine:",
-        error,
-      );
-
-      res.status(500).json({
-        message:
-          "Failed to update medicine.",
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid medicine ID.",
       });
     }
-  },
-);
+
+    const existingMedicine = await Medicine.findOne({
+      _id: id,
+      user: req.userId,
+    });
+
+    if (!existingMedicine) {
+      return res.status(404).json({
+        message: "Medicine not found.",
+      });
+    }
+
+    const {
+      name,
+      type = existingMedicine.type,
+      pricingType,
+      dosage = [],
+
+      pricePerStrip,
+      piecesPerStrip,
+
+      pricePerUnit,
+      unitsPerMonth,
+
+      imageUrl = "",
+
+      startDate,
+      endDate,
+      isActive = true,
+    } = req.body;
+
+    /*
+     * --------------------------------------------------------
+     * Name
+     * --------------------------------------------------------
+     */
+
+    if (typeof name !== "string" || !name.trim()) {
+      return res.status(400).json({
+        message: "Medicine name is required.",
+      });
+    }
+
+    /*
+     * --------------------------------------------------------
+     * Dates
+     * --------------------------------------------------------
+     */
+
+    const dateValidation = validateMedicineDates({
+      startDate,
+      endDate,
+      isActive,
+    });
+
+    if (!dateValidation.valid) {
+      return res.status(400).json({
+        message: dateValidation.error,
+      });
+    }
+
+    /*
+     * --------------------------------------------------------
+     * Medicine data
+     * --------------------------------------------------------
+     */
+
+    const medicineValidation = validateMedicineData({
+      type,
+      pricingType,
+      dosage,
+
+      pricePerStrip,
+      piecesPerStrip,
+
+      pricePerUnit,
+      unitsPerMonth,
+    });
+
+    if (!medicineValidation.valid) {
+      return res.status(400).json({
+        message: medicineValidation.error,
+      });
+    }
+
+    /*
+     * --------------------------------------------------------
+     * Update
+     * --------------------------------------------------------
+     */
+
+    existingMedicine.name = name.trim();
+
+    existingMedicine.type = medicineValidation.type;
+
+    existingMedicine.pricingType = medicineValidation.pricingType;
+
+    existingMedicine.dosage = medicineValidation.dosage;
+
+    existingMedicine.pricePerStrip = medicineValidation.pricePerStrip;
+
+    existingMedicine.piecesPerStrip = medicineValidation.piecesPerStrip;
+
+    existingMedicine.pricePerUnit = medicineValidation.pricePerUnit;
+
+    existingMedicine.unitsPerMonth = medicineValidation.unitsPerMonth;
+
+    existingMedicine.imageUrl =
+      typeof imageUrl === "string" ? imageUrl.trim() : "";
+
+    existingMedicine.startDate = dateValidation.startDate;
+
+    existingMedicine.endDate = dateValidation.endDate;
+
+    existingMedicine.isActive = Boolean(isActive);
+
+    await existingMedicine.save();
+
+    res.json(existingMedicine);
+  } catch (error) {
+    console.error("Failed to update medicine:", error);
+
+    res.status(500).json({
+      message: "Failed to update medicine.",
+    });
+  }
+});
 
 /*
  * ============================================================
@@ -748,51 +619,37 @@ router.put(
  * ============================================================
  */
 
-router.delete(
-  "/:id",
-  auth,
-  async (req, res) => {
-    try {
-      const { id } = req.params;
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
 
-      if (
-        !mongoose.Types.ObjectId.isValid(id)
-      ) {
-        return res.status(400).json({
-          message:
-            "Invalid medicine ID.",
-        });
-      }
-
-      const medicine =
-        await Medicine.findOneAndDelete({
-          _id: id,
-          user: req.userId,
-        });
-
-      if (!medicine) {
-        return res.status(404).json({
-          message:
-            "Medicine not found.",
-        });
-      }
-
-      res.json({
-        message:
-          "Medicine deleted successfully.",
-      });
-    } catch (error) {
-      console.error(
-        "Failed to delete medicine:",
-        error,
-      );
-
-      res.status(500).json({
-        message:
-          "Failed to delete medicine.",
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid medicine ID.",
       });
     }
-  },
-);
+
+    const medicine = await Medicine.findOneAndDelete({
+      _id: id,
+      user: req.userId,
+    });
+
+    if (!medicine) {
+      return res.status(404).json({
+        message: "Medicine not found.",
+      });
+    }
+
+    res.json({
+      message: "Medicine deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Failed to delete medicine:", error);
+
+    res.status(500).json({
+      message: "Failed to delete medicine.",
+    });
+  }
+});
 
 export default router;
