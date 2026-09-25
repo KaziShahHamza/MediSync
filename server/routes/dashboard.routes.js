@@ -1,21 +1,16 @@
 // server/routes/dashboard.routes.js
 
+// Defines the protected dashboard endpoint and connects it to the controller.
+
 import express from "express";
+
 import auth from "../middlewares/auth.js";
-import { getDashboardData } from "../services/dashboardService.js";
+
+import { getDashboard } from "../controllers/dashboardController.js";
 
 const router = express.Router();
 
-router.get("/", auth, async (req, res) => {
-  try {
-    const data = await getDashboardData(req.userId);
-    res.json(data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      message: "Failed to load dashboard",
-    });
-  }
-});
+// Require authentication before accessing dashboard data.
+router.get("/", auth, getDashboard);
 
 export default router;

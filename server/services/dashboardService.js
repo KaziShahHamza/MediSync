@@ -1,5 +1,7 @@
 // server/services/dashboardService.js
 
+// Aggregates dashboard and detailed health data from the user's health records.
+
 import Profile from "../models/Profile.js";
 import HealthLog from "../models/HealthLog.js";
 import Medicine from "../models/Medicine.js";
@@ -8,8 +10,9 @@ import Prescription from "../models/Prescription.js";
 
 import { calculateBMI, getBMICategory } from "../utils/healthCalculations.js";
 
-// Fast dashboard data
+// Build the fast dashboard data response.
 export async function getDashboardData(userId) {
+  // Load the user's profile and basic account information.
   const profile = await Profile.findOne({
     user: userId,
   }).populate("user", "name email");
@@ -42,6 +45,7 @@ export async function getDashboardData(userId) {
     type: "weight",
   }).sort({ createdAt: -1 });
 
+  // Count the user's main health-management resources.
   const medicineCount = await Medicine.countDocuments({
     user: userId,
   });
@@ -54,6 +58,7 @@ export async function getDashboardData(userId) {
     user: userId,
   });
 
+  // Calculate BMI from the latest weight and profile height.
   const bmiValue = calculateBMI(latestWeight?.weight, profile?.height);
 
   const bmi = bmiValue
@@ -114,8 +119,9 @@ export async function getDashboardData(userId) {
   };
 }
 
-// Detailed health data for AI summary generation
+// Build the detailed health dataset used by AI summaries.
 export async function getAIHealthData(userId) {
+  // Load the user's profile for health-context information.
   const profile = await Profile.findOne({
     user: userId,
   });
@@ -148,6 +154,7 @@ export async function getAIHealthData(userId) {
     type: "weight",
   }).sort({ createdAt: -1 });
 
+  // Load recent measurements for health trend analysis.
   const recentBP = await HealthLog.find({
     user: userId,
     type: "bp",
@@ -169,10 +176,12 @@ export async function getAIHealthData(userId) {
     .sort({ createdAt: -1 })
     .limit(5);
 
+  // Load medicine names and dosage schedules for AI context.
   const medicines = await Medicine.find({
     user: userId,
   }).select("name dosageTimes");
 
+  // Calculate BMI from the latest weight and profile height.
   const bmiValue = calculateBMI(latestWeight?.weight, profile?.height);
 
   const bmi = bmiValue

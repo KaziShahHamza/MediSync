@@ -1,137 +1,29 @@
 // server/routes/doctor.routes.js
 
+// Defines authenticated routes for doctor management.
 import express from "express";
 
-import Doctor from "../models/Doctor.js";
 import auth from "../middlewares/auth.js";
 
-import { syncDoctorsToAIChatData } from "../services/aiChatDataService.js";
+import {
+  getDoctors,
+  createDoctor,
+  updateDoctor,
+  deleteDoctor,
+} from "../controllers/doctorController.js";
 
 const router = express.Router();
 
-// Get all doctors
-router.get("/", auth, async (req, res) => {
-  try {
-    const doctors = await Doctor.find({
-      user: req.userId,
-    }).sort({ createdAt: -1 });
+// Retrieve all doctors for the authenticated user.
+router.get("/", auth, getDoctors);
 
-    res.json(doctors);
-  } catch (error) {
-    console.error("Failed to fetch doctors:", error);
+// Create a new doctor for the authenticated user.
+router.post("/", auth, createDoctor);
 
-    res.status(500).json({
-      message: "Failed to fetch doctors",
-    });
-  }
-});
+// Update an existing doctor owned by the authenticated user.
+router.put("/:id", auth, updateDoctor);
 
-// Add doctor
-router.post("/", auth, async (req, res) => {
-  try {
-    const doctorData = {
-      ...req.body,
-      user: req.userId,
-    };
-
-    // Never allow client-provided user ID
-    delete doctorData.user;
-
-    const doctor = await Doctor.create({
-      ...doctorData,
-      user: req.userId,
-    });
-
-    try {
-      await syncDoctorsToAIChatData(req.userId);
-    } catch (error) {
-      console.error("Failed to sync doctors to AI chat data:", error);
-    }
-
-    res.status(201).json(doctor);
-  } catch (error) {
-    console.error("Failed to create doctor:", error);
-
-    res.status(400).json({
-      message: "Failed to create doctor",
-    });
-  }
-});
-
-// Update doctor
-router.put("/:id", auth, async (req, res) => {
-  try {
-    const updateData = {
-      ...req.body,
-    };
-
-    // Prevent changing ownership
-    delete updateData.user;
-
-    const doctor = await Doctor.findOneAndUpdate(
-      {
-        _id: req.params.id,
-        user: req.userId,
-      },
-      updateData,
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
-
-    if (!doctor) {
-      return res.status(404).json({
-        message: "Doctor not found",
-      });
-    }
-
-    try {
-      await syncDoctorsToAIChatData(req.userId);
-    } catch (error) {
-      console.error("Failed to sync doctors to AI chat data:", error);
-    }
-
-    res.json(doctor);
-  } catch (error) {
-    console.error("Failed to update doctor:", error);
-
-    res.status(400).json({
-      message: "Failed to update doctor",
-    });
-  }
-});
-
-// Delete doctor
-router.delete("/:id", auth, async (req, res) => {
-  try {
-    const doctor = await Doctor.findOneAndDelete({
-      _id: req.params.id,
-      user: req.userId,
-    });
-
-    if (!doctor) {
-      return res.status(404).json({
-        message: "Doctor not found",
-      });
-    }
-
-    try {
-      await syncDoctorsToAIChatData(req.userId);
-    } catch (error) {
-      console.error("Failed to sync doctors to AI chat data:", error);
-    }
-
-    res.json({
-      success: true,
-    });
-  } catch (error) {
-    console.error("Failed to delete doctor:", error);
-
-    res.status(400).json({
-      message: "Failed to delete doctor",
-    });
-  }
-});
+// Delete an existing doctor owned by the authenticated user.
+router.delete("/:id", auth, deleteDoctor);
 
 export default router;
