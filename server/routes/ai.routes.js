@@ -2,10 +2,12 @@
 
 import express from "express";
 import auth from "../middlewares/auth.js";
+
 import AIReport from "../models/AIReport.js";
+import AIChat from "../models/AIChat.js";
+
 import { getAIHealthData } from "../services/dashboardService.js";
 import { generateAIHealthSummary } from "../services/aiService.js";
-import AIChat from "../models/AIChat.js";
 import { generateChatResponse } from "../services/aiChatService.js";
 
 const router = express.Router();

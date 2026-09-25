@@ -3,11 +3,10 @@
 import express from "express";
 import crypto from "crypto";
 
-import Profile from "../models/Profile.js";
-import BloodRequest from "../models/BloodRequest.js";
-import BloodRequestRateLimit from "../models/BloodRequestRateLimit.js";
-
-import auth from "../middlewares/auth.js";
+import Profile from "../../models/Profile.js";
+import BloodRequest from "../../models/BloodRequest.js";
+import BloodRequestRateLimit from "../../models/BloodRequestRateLimit.js";
+import auth from "../../middlewares/auth.js";
 
 const router = express.Router();
 

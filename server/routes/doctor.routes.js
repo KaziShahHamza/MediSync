@@ -3,7 +3,6 @@
 import express from "express";
 
 import Doctor from "../models/Doctor.js";
-
 import auth from "../middlewares/auth.js";
 
 import { syncDoctorsToAIChatData } from "../services/aiChatDataService.js";
