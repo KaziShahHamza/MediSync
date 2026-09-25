@@ -1,34 +1,37 @@
+// server/controllers/blood/bloodRequestController.js
+
+// Handles creation and retrieval of public blood donation requests.
+// Enforces rate limits, cooldowns, and user request quotas.
+
 import {
   createRequest,
   findRecentRequest,
   countUserActiveRequests,
   findActiveRequests,
-} from "../services/bloodRequestService.js";
+} from "../../services/blood/bloodRequestService.js";
 
-import { validateBloodRequest } from "../utils/bloodRequestValidation.js";
+import { validateBloodRequest } from "../../utils/blood/bloodRequestValidation.js";
 
 import {
   getClientIp,
   hashValue,
   normalizeString,
   publicRequestData,
-} from "../utils/bloodRequestHelpers.js";
+} from "../../utils/blood/bloodRequestHelpers.js";
 
-import { checkAndUpdateRateLimit } from "../utils/bloodRequestRateLimit.js";
+import { checkAndUpdateRateLimit } from "../../utils/blood/bloodRequestRateLimit.js";
 
 import {
   MAX_ACTIVE_REQUESTS_PER_USER,
   REQUEST_COOLDOWN_MS,
-} from "../utils/bloodRequestConstants.js";
+} from "../../utils/blood/bloodRequestConstants.js";
 
-import { getOptionalAuthenticatedUser } from "../middlewares/bloodRequestAuth.js";
+import { getOptionalAuthenticatedUser } from "../../middlewares/bloodRequestAuth.js";
 
-// ==========================================================
-// CREATE BLOOD REQUEST
-// ==========================================================
-
+// Handles creation of a new blood request with rate limiting and limits
 export async function createBloodRequest(req, res) {
   try {
+    // Validate request body fields before processing
     const validationError = validateBloodRequest(req.body);
 
     if (validationError) {
@@ -54,13 +57,11 @@ export async function createBloodRequest(req, res) {
     const cleanDeviceId =
       typeof deviceId === "string" ? deviceId.trim().slice(0, 100) : "";
 
+    // Extract client IP and generate hash for tracking
     const ip = getClientIp(req);
     const ipHash = hashValue(ip);
 
-    // ------------------------------------------------------
-    // Rate limit
-    // ------------------------------------------------------
-
+    // Verify client has not exceeded daily creation rate limits
     const rateLimitResult = await checkAndUpdateRateLimit({
       ipHash,
       deviceId: cleanDeviceId,
@@ -73,12 +74,9 @@ export async function createBloodRequest(req, res) {
       });
     }
 
-    // ------------------------------------------------------
-    // Request cooldown
-    // ------------------------------------------------------
-
     const cooldownSince = new Date(Date.now() - REQUEST_COOLDOWN_MS);
 
+    // Prevent spam by enforcing a cool-down window between requests
     const recentRequest = await findRecentRequest({
       requesterIpHash: ipHash,
       deviceId: cleanDeviceId,
@@ -92,16 +90,9 @@ export async function createBloodRequest(req, res) {
       });
     }
 
-    // ------------------------------------------------------
-    // Optional authentication
-    // ------------------------------------------------------
-
     const authenticatedUserId = getOptionalAuthenticatedUser(req);
 
-    // ------------------------------------------------------
-    // Logged-in user active request limit
-    // ------------------------------------------------------
-
+    // Check maximum active post quota for authenticated account
     if (authenticatedUserId) {
       const activeUserRequests =
         await countUserActiveRequests(authenticatedUserId);
@@ -114,10 +105,7 @@ export async function createBloodRequest(req, res) {
       }
     }
 
-    // ------------------------------------------------------
-    // Create request
-    // ------------------------------------------------------
-
+    // Construct standardized request payload
     const requestData = {
       user: authenticatedUserId,
 
@@ -150,6 +138,7 @@ export async function createBloodRequest(req, res) {
       deviceId: cleanDeviceId,
     };
 
+    // Save request and retrieve generated guest access token
     const { request, managementToken } = await createRequest(requestData);
 
     return res.status(201).json({
@@ -157,7 +146,6 @@ export async function createBloodRequest(req, res) {
 
       request: publicRequestData(request),
 
-      // Returned only for public users.
       managementToken,
     });
   } catch (error) {
@@ -169,10 +157,7 @@ export async function createBloodRequest(req, res) {
   }
 }
 
-// ==========================================================
-// GET ACTIVE BLOOD REQUESTS
-// ==========================================================
-
+// Fetches active blood requests filtered by search parameters
 export async function getBloodRequests(req, res) {
   try {
     const { bloodGroup, district, upazila, compensation } = req.query;
@@ -184,12 +169,10 @@ export async function getBloodRequests(req, res) {
       compensation,
     });
 
+    // Sanitize output data to remove sensitive fields before sending
     const publicRequests = requests.map((request) => ({
       ...publicRequestData(request),
 
-      // Only tells the frontend whether
-      // the request belongs to an account.
-      // User ID is never exposed.
       hasAccount: Boolean(request.user),
     }));
 

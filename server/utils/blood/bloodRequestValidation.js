@@ -1,40 +1,25 @@
+// server/utils/blood/bloodRequestValidation.js
+
+// Input validation functions for blood request creation payloads.
+// Validates fields including blood group, phone format, and locations.
+
 import { BLOOD_GROUPS } from "./bloodRequestConstants.js";
 
 import { normalizeString } from "./bloodRequestHelpers.js";
 
-// ==========================================================
-// Blood Group Validation
-// ==========================================================
-
+// Check if string matches allowed blood group list
 export function isValidBloodGroup(value) {
   return BLOOD_GROUPS.includes(value);
 }
 
-// ==========================================================
-// Phone Validation
-// ==========================================================
-
+// Validate contact phone number string structure
 export function isValidPhone(value) {
   const phone = normalizeString(value);
 
-  // Bangladesh-oriented basic validation.
-  //
-  // Allows:
-  // +880...
-  // 01...
-  // spaces
-  // hyphens
-  // parentheses
-  //
-  // This is intentionally basic rather than
-  // enforcing one specific mobile format.
   return /^[+]?[\d\s()-]{7,20}$/.test(phone);
 }
 
-// ==========================================================
-// Blood Request Validation
-// ==========================================================
-
+// Perform full validation check on incoming request body data
 export function validateBloodRequest(body) {
   const bloodGroup = normalizeString(body.bloodGroup);
 
@@ -56,26 +41,17 @@ export function validateBloodRequest(body) {
 
   const compensationOffered = body.compensationOffered;
 
-  // --------------------------------------------------------
-  // Blood group
-  // --------------------------------------------------------
-
+  // Validate blood group selection
   if (!isValidBloodGroup(bloodGroup)) {
     return "Please select a valid blood group.";
   }
 
-  // --------------------------------------------------------
-  // Bags needed
-  // --------------------------------------------------------
-
+  // Validate number of bags required
   if (!Number.isInteger(bagsNeeded) || bagsNeeded < 1 || bagsNeeded > 20) {
     return "Number of bags must be between 1 and 20.";
   }
 
-  // --------------------------------------------------------
-  // Location
-  // --------------------------------------------------------
-
+  // Ensure mandatory location fields are present
   if (!district) {
     return "District is required.";
   }
@@ -84,10 +60,7 @@ export function validateBloodRequest(body) {
     return "Upazila is required.";
   }
 
-  // --------------------------------------------------------
-  // Hospital
-  // --------------------------------------------------------
-
+  // Ensure mandatory hospital details are present
   if (!hospitalName) {
     return "Hospital name is required.";
   }
@@ -96,26 +69,17 @@ export function validateBloodRequest(body) {
     return "Hospital address is required.";
   }
 
-  // --------------------------------------------------------
-  // Contact
-  // --------------------------------------------------------
-
+  // Validate contact telephone format
   if (!isValidPhone(contactPhone)) {
     return "Please provide a valid contact phone number.";
   }
 
-  // --------------------------------------------------------
-  // Compensation
-  // --------------------------------------------------------
-
+  // Verify compensation option is specified as boolean
   if (typeof compensationOffered !== "boolean") {
     return "Please specify whether you will provide travel cost or honorarium.";
   }
 
-  // --------------------------------------------------------
-  // Optional fields
-  // --------------------------------------------------------
-
+  // Verify length constraints on text fields
   if (requesterName.length > 100) {
     return "Requester name is too long.";
   }

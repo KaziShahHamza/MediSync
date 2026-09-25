@@ -1,24 +1,18 @@
+// server/middlewares/bloodRequestAuth.js
+
+// Authentication and authorization utilities for managing blood requests.
+// Supports JWT token validation and guest token hash verification.
+
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-import { normalizeString } from "../utils/bloodRequestHelpers.js";
+import { normalizeString } from "../utils/blood/bloodRequestHelpers.js";
 
-// ==========================================================
-// Optional Authentication
-// ==========================================================
-
-/**
- * Reads an optional Bearer token.
- *
- * Returns:
- * - user ID when token is valid
- * - null when token is missing/invalid
- *
- * Public users are allowed to continue.
- */
+// Extract user ID from Bearer token if valid authorization header exists
 export function getOptionalAuthenticatedUser(req) {
   const authHeader = req.headers.authorization;
 
+  // Check for presence of Bearer scheme in auth header
   if (!authHeader?.startsWith("Bearer ")) {
     return null;
   }
@@ -26,6 +20,7 @@ export function getOptionalAuthenticatedUser(req) {
   try {
     const token = authHeader.split(" ")[1];
 
+    // Decode JWT token using environment secret key
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     return decoded.id || null;
@@ -34,28 +29,11 @@ export function getOptionalAuthenticatedUser(req) {
   }
 }
 
-// ==========================================================
-// Blood Request Authorization
-// ==========================================================
-
-/**
- * Authorizes a blood request owner.
- *
- * Supports:
- *
- * 1. Logged-in owner:
- *    Authorization: Bearer <token>
- *
- * 2. Public owner:
- *    managementToken in request body
- */
+// Verify if client is authorized via user account or management token
 export function authorizeBloodRequest(req, request) {
   const authenticatedUserId = getOptionalAuthenticatedUser(req);
 
-  // --------------------------------------------------------
-  // Logged-in owner
-  // --------------------------------------------------------
-
+  // Validate ownership for logged-in users matching request owner ID
   if (
     authenticatedUserId &&
     request.user &&
@@ -64,12 +42,9 @@ export function authorizeBloodRequest(req, request) {
     return true;
   }
 
-  // --------------------------------------------------------
-  // Public management token
-  // --------------------------------------------------------
-
   const managementToken = normalizeString(req.body?.managementToken);
 
+  // Validate management token hash for non-authenticated guests
   if (
     managementToken &&
     request.managementTokenHash &&
@@ -81,10 +56,7 @@ export function authorizeBloodRequest(req, request) {
   return false;
 }
 
-// ==========================================================
-// Management Token Hash
-// ==========================================================
-
+// Generate SHA-256 hash for raw public management tokens
 export function hashManagementToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }

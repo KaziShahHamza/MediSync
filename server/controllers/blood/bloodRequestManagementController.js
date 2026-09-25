@@ -1,26 +1,29 @@
+// server/controllers/blood/bloodRequestManagementController.js
+
+// Controller handling donor searches, updating existing blood requests,
+// and deleting active requests with authorization checks.
+
 import {
   findRequestForUpdate,
   updateRequest,
   findRequestForDelete,
   deleteRequest,
-} from "../services/bloodRequestService.js";
+} from "../../services/blood/bloodRequestManagementService.js";
 
-import { validateBloodRequest } from "../utils/bloodRequestValidation.js";
+import { validateBloodRequest } from "../../utils/blood/bloodRequestValidation.js";
 
-import { publicRequestData } from "../utils/bloodRequestHelpers.js";
+import { publicRequestData } from "../../utils/blood/bloodRequestHelpers.js";
 
-import { authorizeBloodRequest } from "../middlewares/bloodRequestAuth.js";
+import { authorizeBloodRequest } from "../../middlewares/bloodRequestAuth.js";
 
-import { findDonors } from "../services/bloodRequestService.js";
+import { findDonors } from "../../services/blood/bloodDonorService.js";
 
-// ==========================================================
-// GET DONORS
-// ==========================================================
-
+// Retrieves list of eligible donors matching criteria
 export async function getDonors(req, res) {
   try {
     const { bloodGroup, district, upazila, compensation } = req.query;
 
+    // Fetch matching donors from service layer
     const donors = await findDonors({
       bloodGroup,
       district,
@@ -40,11 +43,7 @@ export async function getDonors(req, res) {
   }
 }
 
-
-// ==========================================================
-// UPDATE BLOOD REQUEST
-// ==========================================================
-
+// Updates an existing blood request if valid and authorized
 export async function updateBloodRequest(req, res) {
   try {
     const { id } = req.params;
@@ -57,6 +56,7 @@ export async function updateBloodRequest(req, res) {
       });
     }
 
+    // Retrieve active record to ensure existence
     const request = await findRequestForUpdate(id);
 
     if (!request) {
@@ -65,16 +65,14 @@ export async function updateBloodRequest(req, res) {
       });
     }
 
+    // Reject modifications to expired requests
     if (request.expiresAt <= new Date()) {
       return res.status(404).json({
         message: "This blood request has expired.",
       });
     }
 
-    // ------------------------------------------------------
-    // Authorization
-    // ------------------------------------------------------
-
+    // Check modifying permissions via bearer token or guest token
     const authorized = authorizeBloodRequest(req, request);
 
     if (!authorized) {
@@ -83,10 +81,7 @@ export async function updateBloodRequest(req, res) {
       });
     }
 
-    // ------------------------------------------------------
-    // Update
-    // ------------------------------------------------------
-
+    // Save updated request data to storage
     const updatedRequest = await updateRequest(request, req.body);
 
     return res.json({
@@ -103,10 +98,7 @@ export async function updateBloodRequest(req, res) {
   }
 }
 
-// ==========================================================
-// DELETE BLOOD REQUEST
-// ==========================================================
-
+// Deletes a blood request record after passing authorization
 export async function deleteBloodRequest(req, res) {
   try {
     const { id } = req.params;
@@ -119,10 +111,7 @@ export async function deleteBloodRequest(req, res) {
       });
     }
 
-    // ------------------------------------------------------
-    // Authorization
-    // ------------------------------------------------------
-
+    // Confirm permissions before performing deletion
     const authorized = authorizeBloodRequest(req, request);
 
     if (!authorized) {
@@ -131,10 +120,7 @@ export async function deleteBloodRequest(req, res) {
       });
     }
 
-    // ------------------------------------------------------
-    // Delete
-    // ------------------------------------------------------
-
+    // Remove blood request entry
     await deleteRequest(request);
 
     return res.json({

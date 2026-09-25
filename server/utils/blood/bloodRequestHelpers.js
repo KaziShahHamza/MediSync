@@ -1,11 +1,13 @@
+// server/utils/blood/bloodRequestHelpers.js
+
+// Utility functions for string sanitization, token generation,
+// IP extraction, and mapping public request payloads.
+
 import crypto from "crypto";
 
 import { REQUEST_LIFETIME_MS } from "./bloodRequestConstants.js";
 
-// ==========================================================
-// Generic Hash
-// ==========================================================
-
+// Compute salted SHA-256 hash for arbitrary string value
 export function hashValue(value) {
   return crypto
     .createHash("sha256")
@@ -13,22 +15,17 @@ export function hashValue(value) {
     .digest("hex");
 }
 
-// ==========================================================
-// Management Token
-// ==========================================================
-
+// Generate random hex token for non-authenticated request owners
 export function generateManagementToken() {
   return crypto.randomBytes(32).toString("hex");
 }
 
+// Compute SHA-256 hash for guest management token
 export function hashManagementToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-// ==========================================================
-// Client IP
-// ==========================================================
-
+// Extract origin IP address from request headers or socket connection
 export function getClientIp(req) {
   const forwarded = req.headers["x-forwarded-for"];
 
@@ -39,10 +36,7 @@ export function getClientIp(req) {
   return req.socket?.remoteAddress || req.ip || "unknown";
 }
 
-// ==========================================================
-// String Normalization
-// ==========================================================
-
+// Sanitize string value by stripping whitespace
 export function normalizeString(value) {
   if (typeof value !== "string") {
     return "";
@@ -51,18 +45,12 @@ export function normalizeString(value) {
   return value.trim();
 }
 
-// ==========================================================
-// Request Expiry
-// ==========================================================
-
+// Calculate timestamp when a new request will expire
 export function getRequestExpiry() {
   return new Date(Date.now() + REQUEST_LIFETIME_MS);
 }
 
-// ==========================================================
-// Public Blood Request Data
-// ==========================================================
-
+// Transform request document into sanitized public object
 export function publicRequestData(request) {
   return {
     id: request._id,

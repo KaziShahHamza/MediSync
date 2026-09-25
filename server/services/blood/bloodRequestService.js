@@ -1,31 +1,31 @@
+// server/services/bloodRequestService.js
+
+// Service managing CRUD operations for blood donation requests.
+// Handles token generation, active listing queries, and request modifications.
+
 import crypto from "crypto";
 
-import Profile from "../models/Profile.js";
-import BloodRequest from "../models/BloodRequest.js";
+import Profile from "../../models/Profile.js";
+import BloodRequest from "../../models/BloodRequest.js";
 
 import {
   BLOOD_GROUPS,
   REQUEST_LIFETIME_MS,
-} from "../utils/bloodRequestConstants.js";
+} from "../../utils/blood/bloodRequestConstants.js";
 
-import { normalizeString } from "../utils/bloodRequestHelpers.js";
+import { normalizeString } from "../../utils/blood/bloodRequestHelpers.js";
 
-// ==========================================================
-// Management Token Helpers
-// ==========================================================
-
+// Generate random management token string
 function generateManagementToken() {
   return crypto.randomBytes(32).toString("hex");
 }
 
+// Compute SHA-256 hash for raw management token
 function hashManagementToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-// ==========================================================
-// Donor Discovery
-// ==========================================================
-
+// Search donor profiles by location and blood group criteria
 export async function findDonors({
   bloodGroup,
   district,
@@ -75,15 +75,12 @@ export async function findDonors({
   }));
 }
 
-// ==========================================================
-// Create Blood Request
-// ==========================================================
-
+// Persist a new blood request document to MongoDB
 export async function createRequest(requestData) {
   let managementToken = null;
   let managementTokenHash = null;
 
-  // Public requests receive a management token.
+  // Generate tokens for non-authenticated guests
   if (!requestData.user) {
     managementToken = generateManagementToken();
 
@@ -104,10 +101,7 @@ export async function createRequest(requestData) {
   };
 }
 
-// ==========================================================
-// Find Recent Request
-// ==========================================================
-
+// Locate recent post created within cooldown window
 export async function findRecentRequest({
   requesterIpHash,
   deviceId,
@@ -126,10 +120,7 @@ export async function findRecentRequest({
     .lean();
 }
 
-// ==========================================================
-// Count User Active Requests
-// ==========================================================
-
+// Count active unexpired requests for a specific user ID
 export async function countUserActiveRequests(userId) {
   return BloodRequest.countDocuments({
     user: userId,
@@ -139,10 +130,7 @@ export async function countUserActiveRequests(userId) {
   });
 }
 
-// ==========================================================
-// Find Active Blood Requests
-// ==========================================================
-
+// Query all active unexpired blood requests with optional filters
 export async function findActiveRequests({
   bloodGroup,
   district,
@@ -185,20 +173,14 @@ export async function findActiveRequests({
     .lean();
 }
 
-// ==========================================================
-// Find Request For Update
-// ==========================================================
-
+// Retrieve blood request including sensitive authorization fields
 export async function findRequestForUpdate(id) {
   return BloodRequest.findById(id).select(
     "+managementTokenHash +requesterIpHash +deviceId",
   );
 }
 
-// ==========================================================
-// Update Blood Request
-// ==========================================================
-
+// Save updated request fields back to the database
 export async function updateRequest(request, body) {
   request.bloodGroup = normalizeString(body.bloodGroup);
 
@@ -229,18 +211,12 @@ export async function updateRequest(request, body) {
   return request;
 }
 
-// ==========================================================
-// Find Request For Delete
-// ==========================================================
-
+// Fetch request record with token hash for deletion check
 export async function findRequestForDelete(id) {
   return BloodRequest.findById(id).select("+managementTokenHash");
 }
 
-// ==========================================================
-// Delete Blood Request
-// ==========================================================
-
+// Remove blood request document from collection
 export async function deleteRequest(request) {
   await request.deleteOne();
 }

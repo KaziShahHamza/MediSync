@@ -1,41 +1,36 @@
-import express from "express";
+// server/routes/blood.routes.js
 
-// import { getDonors } from "../controllers/bloodDonorController.js";
+// Defines API endpoints for blood request management and donor searches.
+// Maps Express route pathways to corresponding blood controller functions.
+
+import express from "express";
 
 import {
   createBloodRequest,
   getBloodRequests,
-} from "../controllers/bloodRequestController.js";
+} from "../controllers/blood/bloodRequestController.js";
 
 import {
   getDonors,
   updateBloodRequest,
   deleteBloodRequest,
-} from "../controllers/bloodRequestManagementController.js";
+} from "../controllers/blood/bloodRequestManagementController.js";
 
 const router = express.Router();
 
-// ==========================================================
-// Public Donor Discovery
-// ==========================================================
-
+// Route to search and fetch available blood donors
 router.get("/donors", getDonors);
 
-// ==========================================================
-// Blood Requests
-// ==========================================================
-
-// Create a blood request.
-// Authentication is optional.
+// Route to create a new blood donation request
 router.post("/requests", createBloodRequest);
 
-// Get active blood requests.
+// Route to fetch all active blood donation requests
 router.get("/requests", getBloodRequests);
 
-// Update a blood request.
+// Route to update an existing blood request by ID
 router.put("/requests/:id", updateBloodRequest);
 
-// Delete a blood request.
+// Route to delete a blood request by ID
 router.delete("/requests/:id", deleteBloodRequest);
 
 export default router;

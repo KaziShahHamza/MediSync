@@ -1,16 +1,18 @@
+// server/utils/blood/bloodRequestRateLimit.js
+
+// Rate limiting module for blood request creations.
+// Tracks request frequency per IP/device pair in database.
+
 import crypto from "crypto";
 
-import BloodRequestRateLimit from "../models/BloodRequestRateLimit.js";
+import BloodRequestRateLimit from "../../models/BloodRequestRateLimit.js";
 
 import {
   RATE_LIMIT_WINDOW_MS,
   MAX_REQUESTS_PER_DAY,
 } from "./bloodRequestConstants.js";
 
-// ==========================================================
-// Rate Limit Key
-// ==========================================================
-
+// Generate unique hash key for IP and device combination
 function createRateLimitKey({ ipHash, deviceId }) {
   return crypto
     .createHash("sha256")
@@ -18,10 +20,7 @@ function createRateLimitKey({ ipHash, deviceId }) {
     .digest("hex");
 }
 
-// ==========================================================
-// Check + Update Rate Limit
-// ==========================================================
-
+// Evaluate and update submission count for a given client
 export async function checkAndUpdateRateLimit({ ipHash, deviceId }) {
   const now = new Date();
 
@@ -34,10 +33,7 @@ export async function checkAndUpdateRateLimit({ ipHash, deviceId }) {
     key,
   });
 
-  // --------------------------------------------------------
-  // No existing window
-  // --------------------------------------------------------
-
+  // Create or reset rate limit tracking window if missing/expired
   if (!rateLimit || rateLimit.expiresAt <= now) {
     rateLimit = await BloodRequestRateLimit.findOneAndUpdate(
       { key },
@@ -62,10 +58,7 @@ export async function checkAndUpdateRateLimit({ ipHash, deviceId }) {
     };
   }
 
-  // --------------------------------------------------------
-  // Limit reached
-  // --------------------------------------------------------
-
+  // Deny request if daily creation threshold reached
   if (rateLimit.count >= MAX_REQUESTS_PER_DAY) {
     return {
       allowed: false,
@@ -73,10 +66,7 @@ export async function checkAndUpdateRateLimit({ ipHash, deviceId }) {
     };
   }
 
-  // --------------------------------------------------------
-  // Increment counter
-  // --------------------------------------------------------
-
+  // Increment submission counter for active window
   rateLimit.count += 1;
 
   await rateLimit.save();
