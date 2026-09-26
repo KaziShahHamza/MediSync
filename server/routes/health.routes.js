@@ -1,83 +1,23 @@
 // server/routes/health.routes.js
 
-import express from "express";
-import HealthLog from "../models/HealthLog.js";
-import auth from "../middlewares/auth.js";
+// Defines authenticated health log endpoints.
+// Delegates request handling to the health controller.
 
-import { syncHealthToAIChatData } from "../services/aiChatDataService.js";
-import { checkHealthLogForEmergency } from "../services/emergencyService.js";
+import express from "express";
+
+import auth from "../middlewares/auth.js";
+import {
+  createHealthLog,
+  getHealthLogs,
+  deleteHealthLog,
+} from "../controllers/healthController.js";
 
 const router = express.Router();
 
-// create log
-router.post("/", auth, async (req, res) => {
-  try {
-    const { type, recordedAt } = req.body;
+// Register health log routes.
+router.post("/", auth, createHealthLog);
+router.get("/", auth, getHealthLogs);
+router.delete("/:id", auth, deleteHealthLog);
 
-    if (type === "diabetes") {
-      if (!recordedAt) {
-        return res.status(400).json({
-          message: "Blood sugar measurement date is required.",
-        });
-      }
-
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(recordedAt)) {
-        return res.status(400).json({
-          message: "Invalid blood sugar measurement date.",
-        });
-      }
-    }
-
-    const log = await HealthLog.create({
-      ...req.body,
-      user: req.userId,
-    });
-
-    // Emergency processing must never cause the health
-    // measurement itself to fail.
-    try {
-      await checkHealthLogForEmergency(log);
-    } catch (error) {
-      console.error("Failed to process health emergency:", error);
-    }
-
-    try {
-      await syncHealthToAIChatData(req.userId);
-    } catch (error) {
-      console.error("Failed to sync health to AI chat data:", error);
-    }
-
-    res.json(log);
-  } catch (err) {
-    res.status(400).json({
-      message: err.message,
-    });
-  }
-});
-
-// get user logs
-router.get("/", auth, async (req, res) => {
-  const logs = await HealthLog.find({
-    user: req.userId,
-  }).sort({ createdAt: 1 });
-
-  res.json(logs);
-});
-
-// delete log
-router.delete("/:id", auth, async (req, res) => {
-  await HealthLog.findOneAndDelete({
-    _id: req.params.id,
-    user: req.userId,
-  });
-
-  try {
-    await syncHealthToAIChatData(req.userId);
-  } catch (error) {
-    console.error("Failed to sync health to AI chat data:", error);
-  }
-
-  res.json({ success: true });
-});
-
+// Export the configured router.
 export default router;

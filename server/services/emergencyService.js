@@ -1,99 +1,31 @@
+// server/services/emergencyService.js
+
+// Coordinates emergency detection, alert persistence, and notifications.
+// Loads user information and sends alerts for critical health readings.
+
 import Profile from "../models/Profile.js";
 import User from "../models/User.js";
 import EmergencyAlert from "../models/EmergencyAlert.js";
 
 import {
-  sendEmergencyEmails,
-} from "./emergencyEmailService.js";
+  checkBloodPressure,
+  checkBloodSugar,
+} from "../utils/emergency/emergencyChecks.js";
 
-const CRITICAL_SYSTOLIC = 180;
-const CRITICAL_DIASTOLIC = 120;
+import { sendEmergencyEmails } from "./emergencyEmailService.js";
 
-const CRITICAL_LOW_GLUCOSE = 3.0;
-const CRITICAL_HIGH_GLUCOSE = 22.2;
-
-/**
- * Determine whether a blood pressure reading
- * has reached the critical alert threshold.
- */
-function checkBloodPressure(high, low) {
-  const systolic = Number(high);
-  const diastolic = Number(low);
-
-  if (!Number.isFinite(systolic) || !Number.isFinite(diastolic)) {
-    return null;
-  }
-
-  if (
-    systolic > CRITICAL_SYSTOLIC ||
-    diastolic > CRITICAL_DIASTOLIC
-  ) {
-    return {
-      type: "bloodPressure",
-      triggerData: {
-        high: systolic,
-        low: diastolic,
-      },
-    };
-  }
-
-  return null;
-}
-
-/**
- * Determine whether a blood glucose reading
- * has reached a critical threshold.
- */
-function checkBloodSugar(glucose, glucoseTiming) {
-  const value = Number(glucose);
-
-  if (!Number.isFinite(value)) {
-    return null;
-  }
-
-  if (value < CRITICAL_LOW_GLUCOSE) {
-    return {
-      type: "bloodSugar",
-      triggerData: {
-        glucose: value,
-        glucoseTiming,
-        direction: "low",
-      },
-    };
-  }
-
-  if (value >= CRITICAL_HIGH_GLUCOSE) {
-    return {
-      type: "bloodSugar",
-      triggerData: {
-        glucose: value,
-        glucoseTiming,
-        direction: "high",
-      },
-    };
-  }
-
-  return null;
-}
-
-/**
- * Check a newly-created HealthLog for an emergency condition.
- */
+// Checks a newly-created health log for an emergency condition.
 export async function checkHealthLogForEmergency(healthLog) {
   let emergency = null;
 
+  // Evaluate blood pressure health logs.
   if (healthLog.type === "bp") {
-    emergency = checkBloodPressure(
-      healthLog.High,
-      healthLog.Low,
-    );
+    emergency = checkBloodPressure(healthLog.High, healthLog.Low);
   }
 
+  // Evaluate blood sugar health logs.
   if (healthLog.type === "diabetes") {
-    emergency = checkBloodSugar(
-      healthLog.glucose,
-      healthLog.glucoseTiming,
-    );
+    emergency = checkBloodSugar(healthLog.glucose, healthLog.glucoseTiming);
   }
 
   if (!emergency) {
@@ -124,9 +56,7 @@ export async function checkHealthLogForEmergency(healthLog) {
   }).lean();
 
   if (!profile) {
-    console.warn(
-      `No profile found for emergency alert user ${healthLog.user}`,
-    );
+    console.warn(`No profile found for emergency alert user ${healthLog.user}`);
 
     return {
       triggered: true,
@@ -139,6 +69,7 @@ export async function checkHealthLogForEmergency(healthLog) {
     ? profile.emergencyContacts
     : [];
 
+  // Extract valid normalized emergency contact emails.
   const emailRecipients = contacts
     .map((contact) => contact.email?.trim().toLowerCase())
     .filter(Boolean);
@@ -147,24 +78,15 @@ export async function checkHealthLogForEmergency(healthLog) {
     return {
       triggered: true,
       emailed: false,
-      reason:
-        "No emergency contacts with email addresses were found.",
+      reason: "No emergency contacts with email addresses were found.",
     };
   }
 
-  const user = await User.findById(healthLog.user)
-    .select("name")
-    .lean();
+  const user = await User.findById(healthLog.user).select("name").lean();
 
   const userName = user?.name?.trim() || "Your contact";
 
-  /*
-   * Determine pronouns from the user's profile gender.
-   *
-   * Male   -> him / his
-   * Female -> her / her
-   * Other/missing -> them / their
-   */
+  // Determine pronouns from the user's profile gender.
   let pronouns = {
     object: "them",
     possessive: "their",
@@ -185,6 +107,7 @@ export async function checkHealthLogForEmergency(healthLog) {
   let alert;
 
   try {
+    // Persist the pending emergency alert before email delivery.
     alert = await EmergencyAlert.create({
       user: healthLog.user,
       healthLog: healthLog._id,
@@ -194,8 +117,7 @@ export async function checkHealthLogForEmergency(healthLog) {
       emailRecipients,
     });
   } catch (error) {
-    // If another request created the alert between our
-    // findOne() and create(), treat it as a duplicate.
+    // Handle concurrent creation of the same emergency alert.
     if (error.code === 11000) {
       const existing = await EmergencyAlert.findOne({
         user: healthLog.user,
@@ -223,6 +145,7 @@ export async function checkHealthLogForEmergency(healthLog) {
 
   const successfulRecipients = emailResult.recipients || [];
 
+  // Mark the alert as sent after successful delivery.
   if (successfulRecipients.length > 0) {
     alert.status = "sent";
     alert.sentAt = new Date();
@@ -247,8 +170,7 @@ export async function checkHealthLogForEmergency(healthLog) {
     .filter(Boolean);
 
   alert.errorMessage =
-    failedMessages.join(" | ") ||
-    "Emergency email could not be sent.";
+    failedMessages.join(" | ") || "Emergency email could not be sent.";
 
   await alert.save();
 
@@ -259,8 +181,5 @@ export async function checkHealthLogForEmergency(healthLog) {
   };
 }
 
-export {
-  checkBloodPressure,
-  checkBloodSugar,
-};
-
+// Preserve the existing named exports for external consumers.
+export { checkBloodPressure, checkBloodSugar };
