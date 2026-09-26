@@ -1,6 +1,7 @@
 // server/routes/doctor.routes.js
 
 // Defines authenticated routes for doctor management.
+
 import express from "express";
 
 import auth from "../middlewares/auth.js";

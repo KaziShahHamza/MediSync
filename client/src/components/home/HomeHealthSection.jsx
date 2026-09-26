@@ -1,10 +1,10 @@
 // client/src/components/home/HomeHealthSection.jsx
 
-// Renders the health metrics tracking section on the homepage.
+// Renders the homepage health tracking section.
+// Highlights the primary health metrics supported by MediSync.
 
 import { Activity, Droplets, Scale } from "lucide-react";
 
-// Section component highlighting health indicators and analytics
 export default function HomeHealthSection() {
   return (
     <section className="container section">
@@ -18,7 +18,7 @@ export default function HomeHealthSection() {
             healthcare provider.
           </p>
 
-          {/* Quick-reference health indicators */}
+          {/* Display quick-reference cards for supported health metrics. */}
           <div className="mt-8 grid sm:grid-cols-3 gap-4">
             <div className="surface p-4">
               <Scale size={22} className="text-blue-600" />
@@ -46,7 +46,7 @@ export default function HomeHealthSection() {
           </div>
         </div>
 
-        {/* Visual placeholder card for analytics preview */}
+        {/* Present the analytics preview placeholder. */}
         <div className="card min-h-[320px] flex items-center justify-center bg-slate-50">
           <div className="text-center">
             <Activity size={48} className="mx-auto text-blue-600" />

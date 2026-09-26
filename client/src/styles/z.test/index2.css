@@ -79,7 +79,7 @@ select {
   @apply max-w-7xl mx-auto px-5 md:px-6 lg:px-8;
 }
 
-.continer-profile-setting-page {
+.container-profile-setting-page {
   @apply max-w-4xl mx-auto px-5 md:px-6 lg:px-8;
 }
 

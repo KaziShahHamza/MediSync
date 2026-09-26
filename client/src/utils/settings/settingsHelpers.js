@@ -1,8 +1,9 @@
 // client/src/utils/settings/settingsHelpers.js
 
-// Helper utility functions for form state generation, formatting, date construction, and validation.
+// Provides reusable settings form state, formatting, validation, and payload helpers.
+// Handles profile normalization and Bangladesh-specific emergency contact actions.
 
-// Generates an empty contact template structure
+// Creates the default structure for an emergency contact.
 export const createEmptyContact = () => ({
   relation: "",
   name: "",
@@ -10,7 +11,7 @@ export const createEmptyContact = () => ({
   email: "",
 });
 
-// Default initial state structure for settings form
+// Defines the default settings form state.
 export const initialForm = {
   name: "",
   dob: "",
@@ -46,7 +47,7 @@ export const initialForm = {
   bloodDonationContactNumber: "",
 };
 
-// Extracts month and year string parameters from ISO date
+// Converts a stored donation date into month and year form values.
 export function getDonationMonthYear(value) {
   if (!value) {
     return {
@@ -70,7 +71,7 @@ export function getDonationMonthYear(value) {
   };
 }
 
-// Converts selected month and year values into ISO date string
+// Converts selected donation month and year into an ISO date.
 export function buildDonationDate(month, year) {
   if (!month || !year) {
     return null;
@@ -79,7 +80,7 @@ export function buildDonationDate(month, year) {
   return new Date(Date.UTC(Number(year), Number(month) - 1, 1)).toISOString();
 }
 
-// Derives uppercase initials from user name
+// Generates uppercase initials from a user's display name.
 export function getInitials(name) {
   if (!name?.trim()) {
     return "?";
@@ -94,43 +95,49 @@ export function getInitials(name) {
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
-// Performs business rule validation over settings inputs
+// Validates emergency contacts and blood donation form fields.
 export function validateSettingsForm(form) {
-  // Validate emergency contacts list inputs
-  for (const contact of form.emergencyContacts) {
-    if (!contact.relation.trim()) {
+  const emergencyContacts = Array.isArray(form?.emergencyContacts)
+    ? form.emergencyContacts
+    : [];
+
+  // Validate each configured emergency contact.
+  for (const contact of emergencyContacts) {
+    const relation = contact?.relation?.trim() || "";
+    const name = contact?.name?.trim() || "";
+    const phone = contact?.phone?.trim() || "";
+    const email = contact?.email?.trim() || "";
+
+    if (!relation) {
       return "Please select a relation for every emergency contact.";
     }
 
-    if (!contact.name.trim()) {
+    if (!name) {
       return "Please enter the name of every emergency contact.";
     }
 
-    if (!contact.phone.trim() && !contact.email.trim()) {
+    if (!phone && !email) {
       return "Each emergency contact must have a phone number or email address.";
     }
 
-    if (
-      contact.email.trim() &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email.trim())
-    ) {
-      return `Please enter a valid email for ${contact.name}.`;
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return `Please enter a valid email for ${name}.`;
     }
   }
 
-  const { month, year } = form.lastBloodDonation;
+  const month = form?.lastBloodDonation?.month || "";
+  const year = form?.lastBloodDonation?.year || "";
 
-  // Validate complete blood donation date selection
+  // Require both month and year when a donation date is provided.
   if ((month && !year) || (!month && year)) {
     return "Please select both the month and year of the last blood donation.";
   }
 
-  // Ensure donation date is not in future
+  // Prevent the recorded donation date from being in the future.
   if (month && year) {
     const selectedDate = new Date(Number(year), Number(month) - 1, 1);
 
     const now = new Date();
-
     const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
     if (selectedDate > currentMonth) {
@@ -141,7 +148,7 @@ export function validateSettingsForm(form) {
   return null;
 }
 
-// Maps profile and user object values into form state shape
+// Maps profile and user information into the settings form structure.
 export function createFormFromProfile(profile, userInfo) {
   return {
     name: userInfo?.name || "",
@@ -165,17 +172,20 @@ export function createFormFromProfile(profile, userInfo) {
 
     allergies: profile?.allergies || "",
 
-    chronicIllnesses: profile?.chronicIllnesses || [],
+    chronicIllnesses: Array.isArray(profile?.chronicIllnesses)
+      ? profile.chronicIllnesses
+      : [],
 
     surgeries: profile?.surgeries || "",
 
-    emergencyContacts:
-      profile?.emergencyContacts?.map((contact) => ({
-        relation: contact.relation || "",
-        name: contact.name || "",
-        phone: contact.phone || "",
-        email: contact.email || "",
-      })) || [],
+    emergencyContacts: Array.isArray(profile?.emergencyContacts)
+      ? profile.emergencyContacts.map((contact) => ({
+          relation: contact?.relation || "",
+          name: contact?.name || "",
+          phone: contact?.phone || "",
+          email: contact?.email || "",
+        }))
+      : [],
 
     bloodDonorStatus: profile?.bloodDonorStatus || "",
 
@@ -187,8 +197,16 @@ export function createFormFromProfile(profile, userInfo) {
   };
 }
 
-// Transforms form state data into database profile payload
+// Transforms settings form state into the profile API payload.
 export function buildProfilePayload(form) {
+  const emergencyContacts = Array.isArray(form?.emergencyContacts)
+    ? form.emergencyContacts
+    : [];
+
+  const chronicIllnesses = Array.isArray(form?.chronicIllnesses)
+    ? form.chronicIllnesses
+    : [];
+
   return {
     name: form.name,
 
@@ -198,7 +216,6 @@ export function buildProfilePayload(form) {
 
     height: {
       feet: form.height.feet === "" ? null : Number(form.height.feet),
-
       inches: form.height.inches === "" ? null : Number(form.height.inches),
     },
 
@@ -206,11 +223,11 @@ export function buildProfilePayload(form) {
 
     allergies: form.allergies,
 
-    chronicIllnesses: form.chronicIllnesses,
+    chronicIllnesses,
 
     surgeries: form.surgeries,
 
-    emergencyContacts: form.emergencyContacts.map((contact) => ({
+    emergencyContacts: emergencyContacts.map((contact) => ({
       relation: contact.relation.trim(),
       name: contact.name.trim(),
       phone: contact.phone.trim(),
@@ -235,3 +252,4 @@ export function buildProfilePayload(form) {
     bloodDonationContactNumber: form.bloodDonationContactNumber.trim(),
   };
 }
+

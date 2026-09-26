@@ -1,10 +1,10 @@
 // client/src/config/medicalRecordConfig.js
 
-// Configuration parameters and string definitions for prescriptions and report pages.
+// Defines shared configuration for prescription and medical report pages.
+// Keeps labels, descriptions, storage folders, and API paths centralized.
 
-// Configuration mapping for medical record page types
 export const medicalRecordConfig = {
-  // Config settings for prescription records
+  // Defines configuration for prescription records.
   prescription: {
     singular: "prescription",
     plural: "prescriptions",
@@ -35,7 +35,7 @@ export const medicalRecordConfig = {
     apiPath: "/api/prescriptions",
   },
 
-  // Config settings for laboratory report records
+  // Defines configuration for laboratory report records.
   report: {
     singular: "report",
     plural: "reports",

@@ -1,9 +1,14 @@
 // client/src/pages/Health.jsx
 
-import { Activity, HeartPulse, Droplets, Scale } from "lucide-react";
+// Renders the health tracking page.
+// Displays blood pressure, blood sugar, BMI, and lifestyle score data.
+
+import { Activity, Droplets, HeartPulse, Scale } from "lucide-react";
+
 import useHealthLogs from "../hooks/useHealthLogs";
-import { useProfile } from "../context/ProfileContext";
+
 import { useLifestyle } from "../context/LifestyleContext";
+import { useProfile } from "../context/ProfileContext";
 
 import LifestyleScoreCard from "../components/health/LifestyleScoreCard";
 import LifestyleScoreChart from "../components/health/charts/LifestyleScoreChart";
@@ -17,15 +22,15 @@ import BloodPressureChart from "../components/health/charts/BloodPressureChart";
 import BloodSugarForm from "../components/health/forms/BloodSugarForm";
 import BloodSugarChart from "../components/health/charts/BloodSugarChart";
 
+// Provides health metric forms, charts, and lifestyle tracking.
 export default function Health() {
   const { logs, addLog } = useHealthLogs();
   const { profile } = useProfile();
-
   const { assessments, latestAssessment } = useLifestyle();
 
   return (
     <div className="container page">
-      {/* Header */}
+      {/* Page heading and health report introduction. */}
       <section className="page-header">
         <div>
           <div className="flex items-center gap-3">
@@ -43,56 +48,56 @@ export default function Health() {
         </div>
       </section>
 
-      {/* Health Metrics */}
+      {/* Displays all health tracking sections. */}
       <section className="space-y-12">
-        {/* Blood Pressure */}
+        {/* Blood pressure tracking section. */}
         <div>
-          <div className="flex items-center gap-3 mb-5">
+          <div className="mb-5 flex items-center gap-3">
             <HeartPulse size={22} className="text-blue-600" />
             <h2 className="section-title">Blood Pressure</h2>
           </div>
 
-          <div className="grid lg:grid-cols-[360px_1fr] gap-6">
+          <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
             <BloodPressureForm onAdd={addLog} />
             <BloodPressureChart logs={logs} />
           </div>
         </div>
-        {/* Blood Sugar */}
+
+        {/* Blood sugar tracking section. */}
         <div>
-          <div className="flex items-center gap-3 mb-5">
+          <div className="mb-5 flex items-center gap-3">
             <Droplets size={22} className="text-blue-600" />
             <h2 className="section-title">Blood Sugar</h2>
           </div>
 
-          <div className="grid lg:grid-cols-[360px_1fr] gap-6">
+          <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
             <BloodSugarForm onAdd={addLog} />
             <BloodSugarChart logs={logs} />
           </div>
         </div>
-        {/* BMI */}
+
+        {/* BMI tracking section. */}
         <div>
-          <div className="flex items-center gap-3 mb-5">
+          <div className="mb-5 flex items-center gap-3">
             <Scale size={22} className="text-blue-600" />
             <h2 className="section-title">BMI Tracking</h2>
           </div>
 
-          <div className="grid lg:grid-cols-[360px_1fr] gap-6">
+          <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
             <BMIForm onAdd={addLog} />
-
             <BMIChart logs={logs} height={profile?.height} />
           </div>
         </div>
 
-        {/* Lifestyle Score */}
+        {/* Lifestyle score tracking section. */}
         <div>
-          <div className="flex items-center gap-3 mb-5">
+          <div className="mb-5 flex items-center gap-3">
             <Activity size={22} className="text-blue-600" />
             <h2 className="section-title">Lifestyle Score</h2>
           </div>
 
-          <div className="grid lg:grid-cols-[360px_1fr] gap-6">
+          <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
             <LifestyleScoreCard assessment={latestAssessment} />
-
             <LifestyleScoreChart assessments={assessments} />
           </div>
         </div>

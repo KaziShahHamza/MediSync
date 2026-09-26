@@ -1,9 +1,7 @@
 // client/src/pages/LifestyleScore.jsx
 
-// Main application page for completing the MediSync Lifestyle Assessment.
-// Integrates score counters, interactive questionnaire, results display, and history tracking.
-
-import { Activity } from "lucide-react";
+// Renders the MediSync lifestyle assessment page.
+// Connects assessment state, scoring, results, saving, and history components.
 
 import { useAuth } from "../context/AuthContext";
 import { useLifestyle } from "../context/LifestyleContext";
@@ -22,7 +20,7 @@ import AssessmentHistory from "../components/lifestyle/AssessmentHistory";
 
 import { QUESTIONS } from "../data/lifestyle/lifestyleQuestions";
 
-// Main lifestyle score page component
+// Provides the complete lifestyle assessment workflow.
 export default function LifestyleScore() {
   const { user } = useAuth();
 
@@ -38,17 +36,14 @@ export default function LifestyleScore() {
     answers,
     showScoring,
     setShowScoring,
-
     categories,
     categoryResults,
     totalScore,
     grade,
     feedback,
     answeredCount,
-
     saveMessage,
     saveError,
-
     handleAnswerChange,
     resetAssessment,
     handleSaveAssessment,
@@ -61,7 +56,7 @@ export default function LifestyleScore() {
     <main className="container page">
       <LifestyleHeader />
 
-      {/* Assessment Introduction */}
+      {/* Explains the purpose and limitations of the assessment. */}
       <section className="section">
         <div className="card">
           <div className="card-content">
@@ -69,7 +64,7 @@ export default function LifestyleScore() {
 
             <h2 className="section-title mt-2">Lifestyle Score</h2>
 
-            <p className="text-sm leading-6 text-slate-600 mt-3 max-w-3xl">
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
               Complete the questionnaire based on your usual daily habits. Your
               score is a lifestyle indicator and is not a medical diagnosis or
               clinical health assessment.
@@ -78,7 +73,7 @@ export default function LifestyleScore() {
         </div>
       </section>
 
-      {/* Score Progress Bar */}
+      {/* Displays assessment progress and current score. */}
       <section className="section">
         <StickyScoreBar
           totalScore={totalScore}
@@ -88,7 +83,7 @@ export default function LifestyleScore() {
         />
       </section>
 
-      {/* Questions List */}
+      {/* Displays the interactive lifestyle questionnaire. */}
       <section className="section">
         <Questionnaire
           categories={categories}
@@ -100,7 +95,7 @@ export default function LifestyleScore() {
         />
       </section>
 
-      {/* Analysis Output */}
+      {/* Displays calculated assessment results and feedback. */}
       <section className="section">
         <AssessmentResult
           totalScore={totalScore}
@@ -110,12 +105,12 @@ export default function LifestyleScore() {
         />
       </section>
 
-      {/* Grading Key */}
+      {/* Displays the score grading reference. */}
       <section className="section">
         <GradeReference />
       </section>
 
-      {/* Form Action Controls */}
+      {/* Provides assessment saving and reset controls. */}
       <section className="section">
         <AssessmentControls
           user={user}
@@ -130,7 +125,7 @@ export default function LifestyleScore() {
         />
       </section>
 
-      {/* Historical Record */}
+      {/* Displays saved assessment history for authenticated users. */}
       {user && (
         <section className="section">
           <AssessmentHistory

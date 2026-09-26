@@ -1,17 +1,18 @@
 // client/src/components/medical-record/MedicalRecordModal.jsx
 
-// Displays enlarged record view modal with interactive image controls and AI summary.
+// Displays an enlarged medical record image with zoom controls.
+// Shows the stored AI summary and an informational medical disclaimer.
 
 import {
-  X,
-  Sparkles,
   AlertCircle,
+  RotateCcw,
+  Sparkles,
+  X,
   ZoomIn,
   ZoomOut,
-  RotateCcw,
 } from "lucide-react";
 
-// Modal component for viewing document details and AI summary
+// Renders the selected medical record inside a full-screen modal.
 export default function MedicalRecordModal({
   record,
   zoom,
@@ -21,21 +22,24 @@ export default function MedicalRecordModal({
   onClose,
   config,
 }) {
-  // Return null if no record is selected
+  // Prevents rendering when no medical record is currently selected.
   if (!record) return null;
 
+  // Stops clicks inside the dialog from closing the modal.
+  const handleContentClick = (event) => {
+    event.stopPropagation();
+  };
+
   return (
-    // Dark overlay backdrop wrapper
     <div
       className="fixed inset-0 bg-slate-900/70 flex items-center justify-center z-50 p-5"
       onClick={onClose}
     >
-      {/* Modal content dialog card */}
       <div
         className="bg-white rounded-2xl max-w-7xl w-full max-h-[92vh] p-6 shadow-2xl flex flex-col"
-        onClick={(e) => e.stopPropagation()}
+        onClick={handleContentClick}
       >
-        {/* Modal header with title and control bar */}
+        {/* Provides the record title and image viewing controls. */}
         <div className="flex justify-between items-center mb-5 shrink-0">
           <div>
             <h2 className="text-xl font-semibold text-slate-900">
@@ -47,7 +51,6 @@ export default function MedicalRecordModal({
             </p>
           </div>
 
-          {/* Zoom and close action toolbar */}
           <div className="flex items-center gap-1">
             <button
               type="button"
@@ -93,9 +96,8 @@ export default function MedicalRecordModal({
           </div>
         </div>
 
-        {/* Modal main content split area */}
+        {/* Splits the modal into the image viewer and summary sidebar. */}
         <div className="grid lg:grid-cols-[1fr_320px] gap-6 min-h-0 flex-1">
-          {/* Scrollable document image viewport */}
           <div className="image-preview-scroll flex justify-center items-start bg-slate-100 rounded-xl p-4 min-h-[50vh] lg:h-[70vh] overflow-auto">
             <img
               src={record.imageUrl}
@@ -109,7 +111,6 @@ export default function MedicalRecordModal({
             />
           </div>
 
-          {/* Sidebar displaying document AI summary */}
           <aside className="rounded-xl border border-slate-200 bg-slate-50 p-5 overflow-auto">
             <div className="flex items-center gap-2 mb-4">
               <div className="rounded-lg bg-blue-50 p-2">
@@ -119,7 +120,7 @@ export default function MedicalRecordModal({
               <h3 className="font-semibold text-slate-900">AI Summary</h3>
             </div>
 
-            {/* Conditional AI summary text or fallback warning block */}
+            {/* Shows the saved AI summary or an unavailable-state message. */}
             {record.aiSummary ? (
               <p className="text-sm leading-7 text-slate-700 whitespace-pre-line">
                 {record.aiSummary}
@@ -144,7 +145,6 @@ export default function MedicalRecordModal({
               </div>
             )}
 
-            {/* Medical disclaimer note footer */}
             <div className="mt-6 pt-4 border-t border-slate-200">
               <p className="text-xs leading-5 text-slate-400">
                 AI-generated summaries are for informational purposes and may

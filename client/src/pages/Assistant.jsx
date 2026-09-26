@@ -1,13 +1,19 @@
 // client/src/pages/Assistant.jsx
 
+// Renders the AI health assistant page and conversation interface.
+// Connects chat state and actions to desktop and mobile assistant components.
+
 import { useEffect, useState } from "react";
 import { Menu, PanelLeft } from "lucide-react";
+
 import { useChatbot } from "../context/ChatbotContext";
+
 import AssistantSidebar from "../components/ai-assistant/AssistantSidebar";
 import ChatMessage from "../components/ai-assistant/ChatMessage";
 import ChatInput from "../components/ai-assistant/ChatInput";
 import ChatEmptyState from "../components/ai-assistant/ChatEmptyState";
 
+// Provides the main assistant conversation experience.
 export default function Assistant() {
   const {
     chats,
@@ -25,32 +31,36 @@ export default function Assistant() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Loads available conversations when the page mounts.
   useEffect(() => {
     loadChats();
   }, [loadChats]);
 
-  const handleSelectChat = async (chatId) => {
+  // Opens the selected conversation and closes the mobile sidebar.
+  async function handleSelectChat(chatId) {
     await loadChat(chatId);
     setSidebarOpen(false);
-  };
+  }
 
-  const handleNewChat = async () => {
+  // Creates a new conversation and closes the mobile sidebar.
+  async function handleNewChat() {
     await createChat();
     setSidebarOpen(false);
-  };
+  }
 
-  const handleSendMessage = async ({ content, imageUrls = [] }) => {
+  // Sends a user message with any selected image attachments.
+  async function handleSendMessage({ content, imageUrls = [] }) {
     await sendMessage({
       content,
       imageUrls,
     });
-  };
+  }
 
   return (
     <main className="page">
       <div className="container">
         <div className="flex h-[calc(100vh-8rem)] min-h-[600px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          {/* Desktop Sidebar */}
+          {/* Desktop assistant sidebar. */}
           <aside className="hidden w-72 shrink-0 border-r border-slate-200 bg-slate-50 lg:flex lg:flex-col">
             <AssistantSidebar
               chats={chats}
@@ -62,7 +72,7 @@ export default function Assistant() {
             />
           </aside>
 
-          {/* Mobile Sidebar Overlay */}
+          {/* Mobile assistant sidebar overlay. */}
           {sidebarOpen && (
             <div className="fixed inset-0 z-50 lg:hidden">
               <button
@@ -87,9 +97,9 @@ export default function Assistant() {
             </div>
           )}
 
-          {/* Main Chat Area */}
+          {/* Main conversation area. */}
           <section className="flex min-w-0 flex-1 flex-col bg-white">
-            {/* Chat Header */}
+            {/* Conversation header. */}
             <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-4 sm:px-6">
               <div className="flex min-w-0 items-center gap-3">
                 <button
@@ -122,14 +132,14 @@ export default function Assistant() {
               </button>
             </header>
 
-            {/* Error */}
+            {/* Displays assistant errors when present. */}
             {error && (
               <div className="border-b border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700 sm:px-6">
                 {error}
               </div>
             )}
 
-            {/* Conversation */}
+            {/* Displays the active conversation or empty state. */}
             <div className="min-h-0 flex-1 overflow-y-auto">
               {loadingChat ? (
                 <div className="flex h-full items-center justify-center px-6">
@@ -164,7 +174,7 @@ export default function Assistant() {
               )}
             </div>
 
-            {/* Input */}
+            {/* Provides the message input area. */}
             <div className="shrink-0 border-t border-slate-200 bg-white">
               <div className="mx-auto w-full max-w-4xl px-4 py-3 sm:px-6 sm:py-4">
                 <ChatInput

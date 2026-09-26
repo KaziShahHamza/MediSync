@@ -1,12 +1,12 @@
 // client/src/components/medicine/MedicineTreatment.jsx
 
-// Handles medicine treatment start, active status, and end-date inputs.
+// Handles medicine treatment dates and active treatment status.
+// Provides month and year controls for treatment duration.
 
 import { CalendarDays } from "lucide-react";
 
 import { MEDICINE_MONTHS } from "../../data/medicine/medicineMonths";
 
-// Renders options and form controls for medicine treatment duration.
 export default function MedicineTreatment({
   startMonth,
   setStartMonth,
@@ -20,7 +20,7 @@ export default function MedicineTreatment({
   setIsActive,
   yearOptions,
 }) {
-  // Updates start year and resets end date if end year precedes start year.
+  // Updates the start year and clears an invalid end year.
   const handleStartYearChange = (event) => {
     const value = event.target.value;
 
@@ -34,7 +34,7 @@ export default function MedicineTreatment({
 
   return (
     <section className="space-y-4">
-      {/* Treatment period section header */}
+      {/* Displays the treatment period section header. */}
       <div>
         <div className="flex items-center gap-2">
           <CalendarDays size={18} className="text-sky-600" />
@@ -50,7 +50,7 @@ export default function MedicineTreatment({
         </p>
       </div>
 
-      {/* Start date dropdown selectors */}
+      {/* Provides the treatment start month and year selectors. */}
       <div>
         <p className="mb-2 text-sm font-medium text-slate-700">
           Treatment started
@@ -89,7 +89,7 @@ export default function MedicineTreatment({
         </div>
       </div>
 
-      {/* Checkbox for active treatment status */}
+      {/* Controls whether the medicine treatment is currently active. */}
       <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4">
         <input
           type="checkbox"
@@ -109,7 +109,7 @@ export default function MedicineTreatment({
         </div>
       </label>
 
-      {/* Conditional end date dropdown selectors for finished treatment */}
+      {/* Displays end-date controls only for completed treatments. */}
       {!isActive && (
         <div>
           <p className="mb-2 text-sm font-medium text-slate-700">

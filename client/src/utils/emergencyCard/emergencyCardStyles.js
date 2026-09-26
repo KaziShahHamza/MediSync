@@ -1,12 +1,12 @@
-// client/src/utils/emergencyCard/emergencyCardStyles.js;
+// client/src/utils/emergencyCard/emergencyCardStyles.js
 
-// Generates CSS styling rules for rendering printable/exportable emergency medical cards.
-// Sets up custom Bengali fonts, physical card dimensions, identity layouts, and medical data grids.
+// Generates CSS rules for printable and exportable emergency medical cards.
+// Defines Bengali fonts, physical card dimensions, layouts, and medical data styles.
 
 const FONT_REGULAR = "/fonts/NotoSansBengali-Regular.ttf";
 const FONT_BOLD = "/fonts/NotoSansBengali-Bold.ttf";
 
-// Generates and returns CSS styles as a single string template
+// Generates the complete stylesheet used by the emergency card renderer.
 export const getStyles = () => `
   @font-face {
     font-family: "NotoBengali";
@@ -39,7 +39,7 @@ export const getStyles = () => `
     font-family: "NotoBengali", Arial, sans-serif;
   }
 
-  /* Main preview and print rendering area */
+  /* Defines the isolated rendering canvas used before PDF conversion. */
   .render-area {
     width: 1000px;
     min-height: 1000px;
@@ -47,7 +47,7 @@ export const getStyles = () => `
     background: #ffffff;
   }
 
-  /* Physical dimensions for emergency card */
+  /* Defines the physical dimensions and base appearance of the card. */
   .card {
     width: 85.6mm;
     height: 53.98mm;
@@ -63,7 +63,7 @@ export const getStyles = () => `
     font-family: "NotoBengali", Arial, sans-serif;
   }
 
-  /* Card top branding strip */
+  /* Styles the top branding strip shared by both card sides. */
   .top-strip {
     height: 10.5mm;
     padding: 2.2mm 3.5mm;
@@ -124,7 +124,7 @@ export const getStyles = () => `
     letter-spacing: 0.15mm;
   }
 
-  /* Front card layout elements */
+  /* Defines the front-side identity and emergency-contact layout. */
   .front-content {
     padding: 2.6mm 3.5mm 1.5mm;
   }
@@ -222,6 +222,7 @@ export const getStyles = () => `
     white-space: nowrap;
   }
 
+  /* Highlights the user's blood group on the front side. */
   .blood-section {
     position: absolute;
 
@@ -380,6 +381,7 @@ export const getStyles = () => `
     color: #64748b;
   }
 
+  /* Anchors the footer consistently at the bottom of each card side. */
   .footer {
     position: absolute;
 
@@ -395,7 +397,7 @@ export const getStyles = () => `
     color: #94a3b8;
   }
 
-  /* Back card layout elements */
+  /* Defines the back-side title and medical-information layout. */
   .back-title {
     font-size: 3mm;
     color: #0f172a;
@@ -424,6 +426,7 @@ export const getStyles = () => `
     margin-bottom: 1.7mm;
   }
 
+  /* Arranges medical information into compact two-column sections. */
   .medical-grid {
     display: grid;
 

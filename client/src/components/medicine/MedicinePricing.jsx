@@ -1,7 +1,7 @@
 // client/src/components/medicine/MedicinePricing.jsx
 
 // Handles strip-based and unit-based medicine pricing inputs.
-// Displays live monthly usage, price-per-piece, and monthly cost previews.
+// Provides live usage, price-per-piece, and monthly cost previews.
 
 import { CircleDollarSign, Package } from "lucide-react";
 
@@ -13,7 +13,6 @@ import {
   formatMedicinePrice,
 } from "../../utils/medicine/medicineCalculations";
 
-// Renders the medicine pricing input fields and monthly cost preview.
 export default function MedicinePricing({
   pricingType,
   pricePerStrip,
@@ -26,18 +25,17 @@ export default function MedicinePricing({
   setUnitsPerMonth,
   dosage,
 }) {
+  // Determines whether strip-based pricing fields should be displayed.
   const isStrip = pricingType === "strip";
 
-  // Calculates daily usage in pieces.
+  // Calculates daily and monthly strip-based medicine usage.
   const dailyPieces = getDailyMedicinePieces(dosage);
-
-  // Calculates monthly usage in pieces.
   const monthlyPieces = getMonthlyMedicinePieces(dosage);
 
-  // Calculates price per individual piece.
+  // Calculates the estimated cost of one individual strip piece.
   const pricePerPiece = getPricePerPiece(pricePerStrip, piecesPerStrip);
 
-  // Constructs preview payload for price calculations.
+  // Builds a normalized preview object for the shared cost utility.
   const previewMedicine = {
     pricingType,
     dosage,
@@ -47,14 +45,14 @@ export default function MedicinePricing({
     unitsPerMonth,
   };
 
-  // Calculates total monthly cost.
+  // Calculates the estimated monthly medicine cost.
   const monthlyCost = getMedicineMonthlyCost(previewMedicine);
 
-  // Renders inputs and calculations for strip-based pricing.
+  // Renders strip-specific pricing and usage information.
   if (isStrip) {
     return (
       <section className="space-y-4">
-        {/* Strip pricing header */}
+        {/* Displays the strip pricing section header. */}
         <div>
           <h3 className="text-sm font-semibold text-slate-900">Pricing</h3>
 
@@ -63,7 +61,7 @@ export default function MedicinePricing({
           </p>
         </div>
 
-        {/* Input fields for strip price and pieces count */}
+        {/* Collects strip price and pieces-per-strip values. */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label
@@ -119,7 +117,7 @@ export default function MedicinePricing({
           </div>
         </div>
 
-        {/* Monthly cost and usage summary preview */}
+        {/* Presents calculated strip usage and monthly cost. */}
         <div className="rounded-xl border border-sky-100 bg-sky-50 p-4">
           <div className="mb-3 flex items-center gap-2">
             <CircleDollarSign size={18} className="text-sky-600" />
@@ -171,10 +169,10 @@ export default function MedicinePricing({
     );
   }
 
-  // Renders inputs and calculations for unit-based pricing.
+  // Renders unit-based pricing and monthly usage information.
   return (
     <section className="space-y-4">
-      {/* Unit pricing header */}
+      {/* Displays the unit pricing section header. */}
       <div>
         <h3 className="text-sm font-semibold text-slate-900">Pricing</h3>
 
@@ -183,7 +181,7 @@ export default function MedicinePricing({
         </p>
       </div>
 
-      {/* Input fields for unit price and monthly units count */}
+      {/* Collects unit price and monthly unit usage values. */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label
@@ -239,7 +237,7 @@ export default function MedicinePricing({
         </div>
       </div>
 
-      {/* Monthly unit cost summary preview */}
+      {/* Presents calculated unit usage and monthly cost. */}
       <div className="rounded-xl border border-sky-100 bg-sky-50 p-4">
         <div className="mb-3 flex items-center gap-2">
           <CircleDollarSign size={18} className="text-sky-600" />

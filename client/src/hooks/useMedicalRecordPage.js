@@ -1,60 +1,55 @@
 // client/src/hooks/useMedicalRecordPage.js
 
-// Manages medical record page state, image zooming, file upload, and document deletion logic.
+// Manages medical record upload, deletion, selection, and image zoom.
+// Keeps Cloudinary, API, and modal state logic outside the page component.
 
 import { useState } from "react";
 
-// Environment variables for API and Cloudinary uploads
 const API_URL = import.meta.env.VITE_API_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-// Custom hook to manage state and actions for medical records
 export default function useMedicalRecordPage({
   records,
   fetchRecords,
   config,
 }) {
-  // Input and selection state
   const [title, setTitle] = useState("");
   const [file, setFile] = useState(null);
-
   const [selected, setSelected] = useState(null);
 
-  // Async process state
   const [loading, setLoading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
 
-  // Modal zoom level state
   const [zoom, setZoom] = useState(1);
 
-  // Increments image zoom scale
+  // Increase image zoom up to the maximum supported scale.
   const zoomIn = () => {
-    setZoom((prev) => Math.min(prev + 0.25, 3));
+    setZoom((previousZoom) => Math.min(previousZoom + 0.25, 3));
   };
 
-  // Decrements image zoom scale
+  // Decrease image zoom down to the minimum supported scale.
   const zoomOut = () => {
-    setZoom((prev) => Math.max(prev - 0.25, 0.5));
+    setZoom((previousZoom) => Math.max(previousZoom - 0.25, 0.5));
   };
 
-  // Resets image zoom to default scale
+  // Restore the image to its default zoom level.
   const resetZoom = () => {
     setZoom(1);
   };
 
-  // Closes full-view modal and resets image scale
+  // Close the selected record modal and restore zoom.
   const closeModal = () => {
     setSelected(null);
     resetZoom();
   };
 
-  // Handles input file selection
+  // Store the selected upload file.
   const handleFileChange = (event) => {
     setFile(event.target.files?.[0] || null);
   };
 
-  // Handles uploading file, creating record, and requesting AI analysis
+  // Upload an image, save its record, and trigger AI analysis.
   async function handleUpload() {
     if (!title.trim() || !file) {
       alert(`Select an image and enter a ${config.singular} title.`);
@@ -65,16 +60,13 @@ export default function useMedicalRecordPage({
     setUploadStatus("Uploading image...");
 
     try {
-      // Form payload setup for image service
       const formData = new FormData();
 
       formData.append("file", file);
       formData.append("upload_preset", UPLOAD_PRESET);
-
       formData.append("folder", config.folder);
 
-      // Upload image binary to Cloudinary
-      const uploadRes = await fetch(
+      const uploadResponse = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
         {
           method: "POST",
@@ -82,18 +74,21 @@ export default function useMedicalRecordPage({
         },
       );
 
-      if (!uploadRes.ok) {
-        throw new Error("Failed to upload image.");
-      }
+      const uploadData = await uploadResponse.json().catch(() => ({}));
 
-      const uploadData = await uploadRes.json();
+      if (!uploadResponse.ok) {
+        throw new Error(uploadData.error?.message || "Failed to upload image.");
+      }
 
       const token = localStorage.getItem("token");
 
+      if (!token) {
+        throw new Error("Authentication is required.");
+      }
+
       setUploadStatus("Saving medical record...");
 
-      // Persist uploaded record to database
-      const recordRes = await fetch(`${API_URL}${config.apiPath}`, {
+      const recordResponse = await fetch(`${API_URL}${config.apiPath}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -105,17 +100,17 @@ export default function useMedicalRecordPage({
         }),
       });
 
-      const record = await recordRes.json();
+      const record = await recordResponse.json().catch(() => ({}));
 
-      if (!recordRes.ok) {
+      if (!recordResponse.ok) {
         throw new Error(record.message || `Failed to save ${config.singular}.`);
       }
 
       setUploadStatus("Analyzing document with AI...");
 
-      // Trigger asynchronous AI analysis for document summary
+      // AI analysis is best-effort and should not fail the saved record.
       try {
-        const analyzeRes = await fetch(
+        const analyzeResponse = await fetch(
           `${API_URL}${config.apiPath}/${record._id}/analyze`,
           {
             method: "POST",
@@ -125,35 +120,33 @@ export default function useMedicalRecordPage({
           },
         );
 
-        if (!analyzeRes.ok) {
-          const errorData = await analyzeRes.json();
+        if (!analyzeResponse.ok) {
+          const analysisError = await analyzeResponse.json().catch(() => ({}));
 
           console.error(
             "AI analysis failed:",
-            errorData.message || "Unknown error",
+            analysisError.message || "Unknown error",
           );
         }
       } catch (analysisError) {
         console.error("AI analysis failed:", analysisError);
       }
 
-      // Reset input state and refresh list
       setTitle("");
       setFile(null);
-      setUploadStatus("");
 
       await fetchRecords();
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
 
-      alert(err.message || `Failed to upload ${config.singular}.`);
+      alert(error?.message || `Failed to upload ${config.singular}.`);
     } finally {
       setLoading(false);
       setUploadStatus("");
     }
   }
 
-  // Removes a saved medical record
+  // Delete a medical record and refresh the record collection.
   async function deleteRecord(id) {
     if (!window.confirm(`Delete ${config.singular}?`)) {
       return;
@@ -161,36 +154,38 @@ export default function useMedicalRecordPage({
 
     const token = localStorage.getItem("token");
 
+    if (!token) {
+      alert("Authentication is required.");
+      return;
+    }
+
     try {
-      // Send delete request to server
-      const res = await fetch(`${API_URL}${config.apiPath}/${id}`, {
+      const response = await fetch(`${API_URL}${config.apiPath}/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!res.ok) {
-        const data = await res.json();
+      const data = await response.json().catch(() => ({}));
 
+      if (!response.ok) {
         throw new Error(data.message || `Failed to delete ${config.singular}.`);
       }
 
-      // Close modal if deleted item is currently viewed
       if (selected?._id === id) {
         setSelected(null);
         resetZoom();
       }
 
       await fetchRecords();
-    } catch (err) {
-      console.error(`Failed to delete ${config.singular}:`, err);
+    } catch (error) {
+      console.error(`Failed to delete ${config.singular}:`, error);
 
-      alert(err.message || `Failed to delete ${config.singular}.`);
+      alert(error?.message || `Failed to delete ${config.singular}.`);
     }
   }
 
-  // Export hook interface
   return {
     records,
 

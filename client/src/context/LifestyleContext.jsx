@@ -1,9 +1,15 @@
 // client/src/context/LifestyleContext.jsx
 
-// React context providing global state and API interactions for lifestyle assessments.
-// Fetches existing history, posts new submissions, and exposes state hooks.
+// Provides global lifestyle assessment state and API operations.
+// Manages assessment history, latest results, saving, loading, and errors.
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 import { useAuth } from "./AuthContext";
 
@@ -11,7 +17,6 @@ const LifestyleContext = createContext(null);
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Context provider component
 export function LifestyleProvider({ children }) {
   const { user } = useAuth();
 
@@ -22,8 +27,7 @@ export function LifestyleProvider({ children }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  // Gets JWT authorization header from local storage
-  const getAuthHeaders = () => {
+  function getAuthHeaders() {
     const token = localStorage.getItem("token");
 
     return token
@@ -31,21 +35,18 @@ export function LifestyleProvider({ children }) {
           Authorization: `Bearer ${token}`,
         }
       : null;
-  };
+  }
 
-  // Fetches user assessment history from API
-  const fetchAssessments = async () => {
+  // Fetches assessment history from the authenticated lifestyle endpoint.
+  const fetchAssessments = useCallback(async () => {
     const headers = getAuthHeaders();
 
     if (!user || !headers) {
       setAssessments([]);
-      return;
+      return [];
     }
 
     try {
-      setLoading(true);
-      setError("");
-
       const response = await fetch(`${API_URL}/api/lifestyle`, {
         headers,
       });
@@ -57,28 +58,27 @@ export function LifestyleProvider({ children }) {
       }
 
       setAssessments(data.assessments || []);
-    } catch (err) {
-      console.error("Fetch lifestyle assessments error:", err);
 
-      setError(err.message || "Failed to load lifestyle assessments");
-    } finally {
-      setLoading(false);
+      return data.assessments || [];
+    } catch (error) {
+      console.error("Fetch lifestyle assessments error:", error);
+
+      setError(error.message || "Failed to load lifestyle assessments");
+
+      return [];
     }
-  };
+  }, [user]);
 
-  // Fetches single most recent assessment from API
-  const fetchLatestAssessment = async () => {
+  // Fetches the most recent lifestyle assessment for the user.
+  const fetchLatestAssessment = useCallback(async () => {
     const headers = getAuthHeaders();
 
     if (!user || !headers) {
       setLatestAssessment(null);
-      return;
+      return null;
     }
 
     try {
-      setLoading(true);
-      setError("");
-
       const response = await fetch(`${API_URL}/api/lifestyle/latest`, {
         headers,
       });
@@ -92,72 +92,79 @@ export function LifestyleProvider({ children }) {
       }
 
       setLatestAssessment(data.assessment || null);
-    } catch (err) {
-      console.error("Fetch latest lifestyle assessment error:", err);
 
-      setError(err.message || "Failed to load latest lifestyle assessment");
-    } finally {
-      setLoading(false);
+      return data.assessment || null;
+    } catch (error) {
+      console.error("Fetch latest lifestyle assessment error:", error);
+
+      setError(error.message || "Failed to load latest lifestyle assessment");
+
+      return null;
     }
-  };
+  }, [user]);
 
-  // Persists submitted assessment answers to server
-  const saveAssessment = async (answers) => {
-    const headers = getAuthHeaders();
+  // Saves a new assessment and updates both local assessment states.
+  const saveAssessment = useCallback(
+    async (answers) => {
+      const headers = getAuthHeaders();
 
-    if (!user || !headers) {
-      throw new Error("Please log in to save your lifestyle assessment.");
-    }
-
-    try {
-      setSaving(true);
-      setError("");
-
-      const response = await fetch(`${API_URL}/api/lifestyle`, {
-        method: "POST",
-        headers: {
-          ...headers,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          answers,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to save lifestyle assessment");
+      if (!user || !headers) {
+        throw new Error("Please log in to save your lifestyle assessment.");
       }
 
-      const savedAssessment = data.assessment;
+      try {
+        setSaving(true);
+        setError("");
 
-      setLatestAssessment(savedAssessment);
+        const response = await fetch(`${API_URL}/api/lifestyle`, {
+          method: "POST",
+          headers: {
+            ...headers,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            answers,
+          }),
+        });
 
-      setAssessments((previousAssessments) => {
-        const updatedAssessments = [
-          savedAssessment,
-          ...previousAssessments.filter(
-            (assessment) => assessment._id !== savedAssessment._id,
-          ),
-        ];
+        const data = await response.json();
 
-        return updatedAssessments.slice(0, 10);
-      });
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Failed to save lifestyle assessment",
+          );
+        }
 
-      return savedAssessment;
-    } catch (err) {
-      console.error("Save lifestyle assessment error:", err);
+        const savedAssessment = data.assessment;
 
-      setError(err.message || "Failed to save lifestyle assessment");
+        setLatestAssessment(savedAssessment);
 
-      throw err;
-    } finally {
-      setSaving(false);
-    }
-  };
+        setAssessments((previousAssessments) => {
+          const updatedAssessments = [
+            savedAssessment,
+            ...previousAssessments.filter(
+              (assessment) => assessment._id !== savedAssessment._id,
+            ),
+          ];
 
-  // Synchronize state when authentication status changes
+          return updatedAssessments.slice(0, 10);
+        });
+
+        return savedAssessment;
+      } catch (error) {
+        console.error("Save lifestyle assessment error:", error);
+
+        setError(error.message || "Failed to save lifestyle assessment");
+
+        throw error;
+      } finally {
+        setSaving(false);
+      }
+    },
+    [user],
+  );
+
+  // Loads both history and latest assessment when authentication changes.
   useEffect(() => {
     if (!user) {
       setAssessments([]);
@@ -166,17 +173,35 @@ export function LifestyleProvider({ children }) {
       return;
     }
 
-    fetchAssessments();
-    fetchLatestAssessment();
-  }, [user]);
+    let active = true;
 
+    const loadLifestyleData = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        await Promise.all([fetchAssessments(), fetchLatestAssessment()]);
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadLifestyleData();
+
+    return () => {
+      active = false;
+    };
+  }, [user, fetchAssessments, fetchLatestAssessment]);
+
+  // Exposes lifestyle state and API operations through the context.
   const value = {
     assessments,
     latestAssessment,
     loading,
     saving,
     error,
-
     saveAssessment,
     fetchAssessments,
     fetchLatestAssessment,
@@ -189,7 +214,6 @@ export function LifestyleProvider({ children }) {
   );
 }
 
-// Hook to consume lifestyle context
 export function useLifestyle() {
   const context = useContext(LifestyleContext);
 

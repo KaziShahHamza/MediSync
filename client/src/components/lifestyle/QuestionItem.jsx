@@ -1,14 +1,14 @@
 // client/src/components/lifestyle/QuestionnaireItem.jsx
 
-// Renders an individual questionnaire item and handles user choice selections
-// question items, multi/single option selection logic, and scoring displays
+// Renders an individual lifestyle questionnaire item.
+// Handles single and multiple selections and optional score visibility.
 
-// Formats number to include positive sign prefix
+// Formats a score value with a positive sign when appropriate.
 function formatPoints(points) {
   return points > 0 ? `+${points}` : `${points}`;
 }
 
-// Calculates earned points based on question type and selected option(s)
+// Calculates the points contributed by the selected questionnaire options.
 function getSelectedPoints(question, selectedValue) {
   if (question.type === "multi") {
     if (!Array.isArray(selectedValue) || selectedValue.length === 0) {
@@ -63,7 +63,7 @@ export function QuestionItem({
 
   const selectedPoints = getSelectedPoints(question, selectedValue);
 
-  // Updates parent form state for radio and checkbox choices
+  // Handles adding and removing single or multiple answer selections.
   const handleOptionChange = (optionLabel) => {
     if (isMulti) {
       const currentValues = Array.isArray(selectedValue) ? selectedValue : [];
@@ -120,7 +120,7 @@ export function QuestionItem({
         )}
       </div>
 
-      {/* Answer selection grid */}
+      {/* Renders the available radio or checkbox answer options. */}
       <div className="grid sm:grid-cols-2 gap-3 mt-5">
         {question.options.map((option) => {
           const isSelected = isMulti
@@ -180,6 +180,7 @@ export function QuestionItem({
         })}
       </div>
 
+      {/* Explains how selected answers affect scoring when enabled. */}
       {showScoring && (
         <div className="mt-4 rounded-xl bg-slate-50 border border-slate-200 px-4 py-3">
           <p className="text-xs leading-5 text-slate-500">

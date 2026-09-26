@@ -1,6 +1,7 @@
 // client/src/hooks/useProfilePhoto.js
 
-// Handles Cloudinary profile photo upload, backend saving, and photo removal.
+// Handles profile photo upload, backend persistence, and photo removal.
+// Uploads images directly to Cloudinary and stores only photo metadata in the backend.
 
 const API_URL = import.meta.env.VITE_API_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -12,19 +13,18 @@ export default function useProfilePhoto({
   setPhotoLoading,
   fileInputRef,
 }) {
-  // Upload a selected profile photo to Cloudinary and save its URL.
-  async function handlePhotoSelect(e) {
-    const file = e.target.files?.[0];
+  // Uploads a selected profile image and saves its Cloudinary metadata.
+  async function handlePhotoSelect(event) {
+    const file = event.target.files?.[0];
 
     if (!file) return;
 
-    // Validate the selected image type.
+    // Validate the selected file before uploading.
     if (!file.type.startsWith("image/")) {
       alert("Please select an image file.");
       return;
     }
 
-    // Validate the maximum image size.
     if (file.size > 5 * 1024 * 1024) {
       alert("Profile photo must be smaller than 5 MB.");
       return;
@@ -40,7 +40,7 @@ export default function useProfilePhoto({
       formData.append("folder", "MediSync/profile-photos");
 
       // Upload the image directly to Cloudinary.
-      const uploadRes = await fetch(
+      const uploadResponse = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
         {
           method: "POST",
@@ -48,16 +48,22 @@ export default function useProfilePhoto({
         },
       );
 
-      if (!uploadRes.ok) {
-        throw new Error("Failed to upload profile photo.");
-      }
+      const uploadData = await uploadResponse.json();
 
-      const uploadData = await uploadRes.json();
+      if (!uploadResponse.ok) {
+        throw new Error(
+          uploadData?.error?.message || "Failed to upload profile photo.",
+        );
+      }
 
       const token = localStorage.getItem("token");
 
+      if (!token) {
+        throw new Error("Authentication is required.");
+      }
+
       // Save the uploaded photo metadata to the user account.
-      const saveRes = await fetch(`${API_URL}/api/profile/photo`, {
+      const saveResponse = await fetch(`${API_URL}/api/profile/photo`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -69,9 +75,9 @@ export default function useProfilePhoto({
         }),
       });
 
-      const saveData = await saveRes.json();
+      const saveData = await saveResponse.json();
 
-      if (!saveRes.ok) {
+      if (!saveResponse.ok) {
         throw new Error(saveData.message || "Failed to save profile photo.");
       }
 
@@ -91,11 +97,9 @@ export default function useProfilePhoto({
     }
   }
 
-  // Remove the current profile photo through the backend.
+  // Removes the current profile photo through the backend.
   async function handleRemovePhoto() {
-    if (!userInfo?.profilePhotoUrl) {
-      return;
-    }
+    if (!userInfo?.profilePhotoUrl) return;
 
     const confirmed = window.confirm("Remove your profile photo?");
 
@@ -106,17 +110,21 @@ export default function useProfilePhoto({
     try {
       const token = localStorage.getItem("token");
 
-      // Request profile photo removal from the server.
-      const res = await fetch(`${API_URL}/api/profile/photo`, {
+      if (!token) {
+        throw new Error("Authentication is required.");
+      }
+
+      // Request profile photo removal from the backend.
+      const response = await fetch(`${API_URL}/api/profile/photo`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
-      if (!res.ok) {
+      if (!response.ok) {
         throw new Error(data.message || "Failed to remove profile photo.");
       }
 

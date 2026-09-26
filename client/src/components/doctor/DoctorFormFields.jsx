@@ -1,10 +1,11 @@
 // client/src/components/doctor/DoctorFormFields.jsx
 
-// Provides reusable select, multi-select, and time input components for doctor forms.
+// Provides reusable select, multi-select, and time input components.
+// Normalizes multiple option formats for consistent doctor form controls.
 
 import { MousePointer2 } from "lucide-react";
 
-// Normalizes different option formats into a value usable by HTML select.
+// Normalize different option formats into an HTML select value.
 function getOptionValue(option) {
   if (typeof option === "string" || typeof option === "number") {
     return String(option);
@@ -13,7 +14,7 @@ function getOptionValue(option) {
   return String(option.value ?? option.name ?? option.label ?? "");
 }
 
-// Normalizes different option formats into the visible select label.
+// Normalize different option formats into a visible select label.
 function getOptionLabel(option) {
   if (typeof option === "string" || typeof option === "number") {
     return String(option);
@@ -22,7 +23,7 @@ function getOptionLabel(option) {
   return String(option.label ?? option.name ?? option.value ?? "");
 }
 
-// Standard single-value select used throughout the doctor form.
+// Render a standard single-value select field.
 export function SelectField({
   label,
   name,
@@ -31,6 +32,7 @@ export function SelectField({
   options = [],
   placeholder = "Select an option",
 }) {
+  // Render normalized options while ignoring completely empty entries.
   return (
     <div>
       <label className="mb-1.5 block text-sm font-medium text-slate-700">
@@ -64,7 +66,7 @@ export function SelectField({
   );
 }
 
-// Multi-value select for fields such as degrees and specialities.
+// Render a multi-value select for degrees and specialities.
 export function MultiSelect({
   label,
   options = [],
@@ -72,6 +74,7 @@ export function MultiSelect({
   onChange,
   placeholder = "Select options",
 }) {
+  // Build the selectable option list from normalized values.
   return (
     <div>
       <label className="mb-1.5 block text-sm font-medium text-slate-700">
@@ -114,10 +117,11 @@ export function MultiSelect({
   );
 }
 
-// Generates the 12-hour values used by chamber visiting times.
+// Generate the 12-hour values used for chamber visiting times.
 export function TimeSelect({ value, onChange }) {
   const hours = Array.from({ length: 12 }, (_, index) => String(index + 1));
 
+  // Render the available hour choices.
   return (
     <select
       value={value}
@@ -134,8 +138,9 @@ export function TimeSelect({ value, onChange }) {
   );
 }
 
-// Provides the AM/PM selector for chamber visiting times.
+// Render the AM/PM selector for chamber visiting times.
 export function PeriodSelect({ value, onChange }) {
+  // Keep the period values aligned with chamber form data.
   return (
     <select
       value={value}

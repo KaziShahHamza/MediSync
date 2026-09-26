@@ -1,6 +1,7 @@
 // client/src/components/medicine/MedicineCardContent.jsx
 
-// Renders the complete visual layout of an individual medicine card.
+// Renders the medicine summary card and its interactive controls.
+// Displays treatment status, dosage, usage, pricing, and actions.
 
 import {
   CalendarDays,
@@ -12,9 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 
-import {
-  formatMedicinePrice,
-} from "../../utils/medicine/medicineCalculations";
+import { formatMedicinePrice } from "../../utils/medicine/medicineCalculations";
 
 import {
   formatDate,
@@ -22,7 +21,6 @@ import {
   getMedicineTypeLabel,
 } from "../../utils/medicine/medicineHelpers";
 
-// Renders medicine card presentation and interactive controls.
 export default function MedicineCardContent({
   medicine,
   isStripMedicine,
@@ -43,7 +41,7 @@ export default function MedicineCardContent({
       role="button"
       tabIndex={0}
       onKeyDown={(event) => {
-        // Support keyboard interaction for card click
+        // Supports keyboard activation of the medicine card.
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
           onView(medicine);
@@ -52,7 +50,7 @@ export default function MedicineCardContent({
       aria-label={`View ${medicine?.name || "medicine"} details`}
     >
       <div className="flex flex-col gap-4 sm:flex-row">
-        {/* Medicine thumbnail image or placeholder section */}
+        {/* Displays the medicine image or an empty-image placeholder. */}
         <div className="relative shrink-0" onClick={onStopCardClick}>
           {medicine?.imageUrl ? (
             <button
@@ -75,16 +73,14 @@ export default function MedicineCardContent({
               aria-label={`View ${medicine.name} details`}
             >
               <ImageOff size={22} />
-
               <span className="text-xs">No image</span>
             </button>
           )}
         </div>
 
-        {/* Medicine metadata and actions container */}
+        {/* Displays medicine metadata, actions, dosage, and usage details. */}
         <div className="min-w-0 flex-1">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            {/* Header info including title, type label, and status badges */}
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-2">
@@ -95,12 +91,12 @@ export default function MedicineCardContent({
                   </h3>
                 </div>
 
-                {/* Medicine category badge */}
+                {/* Identifies the medicine category. */}
                 <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
                   {getMedicineTypeLabel(medicine?.type)}
                 </span>
 
-                {/* Active treatment status badge */}
+                {/* Indicates whether the treatment is currently active. */}
                 <span
                   className={`rounded-full px-2.5 py-1 text-xs font-medium ${
                     isActive
@@ -112,7 +108,7 @@ export default function MedicineCardContent({
                 </span>
               </div>
 
-              {/* Treatment start and end date labels */}
+              {/* Displays treatment start and completion dates. */}
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
                 <span className="inline-flex items-center gap-1.5">
                   <CalendarDays size={14} />
@@ -128,12 +124,11 @@ export default function MedicineCardContent({
               </div>
             </div>
 
-            {/* Quick action buttons block */}
+            {/* Provides quick view, edit, and delete actions. */}
             <div
               className="flex shrink-0 items-center gap-1"
               onClick={onStopCardClick}
             >
-              {/* View detail action button */}
               <button
                 type="button"
                 onClick={() => onView(medicine)}
@@ -144,7 +139,6 @@ export default function MedicineCardContent({
                 <Pill size={17} />
               </button>
 
-              {/* Edit action button */}
               <button
                 type="button"
                 onClick={onEdit}
@@ -155,7 +149,6 @@ export default function MedicineCardContent({
                 <Pencil size={17} />
               </button>
 
-              {/* Delete action button */}
               <button
                 type="button"
                 onClick={onDelete}
@@ -168,7 +161,7 @@ export default function MedicineCardContent({
             </div>
           </div>
 
-          {/* Dosage breakdown container for strip-based medicines */}
+          {/* Displays dosage schedule when strip-based dosage is applicable. */}
           {isStripMedicine && (
             <div className="mt-4 rounded-xl bg-slate-50 p-3">
               <div className="mb-2 flex items-center gap-2">
@@ -179,7 +172,6 @@ export default function MedicineCardContent({
                 </span>
               </div>
 
-              {/* List of dosage schedule pills or empty state */}
               {dosage.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {dosage.map((item) => (
@@ -206,9 +198,8 @@ export default function MedicineCardContent({
             </div>
           )}
 
-          {/* Monthly cost and unit usage footer section */}
+          {/* Summarizes monthly cost and medicine consumption. */}
           <div className="mt-4 flex flex-wrap gap-4 border-t border-slate-100 pt-3">
-            {/* Calculated monthly cost display */}
             <div className="flex items-center gap-2">
               <CircleDollarSign size={16} className="text-slate-400" />
 
@@ -221,7 +212,6 @@ export default function MedicineCardContent({
               </div>
             </div>
 
-            {/* Calculated monthly usage display */}
             <div className="flex items-center gap-2">
               <Pill size={16} className="text-slate-400" />
 

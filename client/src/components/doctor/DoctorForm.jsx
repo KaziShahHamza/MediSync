@@ -28,7 +28,7 @@ export default function DoctorForm({
   setForm,
   onClose,
 }) {
-  // Updates one phone or email entry inside contact information.
+  // Update one phone or email entry inside contact information.
   function updateContact(type, index, value) {
     setForm((previousForm) => ({
       ...previousForm,
@@ -41,7 +41,7 @@ export default function DoctorForm({
     }));
   }
 
-  // Updates a multi-select field with all currently selected values.
+  // Update a multi-select field with all selected values.
   function updateMultiSelect(field, event) {
     const values = Array.from(
       event.target.selectedOptions,
@@ -54,14 +54,14 @@ export default function DoctorForm({
     }));
   }
 
-  // Resets the form and closes the modal.
+  // Reset the form before closing the modal.
   function handleCancel() {
     onReset();
     onClose();
   }
 
+  // Render the complete doctor form inside the modal shell.
   return (
-    // Modal shell: keeps the form responsive and scrollable on smaller screens.
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
       onMouseDown={onClose}
@@ -73,7 +73,6 @@ export default function DoctorForm({
         className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
         onMouseDown={(event) => event.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-6">
           <div>
             <h2
@@ -90,7 +89,6 @@ export default function DoctorForm({
             </p>
           </div>
 
-          {/* Closes the doctor form modal. */}
           <button
             type="button"
             onClick={handleCancel}
@@ -101,7 +99,6 @@ export default function DoctorForm({
           </button>
         </div>
 
-        {/* Two-column desktop / one-column mobile form. */}
         <div className="min-h-0 overflow-y-auto">
           <form
             id="doctor-form"
@@ -110,7 +107,6 @@ export default function DoctorForm({
           >
             <DoctorFormSection title="Basic Information">
               <div className="space-y-4">
-                {/* Captures the doctor's basic identity. */}
                 <div>
                   <label>Doctor Name</label>
 
@@ -125,7 +121,6 @@ export default function DoctorForm({
                   />
                 </div>
 
-                {/* Captures the doctor's BMDC registration number. */}
                 <div>
                   <label>BMDC Registration No.</label>
 
@@ -139,7 +134,6 @@ export default function DoctorForm({
                   />
                 </div>
 
-                {/* Selects the doctor's professional designation. */}
                 <SelectField
                   label="Designation"
                   name="designation"
@@ -149,7 +143,6 @@ export default function DoctorForm({
                   placeholder="Select designation"
                 />
 
-                {/* Selects the doctor's primary hospital. */}
                 <SelectField
                   label="Primary Hospital"
                   name="primaryHospital"
@@ -159,7 +152,6 @@ export default function DoctorForm({
                   placeholder="Select primary hospital"
                 />
 
-                {/* Records the year of the user's last visit. */}
                 <SelectField
                   label="Last Visit"
                   name="lastVisit"
@@ -173,7 +165,6 @@ export default function DoctorForm({
 
             <DoctorFormSection title="Professional Information">
               <div className="space-y-4">
-                {/* Selects one or more professional degrees. */}
                 <MultiSelect
                   label="Degrees"
                   options={degrees}
@@ -182,7 +173,6 @@ export default function DoctorForm({
                   placeholder="Select degrees"
                 />
 
-                {/* Selects one or more medical specialities. */}
                 <MultiSelect
                   label="Specialities"
                   options={specialties}
@@ -193,16 +183,13 @@ export default function DoctorForm({
               </div>
             </DoctorFormSection>
 
-            {/* Renders all chamber-related fields. */}
             <DoctorFormSection title="Chambers" className="lg:col-span-2">
               <ChamberForm form={form} setForm={setForm} days={days} />
             </DoctorFormSection>
           </form>
         </div>
 
-        {/* Footer: actions stay visible while the form content scrolls. */}
         <div className="flex shrink-0 justify-end gap-3 border-t border-slate-200 px-5 py-4 sm:px-6">
-          {/* Cancels editing and closes the form. */}
           <button
             type="button"
             onClick={handleCancel}
@@ -211,7 +198,6 @@ export default function DoctorForm({
             Cancel
           </button>
 
-          {/* Submits either a new or updated doctor. */}
           <button type="submit" form="doctor-form" className="btn-primary">
             {editingId ? "Update Doctor" : "Add Doctor"}
           </button>

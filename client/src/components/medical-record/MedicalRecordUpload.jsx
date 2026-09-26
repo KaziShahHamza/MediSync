@@ -1,10 +1,11 @@
 // client/src/components/medical-records/MedicalRecordUpload.jsx
 
-// Form component for entering details and uploading medical image documents.
+// Provides the medical record title and image upload controls.
+// Displays upload progress and the configured AI processing information.
 
-import { Upload, Image as ImageIcon, Sparkles } from "lucide-react";
+import { Image as ImageIcon, Sparkles, Upload } from "lucide-react";
 
-// Sidebar upload form UI component
+// Renders the sticky medical record upload form.
 export default function MedicalRecordUpload({
   config,
   title,
@@ -15,10 +16,16 @@ export default function MedicalRecordUpload({
   onFileChange,
   onUpload,
 }) {
+  // Uses the selected file name as the upload field preview when available.
+  const fileName = file ? file.name : config.imagePlaceholder;
+
+  // Uses a consistent upload button label based on the current state.
+  const buttonLabel = loading
+    ? uploadStatus || "Processing..."
+    : config.uploadButton;
+
   return (
-    // Sticky sidebar wrapper card
     <aside className="card sticky top-24">
-      {/* Upload card heading area */}
       <div className="flex items-center gap-3 mb-6">
         <div>
           <h2 className="card-title">{config.uploadTitle}</h2>
@@ -27,9 +34,8 @@ export default function MedicalRecordUpload({
         </div>
       </div>
 
-      {/* Input controls fields wrapper */}
+      {/* Groups the title, file picker, progress message, and submit action. */}
       <div className="space-y-5">
-        {/* Document title input field */}
         <div>
           <label>{config.titleLabel}</label>
 
@@ -38,12 +44,11 @@ export default function MedicalRecordUpload({
             placeholder={config.titlePlaceholder}
             value={title}
             disabled={loading}
-            onChange={(e) => onTitleChange(e.target.value)}
+            onChange={(event) => onTitleChange(event.target.value)}
             className="input"
           />
         </div>
 
-        {/* Document file picker field */}
         <div>
           <label>{config.imageLabel}</label>
 
@@ -56,11 +61,8 @@ export default function MedicalRecordUpload({
           >
             <ImageIcon size={20} className="text-blue-600" />
 
-            <span className="text-sm text-slate-600 truncate">
-              {file ? file.name : config.imagePlaceholder}
-            </span>
+            <span className="text-sm text-slate-600 truncate">{fileName}</span>
 
-            {/* Hidden HTML file upload input */}
             <input
               type="file"
               accept="image/png,image/jpeg,image/jpg"
@@ -71,7 +73,7 @@ export default function MedicalRecordUpload({
           </label>
         </div>
 
-        {/* Upload progress message banner */}
+        {/* Displays processing status while an upload is being handled. */}
         {loading && uploadStatus && (
           <div className="flex items-center gap-3 rounded-xl bg-blue-50 border border-blue-100 px-4 py-3">
             <Sparkles
@@ -83,7 +85,6 @@ export default function MedicalRecordUpload({
           </div>
         )}
 
-        {/* Submit button trigger */}
         <button
           type="button"
           onClick={onUpload}
@@ -92,10 +93,9 @@ export default function MedicalRecordUpload({
         >
           <Upload size={18} />
 
-          {loading ? uploadStatus || "Processing..." : config.uploadButton}
+          {buttonLabel}
         </button>
 
-        {/* AI feature notification notice */}
         <p className="text-xs text-slate-400 leading-relaxed">
           {config.aiDescription}
         </p>

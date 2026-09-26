@@ -1,15 +1,10 @@
 // client/src/components/medicine/MedicineImageViewer.jsx
 
-// Displays a medicine image with zoom controls.
-// Provides a fallback view when the medicine has no image.
+// Displays a medicine image with bounded zoom controls.
+// Provides an accessible fallback when no image is available.
 
-import {
-  ImageOff,
-  ZoomIn,
-  ZoomOut,
-} from "lucide-react";
+import { ImageOff, ZoomIn, ZoomOut } from "lucide-react";
 
-// Renders scalable medicine image preview with interactive zoom tools.
 export default function MedicineImageViewer({
   imageUrl,
   medicineName,
@@ -17,15 +12,12 @@ export default function MedicineImageViewer({
   onZoomIn,
   onZoomOut,
 }) {
-  // Empty state fallback when no image URL exists
+  // Shows an empty state when the medicine has no image.
   if (!imageUrl) {
     return (
       <div className="flex h-full min-h-80 items-center justify-center rounded-xl bg-slate-50">
         <div className="text-center">
-          <ImageOff
-            size={40}
-            className="mx-auto text-slate-300"
-          />
+          <ImageOff size={40} className="mx-auto text-slate-300" />
 
           <p className="mt-3 text-sm font-medium text-slate-500">
             No medicine image
@@ -40,9 +32,8 @@ export default function MedicineImageViewer({
   }
 
   return (
-    // Image viewer viewport
     <div className="relative flex min-h-80 items-center justify-center overflow-hidden rounded-xl bg-slate-50">
-      {/* Zoomable image container */}
+      {/* Provides a scrollable viewport for the zoomed image. */}
       <div className="flex h-full w-full items-center justify-center overflow-auto p-6">
         <img
           src={imageUrl}
@@ -54,9 +45,9 @@ export default function MedicineImageViewer({
         />
       </div>
 
-      {/* Floating zoom control toolbar */}
+      {/* Provides bounded zoom controls over the image viewer. */}
       <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
-        {/* Zoom out action button */}
+        {/* Decreases the current image zoom level. */}
         <button
           type="button"
           onClick={onZoomOut}
@@ -68,12 +59,12 @@ export default function MedicineImageViewer({
           <ZoomOut size={18} />
         </button>
 
-        {/* Current zoom level percentage display */}
+        {/* Displays the current zoom percentage. */}
         <span className="min-w-12 text-center text-xs font-medium text-slate-600">
           {Math.round(zoom * 100)}%
         </span>
 
-        {/* Zoom in action button */}
+        {/* Increases the current image zoom level. */}
         <button
           type="button"
           onClick={onZoomIn}

@@ -1,12 +1,12 @@
 // client/src/components/dashboard/DashboardHealthOverview.jsx
 
-// Displays core vital signs and health readings including Blood Pressure,
-// Blood Sugar measurements, and calculated BMI.
+// Displays the latest blood pressure, blood sugar, and BMI readings.
+// Uses reusable metric and blood sugar display components.
 
 import { Activity, Droplets, HeartPulse } from "lucide-react";
 
-// Main container component rendering health metric cards in a responsive grid
 export default function DashboardHealthOverview({ health }) {
+  // Render the main health overview metric grid.
   return (
     <>
       <div className="section-header">
@@ -43,8 +43,9 @@ export default function DashboardHealthOverview({ health }) {
   );
 }
 
-// Card wrapper for displaying individual metric titles, values, and icons
+// Render one reusable health metric card with its associated icon.
 function HealthMetricCard({ title, value, subtitle, icon: Icon }) {
+  // Display the metric value or a fallback when no reading exists.
   return (
     <div className="card">
       <div className="flex items-start justify-between">
@@ -66,8 +67,9 @@ function HealthMetricCard({ title, value, subtitle, icon: Icon }) {
   );
 }
 
-// Formats diabetes reading sub-values for fasting, post-meal, and random tests
+// Format the available fasting, post-meal, and random glucose readings.
 function BloodSugarValue({ diabetes }) {
+  // Avoid rendering an empty blood sugar section when no readings exist.
   if (
     !diabetes ||
     (!diabetes.fasting && !diabetes.postMeal && !diabetes.random)
@@ -75,6 +77,7 @@ function BloodSugarValue({ diabetes }) {
     return null;
   }
 
+  // Render only the blood sugar measurement types that are available.
   return (
     <div className="space-y-2 text-base">
       {diabetes.fasting && (

@@ -1,12 +1,13 @@
 // client/src/components/lifestyle/QuestionnaireSection.jsx
 
-// Interactive questionnaire component handling demo profile selection,
-
+// Provides demo profile selection and categorized questionnaire sections.
+// Connects questionnaire questions with the reusable QuestionItem component.
 
 import { QuestionItem } from "./QuestionItem";
 
-// Renders interactive buttons for pre-filled demo user profiles
+// Renders buttons for selecting pre-filled demonstration profiles.
 export function DemoSelector({ demoUsers, onSelect }) {
+  // Safely derives available demo profile names from the supplied data.
   const demoNames = Object.keys(demoUsers || {});
 
   if (demoNames.length === 0) {
@@ -41,7 +42,7 @@ export function DemoSelector({ demoUsers, onSelect }) {
   );
 }
 
-// Categorized container component rendering grouped questions
+// Renders questionnaire cards grouped by their lifestyle category.
 export function Questionnaire({
   categories,
   questions,
@@ -50,6 +51,7 @@ export function Questionnaire({
   showScoring,
   onAnswerChange,
 }) {
+  // Filters the question collection for each displayed category.
   return (
     <div className="space-y-6">
       {categories.map((category) => {

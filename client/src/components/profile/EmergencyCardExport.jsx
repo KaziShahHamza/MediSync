@@ -1,19 +1,18 @@
 // client/src/components/profile/EmergencyCardExport.jsx
 
-// UI card component for exporting user medical profile data.
-// Displays card information and handles the PDF generation download process.
+// Renders the emergency-card export section for the user's profile.
+// Handles PDF generation state, errors, and download actions.
 
 import { useState } from "react";
 import { Download, FileText } from "lucide-react";
 
 import { generateEmergencyCardPdf } from "../../utils/emergencyCard/emergencyCardPdf";
 
-// Export component for downloading emergency cards
 export default function EmergencyCardExport({ profile, userInfo }) {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
 
-  // Handles PDF generation and download state
+  // Generates the emergency card PDF while preventing duplicate requests.
   const handleDownload = async () => {
     if (generating) return;
 
@@ -24,16 +23,16 @@ export default function EmergencyCardExport({ profile, userInfo }) {
       await generateEmergencyCardPdf(profile, userInfo);
     } catch (err) {
       console.error("Failed to generate emergency card PDF:", err);
-
       setError("Unable to generate the PDF. Please try again.");
     } finally {
       setGenerating(false);
     }
   };
 
+  // Displays the export information and PDF download action.
   return (
     <section className="card p-6 m-3">
-      {/* Primary header and action section */}
+      {/* Export card header and download action */}
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex gap-4">
           <div className="surface-muted w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
@@ -49,7 +48,7 @@ export default function EmergencyCardExport({ profile, userInfo }) {
           </div>
         </div>
 
-        {/* PDF Download Trigger Button */}
+        {/* PDF generation trigger */}
         <button
           type="button"
           onClick={handleDownload}
@@ -62,7 +61,11 @@ export default function EmergencyCardExport({ profile, userInfo }) {
         </button>
       </div>
 
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="mt-3 text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      )}
     </section>
   );
 }

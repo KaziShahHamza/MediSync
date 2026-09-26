@@ -1,15 +1,13 @@
 // client/src/components/medicine/MedicineBasicInfo.jsx
 
-// Handles medicine name, type, dosage schedule, and medicine image fields.
-// Keeps the basic medicine information UI separate from the main form logic.
+// Renders core medicine identity, dosage, and image fields.
+// Keeps basic medicine information separate from the main form state.
 
 import { ImagePlus, Pill, X } from "lucide-react";
 
 import { isStripMedicineType } from "../../data/medicine/medicineTypes";
-
 import { DOSAGE_OPTIONS } from "../../data/medicine/dosageOptions";
 
-// Renders the basic information form fields for a medicine
 export default function MedicineBasicInfo({
   name,
   setName,
@@ -23,14 +21,13 @@ export default function MedicineBasicInfo({
   onImageChange,
   onRemoveImage,
 }) {
-  // Determine which image source to display for preview
+  // Selects the preview image from the new upload or existing URL.
   const currentImage = imagePreview || imageUrl;
 
   return (
     <>
-      {/* Name and type input fields section */}
-      <section className="space-y-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {/* Medicine name input block */}
+      {/* Displays the medicine name and type fields. */}
+      <section className="grid grid-cols-1 gap-4 space-y-4 lg:grid-cols-2">
         <div>
           <label
             htmlFor="medicineName"
@@ -49,7 +46,6 @@ export default function MedicineBasicInfo({
           />
         </div>
 
-        {/* Medicine type select dropdown block */}
         <div>
           <label
             htmlFor="medicineType"
@@ -65,31 +61,22 @@ export default function MedicineBasicInfo({
             className="input w-full"
           >
             <option value="tablet">Tablet</option>
-
             <option value="capsule">Capsule</option>
-
             <option value="syrup">Syrup</option>
-
             <option value="antibiotic">Antibiotic</option>
-
             <option value="injection">Injection</option>
-
             <option value="cream">Cream</option>
-
             <option value="ointment">Ointment</option>
-
             <option value="drops">Drops</option>
-
             <option value="inhaler">Inhaler</option>
-
             <option value="other">Other</option>
           </select>
         </div>
       </section>
 
-      {/* Conditional dosage schedule selection for strip-based medicines */}
+      {/* Displays dosage scheduling only for strip-based medicines. */}
       {isStripMedicineType(type) && (
-        <section className="space-y-4">
+        <section className="grid grid-cols-1 gap-4 space-y-4">
           <div>
             <h3 className="text-sm font-semibold text-slate-900">
               Dosage schedule
@@ -101,10 +88,9 @@ export default function MedicineBasicInfo({
             </p>
           </div>
 
-          {/* Grid of dosage time checkboxes and quantity inputs */}
-          <div className="space-y-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Renders selectable dosage times and their quantities. */}
+          <div className="grid grid-cols-1 gap-3 space-y-3 sm:grid-cols-2 lg:grid-cols-3">
             {DOSAGE_OPTIONS.map((option) => {
-              // Check if the current dosage option is selected
               const selected = dosage.find(
                 (item) => item.time === option.value,
               );
@@ -114,7 +100,6 @@ export default function MedicineBasicInfo({
                   key={option.value}
                   className="flex items-center gap-3 rounded-xl border border-slate-200 p-3"
                 >
-                  {/* Dosage time toggle label and checkbox */}
                   <label className="flex flex-1 cursor-pointer items-center gap-3">
                     <input
                       type="checkbox"
@@ -128,7 +113,6 @@ export default function MedicineBasicInfo({
                     </span>
                   </label>
 
-                  {/* Quantity input for selected dosage time */}
                   {selected && (
                     <div className="flex items-center gap-2">
                       <input
@@ -156,7 +140,7 @@ export default function MedicineBasicInfo({
         </section>
       )}
 
-      {/* Image upload and preview section */}
+      {/* Provides medicine image upload and preview controls. */}
       <section className="space-y-4">
         <div>
           <h3 className="text-sm font-semibold text-slate-900">
@@ -168,9 +152,8 @@ export default function MedicineBasicInfo({
           </p>
         </div>
 
-        {/* Render preview image or upload dropzone */}
+        {/* Shows the current image or the image upload area. */}
         {currentImage ? (
-          /* Active image display container with remove action */
           <div className="relative overflow-hidden rounded-xl border border-slate-200">
             <img
               src={currentImage}
@@ -188,7 +171,6 @@ export default function MedicineBasicInfo({
             </button>
           </div>
         ) : (
-          /* File input dropzone when no image is present */
           <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 px-6 py-8 text-center transition hover:border-sky-300 hover:bg-sky-50">
             <ImagePlus size={28} className="text-slate-400" />
 
@@ -209,7 +191,7 @@ export default function MedicineBasicInfo({
           </label>
         )}
 
-        {/* Change image action button for modifying current photo */}
+        {/* Allows replacing an existing medicine image. */}
         {currentImage && (
           <label className="btn-secondary inline-flex cursor-pointer items-center gap-2">
             <ImagePlus size={17} />

@@ -1,6 +1,7 @@
 // client/src/pages/Doctors.jsx
 
-// Doctor management page: lists doctors and controls add/edit/detail modals.
+// Renders the doctor management page.
+// Handles doctor listing, creation, editing, deletion, and details.
 
 import { Plus, Stethoscope } from "lucide-react";
 import { useState } from "react";
@@ -12,13 +13,12 @@ import DoctorCard from "../components/doctor/DoctorCard";
 import DoctorForm from "../components/doctor/DoctorForm";
 import DoctorModal from "../components/doctor/DoctorModal";
 
+// Provides doctor management controls and doctor information display.
 export default function Doctors() {
-  // Controls whether the add/edit doctor form modal is visible.
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
 
   const { doctors, fetchDoctors } = useDoctors();
 
-  // Centralizes doctor form state, editing, saving, and deletion logic.
   const {
     form,
     setForm,
@@ -32,19 +32,19 @@ export default function Doctors() {
     deleteDoctor,
   } = useDoctorForm(fetchDoctors, () => setIsFormModalOpen(false));
 
-  // Opens a clean form for creating a new doctor.
+  // Opens an empty form for creating a doctor.
   function handleAddDoctor() {
     resetForm();
     setIsFormModalOpen(true);
   }
 
-  // Loads the selected doctor into the form and opens the modal.
+  // Loads a doctor into the form for editing.
   function handleEditDoctor(doctor) {
     editDoctor(doctor);
     setIsFormModalOpen(true);
   }
 
-  // Resets form state and closes the add/edit modal.
+  // Resets the form and closes the form modal.
   function handleCloseFormModal() {
     resetForm();
     setIsFormModalOpen(false);
@@ -52,7 +52,7 @@ export default function Doctors() {
 
   return (
     <div className="container space-y-6 py-6">
-      {/* Page Header */}
+      {/* Page heading and add-doctor action. */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
@@ -78,7 +78,7 @@ export default function Doctors() {
         </button>
       </header>
 
-      {/* Doctors List */}
+      {/* Displays the doctor list or empty state. */}
       <section>
         {doctors.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
@@ -116,7 +116,7 @@ export default function Doctors() {
               </p>
             </div>
 
-            {/* Responsive doctor card grid. */}
+            {/* Displays doctors in a responsive card grid. */}
             <div className="grid gap-4 md:grid-cols-3">
               {doctors.map((doctor) => (
                 <DoctorCard
@@ -132,7 +132,7 @@ export default function Doctors() {
         )}
       </section>
 
-      {/* Add / Edit Doctor Modal */}
+      {/* Displays the add or edit doctor form modal. */}
       {isFormModalOpen && (
         <DoctorForm
           form={form}
@@ -145,7 +145,7 @@ export default function Doctors() {
         />
       )}
 
-      {/* Doctor Details Modal */}
+      {/* Displays details for the selected doctor. */}
       <DoctorModal
         doctor={selectedDoctor}
         onClose={() => setSelectedDoctor(null)}

@@ -1,3 +1,8 @@
+// client/src/components/health/charts/LifestyleScoreChart.jsx
+
+// Displays the user's latest lifestyle assessment scores over time.
+// Provides score and grade details through the Chart.js tooltip.
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,6 +15,7 @@ import {
 import { Line } from "react-chartjs-2";
 import { Activity } from "lucide-react";
 
+// Register the Chart.js components required by the line chart.
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -20,13 +26,75 @@ ChartJS.register(
 );
 
 export default function LifestyleScoreChart({ assessments }) {
+  // Keep dated assessments sorted chronologically and limit them to ten.
   const lifestyleAssessments = [...(assessments || [])]
     .filter((assessment) => assessment?.assessedAt)
-    .sort(
-      (a, b) =>
-        new Date(a.assessedAt) - new Date(b.assessedAt),
-    )
+    .sort((a, b) => new Date(a.assessedAt) - new Date(b.assessedAt))
     .slice(-10);
+
+  // Prepare chart labels and score values from the selected assessments.
+  const chartData = {
+    labels: lifestyleAssessments.map((assessment) =>
+      new Date(assessment.assessedAt).toLocaleDateString(),
+    ),
+    datasets: [
+      {
+        label: "Lifestyle Score",
+        data: lifestyleAssessments.map(
+          (assessment) => Number(assessment.totalScore) || 0,
+        ),
+        borderColor: "#2563EB",
+        backgroundColor: "#2563EB33",
+        tension: 0.3,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      },
+    ],
+  };
+
+  // Configure score range, axis labels, and assessment tooltip details.
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+        ticks: {
+          stepSize: 20,
+        },
+        title: {
+          display: true,
+          text: "Score",
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: "Assessment Date",
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const assessment = lifestyleAssessments[context.dataIndex];
+
+            return `Score: ${assessment.totalScore} / 100`;
+          },
+          afterLabel: (context) => {
+            const assessment = lifestyleAssessments[context.dataIndex];
+
+            return `Grade: ${assessment.grade}`;
+          },
+        },
+      },
+    },
+  };
 
   return (
     <div className="card">
@@ -58,94 +126,7 @@ export default function LifestyleScoreChart({ assessments }) {
         </div>
       ) : (
         <div className="h-90">
-          <Line
-            data={{
-              labels: lifestyleAssessments.map((assessment) =>
-                new Date(
-                  assessment.assessedAt,
-                ).toLocaleDateString(),
-              ),
-
-              datasets: [
-                {
-                  label: "Lifestyle Score",
-
-                  data: lifestyleAssessments.map(
-                    (assessment) =>
-                      Number(assessment.totalScore) || 0,
-                  ),
-
-                  borderColor: "#2563EB",
-                  backgroundColor: "#2563EB33",
-
-                  tension: 0.3,
-
-                  pointRadius: 4,
-                  pointHoverRadius: 6,
-                },
-              ],
-            }}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-
-              scales: {
-                y: {
-                  min: 0,
-                  max: 100,
-
-                  ticks: {
-                    stepSize: 20,
-                  },
-
-                  title: {
-                    display: true,
-                    text: "Score",
-                  },
-                },
-
-                x: {
-                  title: {
-                    display: true,
-                    text: "Assessment Date",
-                  },
-                },
-              },
-
-              plugins: {
-                legend: {
-                  display: true,
-                },
-
-                tooltip: {
-                  callbacks: {
-                    label: (context) => {
-                      const assessment =
-                        lifestyleAssessments[
-                          context.dataIndex
-                        ];
-
-                      return `Score: ${
-                        assessment.totalScore
-                      } / 100`;
-
-                    },
-
-                    afterLabel: (context) => {
-                      const assessment =
-                        lifestyleAssessments[
-                          context.dataIndex
-                        ];
-
-                      return `Grade: ${
-                        assessment.grade
-                      }`;
-                    },
-                  },
-                },
-              },
-            }}
-          />
+          <Line data={chartData} options={chartOptions} />
         </div>
       )}
     </div>

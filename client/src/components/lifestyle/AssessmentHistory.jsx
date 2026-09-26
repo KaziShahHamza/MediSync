@@ -1,10 +1,10 @@
 // client/src/components/lifestyle/AssessmentHistory.jsx
 
-// Displays previous lifestyle assessment records including the most recent score
-// and an aggregate history list of past assessments.
+// Displays the latest saved lifestyle assessment.
+// Provides a chronological list of previously saved assessments.
 
-// Renders the most recently saved assessment details
 function LatestAssessment({ assessment }) {
+  // Hide the latest-assessment card when no saved result exists.
   if (!assessment) {
     return null;
   }
@@ -44,8 +44,8 @@ function LatestAssessment({ assessment }) {
   );
 }
 
-// Renders the list of historical lifestyle assessment records
 function HistoryList({ assessments }) {
+  // Avoid rendering an empty history card when no records exist.
   if (!assessments?.length) {
     return null;
   }
@@ -61,6 +61,7 @@ function HistoryList({ assessments }) {
       </div>
 
       <div className="card-content">
+        {/* Render each saved assessment as a compact history row. */}
         <div className="divide-y divide-slate-200">
           {assessments.map((assessment) => (
             <div
@@ -94,8 +95,8 @@ function HistoryList({ assessments }) {
   );
 }
 
-// Container component for latest and historical assessment views
 export default function AssessmentHistory({ latestAssessment, assessments }) {
+  // Skip the complete history section when no assessment data exists.
   if (!latestAssessment && !assessments?.length) {
     return null;
   }

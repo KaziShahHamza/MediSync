@@ -1,5 +1,8 @@
 // client/src/components/health/BloodPressureForm.jsx
 
+// Provides a form for recording systolic and diastolic blood pressure.
+// Handles saving state and identifies potentially critical readings.
+
 import { useState } from "react";
 import { HeartPulse, Loader2, Save } from "lucide-react";
 
@@ -11,10 +14,11 @@ export default function BloodPressureForm({ onAdd }) {
   const [low, setLow] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
+  // Detect readings that may require emergency notification handling.
   const isCritical =
-    Number(high) > CRITICAL_SYSTOLIC ||
-    Number(low) > CRITICAL_DIASTOLIC;
+    Number(high) > CRITICAL_SYSTOLIC || Number(low) > CRITICAL_DIASTOLIC;
 
+  // Validate and submit the blood pressure record.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -37,6 +41,13 @@ export default function BloodPressureForm({ onAdd }) {
       setIsSaving(false);
     }
   };
+
+  // Keep the submit button state synchronized with the save operation.
+  const submitLabel = isSaving
+    ? isCritical
+      ? "Emailing emergency contacts..."
+      : "Saving blood pressure..."
+    : "Save Blood Pressure";
 
   return (
     <form onSubmit={handleSubmit} className="card space-y-6">
@@ -76,22 +87,16 @@ export default function BloodPressureForm({ onAdd }) {
         Normal range: below 120 / 80 mmHg
       </p>
 
-      <button
-        type="submit"
-        className="btn-primary w-full"
-        disabled={isSaving}
-      >
+      <button type="submit" className="btn-primary w-full" disabled={isSaving}>
         {isSaving ? (
           <>
             <Loader2 size={18} className="animate-spin" />
-            {isCritical
-              ? "Emailing emergency contacts..."
-              : "Saving blood pressure..."}
+            {submitLabel}
           </>
         ) : (
           <>
             <Save size={18} />
-            Save Blood Pressure
+            {submitLabel}
           </>
         )}
       </button>

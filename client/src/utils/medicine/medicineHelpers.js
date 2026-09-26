@@ -1,6 +1,7 @@
 // client/src/utils/medicine/medicineHelpers.js
 
-// Provides reusable formatting, date, dosage, and medicine-type helpers.
+// Provides reusable medicine formatting, date, dosage, and type helpers.
+// Keeps medicine display and normalization logic centralized.
 
 import {
   MEDICINE_TYPE_LABELS,
@@ -14,12 +15,12 @@ import {
 
 import { MONTH_LABELS } from "../../data/medicine/medicineMonths";
 
-// Resolves human-readable display label for a given medicine type.
+// Resolves a human-readable label for a medicine type.
 export function getMedicineTypeLabel(type) {
   return MEDICINE_TYPE_LABELS[type] || type || "Other";
 }
 
-// Formats date string into US standard format (e.g., Jan 1, 2026).
+// Formats a date using the US short date format.
 export function formatDate(date, fallback = "—") {
   if (!date) return fallback;
 
@@ -36,7 +37,7 @@ export function formatDate(date, fallback = "—") {
   });
 }
 
-// Formats date string into long UK standard format (e.g., 01 Jan 2026).
+// Formats a date using the UK day-month-year format.
 export function formatDateLong(date, fallback = "Not set") {
   if (!date) return fallback;
 
@@ -53,7 +54,7 @@ export function formatDateLong(date, fallback = "Not set") {
   });
 }
 
-// Capitalizes and formats dosage timing keys into display labels.
+// Resolves a human-readable label for a dosage timing value.
 export function formatDosageTime(time) {
   if (!time) return "";
 
@@ -62,7 +63,7 @@ export function formatDosageTime(time) {
   );
 }
 
-// Extracts zero-indexed month and full year from a date object or string.
+// Extracts zero-based month and full year values from a date.
 export function getDateParts(dateValue) {
   if (!dateValue) {
     return {
@@ -86,7 +87,7 @@ export function getDateParts(dateValue) {
   };
 }
 
-// Constructs a Date object set to the 1st of the specified month and year.
+// Creates a date using a zero-based month and full year.
 export function createDateFromParts(month, year) {
   if (
     month === "" ||
@@ -114,7 +115,7 @@ export function createDateFromParts(month, year) {
   return new Date(parsedYear, parsedMonth, 1);
 }
 
-// Generates month and year preview string from discrete month and year inputs.
+// Creates a readable month-and-year preview from selected values.
 export function formatDateForPreview(month, year) {
   const date = createDateFromParts(month, year);
 
@@ -126,7 +127,7 @@ export function formatDateForPreview(month, year) {
   });
 }
 
-// Generates array of consecutive year values around the current year.
+// Generates consecutive year options around the current year.
 export function getYearOptions(range = 10) {
   const currentYear = new Date().getFullYear();
 
@@ -136,7 +137,7 @@ export function getYearOptions(range = 10) {
   );
 }
 
-// Sanitizes and structures dosage items to ensure valid timings and positive quantities.
+// Normalizes dosage entries to supported times and positive quantities.
 export function normalizeDosage(dosage = []) {
   if (!Array.isArray(dosage)) {
     return [];
@@ -153,31 +154,31 @@ export function normalizeDosage(dosage = []) {
     }));
 }
 
-// Determines whether medicine is priced per strip or per unit based on category.
+// Resolves pricing mode from a medicine type.
 export function getPricingTypeForType(type) {
   return isStripMedicineType(type) ? "strip" : "unit";
 }
 
-// Checks if medicine uses strip-based pricing logic.
+// Checks whether a medicine type uses strip-based pricing.
 export function isStripMedicine(medicine) {
   if (!medicine) return false;
 
   return getPricingTypeForType(medicine.type) === "strip";
 }
 
-// Determines treatment state based on active flag.
+// Determines whether a medicine treatment is active or completed.
 export function getTreatmentStatus(medicine) {
   return medicine?.isActive !== false ? "active" : "completed";
 }
 
-// Returns user-facing status string for treatment progress.
+// Returns the user-facing treatment status label.
 export function getTreatmentStatusLabel(medicine) {
   return getTreatmentStatus(medicine) === "active"
     ? "Currently taking"
     : "Completed";
 }
 
-// Converts zero-indexed month index into full month name string.
+// Resolves a full month name from a zero-based month index.
 export function getMonthLabel(month) {
   if (month === "" || month === null || month === undefined) {
     return "";

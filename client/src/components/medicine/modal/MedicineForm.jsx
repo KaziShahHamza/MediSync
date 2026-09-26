@@ -1,7 +1,7 @@
 // client/src/components/medicine/modal/MedicineForm.jsx
 
 // Renders the medicine creation and editing form.
-// Delegates form state, validation, image handling, and submission to a custom hook.
+// Delegates form state, validation, image handling, and submission to useMedicineForm.
 
 import MedicineBasicInfo from "../MedicineBasicInfo";
 import MedicinePricing from "../MedicinePricing";
@@ -9,59 +9,45 @@ import MedicineTreatment from "../MedicineTreatment";
 
 import useMedicineForm from "../../../hooks/useMedicineForm";
 
-// Renders the wrapper form for creating or updating medicine records
 export default function MedicineForm({
   onSave,
   editing,
   onCancel,
   loading = false,
 }) {
+  // Connects form state and actions to the reusable medicine form hook.
   const {
     name,
     setName,
-
     type,
     handleTypeChange,
-
     dosage,
     toggleDosageTime,
     updateDosageQuantity,
-
     pricePerStrip,
     setPricePerStrip,
-
     piecesPerStrip,
     setPiecesPerStrip,
-
     pricePerUnit,
     setPricePerUnit,
-
     unitsPerMonth,
     setUnitsPerMonth,
-
     imageUrl,
     imagePreview,
     handleImageChange,
     removeImage,
-
     startMonth,
     setStartMonth,
-
     startYear,
     setStartYear,
-
     endMonth,
     setEndMonth,
-
     endYear,
     setEndYear,
-
     isActive,
     setIsActive,
-
     yearOptions,
     pricingType,
-
     error,
     handleSubmit,
   } = useMedicineForm({
@@ -71,7 +57,7 @@ export default function MedicineForm({
 
   return (
     <form onSubmit={handleSubmit} className="card space-y-6">
-      {/* Form header and cancel control */}
+      {/* Displays the form title and cancellation control. */}
       <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-5">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
@@ -91,7 +77,7 @@ export default function MedicineForm({
           </div>
         </div>
 
-        {/* Form cancel and close button */}
+        {/* Provides the secondary form cancellation action. */}
         <button
           type="button"
           onClick={onCancel}
@@ -102,7 +88,7 @@ export default function MedicineForm({
         </button>
       </div>
 
-      {/* Basic medicine information section */}
+      {/* Collects the medicine identity, dosage, and image information. */}
       <MedicineBasicInfo
         name={name}
         setName={setName}
@@ -117,7 +103,7 @@ export default function MedicineForm({
         onRemoveImage={removeImage}
       />
 
-      {/* Medicine pricing configuration */}
+      {/* Handles pricing configuration according to the selected pricing type. */}
       <MedicinePricing
         pricingType={pricingType}
         pricePerStrip={pricePerStrip}
@@ -131,7 +117,7 @@ export default function MedicineForm({
         dosage={dosage}
       />
 
-      {/* Medicine treatment timeline */}
+      {/* Handles the medicine treatment period and active status. */}
       <MedicineTreatment
         startMonth={startMonth}
         setStartMonth={setStartMonth}
@@ -146,14 +132,14 @@ export default function MedicineForm({
         yearOptions={yearOptions}
       />
 
-      {/* Validation error message */}
+      {/* Displays validation or submission errors when present. */}
       {error && (
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           {error}
         </div>
       )}
 
-      {/* Form submission controls */}
+      {/* Provides final cancellation and submission actions. */}
       <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
         <button
           type="button"
@@ -171,4 +157,3 @@ export default function MedicineForm({
     </form>
   );
 }
-

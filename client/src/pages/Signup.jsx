@@ -1,12 +1,17 @@
-//client/src/pages/Signup.jsx
+// client/src/pages/Signup.jsx
+
+// Renders the account registration form.
+// Creates a user account and redirects to the dashboard after success.
 
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import { useAuth } from "../context/AuthContext";
 import AuthLayout from "../components/AuthLayout";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Provides new-user registration and authentication.
 export default function Signup() {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -14,63 +19,71 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const submit = async (e) => {
-    e.preventDefault();
+  // Submits registration data to the authentication endpoint.
+  async function submit(event) {
+    event.preventDefault();
 
-    const f = e.target;
+    const form = event.currentTarget;
 
     setLoading(true);
     setError("");
 
     try {
-      const res = await fetch(`${API_URL}/api/auth/signup`, {
+      const response = await fetch(`${API_URL}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: f.name.value,
-          username: f.username.value,
-          email: f.email.value,
-          password: f.password.value,
+          name: form.name.value,
+          username: form.username.value,
+          email: form.email.value,
+          password: form.password.value,
         }),
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
-      if (!res.ok) {
-        throw new Error(data.message || "Signup failed");
+      if (!response.ok) {
+        throw new Error(data?.message || "Signup failed.");
       }
 
       login(data);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
+      setError(err?.message || "Signup failed.");
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
     <AuthLayout
       title="Create Account"
       subtitle="Start managing your health with MediSync."
     >
-      {" "}
+      {/* Registration form and authentication feedback. */}
       <form onSubmit={submit} className="space-y-5">
         {error && (
-          <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {error}
           </div>
         )}
 
-        <input name="name" placeholder="Full Name" className="input" required />
+        <input
+          name="name"
+          placeholder="Full Name"
+          className="input"
+          autoComplete="name"
+          required
+        />
 
         <input
           name="username"
           type="text"
           placeholder="Username"
           className="input"
+          autoComplete="username"
           required
         />
 
@@ -79,6 +92,7 @@ export default function Signup() {
           type="email"
           placeholder="Email Address"
           className="input"
+          autoComplete="email"
           required
         />
 
@@ -87,22 +101,24 @@ export default function Signup() {
           type="password"
           placeholder="Password (minimum 8 characters)"
           className="input"
+          autoComplete="new-password"
           minLength={8}
           required
         />
 
         <button
+          type="submit"
           disabled={loading}
           className="btn-primary w-full py-3 disabled:opacity-60"
         >
           {loading ? "Creating account..." : "Create Account"}
         </button>
 
-        <p className="text-sm text-center text-slate-600">
+        <p className="text-center text-sm text-slate-600">
           Already have an account?
           <Link
             to="/login"
-            className="ml-1 text-sky-600 font-medium hover:underline"
+            className="ml-1 font-medium text-sky-600 hover:underline"
           >
             Login
           </Link>

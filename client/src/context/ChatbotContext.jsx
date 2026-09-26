@@ -1,11 +1,22 @@
 // client/src/context/ChatbotContext.jsx
 
+// Provides global chatbot state and authenticated chat API operations.
+// Manages chat history, active conversations, messages, loading, and errors.
+
 import { createContext, useCallback, useContext, useState } from "react";
 
-const ChatbotContext = createContext();
+const ChatbotContext = createContext(null);
 
-// const API_URL = "/api/ai";
 const API_URL = `${import.meta.env.VITE_API_URL}/api/ai`;
+
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+
+  return {
+    Authorization: `Bearer ${token || ""}`,
+    "Content-Type": "application/json",
+  };
+}
 
 export function ChatbotProvider({ children }) {
   const [chats, setChats] = useState([]);
@@ -17,22 +28,14 @@ export function ChatbotProvider({ children }) {
 
   const [error, setError] = useState("");
 
-  const getToken = () => {
-    return localStorage.getItem("token");
-  };
-
-  const getHeaders = () => ({
-    Authorization: `Bearer ${getToken()}`,
-    "Content-Type": "application/json",
-  });
-
+  // Loads the authenticated user's available chat conversations.
   const loadChats = useCallback(async () => {
     try {
       setLoadingChats(true);
       setError("");
 
       const response = await fetch(`${API_URL}/chats`, {
-        headers: getHeaders(),
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) {
@@ -50,15 +53,16 @@ export function ChatbotProvider({ children }) {
     }
   }, []);
 
+  // Loads the complete message history for a selected conversation.
   const loadChat = useCallback(async (chatId) => {
-    if (!chatId) return;
+    if (!chatId) return null;
 
     try {
       setLoadingChat(true);
       setError("");
 
       const response = await fetch(`${API_URL}/chats/${chatId}`, {
-        headers: getHeaders(),
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) {
@@ -73,18 +77,21 @@ export function ChatbotProvider({ children }) {
     } catch (error) {
       console.error(error);
       setError("Unable to load this chat.");
+
+      return null;
     } finally {
       setLoadingChat(false);
     }
   }, []);
 
+  // Creates a new conversation and adds it to the chat list.
   const createChat = useCallback(async () => {
     try {
       setError("");
 
       const response = await fetch(`${API_URL}/chats`, {
         method: "POST",
-        headers: getHeaders(),
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) {
@@ -109,10 +116,12 @@ export function ChatbotProvider({ children }) {
     } catch (error) {
       console.error(error);
       setError("Unable to create a new chat.");
+
       return null;
     }
   }, []);
 
+  // Sends a text or image message and updates the active conversation.
   const sendMessage = useCallback(
     async ({ content, imageUrls = [] }) => {
       if (!currentChat?._id) {
@@ -133,7 +142,7 @@ export function ChatbotProvider({ children }) {
           `${API_URL}/chats/${currentChat._id}/messages`,
           {
             method: "POST",
-            headers: getHeaders(),
+            headers: getAuthHeaders(),
             body: JSON.stringify({
               content: trimmedContent,
               imageUrls,
@@ -178,6 +187,7 @@ export function ChatbotProvider({ children }) {
     [currentChat],
   );
 
+  // Deletes a conversation and clears it when currently selected.
   const deleteChat = useCallback(
     async (chatId) => {
       if (!chatId) return false;
@@ -187,7 +197,7 @@ export function ChatbotProvider({ children }) {
 
         const response = await fetch(`${API_URL}/chats/${chatId}`, {
           method: "DELETE",
-          headers: getHeaders(),
+          headers: getAuthHeaders(),
         });
 
         if (!response.ok) {
@@ -204,26 +214,26 @@ export function ChatbotProvider({ children }) {
       } catch (error) {
         console.error(error);
         setError("Unable to delete this chat.");
+
         return false;
       }
     },
     [currentChat],
   );
 
+  // Clears the currently selected conversation without deleting it.
   const clearCurrentChat = useCallback(() => {
     setCurrentChat(null);
   }, []);
 
+  // Exposes chatbot state and operations through the context.
   const value = {
     chats,
     currentChat,
-
     loadingChats,
     loadingChat,
     sending,
-
     error,
-
     loadChats,
     loadChat,
     createChat,

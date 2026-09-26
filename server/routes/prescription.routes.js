@@ -1,6 +1,7 @@
 // server/routes/prescription.routes.js
 
 // Defines authenticated routes for prescription management.
+
 import express from "express";
 
 import auth from "../middlewares/auth.js";

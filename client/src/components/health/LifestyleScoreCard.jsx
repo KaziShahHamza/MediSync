@@ -1,7 +1,13 @@
+// client/src/components/health/LifestyleScoreCard.jsx
+
+// Displays the latest lifestyle assessment and overall score.
+// Provides navigation to complete or review the lifestyle assessment.
+
 import { Activity, ArrowRight, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function getScoreStatus(score) {
+  // Map the numeric score to the corresponding display status.
   if (score >= 80) {
     return {
       label: "Excellent",
@@ -39,6 +45,7 @@ function getScoreStatus(score) {
 export default function LifestyleScoreCard({ assessment }) {
   const navigate = useNavigate();
 
+  // Provide an empty-state card when no assessment has been completed.
   if (!assessment) {
     return (
       <div className="card h-full">
@@ -50,6 +57,7 @@ export default function LifestyleScoreCard({ assessment }) {
 
             <div>
               <h3 className="card-title">Lifestyle Score</h3>
+
               <p className="text-sm text-slate-500 mt-1">
                 Understand your daily health habits.
               </p>
@@ -62,9 +70,7 @@ export default function LifestyleScoreCard({ assessment }) {
             <Activity size={26} className="text-slate-400" />
           </div>
 
-          <h4 className="font-semibold text-slate-800">
-            No assessment yet
-          </h4>
+          <h4 className="font-semibold text-slate-800">No assessment yet</h4>
 
           <p className="text-sm text-slate-500 mt-2 max-w-sm">
             Complete your Lifestyle Score assessment to see how your daily
@@ -84,9 +90,11 @@ export default function LifestyleScoreCard({ assessment }) {
     );
   }
 
+  // Normalize the saved score before calculating its presentation state.
   const score = Number(assessment.totalScore) || 0;
   const status = getScoreStatus(score);
 
+  // Render the latest lifestyle assessment with its score details.
   return (
     <div className="card h-full">
       <div className="card-header">
@@ -98,27 +106,20 @@ export default function LifestyleScoreCard({ assessment }) {
 
             <div>
               <h3 className="card-title">Lifestyle Score</h3>
-              <p className="text-sm text-slate-500 mt-1">
-                Latest assessment
-              </p>
+
+              <p className="text-sm text-slate-500 mt-1">Latest assessment</p>
             </div>
           </div>
 
-          <span className={`badge ${status.badgeClass}`}>
-            {status.label}
-          </span>
+          <span className={`badge ${status.badgeClass}`}>{status.label}</span>
         </div>
       </div>
 
       <div className="card-content">
         <div className="flex items-end gap-2">
-          <span className="text-5xl font-bold text-slate-900">
-            {score}
-          </span>
+          <span className="text-5xl font-bold text-slate-900">{score}</span>
 
-          <span className="text-lg text-slate-500 mb-1">
-            / 100
-          </span>
+          <span className="text-lg text-slate-500 mb-1">/ 100</span>
         </div>
 
         <div className="flex items-center gap-2 mt-3">
@@ -152,8 +153,7 @@ export default function LifestyleScoreCard({ assessment }) {
 
         {assessment.assessedAt && (
           <p className="text-xs text-slate-400 mt-4">
-            Assessed on{" "}
-            {new Date(assessment.assessedAt).toLocaleDateString()}
+            Assessed on {new Date(assessment.assessedAt).toLocaleDateString()}
           </p>
         )}
 
@@ -169,4 +169,3 @@ export default function LifestyleScoreCard({ assessment }) {
     </div>
   );
 }
-

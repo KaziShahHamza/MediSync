@@ -1,7 +1,7 @@
 // client/src/hooks/doctor/useDoctorForm.js
 
-// Manages doctor form state, create/update/delete operations, and modal selection.
-// Keeps API and form state logic outside the Doctors page component.
+// Manages doctor form state, editing, selection, and CRUD actions.
+// Keeps doctor form and API logic outside the Doctors page.
 
 import { useState } from "react";
 
@@ -23,7 +23,7 @@ export function useDoctorForm(fetchDoctors, onClose) {
   // Track the doctor currently opened in the details modal.
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-  // Handles standard text, select, and textarea fields.
+  // Update a standard form field.
   function handleChange(event) {
     const { name, value } = event.target;
 
@@ -33,33 +33,35 @@ export function useDoctorForm(fetchDoctors, onClose) {
     }));
   }
 
-  // Loads an existing doctor into the edit form.
+  // Load an existing doctor into the edit form.
   function editDoctor(doctor) {
+    if (!doctor) {
+      return;
+    }
+
     setEditingId(doctor._id);
     setForm(createFormFromDoctor(doctor));
   }
 
-  // Clears the form and exits edit mode.
+  // Clear the form and exit edit mode.
   function resetForm() {
     setForm(resetDoctorForm());
     setEditingId(null);
   }
 
-  // Creates or updates a doctor through the API.
+  // Create or update a doctor through the API.
   async function saveDoctor(event) {
     event.preventDefault();
 
     try {
       const token = localStorage.getItem("token");
 
-      // Stop the request when authentication is unavailable.
       if (!token) {
         return false;
       }
 
       const cleanedForm = cleanDoctorForm(form);
 
-      // Use the appropriate endpoint for create/update.
       const url = editingId
         ? `${API_URL}/api/doctors/${editingId}`
         : `${API_URL}/api/doctors`;
@@ -75,15 +77,14 @@ export function useDoctorForm(fetchDoctors, onClose) {
         body: JSON.stringify(cleanedForm),
       });
 
+      const data = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        throw new Error("Failed to save doctor");
+        throw new Error(data.message || "Failed to save doctor.");
       }
 
-      // Reset the form and refresh the doctor list after saving.
       resetForm();
       await fetchDoctors();
-
-      // Close the add/edit modal after a successful save.
       onClose?.();
 
       return true;
@@ -94,14 +95,17 @@ export function useDoctorForm(fetchDoctors, onClose) {
     }
   }
 
-  // Deletes a doctor and refreshes the doctor list.
+  // Delete a doctor and refresh the doctor list.
   async function deleteDoctor(id) {
+    if (!id) {
+      return false;
+    }
+
     try {
       const token = localStorage.getItem("token");
 
-      // Stop the request when authentication is unavailable.
       if (!token) {
-        return;
+        return false;
       }
 
       const response = await fetch(`${API_URL}/api/doctors/${id}`, {
@@ -111,19 +115,23 @@ export function useDoctorForm(fetchDoctors, onClose) {
         },
       });
 
+      const data = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        throw new Error("Failed to delete doctor");
+        throw new Error(data.message || "Failed to delete doctor.");
       }
 
-      // Close the details modal if the deleted doctor was open.
       setSelectedDoctor((currentDoctor) =>
         currentDoctor?._id === id ? null : currentDoctor,
       );
 
-      // Refresh the list after successful deletion.
       await fetchDoctors();
+
+      return true;
     } catch (error) {
       console.error("Failed to delete doctor:", error);
+
+      return false;
     }
   }
 

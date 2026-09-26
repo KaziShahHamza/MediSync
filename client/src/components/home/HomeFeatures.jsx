@@ -1,6 +1,7 @@
 // client/src/components/home/HomeFeatures.jsx
 
-// Renders the features overview section on the homepage.
+// Renders the homepage feature overview section.
+// Defines the reusable feature metadata used by the feature cards.
 
 import {
   Brain,
@@ -11,7 +12,7 @@ import {
   Stethoscope,
 } from "lucide-react";
 
-// Configuration array mapping platform features to titles, descriptions, and icons
+// Define the homepage features and their associated icons.
 const features = [
   {
     title: "Medicine Management",
@@ -45,7 +46,6 @@ const features = [
   },
 ];
 
-// Main feature grid component
 export default function HomeFeatures() {
   return (
     <section className="container section">
@@ -60,9 +60,10 @@ export default function HomeFeatures() {
         </p>
       </div>
 
-      {/* Feature cards grid */}
+      {/* Render the responsive feature card grid. */}
       <div className="mt-10 grid md:grid-cols-2 xl:grid-cols-3 gap-6">
         {features.map((feature) => {
+          // Resolve the configured icon component for each feature.
           const Icon = feature.icon;
 
           return (

@@ -1,36 +1,38 @@
 // client/src/components/blood/DonorResults.jsx
-// Displays search query results containing available blood donors or empty states.
+
+// Renders donor search results after a search has been performed.
+// Handles populated results and the no-match state.
 
 import { Droplets } from "lucide-react";
 
 import DonorResultItem from "./DonorResultItem";
 
-// Results list container component for displaying matching blood donors
 export default function DonorResults({ donors, searched, loading, error }) {
-  // Early return if search hasn't executed, or is currently loading/erroring
+  // Hide the result section until a completed search can be displayed.
   if (!searched || loading || error) {
     return null;
   }
 
+  // Track the number of donors returned by the search.
+  const donorCount = donors.length;
+
   return (
     <section>
-      {/* Results header and total count indicator */}
+      {/* Render the result heading and total matching donor count. */}
       <div className="flex items-center justify-between gap-4 mb-5">
         <div>
           <h2 className="section-title text-xl">Available Donors</h2>
 
           <p className="text-sm text-muted mt-1">
-            {donors.length} donor
-            {donors.length !== 1 ? "s" : ""} found.
+            {donorCount} donor
+            {donorCount !== 1 ? "s" : ""} found.
           </p>
         </div>
       </div>
 
-      {/* Render search results or empty state based on array length */}
-      {donors.length > 0 ? (
-        // Results container card
+      {/* Switch between matching donor results and the empty state. */}
+      {donorCount > 0 ? (
         <div className="card overflow-hidden">
-          {/* Desktop table column headers */}
           <div className="hidden md:grid md:grid-cols-[1.2fr_1.5fr_1.5fr_1.2fr] gap-4 px-6 py-4 bg-slate-50 border-b border-slate-200">
             <p className="small-label">Blood Group</p>
 
@@ -41,7 +43,7 @@ export default function DonorResults({ donors, searched, loading, error }) {
             <p className="small-label text-right">Contact</p>
           </div>
 
-          {/* List of matching donor item components */}
+          {/* Render each matching donor using the reusable item component. */}
           <div className="divide-y divide-slate-200">
             {donors.map((donor, index) => (
               <DonorResultItem
@@ -52,7 +54,6 @@ export default function DonorResults({ donors, searched, loading, error }) {
           </div>
         </div>
       ) : (
-        // Empty state view when no donors match search filters
         <div className="empty-state">
           <div className="empty-state-icon">
             <Droplets size={22} />

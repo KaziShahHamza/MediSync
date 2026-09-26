@@ -1,19 +1,16 @@
 // client/src/utils/emergencyCard/emergencyCardPdf.js
 
-// Generates the printable A4 emergency card PDF.
-// Handles card positioning, cutting guides, and print instructions.
+// Generates the printable A4 emergency medical card PDF.
+// Renders both card sides, positions them on A4, and adds print guides.
 
 import { jsPDF } from "jspdf";
 
 import { splitEmergencyContacts } from "./emergencyCardData";
-
 import { buildFrontHtml, buildBackHtml } from "./emergencyCardTemplates";
-
 import { addCardToPdf, renderCard } from "./emergencyCardHelpers";
 
 const CARD_WIDTH_MM = 85.6;
 const CARD_HEIGHT_MM = 53.98;
-
 const A4_WIDTH_MM = 210;
 
 // Generates and downloads the emergency medical card PDF.
@@ -24,6 +21,7 @@ export async function generateEmergencyCardPdf(profile, userInfo) {
 
   const { frontContacts, backContacts } = splitEmergencyContacts(profile);
 
+  // Builds the HTML content for both card sides.
   const frontHtml = buildFrontHtml({
     profile,
     userInfo,
@@ -39,6 +37,7 @@ export async function generateEmergencyCardPdf(profile, userInfo) {
   let backCanvas;
 
   try {
+    // Renders both sides concurrently to reduce PDF generation time.
     [frontCanvas, backCanvas] = await Promise.all([
       renderCard(frontHtml),
       renderCard(backHtml),
@@ -52,11 +51,10 @@ export async function generateEmergencyCardPdf(profile, userInfo) {
     });
 
     const cardX = (A4_WIDTH_MM - CARD_WIDTH_MM) / 2;
-
     const frontY = 55;
     const backY = 155;
 
-    // Places both card sides on the A4 page.
+    // Places both card sides at their printable A4 positions.
     addCardToPdf(
       pdf,
       frontCanvas,
@@ -68,19 +66,16 @@ export async function generateEmergencyCardPdf(profile, userInfo) {
 
     addCardToPdf(pdf, backCanvas, cardX, backY, CARD_WIDTH_MM, CARD_HEIGHT_MM);
 
-    // Draws printable cutting borders.
+    // Draws borders that can be used as cutting guides.
     pdf.setDrawColor(148, 163, 184);
     pdf.setLineWidth(0.2);
 
     pdf.rect(cardX, frontY, CARD_WIDTH_MM, CARD_HEIGHT_MM);
-
     pdf.rect(cardX, backY, CARD_WIDTH_MM, CARD_HEIGHT_MM);
 
-    // Adds print instructions to the A4 page.
+    // Adds print instructions and side labels to the page.
     pdf.setFont("helvetica", "normal");
-
     pdf.setFontSize(8);
-
     pdf.setTextColor(100, 116, 139);
 
     pdf.text(
@@ -104,13 +99,12 @@ export async function generateEmergencyCardPdf(profile, userInfo) {
     pdf.setFontSize(7);
 
     pdf.text("Front", cardX, frontY - 3);
-
     pdf.text("Back", cardX, backY - 3);
 
+    // Saves the completed emergency card PDF.
     pdf.save("medisync-emergency-card.pdf");
   } catch (error) {
     console.error("Emergency card PDF generation failed:", error);
-
     throw error;
   }
 }

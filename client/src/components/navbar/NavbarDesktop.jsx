@@ -1,8 +1,9 @@
 // client/src/components/navbar/NavbarDesktop.jsx
 
-// Desktop layout navigation component rendering full menu bars and drop-down links.
+// Renders the authenticated and unauthenticated desktop navigation.
+// Groups application routes into blood, health, records, and account sections.
 
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Activity,
   ChevronDown,
@@ -22,7 +23,7 @@ import {
 
 import { NavbarDropdown } from "./Navbar";
 
-// Renders desktop navigation menu items and dropdowns
+// Renders desktop navigation links and grouped dropdown menus.
 export default function NavbarDesktop({
   user,
   username,
@@ -30,27 +31,26 @@ export default function NavbarDesktop({
   onLogout,
 }) {
   const location = useLocation();
-  const navigate = useNavigate();
 
-  // Helper function to check if current route matches given path
+  // Determines whether an individual route is currently active.
   const isActive = (path) => location.pathname === path;
 
-  // Determines active state for medical documents section
+  // Groups medical record routes under the active records state.
   const isDocumentsActive =
     location.pathname === "/prescriptions" ||
     location.pathname === "/reports" ||
     location.pathname === "/medicines" ||
     location.pathname === "/doctors";
 
-  // Determines active state for general health section
+  // Groups health-related routes under the active health state.
   const isHealthActive =
     location.pathname === "/health" || location.pathname === "/lifestyle";
 
-  // Determines active state for account management section
+  // Groups profile and settings routes under the account state.
   const isAccountActive =
     location.pathname === "/profile" || location.pathname === "/settings";
 
-  // Helper component to render styled navigation link items
+  // Creates a reusable styled navigation link.
   const navItem = (path, label, Icon) => (
     <Link
       to={path}
@@ -62,16 +62,10 @@ export default function NavbarDesktop({
     </Link>
   );
 
-  // Handles session logout and page redirect
-  const handleLogout = () => {
-    onLogout();
-    navigate("/");
-  };
-
-  // Renders container element visible only on desktop viewports
+  // Renders the desktop-only navigation container.
   return (
-    <div className="hidden lg:flex items-center">
-      {/* Dropdown menu for blood donation services */}
+    <div className="hidden items-center lg:flex">
+      {/* Blood services dropdown */}
       <NavbarDropdown>
         <button
           type="button"
@@ -83,13 +77,11 @@ export default function NavbarDesktop({
           }`}
         >
           <Droplets size={18} strokeWidth={2} />
-
           <span>Need Blood?</span>
-
           <ChevronDown size={15} strokeWidth={2} />
         </button>
 
-        {/* Links for blood searching and posting requests */}
+        {/* Blood search and request routes */}
         <div className="navbar-dropdown">
           <Link
             to="/blood-search"
@@ -115,7 +107,7 @@ export default function NavbarDesktop({
         </div>
       </NavbarDropdown>
 
-      {/* Render unauthenticated user links */}
+      {/* Authentication-specific navigation */}
       {!user && (
         <>
           <Link
@@ -133,26 +125,23 @@ export default function NavbarDesktop({
         </>
       )}
 
-      {/* Render authenticated user navigation options */}
       {user && (
         <>
-          {/* Main user dashboard link */}
+          {/* Dashboard navigation */}
           {navItem("/dashboard", "Dashboard", LayoutDashboard)}
 
-          {/* Health overview dropdown section */}
+          {/* Health overview navigation */}
           <NavbarDropdown>
             <button
               type="button"
               className={`nav-link ${isHealthActive ? "nav-link-active" : ""}`}
             >
               <HeartPulse size={18} strokeWidth={2} />
-
               <span>Health Overview</span>
-
               <ChevronDown size={15} strokeWidth={2} />
             </button>
 
-            {/* Health tools navigation links */}
+            {/* Health-related routes */}
             <div className="navbar-dropdown">
               <Link
                 to="/health"
@@ -189,7 +178,7 @@ export default function NavbarDesktop({
             </div>
           </NavbarDropdown>
 
-          {/* Medical records dropdown section */}
+          {/* Medical records navigation */}
           <NavbarDropdown>
             <button
               type="button"
@@ -198,13 +187,11 @@ export default function NavbarDesktop({
               }`}
             >
               <FileImage size={18} strokeWidth={2} />
-
               <span>Medical Records</span>
-
               <ChevronDown size={15} strokeWidth={2} />
             </button>
 
-            {/* Medical history options */}
+            {/* Medical record routes */}
             <div className="navbar-dropdown">
               <Link
                 to="/medicines"
@@ -254,7 +241,7 @@ export default function NavbarDesktop({
             </div>
           </NavbarDropdown>
 
-          {/* Account profile and settings menu */}
+          {/* Account navigation and session controls */}
           <NavbarDropdown className="ml-2">
             <button
               type="button"
@@ -263,13 +250,11 @@ export default function NavbarDesktop({
               }`}
             >
               <UserRound size={18} strokeWidth={2} />
-
               <span>Welcome, {username}</span>
-
               <ChevronDown size={15} strokeWidth={2} />
             </button>
 
-            {/* User profile actions */}
+            {/* Profile, settings, and logout routes */}
             <div className="navbar-dropdown navbar-dropdown-account">
               <Link
                 to="/profile"
@@ -295,10 +280,10 @@ export default function NavbarDesktop({
 
               <div className="navbar-dropdown-divider" />
 
-              {/* Logout button component */}
+              {/* Logout action */}
               <button
                 type="button"
-                onClick={handleLogout}
+                onClick={onLogout}
                 className="navbar-dropdown-item navbar-dropdown-danger"
               >
                 <LogOut size={17} />

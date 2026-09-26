@@ -1,7 +1,7 @@
 // client/src/utils/emergencyCard/emergencyCardTemplates.js
 
-// Builds the front and back HTML structures for the emergency card.
-// Keeps card content and layout separate from PDF rendering logic.
+// Builds the front and back HTML structures for the emergency medical card.
+// Separates card content generation from styling and PDF rendering.
 
 import {
   escapeHtml,
@@ -20,13 +20,14 @@ import {
 
 import { getStyles } from "./emergencyCardStyles";
 
-// Generates the front side HTML template.
+// Generates the front-side emergency card HTML.
 export const buildFrontHtml = ({ profile, userInfo, frontContacts }) => {
   const fullName = getFullName(userInfo);
   const bloodGroup = getBloodGroup(profile);
   const dob = formatDate(profile?.dob);
   const gender = getGender(profile);
 
+  // Converts available emergency contacts into safe HTML markup.
   const contactsHtml = frontContacts.length
     ? frontContacts.map(createContact).join("")
     : `
@@ -133,11 +134,12 @@ export const buildFrontHtml = ({ profile, userInfo, frontContacts }) => {
   `;
 };
 
-// Generates the back side HTML template.
+// Generates the back-side medical information card HTML.
 export const buildBackHtml = ({ profile, backContacts }) => {
   const { chronicIllnesses, allergies, surgeries } =
     getMedicalInformation(profile);
 
+  // Creates the optional additional emergency-contact section.
   const backContactsHtml = backContacts.length
     ? `
       <div class="back-contact-section">
@@ -242,7 +244,7 @@ export const buildBackHtml = ({ profile, backContacts }) => {
   `;
 };
 
-// Wraps card HTML inside a complete isolated document.
+// Wraps generated card markup in an isolated HTML document with its styles.
 export const buildCardDocument = (html) => {
   return `
     <!DOCTYPE html>

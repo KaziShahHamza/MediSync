@@ -1,24 +1,23 @@
 // client/src/components/medicine/MedicineList.jsx
 
 // Displays active and completed medicines in separate sections.
-// Owns the selected medicine state and opens the medicine detail modal.
+// Owns the selected medicine state and controls the detail modal.
 
 import { useState } from "react";
 
 import MedicineCard from "./MedicineCard";
 import MedicineImageModal from "./modal/MedicineImageModal";
 
-// Manages rendering for grouped collections of active and past medicine items.
 export default function MedicineList({
   medicines = [],
   onEdit,
   onDelete,
   loading = false,
 }) {
-  // Stores currently selected medicine for modal detail view.
+  // Stores the medicine currently selected for detailed inspection.
   const [selectedMedicine, setSelectedMedicine] = useState(null);
 
-  // Filters dataset into active vs completed medicines.
+  // Separates active and completed medicines for grouped rendering.
   const activeMedicines = medicines.filter(
     (medicine) => medicine?.isActive !== false,
   );
@@ -27,17 +26,17 @@ export default function MedicineList({
     (medicine) => medicine?.isActive === false,
   );
 
-  // Sets selected medicine to trigger opening detail modal.
+  // Opens the detail modal for the selected medicine.
   function handleView(medicine) {
     setSelectedMedicine(medicine);
   }
 
-  // Clears selected medicine state to close detail modal.
+  // Clears the selected medicine and closes the detail modal.
   function handleCloseModal() {
     setSelectedMedicine(null);
   }
 
-  // Loading state placeholder view
+  // Shows a loading state while the initial medicine list is unavailable.
   if (loading && medicines.length === 0) {
     return (
       <section className="card">
@@ -48,7 +47,7 @@ export default function MedicineList({
     );
   }
 
-  // Empty state placeholder view
+  // Shows an empty state when no medicines have been added.
   if (medicines.length === 0) {
     return (
       <section className="card">
@@ -71,8 +70,8 @@ export default function MedicineList({
 
   return (
     <>
+      {/* Groups current and completed treatments into separate sections. */}
       <div className="space-y-6">
-        {/* Active medicines list section */}
         {activeMedicines.length > 0 && (
           <section className="space-y-4">
             <div>
@@ -86,7 +85,7 @@ export default function MedicineList({
             </div>
 
             <div className="grid gap-4 lg:grid-cols-2">
-              {/* Maps active medicine list items */}
+              {/* Renders each currently active medicine. */}
               {activeMedicines.map((medicine) => (
                 <MedicineCard
                   key={medicine._id}
@@ -100,7 +99,6 @@ export default function MedicineList({
           </section>
         )}
 
-        {/* Completed medicines list section */}
         {pastMedicines.length > 0 && (
           <section className="space-y-4">
             <div>
@@ -114,7 +112,7 @@ export default function MedicineList({
             </div>
 
             <div className="grid gap-4">
-              {/* Maps past medicine list items */}
+              {/* Renders each completed medicine treatment. */}
               {pastMedicines.map((medicine) => (
                 <MedicineCard
                   key={medicine._id}
@@ -129,7 +127,7 @@ export default function MedicineList({
         )}
       </div>
 
-      {/* Medicine detail inspection modal */}
+      {/* Displays detailed information for the selected medicine. */}
       <MedicineImageModal
         medicine={selectedMedicine}
         onClose={handleCloseModal}

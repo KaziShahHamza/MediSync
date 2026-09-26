@@ -1,5 +1,7 @@
 // client/src/components/blood/BloodSearchForm.jsx
-// Form component for filtering blood donors by blood group, district, upazila, and travel allowance support.
+
+// Renders the donor search filter form.
+// Supports blood group, district, upazila, and compensation filtering.
 
 import { RotateCcw, Search } from "lucide-react";
 
@@ -7,7 +9,6 @@ import { BLOOD_GROUPS } from "../../utils/blood/bloodConstants";
 
 import { districtsData } from "../../data/districtsData";
 
-// Search filter form component for finding blood donors
 export default function BloodSearchForm({
   bloodGroup,
   setBloodGroup,
@@ -28,10 +29,19 @@ export default function BloodSearchForm({
   onSearch,
   onReset,
 }) {
+  // Submit the active search filters through the parent handler.
+  const handleSubmit = (event) => {
+    onSearch(event);
+  };
+
+  // Reset all search filters through the parent handler.
+  const handleReset = () => {
+    onReset();
+  };
+
   return (
-    // Filter card container
     <section className="card p-6 lg:p-8 mb-8">
-      {/* Form section header */}
+      {/* Render the search form heading and supporting description. */}
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
           <Search size={20} />
@@ -46,11 +56,9 @@ export default function BloodSearchForm({
         </div>
       </div>
 
-      {/* Filter submission form */}
-      <form onSubmit={onSearch}>
-        {/* Input fields grid */}
+      <form onSubmit={handleSubmit}>
+        {/* Render all donor filtering controls in a responsive grid. */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Blood group dropdown selector */}
           <div>
             <label htmlFor="blood-group" className="small-label block mb-2">
               Blood Group
@@ -64,6 +72,7 @@ export default function BloodSearchForm({
             >
               <option value="">All blood groups</option>
 
+              {/* Populate blood group options from the shared constants. */}
               {BLOOD_GROUPS.map((group) => (
                 <option key={group} value={group}>
                   {group}
@@ -72,7 +81,6 @@ export default function BloodSearchForm({
             </select>
           </div>
 
-          {/* District dropdown selector */}
           <div>
             <label htmlFor="district" className="small-label block mb-2">
               District
@@ -86,6 +94,7 @@ export default function BloodSearchForm({
             >
               <option value="">All districts</option>
 
+              {/* Populate district options from the location dataset. */}
               {districtsData.map((item) => (
                 <option key={item.name} value={item.name}>
                   {item.name}
@@ -94,7 +103,6 @@ export default function BloodSearchForm({
             </select>
           </div>
 
-          {/* Upazila dropdown selector */}
           <div>
             <label htmlFor="upazila" className="small-label block mb-2">
               Upazila
@@ -111,6 +119,7 @@ export default function BloodSearchForm({
                 {district ? "All upazilas" : "Select district first"}
               </option>
 
+              {/* Populate upazilas for the selected district. */}
               {upazilas.map((item) => (
                 <option key={item} value={item}>
                   {item}
@@ -119,7 +128,6 @@ export default function BloodSearchForm({
             </select>
           </div>
 
-          {/* Compensation dropdown selector */}
           <div>
             <label htmlFor="compensation" className="small-label block mb-2">
               Will you Provide travel cost? (সম্মানী)
@@ -132,27 +140,23 @@ export default function BloodSearchForm({
               className="input"
             >
               <option value="">Any</option>
-
               <option value="yes">Yes</option>
-
               <option value="no">No</option>
             </select>
           </div>
         </div>
 
-        {/* Form control buttons */}
+        {/* Render search and reset actions for the active filters. */}
         <div className="flex flex-wrap gap-3 mt-6">
-          {/* Submit search button */}
           <button type="submit" className="btn-primary" disabled={loading}>
             <Search size={17} />
 
             {loading ? "Searching..." : "Find Donors"}
           </button>
 
-          {/* Reset form button */}
           <button
             type="button"
-            onClick={onReset}
+            onClick={handleReset}
             className="btn-secondary"
             disabled={loading}
           >

@@ -1,16 +1,13 @@
 // client/src/components/profile/ProfileSummary.jsx
 
+// Displays a read-only summary of the user's personal and medical profile.
+// Includes emergency contacts, blood-donation information, and card export.
+
 import EmergencyCardExport from "./EmergencyCardExport";
 
 function InfoItem({ label, value, full = false }) {
   return (
-    <div
-      className={`
-        surface-muted
-        p-4
-        ${full ? "md:col-span-2" : ""}
-      `}
-    >
+    <div className={`surface-muted p-4 ${full ? "md:col-span-2" : ""}`}>
       <p className="small-label uppercase tracking-wide">{label}</p>
 
       <p
@@ -81,6 +78,18 @@ function formatLocation(location) {
   );
 }
 
+function formatDate(value) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
+
+  return date.toLocaleDateString();
+}
+
 export default function ProfileSummary({ userInfo, profile }) {
   const height = profile?.height;
 
@@ -89,11 +98,25 @@ export default function ProfileSummary({ userInfo, profile }) {
     : "-";
 
   const emergencyContacts = profile?.emergencyContacts || [];
-
   const location = profile?.location || {};
 
+  // Renders the user's profile photo or an initial fallback.
+  const profilePhoto = userInfo?.profilePhotoUrl ? (
+    <img
+      src={userInfo.profilePhotoUrl}
+      alt={`${userInfo?.name || "User"} profile`}
+      className="h-28 w-28 rounded-full object-cover border-4 border-white shadow-md"
+    />
+  ) : (
+    <div className="flex h-28 w-28 items-center justify-center rounded-full bg-sky-100 text-3xl font-semibold text-sky-700">
+      {userInfo?.name?.charAt(0)?.toUpperCase() || "U"}
+    </div>
+  );
+
+  // Renders the complete read-only profile summary.
   return (
     <div className="card w-full p-6 lg:p-8">
+      {/* Summary heading and description */}
       <div className="mb-8">
         <h2 className="card-title text-xl">Profile Summary</h2>
 
@@ -102,23 +125,14 @@ export default function ProfileSummary({ userInfo, profile }) {
         </p>
       </div>
 
-      <div className="flex justify-center">
-        {userInfo?.profilePhotoUrl ? (
-          <img
-            src={userInfo.profilePhotoUrl}
-            alt={`${userInfo?.name || "User"} profile`}
-            className="h-28 w-28 rounded-full object-cover border-4 border-white shadow-md"
-          />
-        ) : (
-          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-sky-100 text-3xl font-semibold text-sky-700">
-            {userInfo?.name?.charAt(0)?.toUpperCase() || "U"}
-          </div>
-        )}
+      {/* Profile photo and emergency card export */}
+      <div className="flex flex-col items-center gap-4 mb-8">
+        {profilePhoto}
 
         <EmergencyCardExport userInfo={userInfo} profile={profile} />
       </div>
 
-      {/* Personal Information */}
+      {/* Personal information section */}
       <div className="mb-8">
         <h3 className="section-title text-lg mb-4">Personal Information</h3>
 
@@ -129,12 +143,7 @@ export default function ProfileSummary({ userInfo, profile }) {
 
           <InfoItem label="Email" value={userInfo?.email} />
 
-          <InfoItem
-            label="Date of Birth"
-            value={
-              profile?.dob ? new Date(profile.dob).toLocaleDateString() : "-"
-            }
-          />
+          <InfoItem label="Date of Birth" value={formatDate(profile?.dob)} />
 
           <InfoItem label="Gender" value={profile?.gender} />
 
@@ -150,7 +159,7 @@ export default function ProfileSummary({ userInfo, profile }) {
         </div>
       </div>
 
-      {/* Medical Information */}
+      {/* Medical information section */}
       <div className="mb-8">
         <h3 className="section-title text-lg mb-4">Medical Information</h3>
 
@@ -187,20 +196,23 @@ export default function ProfileSummary({ userInfo, profile }) {
         </div>
       </div>
 
-      {/* Emergency Contacts */}
+      {/* Emergency contact section */}
       <div className="mb-8">
         <h3 className="section-title text-lg mb-4">Emergency Contacts</h3>
 
         {emergencyContacts.length ? (
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
             {emergencyContacts.map((contact, index) => (
-              <div key={index} className="surface-muted p-4">
+              <div
+                key={`${contact.phone || contact.email || "contact"}-${index}`}
+                className="surface-muted p-4"
+              >
                 <p className="small-label uppercase tracking-wide">
                   {contact.relation || `Contact ${index + 1}`}
                 </p>
 
                 <p className="mt-2 font-semibold text-slate-800">
-                  {contact.name}
+                  {contact.name || "-"}
                 </p>
 
                 {contact.phone && (
@@ -222,7 +234,7 @@ export default function ProfileSummary({ userInfo, profile }) {
         )}
       </div>
 
-      {/* Blood Donation */}
+      {/* Blood donation information section */}
       <div>
         <h3 className="section-title text-lg mb-4">Blood Donation</h3>
 
@@ -233,7 +245,7 @@ export default function ProfileSummary({ userInfo, profile }) {
           />
 
           <InfoItem
-            label="honorarium/travel cost? (সম্মানী/গাড়ি ভাড়া)"
+            label="Honorarium/travel cost? (সম্মানী/গাড়ি ভাড়া)"
             value={formatCompensation(profile?.bloodDonationCompensation)}
           />
 

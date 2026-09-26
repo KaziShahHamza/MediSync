@@ -1,6 +1,7 @@
 // client/src/components/medicine/MedicineCard.jsx
 
-// Manages medicine card logic and delegates the card UI to MedicineCardContent.
+// Calculates medicine summary values and interaction handlers.
+// Delegates visual rendering to MedicineCardContent.
 
 import {
   getMedicinePricingType,
@@ -10,45 +11,44 @@ import {
 
 import MedicineCardContent from "./MedicineCardContent";
 
-// Renders individual medicine summary card component
 export default function MedicineCard({ medicine, onView, onEdit, onDelete }) {
-  // Determine pricing configuration category
+  // Determines which pricing model the medicine uses.
   const pricingType = getMedicinePricingType(medicine);
 
-  // Check if medicine uses strip-based dosage calculations
+  // Identifies whether dosage is calculated from strip usage.
   const isStripMedicine = pricingType === "strip";
 
-  // Calculate projected monthly unit consumption
+  // Calculates projected monthly medicine consumption.
   const monthlyPieces = isStripMedicine
     ? getMonthlyMedicinePieces(medicine?.dosage)
     : Number(medicine?.unitsPerMonth) || 0;
 
-  // Calculate monthly financial expenditure
+  // Calculates the estimated monthly medicine cost.
   const monthlyCost = getMedicineMonthlyCost(medicine);
 
-  // Derive active medication treatment status
+  // Determines the current treatment status.
   const isActive = medicine?.isActive !== false;
 
-  // Fallback to empty dosage list if undefined
+  // Normalizes dosage data before passing it to the presentation component.
   const dosage = Array.isArray(medicine?.dosage) ? medicine.dosage : [];
 
-  // Triggers main details view handler
+  // Opens the selected medicine details view.
   function handleCardClick() {
     onView(medicine);
   }
 
-  // Prevents card click propagation when interacting with nested controls
+  // Prevents nested controls from triggering the parent card action.
   function stopCardClick(event) {
     event.stopPropagation();
   }
 
-  // Handles edit button click action
+  // Opens the medicine edit flow.
   function handleEdit(event) {
     event.stopPropagation();
     onEdit(medicine);
   }
 
-  // Handles delete button click action
+  // Opens the medicine deletion flow.
   function handleDelete(event) {
     event.stopPropagation();
     onDelete(medicine._id);

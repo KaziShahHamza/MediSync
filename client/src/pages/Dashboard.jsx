@@ -1,7 +1,7 @@
 // client/src/pages/Dashboard.jsx
 
-// Main dashboard page component that aggregates health summaries,
-// medical metrics, record counts, and platform quick actions.
+// Renders the main MediSync dashboard.
+// Combines health data, AI summary information, records, and quick actions.
 
 import { useAuth } from "../context/AuthContext";
 import { useLifestyle } from "../context/LifestyleContext";
@@ -14,11 +14,11 @@ import DashboardHealthOverview from "../components/dashboard/DashboardHealthOver
 import DashboardRecords from "../components/dashboard/DashboardRecords";
 import DashboardQuickActions from "../components/dashboard/DashboardQuickActions";
 
+// Provides the aggregated dashboard view for authenticated users.
 export default function Dashboard() {
   const { user } = useAuth();
   const { latestAssessment } = useLifestyle();
 
-  // Fetch dashboard data, real-time clock, and report handlers
   const {
     data,
     aiSummary,
@@ -33,7 +33,7 @@ export default function Dashboard() {
     handleExportPDF,
   } = useDashboard();
 
-  // Show placeholder skeleton grid while initial dashboard data loads
+  // Displays the initial dashboard loading state.
   if (!data) {
     return (
       <div className="container page">
@@ -46,10 +46,9 @@ export default function Dashboard() {
     );
   }
 
-  // Render populated dashboard sections once data is available
   return (
     <div className="container page">
-      {/* Header */}
+      {/* Dashboard greeting and export controls. */}
       <DashboardHeader
         user={user}
         greeting={greeting}
@@ -58,7 +57,7 @@ export default function Dashboard() {
         onExportPDF={handleExportPDF}
       />
 
-      {/* AI / Lifestyle Summary */}
+      {/* AI and lifestyle summary section. */}
       <section className="section">
         <DashboardSummary
           aiSummary={aiSummary}
@@ -71,15 +70,17 @@ export default function Dashboard() {
         />
       </section>
 
-      {/* Health Overview */}
+      {/* Latest health metrics and trends. */}
       <section className="section">
         <DashboardHealthOverview health={data.health} />
       </section>
 
+      {/* Record counts and recent health records. */}
       <section className="section">
         <DashboardRecords summary={data.summary} />
       </section>
 
+      {/* Navigation shortcuts for common dashboard actions. */}
       <section className="section">
         <DashboardQuickActions />
       </section>

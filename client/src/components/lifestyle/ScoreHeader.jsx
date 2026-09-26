@@ -1,8 +1,11 @@
 // client/src/components/lifestyle/ScoreHeader.jsx
 
-// Displays the static intro header and a sticky score bar tracking current evaluation progress.
+// Displays the lifestyle assessment introduction and live score progress.
+// Provides the reusable sticky score bar for questionnaire progress.
 
-// Static informational header component
+import { Activity } from "lucide-react";
+
+// Renders the static introductory information for the assessment.
 export default function Header() {
   return (
     <header className="card">
@@ -21,13 +24,14 @@ export default function Header() {
   );
 }
 
-// Progress widget displaying live total score, current grade, and completion bar
+// Renders the live score, grade, and questionnaire completion progress.
 export function StickyScoreBar({
   totalScore,
   grade,
   answeredCount,
   totalQuestions,
 }) {
+  // Clamps the displayed score to the expected 0–100 assessment range.
   const safeScore = Math.max(0, Math.min(100, Number(totalScore) || 0));
 
   return (
@@ -55,7 +59,7 @@ export function StickyScoreBar({
           </div>
         </div>
 
-        {/* Progress bar container */}
+        {/* Provides an accessible visual representation of the current score. */}
         <div className="mt-6">
           <div
             className="h-2.5 rounded-full bg-slate-100 overflow-hidden"
@@ -71,6 +75,7 @@ export function StickyScoreBar({
           </div>
         </div>
 
+        {/* Displays the number of completed questions against the total. */}
         <div className="flex items-center justify-between mt-3">
           <span className="text-xs text-slate-500">Assessment progress</span>
 

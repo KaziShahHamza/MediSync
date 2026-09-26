@@ -1,26 +1,28 @@
 // client/src/components/medicine/MedicineMonthlyCost.jsx
 
+// Displays the estimated monthly medicine cost.
+// Shows the number of currently active medicines alongside the total.
+
 import { CircleDollarSign, TrendingUp } from "lucide-react";
+
 import {
   getTotalMonthlyMedicineCost,
   formatMedicinePrice,
 } from "../../utils/medicine/medicineCalculations";
 
-// Displays aggregated monthly estimated costs across active medicines.
 export default function MedicineMonthlyCost({ medicines = [] }) {
-  // Filters active medicines for count indicator.
+  // Filters medicines to calculate the active medicine count.
   const activeMedicines = medicines.filter(
     (medicine) => medicine?.isActive !== false,
   );
 
-  // Computes grand total monthly cost across provided medicines.
+  // Calculates the aggregate monthly cost for the medicine collection.
   const totalMonthlyCost = getTotalMonthlyMedicineCost(medicines);
 
   return (
-    // Cost breakdown card banner
     <section className="card mb-6">
+      {/* Displays the cost summary and active medicine count. */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        {/* Card header and descriptive info */}
         <div className="flex items-start gap-3">
           <div className="rounded-xl bg-sky-50 p-3">
             <CircleDollarSign className="h-6 w-6 text-sky-600" />
@@ -37,7 +39,7 @@ export default function MedicineMonthlyCost({ medicines = [] }) {
           </div>
         </div>
 
-        {/* Formatted total cost display */}
+        {/* Presents the formatted total estimated cost. */}
         <div className="flex items-center gap-2 sm:text-right">
           <TrendingUp className="h-5 w-5 text-sky-600" />
 

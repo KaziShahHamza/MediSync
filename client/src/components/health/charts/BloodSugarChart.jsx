@@ -1,5 +1,8 @@
 // client/src/components/health/BloodSugarChart.jsx
 
+// Renders blood sugar history grouped by calendar date.
+// Supports fasting, post-meal, and random glucose readings.
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,6 +15,7 @@ import {
 import { Line } from "react-chartjs-2";
 import { Droplets, Activity } from "lucide-react";
 
+// Register the Chart.js components required by the line chart.
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -30,12 +34,12 @@ function getCalendarDate(log) {
 
   if (!value) return null;
 
-  // New records use YYYY-MM-DD.
-  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+  // Preserve the calendar date directly for the newer date-only format.
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
     return value;
   }
 
-  // Older records fall back to createdAt.
+  // Convert older timestamp-based records into a local calendar date.
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
@@ -52,11 +56,7 @@ function getCalendarDate(log) {
 function formatChartDate(dateString) {
   const [year, month, day] = dateString.split("-");
 
-  const date = new Date(
-    Number(year),
-    Number(month) - 1,
-    Number(day),
-  );
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
 
   return date.toLocaleDateString("en-US", {
     month: "short",
@@ -65,7 +65,8 @@ function formatChartDate(dateString) {
 }
 
 export default function BloodSugarChart({ logs }) {
-  const diabetesLogs = logs.filter(
+  // Select valid glucose records with supported measurement timings.
+  const diabetesLogs = (logs || []).filter(
     (log) =>
       log.type === "diabetes" &&
       log.glucose != null &&
@@ -73,6 +74,7 @@ export default function BloodSugarChart({ logs }) {
       ["fasting", "postMeal", "random"].includes(log.glucoseTiming),
   );
 
+  // Group readings by calendar date and glucose measurement timing.
   const groupedByDate = {};
 
   diabetesLogs.forEach((log) => {
@@ -90,7 +92,7 @@ export default function BloodSugarChart({ logs }) {
 
     const existingLog = groupedByDate[date][log.glucoseTiming];
 
-    // Keep the latest saved reading for this date and timing.
+    // Keep the latest saved reading for each date and measurement timing.
     if (
       !existingLog ||
       new Date(log.createdAt).getTime() >
@@ -100,13 +102,14 @@ export default function BloodSugarChart({ logs }) {
     }
   });
 
+  // Sort dates chronologically and display only the latest ten.
   const dates = Object.keys(groupedByDate)
     .sort((a, b) => a.localeCompare(b))
     .slice(-10);
 
+  // Build separate chart series for each supported glucose timing.
   const chartData = {
     labels: dates.map(formatChartDate),
-
     datasets: [
       {
         label: "Fasting",
@@ -120,7 +123,6 @@ export default function BloodSugarChart({ logs }) {
         tension: 0.3,
         spanGaps: false,
       },
-
       {
         label: "2 Hours After Meal",
         data: dates.map((date) =>
@@ -133,7 +135,6 @@ export default function BloodSugarChart({ logs }) {
         tension: 0.3,
         spanGaps: false,
       },
-
       {
         label: "Random",
         data: dates.map((date) =>
@@ -171,7 +172,6 @@ export default function BloodSugarChart({ logs }) {
             data={chartData}
             options={{
               responsive: true,
-              // maintainAspectRatio: false,
             }}
           />
         </div>

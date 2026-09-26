@@ -1,8 +1,12 @@
 // client/src/components/ai-assistant/ChatMessage.jsx
 
+// Renders individual user and assistant messages with timestamps.
+// Converts recognized assistant phone numbers into WhatsApp actions.
+
 import { Bot, User } from "lucide-react";
 import { openEmergencyWhatsApp } from "../../utils/emergencyWhatsApp";
 
+// Formats message timestamps for compact chat display.
 function formatTime(date) {
   if (!date) return "";
 
@@ -18,28 +22,22 @@ function formatTime(date) {
   });
 }
 
+// Converts assistant phone numbers into clickable WhatsApp actions.
 function renderText(text, isUser) {
   if (!text) return null;
 
-  /*
-   * Only assistant messages get clickable phone numbers.
-   *
-   * Supports common Bangladesh formats such as:
-   * 01867052533
-   * 01867 052533
-   * +8801867052533
-   * 8801867052533
-   */
   if (isUser) {
     return text;
   }
 
+  // Matches common Bangladesh mobile number formats.
   const phoneRegex =
     /(?:\+?880[\s-]?1[3-9][\s-]?\d{2}[\s-]?\d{6}|01[3-9][\s-]?\d{2}[\s-]?\d{6})/g;
 
   const parts = [];
   let lastIndex = 0;
 
+  // Preserve normal text while replacing recognized phone numbers.
   for (const match of text.matchAll(phoneRegex)) {
     const phone = match[0];
     const start = match.index;
@@ -57,7 +55,7 @@ function renderText(text, isUser) {
         title="Message this contact on WhatsApp"
       >
         {phone}
-      </button>
+      </button>,
     );
 
     lastIndex = start + phone.length;
@@ -70,12 +68,10 @@ function renderText(text, isUser) {
   return parts;
 }
 
-export default function ChatMessage({
-  message,
-  loading = false,
-}) {
+export default function ChatMessage({ message, loading = false }) {
   const isUser = message.role === "user";
 
+  // Render the assistant typing state while a response is loading.
   if (loading) {
     return (
       <div className="flex items-start gap-3">
@@ -94,28 +90,21 @@ export default function ChatMessage({
     );
   }
 
+  // Render the message with direction and styling based on its role.
   return (
     <div
-      className={`flex items-start gap-3 ${
-        isUser ? "flex-row-reverse" : ""
-      }`}
+      className={`flex items-start gap-3 ${isUser ? "flex-row-reverse" : ""}`}
     >
-      {/* Avatar */}
+      {/* Render the role-specific message avatar. */}
       <div
         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
-          isUser
-            ? "bg-slate-100 text-slate-600"
-            : "bg-blue-50 text-blue-600"
+          isUser ? "bg-slate-100 text-slate-600" : "bg-blue-50 text-blue-600"
         }`}
       >
-        {isUser ? (
-          <User size={18} />
-        ) : (
-          <Bot size={18} />
-        )}
+        {isUser ? <User size={18} /> : <Bot size={18} />}
       </div>
 
-      {/* Message */}
+      {/* Render message content and its optional timestamp. */}
       <div
         className={`min-w-0 max-w-[85%] sm:max-w-[75%] ${
           isUser ? "items-end" : "items-start"

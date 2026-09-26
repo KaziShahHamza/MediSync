@@ -1,5 +1,7 @@
+// client/src/components/navbar/NavbarMobile.jsx
 
-// Mobile navigation header component handling mobile action buttons and responsive drawer state.
+// Renders responsive mobile navigation controls and the navigation drawer.
+// Separates the compact header controls from the full mobile menu.
 
 import { Link } from "react-router-dom";
 import {
@@ -19,7 +21,7 @@ import {
   X,
 } from "lucide-react";
 
-// Mobile view container with drawer toggle and expandable navigation list
+// Renders mobile header controls or the expanded navigation drawer.
 export default function NavbarMobile({
   user,
   username,
@@ -29,35 +31,33 @@ export default function NavbarMobile({
   headerOnly = false,
   drawerOnly = false,
 }) {
-  // Closes mobile menu drawer on navigation selection
+  // Closes the mobile drawer after selecting a navigation route.
   const handleNavigation = () => {
     setMobileOpen(false);
   };
 
-  // Helper component to render menu navigation links
+  // Creates a reusable mobile navigation link.
   const navItem = (path, label, Icon) => (
-    <Link
-      to={path}
-      onClick={handleNavigation}
-      className="nav-link"
-    >
+    <Link to={path} onClick={handleNavigation} className="nav-link">
       <Icon size={18} strokeWidth={2} />
       <span>{label}</span>
     </Link>
   );
 
-  // Render only the mobile header controls
+  // Renders the compact controls inside the main navbar row.
   if (headerOnly) {
     return (
-      <div className="flex lg:hidden items-center gap-3">
+      <div className="flex items-center gap-3 lg:hidden">
+        {/* Authenticated user greeting */}
         {user && (
-          <span className="text-sm font-medium text-slate-700 truncate max-w-[140px]">
+          <span className="max-w-[140px] truncate text-sm font-medium text-slate-700">
             Welcome, {username}
           </span>
         )}
 
         {!user ? (
           <>
+            {/* Public blood navigation */}
             <Link to="/blood-need" className="nav-link">
               Need Blood?
             </Link>
@@ -71,6 +71,7 @@ export default function NavbarMobile({
             </Link>
           </>
         ) : (
+          /* Mobile drawer toggle */
           <button
             type="button"
             onClick={() => setMobileOpen((value) => !value)}
@@ -89,78 +90,32 @@ export default function NavbarMobile({
     );
   }
 
-  // Render only the mobile drawer
+  // Renders the expanded mobile navigation drawer.
   if (drawerOnly) {
     return (
       <>
         {mobileOpen && (
           <div className="navbar-mobile-menu lg:hidden">
             <nav className="container py-4">
+              {/* Mobile navigation route collection */}
               <div className="navbar-mobile-list">
-                {navItem("/blood-need", "Need Blood?", Droplets)}
+                {navItem("/blood-search", "Find Donor", Droplets)}
+                {navItem("/blood-request", "Post Blood Request", Sparkles)}
 
                 {user ? (
                   <>
-                    {navItem(
-                      "/dashboard",
-                      "Dashboard",
-                      LayoutDashboard
-                    )}
+                    {navItem("/dashboard", "Dashboard", LayoutDashboard)}
+                    {navItem("/health", "Health Charts", Activity)}
+                    {navItem("/assistant", "AI Chat", Sparkles)}
+                    {navItem("/lifestyle", "Lifestyle Score", Coffee)}
+                    {navItem("/medicines", "My Medicines", Pill)}
+                    {navItem("/doctors", "My Doctors", Stethoscope)}
+                    {navItem("/prescriptions", "My Prescriptions", FileImage)}
+                    {navItem("/reports", "My Reports", FileBarChart)}
+                    {navItem("/profile", "Profile", UserRound)}
+                    {navItem("/settings", "Settings", Settings)}
 
-                    {navItem(
-                      "/health",
-                      "Health Charts",
-                      Activity
-                    )}
-
-                    {navItem(
-                      "/assistant",
-                      "AI Chat",
-                      Sparkles
-                    )}
-
-                    {navItem(
-                      "/lifestyle",
-                      "Lifestyle Score",
-                      Coffee
-                    )}
-
-                    {navItem(
-                      "/medicines",
-                      "My Medicines",
-                      Pill
-                    )}
-
-                    {navItem(
-                      "/doctors",
-                      "My Doctors",
-                      Stethoscope
-                    )}
-
-                    {navItem(
-                      "/prescriptions",
-                      "My Prescriptions",
-                      FileImage
-                    )}
-
-                    {navItem(
-                      "/reports",
-                      "My Reports",
-                      FileBarChart
-                    )}
-
-                    {navItem(
-                      "/profile",
-                      "Profile",
-                      UserRound
-                    )}
-
-                    {navItem(
-                      "/settings",
-                      "Settings",
-                      Settings
-                    )}
-
+                    {/* Mobile logout action */}
                     <button
                       type="button"
                       onClick={onLogout}
@@ -172,6 +127,7 @@ export default function NavbarMobile({
                   </>
                 ) : (
                   <>
+                    {/* Public authentication routes */}
                     <Link
                       to="/login"
                       onClick={handleNavigation}
@@ -199,4 +155,3 @@ export default function NavbarMobile({
 
   return null;
 }
-

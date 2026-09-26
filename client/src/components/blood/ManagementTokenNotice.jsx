@@ -1,19 +1,22 @@
 // client/src/components/blood/ManagementTokenNotice.jsx
-// Displays a unique management token code that allows non-authenticated users to modify or delete their blood request.
+
+// Displays the private management token generated for an anonymous blood request.
+// Provides a copy action so the requester can retain the token.
 
 import { CheckCircle2, Copy, ShieldCheck } from "lucide-react";
 
-// Notification panel displaying private management token upon post creation
 export default function ManagementTokenNotice({
   managementToken,
   copied,
   onCopy,
 }) {
-  // Hide component if no token exists
+  // Avoid rendering the notice when no management token is available.
   if (!managementToken) return null;
 
+  // Select the copy button label based on the current copy state.
+  const copyLabel = copied ? "Copied" : "Copy Code";
+
   return (
-    // Management token banner container
     <div className="alert alert-success mb-6">
       <div className="flex items-start gap-3">
         <CheckCircle2 size={20} className="mt-0.5 shrink-0" />
@@ -28,9 +31,8 @@ export default function ManagementTokenNotice({
             this request later.
           </p>
 
-          {/* Token value display and copy action bar */}
+          {/* Display the private token and its copy control. */}
           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-            {/* Token display element */}
             <div className="flex min-w-0 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2">
               <ShieldCheck size={17} className="shrink-0 text-sky-600" />
 
@@ -39,7 +41,7 @@ export default function ManagementTokenNotice({
               </code>
             </div>
 
-            {/* Copy token to clipboard button */}
+            {/* Copy the management token through the parent handler. */}
             <button
               type="button"
               onClick={onCopy}
@@ -47,7 +49,7 @@ export default function ManagementTokenNotice({
             >
               <Copy size={16} />
 
-              {copied ? "Copied" : "Copy Code"}
+              {copyLabel}
             </button>
           </div>
         </div>

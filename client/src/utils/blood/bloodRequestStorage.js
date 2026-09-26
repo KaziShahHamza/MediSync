@@ -1,14 +1,16 @@
 // client/src/utils/blood/bloodRequestStorage.js
 
-const DEVICE_ID_STORAGE_KEY = "medisync_blood_request_device_id";
+// Manages browser storage for guest device and blood request tokens.
+// Keeps persistence details outside blood request hooks and components.
 
+const DEVICE_ID_STORAGE_KEY = "medisync_blood_request_device_id";
 const MANAGEMENT_TOKEN_PREFIX = "medisync_blood_request_token_";
 
-// Retrieves existing device UUID or generates and persists a new one
+// Retrieve an existing device ID or generate and persist one.
 export function getDeviceId() {
   let deviceId = localStorage.getItem(DEVICE_ID_STORAGE_KEY);
 
-  // Creates new UUID if missing from storage
+  // Generate a new UUID when no device ID exists.
   if (!deviceId) {
     deviceId = crypto.randomUUID();
 
@@ -18,12 +20,16 @@ export function getDeviceId() {
   return deviceId;
 }
 
-// Retrieves saved guest management token for specific request ID
+// Retrieve a saved management token for a request.
 export function getManagementToken(requestId) {
+  if (!requestId) {
+    return null;
+  }
+
   return localStorage.getItem(`${MANAGEMENT_TOKEN_PREFIX}${requestId}`);
 }
 
-// Stores guest management token associated with request ID
+// Save a guest management token for a request.
 export function saveManagementToken(requestId, token) {
   if (!requestId || !token) {
     return;
@@ -32,7 +38,7 @@ export function saveManagementToken(requestId, token) {
   localStorage.setItem(`${MANAGEMENT_TOKEN_PREFIX}${requestId}`, token);
 }
 
-// Removes stored guest management token for specific request ID
+// Remove a saved guest management token.
 export function removeManagementToken(requestId) {
   if (!requestId) {
     return;

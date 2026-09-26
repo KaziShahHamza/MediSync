@@ -1,6 +1,7 @@
 // server/routes/report.routes.js
 
 // Defines authenticated routes for medical report management.
+
 import express from "express";
 
 import auth from "../middlewares/auth.js";

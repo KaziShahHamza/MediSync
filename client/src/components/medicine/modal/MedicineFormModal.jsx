@@ -1,13 +1,12 @@
 // client/src/components/medicine/modal/MedicineFormModal.jsx
 
 // Provides the modal container for adding or editing a medicine.
-// Keeps modal behavior separate from the medicine form itself.
+// Handles Escape-key and backdrop interactions independently from the form.
 
 import { useEffect } from "react";
 
 import MedicineForm from "./MedicineForm";
 
-// Renders the modal dialog wrapper for medicine creation and editing.
 export default function MedicineFormModal({
   medicine = null,
   editing = false,
@@ -15,13 +14,12 @@ export default function MedicineFormModal({
   onClose,
   loading = false,
 }) {
-  // Registers keydown event listener to close modal on Escape key press.
+  // Registers and cleans up the Escape-key listener while the modal is active.
   useEffect(() => {
     if (!editing) {
       return;
     }
 
-    // Handles the Escape keypress event.
     function handleKeyDown(event) {
       if (event.key === "Escape") {
         onClose();
@@ -35,20 +33,19 @@ export default function MedicineFormModal({
     };
   }, [editing, onClose]);
 
-  // Closes modal when clicking directly on the backdrop overlay.
+  // Closes the modal only when the backdrop itself is clicked.
   function handleBackdropClick(event) {
     if (event.target === event.currentTarget) {
       onClose();
     }
   }
 
-  // Prevents rendering if modal is not in editing state.
+  // Avoids mounting modal content when the modal is inactive.
   if (!editing) {
     return null;
   }
 
   return (
-    // Modal backdrop container
     <div
       className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/50 px-4 py-6 sm:px-6"
       onMouseDown={handleBackdropClick}
@@ -58,7 +55,7 @@ export default function MedicineFormModal({
     >
       <div className="flex min-h-full items-start justify-center sm:items-center">
         <div className="w-full max-w-3xl">
-          {/* Form component for inputting or editing medicine details */}
+          {/* Renders the reusable medicine form inside the modal. */}
           <MedicineForm
             onSave={onSave}
             editing={medicine}

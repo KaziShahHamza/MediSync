@@ -1,6 +1,7 @@
 // server/controllers/prescriptionController.js
 
 // Handles prescription CRUD operations and AI analysis requests.
+
 import Prescription from "../models/Prescription.js";
 
 import { generateMedicalDocumentSummary } from "../services/medicalDocumentAIService.js";

@@ -1,5 +1,8 @@
 // client/src/components/health/BMIForm.jsx
 
+// Provides a BMI calculation and weight recording form.
+// Uses profile height as the permanent height source for BMI calculations.
+
 import { useMemo, useState } from "react";
 import { Scale, Save, Ruler, Weight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +16,7 @@ export default function BMIForm({ onAdd }) {
 
   const navigate = useNavigate();
 
+  // Convert the profile height from feet and inches into centimeters.
   const heightCm = useMemo(() => {
     const feet = Number(profile?.height?.feet) || 0;
     const inches = Number(profile?.height?.inches) || 0;
@@ -24,6 +28,7 @@ export default function BMIForm({ onAdd }) {
     return totalInches * 2.54;
   }, [profile]);
 
+  // Calculate the current BMI from saved height and entered weight.
   const bmi = useMemo(() => {
     if (!heightCm || !weight) return null;
 
@@ -32,6 +37,7 @@ export default function BMIForm({ onAdd }) {
     return (Number(weight) / (heightMeters * heightMeters)).toFixed(1);
   }, [heightCm, weight]);
 
+  // Save the current weight as a health log after validation.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -45,14 +51,20 @@ export default function BMIForm({ onAdd }) {
     setWeight("");
   };
 
+  // Build a readable representation of the saved profile height.
   const heightDisplay =
     profile?.height?.feet || profile?.height?.inches
       ? `${profile.height.feet || 0} ft ${profile.height.inches || 0} in`
       : "Height not set";
 
+  // Navigate to the profile page for height management.
+  const handleHeightNavigation = (path) => {
+    window.scrollTo(0, 0);
+    navigate(path);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="card space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <div className="icon-wrapper">
           <Scale size={22} className="text-blue-600" />
@@ -61,7 +73,6 @@ export default function BMIForm({ onAdd }) {
         <h3 className="card-title">BMI Calculator</h3>
       </div>
 
-      {/* Saved Height */}
       <div>
         <label>Height</label>
 
@@ -82,10 +93,7 @@ export default function BMIForm({ onAdd }) {
 
               <button
                 type="button"
-                onClick={() => {
-                  window.scrollTo(0, 0);
-                  navigate("/settings");
-                }}
+                onClick={() => handleHeightNavigation("/settings")}
                 className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
               >
                 Change?
@@ -97,10 +105,7 @@ export default function BMIForm({ onAdd }) {
 
               <button
                 type="button"
-                onClick={() => {
-                  window.scrollTo(0, 0);
-                  navigate("/profile");
-                }}
+                onClick={() => handleHeightNavigation("/profile")}
                 className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
               >
                 Set height
@@ -116,7 +121,6 @@ export default function BMIForm({ onAdd }) {
         )}
       </div>
 
-      {/* Weight */}
       <div>
         <label>Weight</label>
 

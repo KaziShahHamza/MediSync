@@ -1,14 +1,15 @@
 // client/src/components/medical-records/MedicalRecordPage.jsx
 
-// Layout component rendering the records gallery, upload panel, and detail viewer modal.
+// Provides the main medical record gallery and upload layout.
+// Connects record cards, upload controls, and the detail modal.
 
 import { FileImage } from "lucide-react";
 
-import MedicalRecordUpload from "./MedicalRecordUpload";
 import MedicalRecordCard from "./MedicalRecordCard";
 import MedicalRecordModal from "./MedicalRecordModal";
+import MedicalRecordUpload from "./MedicalRecordUpload";
 
-// Main UI page view for listing and managing medical documents
+// Renders the medical record page and coordinates its child components.
 export default function MedicalRecordPage({
   config,
   records,
@@ -18,33 +19,30 @@ export default function MedicalRecordPage({
   loading,
   uploadStatus,
   zoom,
-
   onTitleChange,
   onFileChange,
   onUpload,
-
   onOpen,
   onDelete,
-
   onZoomIn,
   onZoomOut,
   onResetZoom,
   onClose,
 }) {
+  // Determines whether the gallery should show records or an empty state.
+  const hasRecords = records.length > 0;
+
   return (
     <div className="container py-10">
-      {/* Page Header section */}
       <div className="mb-10">
         <h1 className="page-title">{config.pageTitle}</h1>
 
         <p className="subtitle mt-2">{config.pageDescription}</p>
       </div>
 
-      {/* Main grid wrapper splitting gallery list and upload section */}
+      {/* Organizes the record gallery beside the upload form. */}
       <div className="grid lg:grid-cols-[1.7fr_0.8fr] gap-8 items-start">
-        {/* Document gallery list area */}
         <section>
-          {/* Header indicator showing total record count */}
           <div className="flex justify-between items-center mb-5">
             <p className="text-sm text-slate-500 mt-1">
               {records.length} record
@@ -52,9 +50,8 @@ export default function MedicalRecordPage({
             </p>
           </div>
 
-          {/* Conditional rendering of cards grid vs empty view */}
-          {records.length ? (
-            // Cards grid view
+          {/* Renders existing records or the configured empty state. */}
+          {hasRecords ? (
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
               {records.map((record) => (
                 <MedicalRecordCard
@@ -66,7 +63,6 @@ export default function MedicalRecordPage({
               ))}
             </div>
           ) : (
-            // Empty state placeholder banner
             <div className="card flex flex-col items-center justify-center py-16 text-center">
               <FileImage size={48} className="text-slate-400" />
 
@@ -81,7 +77,6 @@ export default function MedicalRecordPage({
           )}
         </section>
 
-        {/* Floating document upload form */}
         <MedicalRecordUpload
           config={config}
           title={title}
@@ -94,7 +89,7 @@ export default function MedicalRecordPage({
         />
       </div>
 
-      {/* Full screen medical document detail modal */}
+      {/* Opens the selected record in the detailed image viewer. */}
       <MedicalRecordModal
         record={selected}
         zoom={zoom}

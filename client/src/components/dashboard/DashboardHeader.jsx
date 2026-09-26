@@ -1,7 +1,7 @@
 // client/src/components/dashboard/DashboardHeader.jsx
 
-// Displays the top greeting section of the dashboard with dynamic time
-// and an action button to export the user's medical health report as a PDF.
+// Renders the dashboard greeting, live date/time, and health report export action.
+// Displays the export loading state while the report is being generated.
 
 import { CalendarClock, Download } from "lucide-react";
 
@@ -12,6 +12,7 @@ export default function DashboardHeader({
   pdfLoading,
   onExportPDF,
 }) {
+  // Render the dashboard greeting and action controls.
   return (
     <section className="page-header">
       <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -26,9 +27,8 @@ export default function DashboardHeader({
           </p>
         </div>
 
-        {/* Action bar with PDF export trigger and live system clock display */}
         <div className="flex items-center gap-3 flex-wrap">
-          {/* PDF export button with loading state */}
+          {/* Keep export controls disabled during report generation. */}
           <button
             onClick={onExportPDF}
             disabled={pdfLoading}
@@ -39,7 +39,7 @@ export default function DashboardHeader({
             {pdfLoading ? "Generating Report..." : "Export Health Report"}
           </button>
 
-          {/* Current date and time widget */}
+          {/* Display the current date and time supplied by the parent. */}
           <div className="surface px-4 py-3 flex items-center gap-3">
             <CalendarClock size={20} className="text-blue-600" />
 

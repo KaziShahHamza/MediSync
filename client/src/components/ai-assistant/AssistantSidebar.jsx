@@ -1,11 +1,9 @@
 // client/src/components/ai-assistant/AssistantSidebar.jsx
 
-import {
-  MessageSquare,
-  Plus,
-  Trash2,
-  X,
-} from "lucide-react";
+// Renders the conversation history sidebar for the health assistant.
+// Handles chat selection, creation, deletion, and mobile sidebar closing.
+
+import { MessageSquare, Plus, Trash2, X } from "lucide-react";
 
 export default function AssistantSidebar({
   chats = [],
@@ -17,6 +15,7 @@ export default function AssistantSidebar({
   onDeleteChat,
   onClose,
 }) {
+  // Handles chat deletion without triggering chat selection.
   const handleDelete = async (event, chatId) => {
     event.stopPropagation();
 
@@ -27,16 +26,14 @@ export default function AssistantSidebar({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      {/* Sidebar Header */}
+      {/* Render sidebar heading and mobile close control. */}
       <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-4">
         <div>
           <h2 className="text-sm font-semibold text-slate-900">
             Health Assistant
           </h2>
 
-          <p className="mt-0.5 text-xs text-slate-500">
-            Your conversations
-          </p>
+          <p className="mt-0.5 text-xs text-slate-500">Your conversations</p>
         </div>
 
         {mobile && (
@@ -51,7 +48,7 @@ export default function AssistantSidebar({
         )}
       </div>
 
-      {/* New Chat */}
+      {/* Provide the action for starting a new conversation. */}
       <div className="p-3">
         <button
           type="button"
@@ -63,7 +60,7 @@ export default function AssistantSidebar({
         </button>
       </div>
 
-      {/* Chat List */}
+      {/* Render loading, empty, or available conversation states. */}
       <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-3">
         {loading ? (
           <div className="space-y-2 px-2 py-2">
@@ -76,14 +73,9 @@ export default function AssistantSidebar({
           </div>
         ) : chats.length === 0 ? (
           <div className="px-4 py-8 text-center">
-            <MessageSquare
-              size={22}
-              className="mx-auto text-slate-300"
-            />
+            <MessageSquare size={22} className="mx-auto text-slate-300" />
 
-            <p className="mt-3 text-sm text-slate-500">
-              No conversations yet.
-            </p>
+            <p className="mt-3 text-sm text-slate-500">No conversations yet.</p>
 
             <p className="mt-1 text-xs leading-5 text-slate-400">
               Start a new chat to talk with the Health Assistant.
@@ -92,8 +84,8 @@ export default function AssistantSidebar({
         ) : (
           <div className="space-y-1">
             {chats.map((chat) => {
-              const active =
-                currentChat?._id === chat._id;
+              // Determine whether the conversation is currently selected.
+              const active = currentChat?._id === chat._id;
 
               return (
                 <div
@@ -112,9 +104,7 @@ export default function AssistantSidebar({
                     <MessageSquare
                       size={16}
                       className={`shrink-0 ${
-                        active
-                          ? "text-blue-600"
-                          : "text-slate-400"
+                        active ? "text-blue-600" : "text-slate-400"
                       }`}
                     />
 
@@ -126,13 +116,9 @@ export default function AssistantSidebar({
                   {onDeleteChat && (
                     <button
                       type="button"
-                      onClick={(event) =>
-                        handleDelete(event, chat._id)
-                      }
+                      onClick={(event) => handleDelete(event, chat._id)}
                       className="mr-1 rounded-lg p-2 text-slate-400 opacity-0 transition hover:bg-red-50 hover:text-red-600 group-hover:opacity-100 focus:opacity-100"
-                      aria-label={`Delete ${
-                        chat.title || "chat"
-                      }`}
+                      aria-label={`Delete ${chat.title || "chat"}`}
                     >
                       <Trash2 size={15} />
                     </button>
@@ -144,12 +130,11 @@ export default function AssistantSidebar({
         )}
       </div>
 
-      {/* Safety Note */}
+      {/* Keep the emergency guidance visible below conversation history. */}
       <div className="shrink-0 border-t border-slate-200 p-3">
         <div className="rounded-xl bg-slate-100 px-3 py-2.5">
           <p className="text-[11px] leading-4 text-slate-500">
-            For emergencies or severe symptoms, seek immediate
-            medical care.
+            For emergencies or severe symptoms, seek immediate medical care.
           </p>
         </div>
       </div>

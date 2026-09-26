@@ -1,7 +1,7 @@
 // client/src/hooks/useMedicineForm.js
 
 // Manages medicine form state, initialization, derived values, and submission.
-// Uses separate actions for field updates while keeping submission logic here.
+// Delegates reusable field actions and image handling to useMedicineFormActions.
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -22,7 +22,6 @@ import useMedicineFormActions from "./useMedicineFormActions";
 export default function useMedicineForm({ onSave, editing }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("tablet");
-
   const [dosage, setDosage] = useState([]);
 
   const [pricePerStrip, setPricePerStrip] = useState("");
@@ -42,14 +41,14 @@ export default function useMedicineForm({ onSave, editing }) {
   const [endYear, setEndYear] = useState("");
 
   const [isActive, setIsActive] = useState(true);
-
   const [error, setError] = useState("");
 
+  // Derive pricing mode and available year options.
   const pricingType = useMemo(() => getPricingTypeForType(type), [type]);
 
   const yearOptions = useMemo(() => getYearOptions(), []);
 
-  // Provides medicine form field actions and image handling.
+  // Provide reusable medicine form actions.
   const {
     resetForm,
     handleTypeChange,
@@ -76,7 +75,7 @@ export default function useMedicineForm({ onSave, editing }) {
     setError,
   });
 
-  // Synchronizes form state when editing an existing medicine.
+  // Synchronize form fields with the medicine being edited.
   useEffect(() => {
     if (!editing) {
       resetForm();
@@ -85,7 +84,6 @@ export default function useMedicineForm({ onSave, editing }) {
 
     const start = getDateParts(editing.startDate);
     const end = getDateParts(editing.endDate);
-
     const editingPricingType = getPricingTypeForType(editing.type);
 
     setName(editing.name || "");
@@ -102,7 +100,6 @@ export default function useMedicineForm({ onSave, editing }) {
     setUnitsPerMonth(editing.unitsPerMonth ?? "");
 
     setImageUrl(editing.imageUrl || "");
-
     setImageFile(null);
     setImagePreview("");
 
@@ -113,15 +110,14 @@ export default function useMedicineForm({ onSave, editing }) {
     setEndYear(end.year === "" ? "" : String(end.year));
 
     setIsActive(editing.isActive !== false);
-
     setError("");
-  }, [editing]);
+  }, [editing, resetForm]);
 
-  // Creates and cleans up temporary image preview URLs.
+  // Create and clean up temporary image preview URLs.
   useEffect(() => {
     if (!imageFile) {
       setImagePreview("");
-      return;
+      return undefined;
     }
 
     const objectUrl = URL.createObjectURL(imageFile);
@@ -133,10 +129,9 @@ export default function useMedicineForm({ onSave, editing }) {
     };
   }, [imageFile]);
 
-  // Validates and submits the normalized medicine payload.
+  // Validate and submit the normalized medicine payload.
   async function handleSubmit(event) {
     event.preventDefault();
-
     setError("");
 
     const validationError = validateMedicineForm({
@@ -159,26 +154,24 @@ export default function useMedicineForm({ onSave, editing }) {
       return;
     }
 
+    const stripMedicine = isStripMedicineType(type);
     const startDate = createDateFromParts(startMonth, startYear);
-
     const endDate = isActive ? null : createDateFromParts(endMonth, endYear);
-
-    const normalizedDosage = normalizeDosage(dosage);
 
     const medicineData = {
       name: name.trim(),
       type,
       pricingType,
 
-      dosage: isStripMedicineType(type) ? normalizedDosage : [],
+      dosage: stripMedicine ? normalizeDosage(dosage) : [],
 
-      pricePerStrip: isStripMedicineType(type) ? Number(pricePerStrip) : null,
+      pricePerStrip: stripMedicine ? Number(pricePerStrip) : null,
 
-      piecesPerStrip: isStripMedicineType(type) ? Number(piecesPerStrip) : null,
+      piecesPerStrip: stripMedicine ? Number(piecesPerStrip) : null,
 
-      pricePerUnit: !isStripMedicineType(type) ? Number(pricePerUnit) : null,
+      pricePerUnit: stripMedicine ? null : Number(pricePerUnit),
 
-      unitsPerMonth: !isStripMedicineType(type) ? Number(unitsPerMonth) : null,
+      unitsPerMonth: stripMedicine ? null : Number(unitsPerMonth),
 
       imageUrl,
       imageFile,
@@ -191,7 +184,6 @@ export default function useMedicineForm({ onSave, editing }) {
 
     try {
       await onSave(medicineData);
-
       resetForm();
     } catch (submitError) {
       setError(submitError?.message || "Failed to save medicine.");

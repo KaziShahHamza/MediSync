@@ -1,6 +1,7 @@
 // client/src/hooks/useSettingsForm.js
 
-// Manages settings form state, profile data, location fields, contacts, and submission.
+// Manages settings form state, profile synchronization, location fields, contacts, and submission.
+// Delegates profile photo operations to the dedicated profile photo hook.
 
 import { useEffect, useRef, useState } from "react";
 
@@ -17,12 +18,14 @@ import {
   validateSettingsForm,
 } from "../../utils/settings/settingsHelpers";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function useSettingsForm() {
   // Get profile data and context actions.
   const { profile, userInfo, fetchProfile, setProfile, setUserInfo, loading } =
     useProfile();
 
-  // Store local settings form state.
+  // Store local settings form and submission state.
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
   const [photoLoading, setPhotoLoading] = useState(false);
@@ -30,17 +33,11 @@ export default function useSettingsForm() {
   // Keep a reference to the hidden profile photo input.
   const fileInputRef = useRef(null);
 
-  // Synchronize the form with profile and user data.
+  // Synchronize local form state with profile data.
   useEffect(() => {
     if (!profile && !userInfo) return;
 
-    const nextForm = createFormFromProfile(profile, userInfo);
-
-    const timer = setTimeout(() => {
-      setForm(nextForm);
-    }, 0);
-
-    return () => clearTimeout(timer);
+    setForm(createFormFromProfile(profile, userInfo));
   }, [profile, userInfo]);
 
   // Find the selected district and its available upazilas.
@@ -50,7 +47,7 @@ export default function useSettingsForm() {
 
   const availableUpazilas = selectedDistrict?.upazilas || [];
 
-  // Manage profile photo upload and removal.
+  // Delegate profile photo operations to the dedicated hook.
   const { handlePhotoSelect, handleRemovePhoto } = useProfilePhoto({
     userInfo,
     setUserInfo,
@@ -59,23 +56,23 @@ export default function useSettingsForm() {
   });
 
   // Handle standard form input changes.
-  function handleChange(e) {
-    const { name, value } = e.target;
+  function handleChange(event) {
+    const { name, value } = event.target;
 
-    setForm((prev) => ({
-      ...prev,
+    setForm((previous) => ({
+      ...previous,
       [name]: value,
     }));
   }
 
-  // Update height measurements.
-  function handleHeightChange(e) {
-    const { name, value } = e.target;
+  // Update height measurements in the nested form state.
+  function handleHeightChange(event) {
+    const { name, value } = event.target;
 
-    setForm((prev) => ({
-      ...prev,
+    setForm((previous) => ({
+      ...previous,
       height: {
-        ...prev.height,
+        ...previous.height,
         [name]: value,
       },
     }));
@@ -83,12 +80,12 @@ export default function useSettingsForm() {
 
   // Update district and upazila location fields.
   function handleLocationChange(field, value) {
-    setForm((prev) => {
+    setForm((previous) => {
       if (field === "district") {
         return {
-          ...prev,
+          ...previous,
           location: {
-            ...prev.location,
+            ...previous.location,
             district: value,
             upazila: "",
           },
@@ -96,9 +93,9 @@ export default function useSettingsForm() {
       }
 
       return {
-        ...prev,
+        ...previous,
         location: {
-          ...prev.location,
+          ...previous.location,
           [field]: value,
         },
       };
@@ -107,67 +104,68 @@ export default function useSettingsForm() {
 
   // Toggle chronic illness selections.
   function toggleIllness(name) {
-    setForm((prev) => {
-      const exists = prev.chronicIllnesses.includes(name);
+    setForm((previous) => {
+      const exists = previous.chronicIllnesses.includes(name);
 
       return {
-        ...prev,
+        ...previous,
         chronicIllnesses: exists
-          ? prev.chronicIllnesses.filter((item) => item !== name)
-          : [...prev.chronicIllnesses, name],
+          ? previous.chronicIllnesses.filter((item) => item !== name)
+          : [...previous.chronicIllnesses, name],
       };
     });
   }
 
-  // Add a new emergency contact.
+  // Add an emergency contact up to the configured maximum.
   function addEmergencyContact() {
     if (form.emergencyContacts.length >= 3) return;
 
-    setForm((prev) => ({
-      ...prev,
-      emergencyContacts: [...prev.emergencyContacts, createEmptyContact()],
+    setForm((previous) => ({
+      ...previous,
+      emergencyContacts: [...previous.emergencyContacts, createEmptyContact()],
     }));
   }
 
-  // Remove an emergency contact by index.
+  // Remove an emergency contact by its array index.
   function removeEmergencyContact(index) {
-    setForm((prev) => ({
-      ...prev,
-      emergencyContacts: prev.emergencyContacts.filter(
+    setForm((previous) => ({
+      ...previous,
+      emergencyContacts: previous.emergencyContacts.filter(
         (_, contactIndex) => contactIndex !== index,
       ),
     }));
   }
 
-  // Update an emergency contact field.
+  // Update a specific emergency contact field.
   function handleEmergencyContactChange(index, field, value) {
-    setForm((prev) => ({
-      ...prev,
-      emergencyContacts: prev.emergencyContacts.map((contact, contactIndex) =>
-        contactIndex === index
-          ? {
-              ...contact,
-              [field]: value,
-            }
-          : contact,
+    setForm((previous) => ({
+      ...previous,
+      emergencyContacts: previous.emergencyContacts.map(
+        (contact, contactIndex) =>
+          contactIndex === index
+            ? {
+                ...contact,
+                [field]: value,
+              }
+            : contact,
       ),
     }));
   }
 
-  // Update the last blood donation date.
+  // Update the last blood donation date field.
   function handleDonationDateChange(field, value) {
-    setForm((prev) => ({
-      ...prev,
+    setForm((previous) => ({
+      ...previous,
       lastBloodDonation: {
-        ...prev.lastBloodDonation,
+        ...previous.lastBloodDonation,
         [field]: value,
       },
     }));
   }
 
   // Validate and submit the profile form.
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
 
     const validationError = validateSettingsForm(form);
 
@@ -176,17 +174,21 @@ export default function useSettingsForm() {
       return;
     }
 
-    setSaving(true);
-
     const token = localStorage.getItem("token");
-    const API_URL = import.meta.env.VITE_API_URL;
+
+    if (!token) {
+      alert("Authentication is required.");
+      return;
+    }
+
+    setSaving(true);
 
     const method = profile ? "PUT" : "POST";
     const payload = buildProfilePayload(form);
 
     try {
-      // Send the profile data to the backend.
-      const res = await fetch(`${API_URL}/api/profile`, {
+      // Send the profile payload to the backend.
+      const response = await fetch(`${API_URL}/api/profile`, {
         method,
         headers: {
           "Content-Type": "application/json",
@@ -195,25 +197,26 @@ export default function useSettingsForm() {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
-      if (res.ok) {
-        setProfile(data.profile || data);
-
-        if (data.user) {
-          setUserInfo(data.user);
-        }
-
-        await fetchProfile();
-
-        alert("Profile saved successfully.");
-      } else {
-        alert(data.message || "Failed to save profile.");
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to save profile.");
       }
-    } catch (err) {
-      console.error(err);
 
-      alert("Something went wrong.");
+      // Synchronize context state with the saved profile.
+      setProfile(data.profile || data);
+
+      if (data.user) {
+        setUserInfo(data.user);
+      }
+
+      await fetchProfile();
+
+      alert("Profile saved successfully.");
+    } catch (err) {
+      console.error("Profile save failed:", err);
+
+      alert(err.message || "Something went wrong.");
     } finally {
       setSaving(false);
     }

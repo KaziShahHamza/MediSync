@@ -1,9 +1,8 @@
 // client/src/utils/emergencyCard/emergencyCardData.js
 
-// Utility functions for parsing, formatting, and sanitizing user emergency data.
-// Prepares medical history, emergency contacts, and personal information for display.
+// Provides emergency-card data normalization, formatting, and sanitization.
+// Keeps profile data preparation separate from emergency-card rendering.
 
-// Normalizes null/undefined values to clean trimmed strings
 const normalize = (value) => {
   if (value === null || value === undefined) {
     return "";
@@ -12,27 +11,23 @@ const normalize = (value) => {
   return String(value).trim();
 };
 
-// Escapes special characters for safe HTML insertion
-export const escapeHtml = (value) => {
-  return normalize(value)
+// Escape values before inserting them into generated HTML.
+export const escapeHtml = (value) =>
+  normalize(value)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-};
 
-// Extracts display full name from user info
-export const getFullName = (userInfo) => {
-  return (
-    normalize(userInfo?.name) ||
-    normalize(userInfo?.fullName) ||
-    normalize(userInfo?.username) ||
-    "Not provided"
-  );
-};
+// Resolve the user's display name with sensible fallbacks.
+export const getFullName = (userInfo) =>
+  normalize(userInfo?.name) ||
+  normalize(userInfo?.fullName) ||
+  normalize(userInfo?.username) ||
+  "Not provided";
 
-// Formats date strings into DD MMM YYYY format
+// Format a valid date for emergency-card display.
 export const formatDate = (value) => {
   if (!value) {
     return "Not provided";
@@ -51,22 +46,19 @@ export const formatDate = (value) => {
   });
 };
 
-// Gets blood group string
-export const getBloodGroup = (profile) => {
-  return normalize(profile?.bloodGroup) || "Not provided";
-};
+// Resolve the user's blood group.
+export const getBloodGroup = (profile) =>
+  normalize(profile?.bloodGroup) || "Not provided";
 
-// Gets gender string
-export const getGender = (profile) => {
-  return normalize(profile?.gender) || "Not provided";
-};
+// Resolve the user's gender.
+export const getGender = (profile) =>
+  normalize(profile?.gender) || "Not provided";
 
-// Gets profile photo URL
-export const getProfilePhoto = (userInfo) => {
-  return normalize(userInfo?.profilePhotoUrl);
-};
+// Resolve the user's profile photo URL.
+export const getProfilePhoto = (userInfo) =>
+  normalize(userInfo?.profilePhotoUrl);
 
-// Parses chronic illnesses list
+// Normalize the chronic illness collection.
 export const getChronicIllnesses = (profile) => {
   if (!Array.isArray(profile?.chronicIllnesses)) {
     return [];
@@ -75,7 +67,7 @@ export const getChronicIllnesses = (profile) => {
   return profile.chronicIllnesses.map(normalize).filter(Boolean);
 };
 
-// Filters and limits emergency contacts list
+// Normalize and limit emergency contacts for the card.
 export const getEmergencyContacts = (profile) => {
   if (!Array.isArray(profile?.emergencyContacts)) {
     return [];
@@ -95,7 +87,7 @@ export const getEmergencyContacts = (profile) => {
     .slice(0, 3);
 };
 
-// Splits emergency contacts between card front and back
+// Split emergency contacts between the card sides.
 export const splitEmergencyContacts = (profile) => {
   const contacts = getEmergencyContacts(profile);
 
@@ -105,16 +97,14 @@ export const splitEmergencyContacts = (profile) => {
   };
 };
 
-// Extracts individual location attributes
-export const getLocationParts = (profile) => {
-  return {
-    streetAddress: normalize(profile?.location?.streetAddress),
-    upazila: normalize(profile?.location?.upazila),
-    district: normalize(profile?.location?.district),
-  };
-};
+// Extract individual location fields from the profile.
+export const getLocationParts = (profile) => ({
+  streetAddress: normalize(profile?.location?.streetAddress),
+  upazila: normalize(profile?.location?.upazila),
+  district: normalize(profile?.location?.district),
+});
 
-// Builds single address string from components
+// Build a display-ready location string.
 export const getLocation = (profile) => {
   const { streetAddress, upazila, district } = getLocationParts(profile);
 
@@ -124,16 +114,14 @@ export const getLocation = (profile) => {
   );
 };
 
-// Formats comprehensive medical history strings
+// Build normalized medical history information for display.
 export const getMedicalInformation = (profile) => {
   const illnesses = getChronicIllnesses(profile);
 
   return {
     chronicIllnesses: illnesses,
     illnessText: illnesses.length ? illnesses.join(", ") : "None provided",
-
     allergies: normalize(profile?.allergies) || "None provided",
-
     surgeries: normalize(profile?.surgeries) || "None provided",
   };
 };

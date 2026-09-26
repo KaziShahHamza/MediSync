@@ -1,9 +1,9 @@
 // client/src/utils/medicine/medicineValidation.js
 
-// Validates medicine form data before it is submitted to the backend.
+// Validates medicine form data before submission.
+// Centralizes field, dosage, pricing, and treatment-date validation.
 
 import { DOSAGE_TIME_VALUES } from "../../data/medicine/dosageOptions";
-
 import { isStripMedicineType } from "../../data/medicine/medicineTypes";
 
 // Checks whether a value is a valid positive number.
@@ -16,12 +16,12 @@ function isPositiveInteger(value) {
   return Number.isInteger(Number(value)) && Number(value) > 0;
 }
 
-// Determines if a value is non-empty and defined.
+// Checks whether a value has been provided.
 function hasValue(value) {
   return value !== "" && value !== null && value !== undefined;
 }
 
-// Validates medicine name presence.
+// Validates the medicine name.
 export function validateMedicineName(name) {
   if (!name || !name.trim()) {
     return "Medicine name is required.";
@@ -30,7 +30,7 @@ export function validateMedicineName(name) {
   return null;
 }
 
-// Validates medicine category selection.
+// Validates the selected medicine type.
 export function validateMedicineType(type) {
   if (!type) {
     return "Medicine type is required.";
@@ -39,7 +39,7 @@ export function validateMedicineType(type) {
   return null;
 }
 
-// Validates array of daily dosage timing and quantity entries.
+// Validates dosage timing and quantity entries.
 export function validateDosage(dosage) {
   if (!Array.isArray(dosage) || dosage.length === 0) {
     return "Select at least one dosage time.";
@@ -58,7 +58,7 @@ export function validateDosage(dosage) {
   return null;
 }
 
-// Validates strip pricing inputs.
+// Validates strip-based pricing fields.
 export function validateStripPricing({ pricePerStrip, piecesPerStrip }) {
   if (!isPositiveNumber(pricePerStrip)) {
     return "Price per strip must be greater than 0.";
@@ -71,7 +71,7 @@ export function validateStripPricing({ pricePerStrip, piecesPerStrip }) {
   return null;
 }
 
-// Validates unit pricing inputs.
+// Validates unit-based pricing fields.
 export function validateUnitPricing({ pricePerUnit, unitsPerMonth }) {
   if (!isPositiveNumber(pricePerUnit)) {
     return "Price per unit must be greater than 0.";
@@ -84,7 +84,7 @@ export function validateUnitPricing({ pricePerUnit, unitsPerMonth }) {
   return null;
 }
 
-// Validates treatment start date inputs.
+// Validates the required treatment start date.
 export function validateStartDate({ startMonth, startYear }) {
   if (!hasValue(startMonth) || !hasValue(startYear)) {
     return "Treatment start month and year are required.";
@@ -93,7 +93,7 @@ export function validateStartDate({ startMonth, startYear }) {
   return null;
 }
 
-// Validates treatment end date and ensures chronological consistency.
+// Validates treatment end date and chronological consistency.
 export function validateEndDate({
   startMonth,
   startYear,
@@ -109,10 +109,10 @@ export function validateEndDate({
     return "Treatment end month and year are required.";
   }
 
-  // Construct start date for chronological comparison.
+  // Builds the normalized start date for chronological comparison.
   const startDate = new Date(Number(startYear), Number(startMonth), 1);
 
-  // Construct end date for chronological comparison.
+  // Builds the normalized end date for chronological comparison.
   const endDate = new Date(Number(endYear), Number(endMonth), 1);
 
   if (endDate < startDate) {
@@ -122,7 +122,7 @@ export function validateEndDate({
   return null;
 }
 
-// Coordinates complete validation pass across all medicine form fields.
+// Runs validation across all medicine form fields in sequence.
 export function validateMedicineForm({
   name,
   type,
@@ -137,17 +137,16 @@ export function validateMedicineForm({
   endYear,
   isActive,
 }) {
-  // Validate name.
+  // Validate the required medicine identity fields.
   const nameError = validateMedicineName(name);
 
   if (nameError) return nameError;
 
-  // Validate type.
   const typeError = validateMedicineType(type);
 
   if (typeError) return typeError;
 
-  // Validate pricing and dosage based on pricing type.
+  // Validate dosage and pricing according to the medicine pricing model.
   if (isStripMedicineType(type)) {
     const dosageError = validateDosage(dosage);
 
@@ -168,7 +167,7 @@ export function validateMedicineForm({
     if (pricingError) return pricingError;
   }
 
-  // Validate treatment start date.
+  // Validate the treatment start and optional end dates.
   const startDateError = validateStartDate({
     startMonth,
     startYear,
@@ -176,7 +175,6 @@ export function validateMedicineForm({
 
   if (startDateError) return startDateError;
 
-  // Validate treatment end date.
   const endDateError = validateEndDate({
     startMonth,
     startYear,

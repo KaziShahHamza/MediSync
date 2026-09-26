@@ -1,6 +1,7 @@
 // server/controllers/reportController.js
 
 // Handles report CRUD operations and AI analysis requests.
+
 import Report from "../models/Report.js";
 
 import { generateMedicalDocumentSummary } from "../services/medicalDocumentAIService.js";

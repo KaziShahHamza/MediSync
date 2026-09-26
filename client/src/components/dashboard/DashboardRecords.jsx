@@ -1,19 +1,18 @@
 // client/src/components/dashboard/DashboardRecords.jsx
 
-// Displays summary cards showing total counts for saved medicines,
-// registered doctors, and uploaded prescription records.
+// Displays summary counts for medicines, doctors, and prescription records.
+// Uses a reusable card component for consistent dashboard presentation.
 
 import { FileImage, Pill, Stethoscope } from "lucide-react";
 
-// Section component rendering summary metric cards
 export default function DashboardRecords({ summary }) {
+  // Render the dashboard record summary section.
   return (
     <>
       <div className="section-header">
         <h2 className="section-title">Health Records Summary</h2>
       </div>
 
-      {/* Record summary cards grid */}
       <div className="grid md:grid-cols-3 gap-6">
         <RecordCard
           title="Medicines"
@@ -40,8 +39,9 @@ export default function DashboardRecords({ summary }) {
   );
 }
 
-// Card component displaying entity count and shortcut link
+// Render a reusable record count card with its associated icon.
 function RecordCard({ title, count, linkText, icon: Icon }) {
+  // Display the record count and its available shortcut action.
   return (
     <div className="card">
       <div className="flex items-start justify-between">

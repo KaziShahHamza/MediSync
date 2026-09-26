@@ -1,6 +1,7 @@
 // client/src/pages/Reports.jsx
 
-// Main page container connecting context, custom hook, and layout for reports.
+// Connects report context data with the reusable medical record page.
+// Provides report-specific configuration and page interaction handlers.
 
 import { useReports } from "../context/ReportContext";
 
@@ -10,22 +11,20 @@ import useMedicalRecordPage from "../hooks/useMedicalRecordPage";
 
 import { medicalRecordConfig } from "../utils/medicalRecord/medicalRecordConfig";
 
-// Select report configuration settings
 const config = medicalRecordConfig.report;
 
-// Page view component for report management
 export default function Reports() {
-  // Fetch reports list and refresh method from context
+  // Load report records and the refresh function from context.
   const { reports, fetchReports } = useReports();
 
-  // Initialize page handling state and handlers
+  // Initialize shared medical record page state and handlers.
   const page = useMedicalRecordPage({
     records: reports,
     fetchRecords: fetchReports,
     config,
   });
 
-  // Render unified medical records page layout
+  // Render the reusable medical record interface.
   return (
     <MedicalRecordPage
       config={config}

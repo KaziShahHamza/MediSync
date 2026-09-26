@@ -1,7 +1,7 @@
 // client/src/components/dashboard/DashboardQuickActions.jsx
 
-// Renders a navigation grid of interactive shortcut cards linking to major
-// features like medicines, health charts, doctors, and profile settings.
+// Renders navigation shortcuts for the main dashboard features.
+// Uses a shared configuration array to keep shortcut cards reusable.
 
 import {
   Activity,
@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-// Configuration for available dashboard navigation shortcuts
+// Define the available dashboard navigation shortcuts.
 const actions = [
   {
     title: "Medicines",
@@ -47,7 +47,7 @@ const actions = [
   },
 ];
 
-// Main section component rendering quick action cards
+// Render the dashboard shortcut grid from the shared configuration.
 export default function DashboardQuickActions() {
   return (
     <>
@@ -64,8 +64,9 @@ export default function DashboardQuickActions() {
   );
 }
 
-// Individual clickable card component routing to sub-pages
+// Render an individual shortcut card with its navigation target.
 function QuickActionCard({ title, description, path, icon: Icon }) {
+  // Keep each shortcut card fully clickable through the route link.
   return (
     <Link to={path} className="card group">
       <div className="flex items-start justify-between">

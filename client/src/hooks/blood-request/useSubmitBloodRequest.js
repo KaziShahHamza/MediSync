@@ -14,27 +14,19 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export default function useSubmitBloodRequest({
   user,
-
   requestForm,
-
   setRequestSubmitting,
-
   setRequestError,
   setRequestSuccess,
-
   setBloodRequests,
-
   editingRequest,
   setEditingRequest,
-
   managementToken,
   setManagementToken,
-
   setRequestForm,
-
   fetchBloodRequests,
 }) {
-  // Submits a new request or updates the currently edited request.
+  // Submits a new blood request or updates an existing one.
   const submitBloodRequest = async (event) => {
     event.preventDefault();
 
@@ -45,7 +37,7 @@ export default function useSubmitBloodRequest({
       const deviceId = getDeviceId();
       const token = localStorage.getItem("token");
 
-      // Builds the request payload from the current form state.
+      // Builds the backend payload from the current form state.
       const body = {
         bloodGroup: requestForm.bloodGroup,
         bagsNeeded: Number(requestForm.bagsNeeded),
@@ -60,7 +52,7 @@ export default function useSubmitBloodRequest({
         deviceId,
       };
 
-      // Includes the guest token when managing an existing request.
+      // Adds the guest management token when editing.
       if (!user && managementToken) {
         body.managementToken = managementToken;
       }
@@ -86,7 +78,7 @@ export default function useSubmitBloodRequest({
         throw new Error(data.message || "Failed to save blood request.");
       }
 
-      // Updates the local request list after editing an existing request.
+      // Updates the local list after an existing request is edited.
       if (editingRequest) {
         setBloodRequests((previous) =>
           previous.map((item) =>
@@ -100,20 +92,19 @@ export default function useSubmitBloodRequest({
         });
 
         setEditingRequest(null);
-
         setRequestForm(EMPTY_BLOOD_REQUEST_FORM);
 
         return;
       }
 
-      // Stores the management token for newly created guest requests.
+      // Saves the management token for newly created guest requests.
       if (data.managementToken) {
         saveManagementToken(data.request.id, data.managementToken);
 
         setManagementToken(data.managementToken);
       }
 
-      // Stores creation feedback and the generated request data.
+      // Stores creation feedback and request details.
       setRequestSuccess({
         type: "created",
         message: "Your blood request has been posted successfully.",

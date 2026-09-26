@@ -1,8 +1,7 @@
 // client/src/pages/Settings.jsx
 
-// Main Settings page for managing profile, medical, emergency, and donation information.
-
-import ProfileSection from "../components/profile/ProfileSection";
+// Provides the complete profile and health settings interface.
+// Connects reusable settings sections with the centralized settings form hook.
 
 import ProfilePhotoSection from "../components/settings/ProfilePhotoSection";
 import PersonalInfoSection from "../components/settings/PersonalInfoSection";
@@ -13,61 +12,53 @@ import BloodDonationSection from "../components/settings/BloodDonationSection";
 import useSettingsForm from "../hooks/settings/useSettingsForm";
 
 export default function Settings() {
-  // Get settings state and handlers from the custom hook.
+  // Load settings data, form state, and section handlers.
   const {
     profile,
     userInfo,
     loading,
-
     form,
     saving,
     photoLoading,
-
     fileInputRef,
-
     availableUpazilas,
-
     handleChange,
     handleHeightChange,
     handleLocationChange,
     toggleIllness,
-
     addEmergencyContact,
     removeEmergencyContact,
     handleEmergencyContactChange,
-
     handleDonationDateChange,
-
     handlePhotoSelect,
     handleRemovePhoto,
-
     handleSubmit,
   } = useSettingsForm();
 
-  // Show loading state while profile data is being fetched.
+  // Show a loading state until the profile data is available.
   if (loading) {
     return (
-      <div className="continer-profile-setting-page py-12">
+      <div className="container-profile-setting-page py-12">
         <p className="text-center text-slate-500">Loading settings...</p>
       </div>
     );
   }
 
-  // Render the complete settings form.
+  // Render all profile and health settings sections.
   return (
-    <div className="continer-profile-setting-page py-10">
+    <div className="container-profile-setting-page py-10">
       {/* Page heading */}
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-slate-800">Settings</h1>
 
-        <p className="text-slate-500 mt-2">
+        <p className="mt-2 text-slate-500">
           Update your personal and medical information.
         </p>
       </div>
 
       {/* Main profile settings form */}
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Profile photo section */}
+        {/* Profile photo settings */}
         <ProfilePhotoSection
           userInfo={userInfo}
           photoLoading={photoLoading}
@@ -76,7 +67,7 @@ export default function Settings() {
           onRemovePhoto={handleRemovePhoto}
         />
 
-        {/* Personal information section */}
+        {/* Personal information settings */}
         <PersonalInfoSection
           userInfo={userInfo}
           form={form}
@@ -86,14 +77,14 @@ export default function Settings() {
           onLocationChange={handleLocationChange}
         />
 
-        {/* Medical information section */}
+        {/* Medical information settings */}
         <MedicalInfoSection
           form={form}
           onChange={handleChange}
           onToggleIllness={toggleIllness}
         />
 
-        {/* Emergency contacts section */}
+        {/* Emergency contact settings */}
         <EmergencyContactsSection
           form={form}
           onAdd={addEmergencyContact}
@@ -101,14 +92,14 @@ export default function Settings() {
           onChange={handleEmergencyContactChange}
         />
 
-        {/* Blood donation section */}
+        {/* Blood donation settings */}
         <BloodDonationSection
           form={form}
           onChange={handleChange}
           onDonationDateChange={handleDonationDateChange}
         />
 
-        {/* Save profile button */}
+        {/* Save profile changes */}
         <div className="flex justify-end">
           <button type="submit" disabled={saving} className="btn-primary">
             {saving

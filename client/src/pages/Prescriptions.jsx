@@ -1,6 +1,7 @@
 // client/src/pages/Prescriptions.jsx
 
-// Main page container connecting context, custom hook, and layout for prescriptions.
+// Connects prescription context data to the reusable medical record page.
+// Handles prescription uploads, viewing, deletion, and record interactions.
 
 import { usePrescriptions } from "../context/PrescriptionContext";
 
@@ -10,22 +11,18 @@ import useMedicalRecordPage from "../hooks/useMedicalRecordPage";
 
 import { medicalRecordConfig } from "../utils/medicalRecord/medicalRecordConfig";
 
-// Select prescription configuration settings
 const config = medicalRecordConfig.prescription;
 
-// Page view component for prescription management
+// Provides the prescription management page.
 export default function Prescriptions() {
-  // Fetch prescriptions list and refresh method from context
   const { prescriptions, fetchPrescriptions } = usePrescriptions();
 
-  // Initialize page handling state and handlers
   const page = useMedicalRecordPage({
     records: prescriptions,
     fetchRecords: fetchPrescriptions,
     config,
   });
 
-  // Render unified medical records page layout
   return (
     <MedicalRecordPage
       config={config}

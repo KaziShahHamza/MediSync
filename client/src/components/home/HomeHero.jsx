@@ -1,11 +1,11 @@
 // client/src/components/home/HomeHero.jsx
 
-// Renders the primary landing hero section for MediSync.
+// Renders the primary landing section for MediSync.
+// Displays authentication-aware calls to action and a health overview preview.
 
 import { Link } from "react-router-dom";
 import { HeartPulse } from "lucide-react";
 
-// Landing hero component with conditional call-to-action buttons
 export default function HomeHero({ user }) {
   return (
     <section className="container page">
@@ -27,7 +27,7 @@ export default function HomeHero({ user }) {
             platform.
           </p>
 
-          {/* Conditional action buttons based on auth state */}
+          {/* Render actions according to the current authentication state. */}
           <div className="mt-8 flex flex-wrap gap-4">
             {!user && (
               <>
@@ -49,7 +49,7 @@ export default function HomeHero({ user }) {
           </div>
         </div>
 
-        {/* Primary graphic card */}
+        {/* Render the primary health overview visual card. */}
         <div className="card min-h-[420px] flex items-center justify-center bg-slate-50">
           <div className="text-center">
             <div className="w-20 h-20 rounded-2xl bg-blue-100 flex items-center justify-center mx-auto mb-6">

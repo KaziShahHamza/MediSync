@@ -1,5 +1,8 @@
 // client/src/utils/blood/bloodConstants.js
 
+// Defines shared blood request constants and the initial request form state.
+// Keeps blood-related static values centralized for reuse across components.
+
 export const BLOOD_GROUPS = [
   "A+",
   "A-",

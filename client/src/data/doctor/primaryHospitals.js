@@ -2,7 +2,7 @@
 
 const primaryHospitals = [
   // =========================
-  // Dhaka
+  // Dhaka Division
   // =========================
 
   {

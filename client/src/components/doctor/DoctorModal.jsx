@@ -21,19 +21,10 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
     return null;
   }
 
+  // Normalize optional doctor collections before rendering.
   const degrees = doctor.degrees || [];
   const specialities = doctor.specialities || [];
   const chambers = doctor.chambers || [];
-  const phones = doctor.contactInfo?.phones || [];
-  const emails = doctor.contactInfo?.emails || [];
-
-  // Check whether any contact information is available.
-  const hasContactInfo =
-    phones.length > 0 ||
-    emails.length > 0 ||
-    Boolean(doctor.contactInfo?.website) ||
-    Boolean(doctor.contactInfo?.facebook) ||
-    Boolean(doctor.contactInfo?.linkedin);
 
   // Check whether professional information has anything to display.
   const hasProfessionalInfo =
@@ -48,7 +39,7 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
     onEdit(doctor);
   }
 
-  // Reusable section wrapper for modal content.
+  // Render a reusable content section with a consistent heading.
   function Section({ title, children }) {
     return (
       <section>
@@ -61,6 +52,7 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
     );
   }
 
+  // Render the selected doctor's complete details modal.
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
@@ -73,7 +65,6 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
         className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-xl"
         onMouseDown={(event) => event.stopPropagation()}
       >
-        {/* Modal header */}
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 sm:px-6">
           <div className="min-w-0">
             <h2
@@ -89,7 +80,6 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
               </p>
             )}
 
-            {/* Doctor speciality badges */}
             {specialities.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {specialities.map((speciality) => (
@@ -104,7 +94,6 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
             )}
           </div>
 
-          {/* Close button */}
           <button
             type="button"
             onClick={onClose}
@@ -115,9 +104,7 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
           </button>
         </div>
 
-        {/* Modal content */}
         <div className="space-y-7 p-5 sm:p-6">
-          {/* Professional information */}
           {hasProfessionalInfo && (
             <Section title="Professional Information">
               <div className="grid gap-3 sm:grid-cols-2">
@@ -156,7 +143,6 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
             </Section>
           )}
 
-          {/* Chamber information */}
           {chambers.length > 0 && (
             <Section title="Chambers">
               <div className="space-y-3">
@@ -170,62 +156,9 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
               </div>
             </Section>
           )}
-
-          {/* Contact information */}
-          {/* {hasContactInfo && (
-            <Section title="Contact Information">
-              <div className="grid gap-3 sm:grid-cols-2">
-                {phones.length > 0 && (
-                  <DoctorInfo
-                    label="Phone"
-                    value={phones.join(", ")}
-                  />
-                )}
-
-                {emails.length > 0 && (
-                  <DoctorInfo
-                    label="Email"
-                    value={emails.join(", ")}
-                  />
-                )}
-
-                {doctor.contactInfo?.website && (
-                  <DoctorInfo
-                    label="Website"
-                    value={doctor.contactInfo.website}
-                  />
-                )}
-
-                {doctor.contactInfo?.facebook && (
-                  <DoctorInfo
-                    label="Facebook"
-                    value={doctor.contactInfo.facebook}
-                  />
-                )}
-
-                {doctor.contactInfo?.linkedin && (
-                  <DoctorInfo
-                    label="LinkedIn"
-                    value={doctor.contactInfo.linkedin}
-                  />
-                )}
-              </div>
-            </Section>
-          )} */}
-
-          {/* Doctor notes */}
-          {/* {doctor.notes && (
-            <Section title="Notes">
-              <div className="rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">
-                {doctor.notes}
-              </div>
-            </Section>
-          )} */}
         </div>
 
-        {/* Modal footer actions */}
         <div className="sticky bottom-0 flex justify-end gap-3 border-t border-slate-200 bg-white px-5 py-4 sm:px-6">
-          {/* Close without editing */}
           <button
             type="button"
             onClick={onClose}
@@ -234,7 +167,6 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
             Close
           </button>
 
-          {/* Open doctor in edit form */}
           <button
             type="button"
             onClick={handleEdit}

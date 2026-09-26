@@ -1,6 +1,6 @@
 // client/src/components/doctor/ChamberItem.jsx
 
-// Renders and manages the fields for one doctor chamber.
+// Renders the fields and controls for one doctor chamber.
 // Handles hospital, contact, fee, visiting-day, and visiting-time inputs.
 
 import { Trash2 } from "lucide-react";
@@ -24,12 +24,12 @@ export default function ChamberItem({
   onTimeChange,
   onRemove,
 }) {
-  // Finds the predefined hospital matching the chamber data.
+  // Resolve the predefined hospital matching the chamber data.
   const selectedHospital = getSelectedChamberHospital(chamber);
 
+  // Render chamber information and editable visiting details.
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      {/* Displays the chamber title and remove action. */}
       <div className="mb-4 flex items-center justify-between">
         <h4 className="text-sm font-semibold text-slate-800">
           Chamber {index + 1}
@@ -48,7 +48,6 @@ export default function ChamberItem({
       </div>
 
       <div className="space-y-4 grid gap-4 lg:grid-cols-2">
-        {/* Selects a predefined chamber or hospital. */}
         <div>
           <label>Chamber / Hospital</label>
 
@@ -72,26 +71,7 @@ export default function ChamberItem({
           </select>
         </div>
 
-        {/* <Field
-          label="Chamber Name"
-          value={chamber.name}
-          onChange={(value) =>
-            onChange(index, "name", value)
-          }
-          placeholder="Chamber name"
-        />
-
-        <Field
-          label="District"
-          value={chamber.district}
-          onChange={(value) =>
-            onChange(index, "district", value)
-          }
-          placeholder="District"
-        /> */}
-
         <div className="grid gap-4 sm:grid-cols-2">
-          {/* Captures the chamber phone number. */}
           <Field
             label="Phone"
             value={chamber.phone}
@@ -100,16 +80,6 @@ export default function ChamberItem({
             type="tel"
           />
 
-          {/* <Field
-            label="Serial Number"
-            value={chamber.serialNumber}
-            onChange={(value) =>
-              onChange(index, "serialNumber", value)
-            }
-            placeholder="e.g. 101"
-          /> */}
-
-          {/* Captures the doctor's visit fee. */}
           <Field
             label="Visit Fee"
             value={chamber.visitFee}
@@ -120,8 +90,7 @@ export default function ChamberItem({
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3 ">
-        {/* Captures the full chamber address. */}
+      <div className="grid gap-4 lg:grid-cols-3">
         <div>
           <label>Address</label>
 
@@ -134,7 +103,6 @@ export default function ChamberItem({
           />
         </div>
 
-        {/* Allows the user to select available visiting days. */}
         <div>
           <label>Visiting Days</label>
 
@@ -155,7 +123,7 @@ export default function ChamberItem({
                     type="checkbox"
                     checked={checked}
                     onChange={(event) => {
-                      // Adds or removes the selected visiting day.
+                      // Build the next visiting-day selection.
                       const nextDays = event.target.checked
                         ? [...chamber.visitingDays, day]
                         : chamber.visitingDays.filter((item) => item !== day);
@@ -172,7 +140,6 @@ export default function ChamberItem({
           </div>
         </div>
 
-        {/* Provides start and end visiting-time selectors. */}
         <div>
           <label>Visiting Time</label>
 
@@ -211,8 +178,9 @@ export default function ChamberItem({
   );
 }
 
-// Provides a reusable labeled input for chamber fields.
+// Provide a reusable labeled input for chamber fields.
 function Field({ label, value, onChange, placeholder, type = "text" }) {
+  // Render the shared chamber input control.
   return (
     <div>
       <label>{label}</label>

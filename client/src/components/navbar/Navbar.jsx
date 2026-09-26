@@ -1,23 +1,21 @@
-// Main navigation header component containing subcomponents for scroll management, routes, and dropdowns.
+// client/src/components/navbar/Navbar.jsx
 
-import { useState, useEffect } from "react";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  Navigate,
-} from "react-router-dom";
+// Provides shared navbar utilities, authentication protection, branding, and layout.
+// Coordinates desktop and mobile navigation behavior.
+
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate, Navigate } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
 
 import NavbarDesktop from "./NavbarDesktop";
 import NavbarMobile from "./NavbarMobile";
 
-// Scrolls window to top automatically on route pathname changes
+// Resets the page scroll position whenever the route changes.
 export function ScrollToTop() {
   const { pathname } = useLocation();
 
-  // Triggers window scroll reset when route location updates
+  // Synchronize window position with route navigation.
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
@@ -25,88 +23,80 @@ export function ScrollToTop() {
   return null;
 }
 
-// Restricts child component rendering to authenticated users
+// Restricts protected content to authenticated users.
 export function ProtectedRoute({ children }) {
   const { user } = useAuth();
 
-  return user ? children : <Navigate to="/login" />;
+  return user ? children : <Navigate to="/login" replace />;
 }
 
-// Wrapper component to structure navbar dropdown elements
-export function NavbarDropdown({
-  children,
-  className = "",
-}) {
+// Provides the shared wrapper used by navbar dropdown menus.
+export function NavbarDropdown({ children, className = "" }) {
   return (
-    <div className={`navbar-dropdown-wrapper ${className}`}>
-      {children}
-    </div>
+    <div className={`navbar-dropdown-wrapper ${className}`}>{children}</div>
   );
 }
 
-// Renders application branding logo link
+// Renders the application branding and home navigation link.
 export function NavbarLogo({ onNavigation }) {
   return (
     <Link
       to="/"
       onClick={onNavigation}
-      className="flex items-center gap-3 shrink-0"
+      className="flex shrink-0 items-center gap-3"
     >
       <img
         src="/assets/icon_3.png"
         alt="MediSync"
-        className="w-13 h-13 rounded-xl object-cover"
+        className="h-13 w-13 rounded-xl object-cover"
       />
 
       <div className="hidden sm:block">
-        <h1 className="text-lg font-bold text-slate-900 leading-tight">
+        <h1 className="text-lg font-bold leading-tight text-slate-900">
           MediSync
         </h1>
 
-        <p className="text-xs text-slate-500">
-          Your Personal Health Platform
-        </p>
+        <p className="text-xs text-slate-500">Your Personal Health Platform</p>
       </div>
 
-      <span className="sm:hidden text-lg font-bold text-slate-900">
+      <span className="text-lg font-bold text-slate-900 sm:hidden">
         MediSync
       </span>
     </Link>
   );
 }
 
-// Top-level navigation bar assembling desktop and mobile views
+// Coordinates authentication state and responsive navbar behavior.
 export default function Navbar() {
   const { user, logout } = useAuth();
-
   const navigate = useNavigate();
 
+  // Tracks whether the mobile navigation drawer is open.
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Computes display name for current user session
+  // Resolves a safe display name for the authenticated user.
   const username = user?.username || user?.name || "User";
 
-  // Closes mobile menu overlay on route transition
+  // Closes the mobile navigation after route changes.
   const handleNavigation = () => {
     setMobileOpen(false);
   };
 
-  // Clears user session and redirects to home page
+  // Clears the session and redirects the user to the home page.
   const handleLogout = () => {
     setMobileOpen(false);
     logout();
     navigate("/");
   };
 
-  // Renders sticky navigation header layout
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-      {/* Main navbar row */}
-      <div className="container h-[67px] flex items-center justify-between gap-4">
-        {/* Navigation logo element */}
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white shadow-sm">
+      {/* Main navigation row */}
+      <div className="container flex h-[67px] items-center justify-between gap-4">
+        {/* Application branding */}
         <NavbarLogo onNavigation={handleNavigation} />
 
-        {/* Desktop view navigation menu */}
+        {/* Desktop navigation */}
         <NavbarDesktop
           user={user}
           username={username}
@@ -125,7 +115,7 @@ export default function Navbar() {
         />
       </div>
 
-      {/* Mobile drawer is outside the 67px navbar row */}
+      {/* Mobile navigation drawer */}
       <NavbarMobile
         user={user}
         username={username}
@@ -137,4 +127,3 @@ export default function Navbar() {
     </header>
   );
 }
-

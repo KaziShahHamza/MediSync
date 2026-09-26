@@ -1,7 +1,7 @@
 // client/src/components/dashboard/DashboardSummary.jsx
 
-// Displays the AI-generated health summary along with rate-limiting timer controls,
-// side-by-side with the lifestyle score assessment card.
+// Displays the AI health summary beside the lifestyle score assessment.
+// Handles AI summary cooldown state and generation controls.
 
 import { useEffect, useState } from "react";
 import { HeartPulse, RefreshCw } from "lucide-react";
@@ -10,7 +10,7 @@ import LifestyleScoreCard from "../health/LifestyleScoreCard";
 
 const COOLDOWN_MS = 10 * 60 * 1000;
 
-// Section layout component arranging AI summary and lifestyle score
+// Render the AI summary and lifestyle assessment side by side.
 export default function DashboardSummary({
   aiSummary,
   aiGeneratedAt,
@@ -20,6 +20,7 @@ export default function DashboardSummary({
   onGenerateSummary,
   latestAssessment,
 }) {
+  // Keep the dashboard summary sections in a responsive grid.
   return (
     <div className="grid xl:grid-cols-[6fr_4fr] gap-6">
       <AISummaryCard
@@ -36,7 +37,7 @@ export default function DashboardSummary({
   );
 }
 
-// Component managing AI generation triggers, content display, and dynamic cooldown countdown
+// Manage AI summary rendering, generation state, and cooldown timing.
 function AISummaryCard({
   summary,
   generatedAt,
@@ -47,7 +48,7 @@ function AISummaryCard({
 }) {
   const [remainingTime, setRemainingTime] = useState(0);
 
-  // Calculates and ticks down the remaining cooldown duration after generation
+  // Update the cooldown timer whenever the latest generation changes.
   useEffect(() => {
     if (!generatedAt) {
       setRemainingTime(0);
@@ -68,9 +69,10 @@ function AISummaryCard({
     return () => clearInterval(interval);
   }, [generatedAt]);
 
+  // Track whether another AI summary request is currently blocked.
   const cooldownActive = remainingTime > 0;
 
-  // Formats active cooldown time in minutes for display
+  // Format the remaining cooldown duration for the interface.
   const formatRemainingTime = () => {
     const totalSeconds = Math.ceil(remainingTime / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -78,6 +80,7 @@ function AISummaryCard({
     return `${minutes} minutes`;
   };
 
+  // Render the summary content and generation controls.
   return (
     <div className="card">
       <div className="flex items-center gap-3 mb-5">
@@ -109,7 +112,6 @@ function AISummaryCard({
         </p>
       )}
 
-      {/* Button and cooldown helper text */}
       <div className="mt-5">
         <button
           onClick={onGenerate}

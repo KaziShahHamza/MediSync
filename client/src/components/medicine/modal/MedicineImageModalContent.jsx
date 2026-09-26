@@ -1,6 +1,7 @@
-// client/src/components/medicine/MedicineImageModalContent.jsx
+// client/src/components/medicine/modal/MedicineImageModalContent.jsx
 
 // Renders the complete visual layout of the medicine details modal.
+// Displays treatment, dosage, pricing, status, and medicine image information.
 
 import {
   CalendarDays,
@@ -21,7 +22,6 @@ import {
   getMedicineTypeLabel,
 } from "../../../utils/medicine/medicineHelpers";
 
-// Renders medicine details modal presentation.
 export default function MedicineImageModalContent({
   medicine,
   isStripMedicine,
@@ -37,7 +37,6 @@ export default function MedicineImageModalContent({
   onOverlayClick,
 }) {
   return (
-    // Modal backdrop shell
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4"
       onMouseDown={onOverlayClick}
@@ -46,7 +45,7 @@ export default function MedicineImageModalContent({
       aria-label={`${medicine.name} details`}
     >
       <div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
-        {/* Modal Header */}
+        {/* Displays medicine identity, type, and modal close action. */}
         <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
@@ -68,7 +67,7 @@ export default function MedicineImageModalContent({
             </p>
           </div>
 
-          {/* Modal close button */}
+          {/* Provides the primary modal close control. */}
           <button
             type="button"
             onClick={onClose}
@@ -79,9 +78,8 @@ export default function MedicineImageModalContent({
           </button>
         </div>
 
-        {/* Modal content body grid */}
+        {/* Separates the medicine image viewer from detailed information. */}
         <div className="grid min-h-0 overflow-y-auto lg:grid-cols-2">
-          {/* Image viewer pane */}
           <div className="p-5">
             <MedicineImageViewer
               imageUrl={medicine.imageUrl}
@@ -92,9 +90,8 @@ export default function MedicineImageModalContent({
             />
           </div>
 
-          {/* Medicine information pane */}
           <div className="space-y-5 border-t border-slate-100 p-5 lg:border-l lg:border-t-0">
-            {/* Treatment period summary section */}
+            {/* Presents treatment start, current status, and completion date. */}
             <div>
               <div className="mb-3 flex items-center gap-2">
                 <CalendarDays size={17} className="text-sky-600" />
@@ -121,7 +118,7 @@ export default function MedicineImageModalContent({
                   </p>
                 </div>
 
-                {/* Conditional end date for completed treatments */}
+                {/* Shows the end date only for completed treatments. */}
                 {!isActive && (
                   <div className="rounded-xl bg-slate-50 p-3 sm:col-span-2 lg:col-span-1 xl:col-span-2">
                     <p className="text-xs text-slate-500">Ended</p>
@@ -134,7 +131,7 @@ export default function MedicineImageModalContent({
               </div>
             </div>
 
-            {/* Dosage schedule list section */}
+            {/* Displays dosage schedule details for strip-based medicines. */}
             {isStripMedicine && (
               <div>
                 <div className="mb-3 flex items-center gap-2">
@@ -171,7 +168,7 @@ export default function MedicineImageModalContent({
               </div>
             )}
 
-            {/* Pricing break-down section */}
+            {/* Displays pricing information based on the medicine pricing model. */}
             <div>
               <div className="mb-3 flex items-center gap-2">
                 <CircleDollarSign size={17} className="text-sky-600" />
@@ -181,7 +178,6 @@ export default function MedicineImageModalContent({
                 </h3>
               </div>
 
-              {/* Dynamic layout based on strip vs unit pricing type */}
               {isStripMedicine ? (
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-xl bg-slate-50 p-3">
@@ -237,7 +233,7 @@ export default function MedicineImageModalContent({
                 </div>
               )}
 
-              {/* Total estimated cost block */}
+              {/* Highlights the calculated estimated monthly medicine cost. */}
               <div className="mt-3 flex items-center justify-between rounded-xl border border-sky-100 bg-sky-50 px-4 py-3">
                 <span className="text-sm text-slate-600">
                   Estimated monthly cost

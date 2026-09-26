@@ -1,20 +1,19 @@
 // client/src/utils/doctor/doctorFormUtils.js
 
-// Provides doctor-form defaults, hospital options, and shared form utilities.
-// Keeps reusable form data creation outside React components.
+// Provides doctor form defaults, hospital options, and reusable form data.
+// Keeps doctor-specific static data and form factories outside components.
 
 import hospitalsData from "../../data/hospitalsData";
 
-// Current year used for generating the last-visit options.
+// Generate selectable years for the doctor's last visit.
 export const currentYear = new Date().getFullYear();
 
-// Generates the current year and previous nine years.
 export const lastVisitYears = Array.from(
   { length: 10 },
   (_, index) => currentYear - index,
 );
 
-// Converts hospital data into a flat list for select inputs.
+// Flatten hospital data into reusable chamber select options.
 export const chamberHospitals = Object.entries(hospitalsData).flatMap(
   ([district, hospitals]) =>
     hospitals.map((hospital, index) => ({
@@ -24,12 +23,12 @@ export const chamberHospitals = Object.entries(hospitalsData).flatMap(
     })),
 );
 
-// Creates a stable select value for a hospital.
+// Create a stable select value for a hospital.
 export function getChamberHospitalValue(hospital) {
   return `${hospital.name}|||${hospital.district}|||${hospital.address}`;
 }
 
-// Creates a fresh empty chamber object.
+// Create a fresh empty chamber object.
 export function createEmptyChamber() {
   return {
     name: "",
@@ -48,7 +47,7 @@ export function createEmptyChamber() {
   };
 }
 
-// Creates a fresh doctor form with empty default values.
+// Create a fresh empty doctor form.
 export function createEmptyForm() {
   return {
     name: "",
@@ -70,10 +69,6 @@ export function createEmptyForm() {
   };
 }
 
-// Legacy aliases kept for compatibility with existing imports.
-// New code should use createEmptyChamber() and createEmptyForm()
-// so nested form data is freshly created every time.
-
+// Preserve legacy exports for existing imports.
 export const emptyChamber = createEmptyChamber();
-
 export const emptyForm = createEmptyForm();

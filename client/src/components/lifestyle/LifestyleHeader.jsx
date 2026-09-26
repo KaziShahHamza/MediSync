@@ -1,11 +1,13 @@
 // client/src/components/lifestyle/LifestyleHeader.jsx
 
-// Provides the top header layout component for the lifestyle score page.
+// Provides the main header layout for the lifestyle assessment page.
+// Displays the page title, icon, and introductory description.
 
 import { Activity } from "lucide-react";
 
-// Page header displaying title and main description
+// Renders the lifestyle page heading and introductory text.
 export default function LifestyleHeader() {
+  // Groups the title and description into the shared page header layout.
   return (
     <section className="page-header">
       <div>

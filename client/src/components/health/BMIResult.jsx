@@ -1,12 +1,14 @@
 // client/src/components/health/BMIResult.jsx
 
+// Displays the calculated BMI value and its corresponding category.
+// Shows guidance text when a BMI value has not yet been calculated.
+
 export default function BMIResult({ bmi }) {
+  // Show calculation guidance when no BMI value is available.
   if (!bmi) {
     return (
       <div className="border-t border-slate-200 pt-5">
-        <p className="text-slate-500">
-          Enter your weight to calculate BMI.
-        </p>
+        <p className="text-slate-500">Enter your weight to calculate BMI.</p>
 
         <p className="text-sm text-slate-400 mt-2">
           Healthy BMI range: 18.5 – 24.9 kg/m²
@@ -18,6 +20,7 @@ export default function BMIResult({ bmi }) {
   let label = "";
   let color = "text-slate-700";
 
+  // Assign a category and display color based on the BMI value.
   if (bmi < 18.5) {
     label = "Underweight";
     color = "text-amber-600";
@@ -32,17 +35,14 @@ export default function BMIResult({ bmi }) {
     color = "text-red-600";
   }
 
+  // Render the calculated BMI and its category.
   return (
     <div className="border-t border-slate-200 pt-5">
       <p className="text-sm text-slate-500">Current BMI</p>
 
-      <h2 className={`text-5xl font-bold mt-2 ${color}`}>
-        {bmi}
-      </h2>
+      <h2 className={`text-5xl font-bold mt-2 ${color}`}>{bmi}</h2>
 
-      <p className={`mt-2 font-semibold ${color}`}>
-        {label}
-      </p>
+      <p className={`mt-2 font-semibold ${color}`}>{label}</p>
 
       <p className="text-sm text-slate-400 mt-4">
         Healthy BMI range: 18.5 – 24.9 kg/m²

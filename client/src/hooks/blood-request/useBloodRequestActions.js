@@ -19,30 +19,20 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export default function useBloodRequestActions({
   user,
-
   requestForm,
   setRequestForm,
-
   selectedHospitalList,
-
   requestSubmitting,
   setRequestSubmitting,
-
   setRequestError,
   setRequestSuccess,
-
   setBloodRequests,
-
   setRequestModalOpen,
-
   editingRequest,
   setEditingRequest,
-
   managementToken,
   setManagementToken,
-
   setCopied,
-
   fetchBloodRequests,
   isEditingRequestRef,
 }) {
@@ -56,7 +46,7 @@ export default function useBloodRequestActions({
     }));
   };
 
-  // Updates hospital name and address from the selected hospital.
+  // Updates hospital details based on the selected hospital.
   const handleHospitalChange = (event) => {
     const value = event.target.value;
 
@@ -82,19 +72,18 @@ export default function useBloodRequestActions({
   // Resets the request form and editing state.
   const resetRequestForm = () => {
     setRequestForm(EMPTY_BLOOD_REQUEST_FORM);
-
     setRequestError("");
     setEditingRequest(null);
   };
 
-  // Opens a fresh request modal.
+  // Opens the modal with a fresh request form.
   const openRequestModal = () => {
     resetRequestForm();
     setRequestSuccess(null);
     setRequestModalOpen(true);
   };
 
-  // Closes the modal unless a request is currently submitting.
+  // Closes the modal unless submission is currently in progress.
   const closeRequestModal = () => {
     if (requestSubmitting) return;
 
@@ -102,32 +91,24 @@ export default function useBloodRequestActions({
     resetRequestForm();
   };
 
-  // Provides the dedicated hook for creating and updating requests.
+  // Provides submission logic for creating and updating requests.
   const { submitBloodRequest } = useSubmitBloodRequest({
     user,
-
     requestForm,
-
     requestSubmitting,
     setRequestSubmitting,
-
     setRequestError,
     setRequestSuccess,
-
     setBloodRequests,
-
     editingRequest,
     setEditingRequest,
-
     managementToken,
     setManagementToken,
-
     setRequestForm,
-
     fetchBloodRequests,
   });
 
-  // Loads an existing request into the form for editing.
+  // Loads an existing request into the editable form.
   const handleEditRequest = (request) => {
     const savedToken = getManagementToken(request.id);
 
@@ -163,7 +144,7 @@ export default function useBloodRequestActions({
     setRequestModalOpen(true);
   };
 
-  // Deletes a blood request after verifying management access.
+  // Deletes a request after verifying management access.
   const handleDeleteRequest = async (request) => {
     const savedToken = getManagementToken(request.id);
 
@@ -234,15 +215,11 @@ export default function useBloodRequestActions({
   return {
     handleRequestChange,
     handleHospitalChange,
-
     openRequestModal,
     closeRequestModal,
-
     submitBloodRequest,
-
     handleEditRequest,
     handleDeleteRequest,
-
     copyManagementToken,
   };
 }

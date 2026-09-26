@@ -1,5 +1,8 @@
 // client/src/components/health/BMIChart.jsx
 
+// Calculates BMI from profile height and recorded weight.
+// Displays BMI history for the latest ten weight records.
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,6 +15,7 @@ import {
 import { Line } from "react-chartjs-2";
 import { TrendingUp, Activity } from "lucide-react";
 
+// Register the Chart.js components required by the line chart.
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -22,18 +26,20 @@ ChartJS.register(
 );
 
 export default function BMIChart({ logs, height }) {
-  // Get only weight logs
-  const weightLogs = logs.filter((log) => log.type === "weight").slice(-10);
+  // Keep only the latest ten weight records for BMI calculations.
+  const weightLogs = (logs || [])
+    .filter((log) => log.type === "weight")
+    .slice(-10);
 
-  // Get height from profile
+  // Normalize profile height values before calculating total height.
   const feet = Number(height?.feet) || 0;
   const inches = Number(height?.inches) || 0;
 
-  // Convert height to meters
+  // Convert the stored height from feet and inches into meters.
   const totalInches = feet * 12 + inches;
   const heightMeters = totalInches * 0.0254;
 
-  // Calculate BMI for every weight log
+  // Calculate BMI independently for each available weight record.
   const bmiData =
     heightMeters > 0
       ? weightLogs.map((log) => ({
@@ -44,12 +50,26 @@ export default function BMIChart({ logs, height }) {
         }))
       : [];
 
+  // Prepare chart labels and BMI values for the rendered line chart.
+  const chartData = {
+    labels: bmiData.map((log) => new Date(log.createdAt).toLocaleDateString()),
+    datasets: [
+      {
+        label: "BMI",
+        data: bmiData.map((log) => log.bmi),
+        borderColor: "#2563EB",
+        backgroundColor: "#2563EB33",
+        tension: 0.3,
+      },
+    ],
+  };
+
   return (
     <div className="card">
       <div className="flex items-center gap-3 mb-6">
         <TrendingUp size={22} className="text-blue-600" />
 
-        <h3 className="card-title">BMI History (Last 10 Entries) </h3>
+        <h3 className="card-title">BMI History (Last 10 Entries)</h3>
       </div>
 
       {!heightMeters ? (
@@ -71,20 +91,7 @@ export default function BMIChart({ logs, height }) {
       ) : (
         <div className="h-90">
           <Line
-            data={{
-              labels: bmiData.map((log) =>
-                new Date(log.createdAt).toLocaleDateString(),
-              ),
-              datasets: [
-                {
-                  label: "BMI",
-                  data: bmiData.map((log) => log.bmi),
-                  borderColor: "#2563EB",
-                  backgroundColor: "#2563EB33",
-                  tension: 0.3,
-                },
-              ],
-            }}
+            data={chartData}
             options={{
               responsive: true,
               maintainAspectRatio: false,

@@ -1,6 +1,6 @@
 // client/src/hooks/useMedicineFormActions.js
 
-// Handles medicine form field actions and image selection logic.
+// Handles medicine field updates, resets, dosage changes, and image selection.
 // Keeps reusable form actions separate from medicine initialization and submission.
 
 import { getPricingTypeForType } from "../utils/medicine/medicineHelpers";
@@ -23,7 +23,7 @@ export default function useMedicineFormActions({
   setIsActive,
   setError,
 }) {
-  // Resets all medicine form fields to their default values.
+  // Reset all medicine fields to their initial values.
   function resetForm() {
     setName("");
     setType("tablet");
@@ -49,7 +49,7 @@ export default function useMedicineFormActions({
     setError("");
   }
 
-  // Updates medicine type and clears fields from the previous pricing mode.
+  // Change medicine type and clear incompatible pricing fields.
   function handleTypeChange(newType) {
     setType(newType);
 
@@ -67,7 +67,7 @@ export default function useMedicineFormActions({
     setError("");
   }
 
-  // Toggles a dosage timing entry in the medicine schedule.
+  // Toggle a dosage time in the medicine schedule.
   function toggleDosageTime(time) {
     setDosage((current) => {
       const exists = current.some((item) => item.time === time);
@@ -86,7 +86,7 @@ export default function useMedicineFormActions({
     });
   }
 
-  // Updates the quantity assigned to a dosage timing.
+  // Update the quantity assigned to a dosage time.
   function updateDosageQuantity(time, value) {
     setDosage((current) =>
       current.map((item) =>
@@ -100,7 +100,7 @@ export default function useMedicineFormActions({
     );
   }
 
-  // Validates and stores a newly selected medicine image.
+  // Validate and store a selected medicine image.
   function handleImageChange(event) {
     const file = event.target.files?.[0];
 
@@ -127,7 +127,7 @@ export default function useMedicineFormActions({
     event.target.value = "";
   }
 
-  // Removes the selected image and its preview.
+  // Remove the selected image and any existing image URL.
   function removeImage() {
     setImageFile(null);
     setImagePreview("");

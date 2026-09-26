@@ -1,17 +1,20 @@
 // client/src/components/lifestyle/AssessmentResults.jsx
 
-// Displays lifestyle assessment score results, detailed category breakdowns with feedback,
-// and a reference key for score classifications.
+// Displays lifestyle assessment results with category scores and feedback.
+// Provides the score classification reference used by the lifestyle page.
 
 import { Activity, CheckCircle2 } from "lucide-react";
 
-// Main result section showing total score, category progress, and feedback
+// Renders the overall assessment score and category breakdown.
 export function AssessmentResult({
   categoryResults,
   totalScore,
   grade,
   feedback,
 }) {
+  // Builds the category progress cards from calculated results.
+  const categoryEntries = Object.entries(categoryResults || {});
+
   return (
     <section className="card">
       <div className="card-header">
@@ -51,10 +54,9 @@ export function AssessmentResult({
       </div>
 
       <div className="card-content">
-        {/* Category breakdown grid */}
+        {/* Renders each category score and its progress percentage. */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Object.entries(categoryResults).map(([category, result]) => {
-            // Calculates percentage completed for each category progress bar
+          {categoryEntries.map(([category, result]) => {
             const percentage =
               result.max > 0
                 ? Math.round((result.score / result.max) * 100)
@@ -93,14 +95,14 @@ export function AssessmentResult({
                 </div>
 
                 <p className="text-xs text-slate-500 mt-2">
-                  {percentage}% of category score
+                  {safePercentage}% of category score
                 </p>
               </div>
             );
           })}
         </div>
 
-        {/* Personalized feedback container */}
+        {/* Displays personalized feedback below the category results. */}
         <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
           <p className="small-label">Feedback</p>
 
@@ -111,8 +113,9 @@ export function AssessmentResult({
   );
 }
 
-// Renders the grading legend explaining score classification boundaries
+// Renders the grading legend explaining the score classification ranges.
 export function GradeReference() {
+  // Defines the score boundaries and descriptions shown in the legend.
   const grades = [
     ["A+", "80–100", "Excellent"],
     ["A", "70–79", "Very good"],

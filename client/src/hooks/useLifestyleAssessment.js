@@ -1,26 +1,26 @@
 // client/src/hooks/useLifestyleAssessment.js
 
-// Custom hook for managing lifestyle assessment form state and calculations.
-// Computes scores, feedback, grades, and handles reset, save, and demo functions.
+// Manages lifestyle assessment answers, scoring, feedback, and persistence.
+// Keeps assessment calculations and interaction logic outside the page component.
 
 import { useMemo, useState } from "react";
 
-import { QUESTIONS, DEMO_USERS } from "../data/lifestyle/lifestyleQuestions";
-import { getGrade, getFeedback } from "../utils/lifestyle/lifestyleScoring";
+import { DEMO_USERS, QUESTIONS } from "../data/lifestyle/lifestyleQuestions";
+import { getFeedback, getGrade } from "../utils/lifestyle/lifestyleScoring";
 
-// Hook handling assessment logic
 export default function useLifestyleAssessment({ user, saveAssessment }) {
   const [answers, setAnswers] = useState({});
   const [showScoring, setShowScoring] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
   const [saveError, setSaveError] = useState("");
 
-  // Extract unique category names
-  const categories = useMemo(() => {
-    return [...new Set(QUESTIONS.map((question) => question.category))];
-  }, []);
+  // Build the unique assessment category list.
+  const categories = useMemo(
+    () => [...new Set(QUESTIONS.map((question) => question.category))],
+    [],
+  );
 
-  // Compute category scores and maximum possible scores
+  // Calculate raw and maximum scores for each category.
   const categoryResults = useMemo(() => {
     const results = {};
 
@@ -54,18 +54,24 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
         const selectedValue = answers[question.id];
 
         if (question.type === "multi") {
-          if (Array.isArray(selectedValue)) {
-            selectedValue.forEach((selectedLabel) => {
-              const selectedOption = question.options.find(
-                (option) => option.label === selectedLabel,
-              );
-
-              if (selectedOption) {
-                rawScore += selectedOption.points;
-              }
-            });
+          if (!Array.isArray(selectedValue)) {
+            return;
           }
-        } else if (selectedValue) {
+
+          selectedValue.forEach((selectedLabel) => {
+            const selectedOption = question.options.find(
+              (option) => option.label === selectedLabel,
+            );
+
+            if (selectedOption) {
+              rawScore += selectedOption.points;
+            }
+          });
+
+          return;
+        }
+
+        if (selectedValue) {
           const selectedOption = question.options.find(
             (option) => option.label === selectedValue,
           );
@@ -87,40 +93,40 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
     return results;
   }, [answers, categories]);
 
-  // Derive total score across all categories
-  const totalScore = useMemo(() => {
-    return Math.round(
-      Object.values(categoryResults).reduce(
-        (total, result) => total + result.score,
-        0,
+  // Calculate the overall assessment score.
+  const totalScore = useMemo(
+    () =>
+      Math.round(
+        Object.values(categoryResults).reduce(
+          (total, result) => total + result.score,
+          0,
+        ),
       ),
-    );
-  }, [categoryResults]);
+    [categoryResults],
+  );
 
-  // Derive letter grade
-  const grade = useMemo(() => {
-    return getGrade(totalScore);
-  }, [totalScore]);
+  // Derive the assessment grade from the total score.
+  const grade = useMemo(() => getGrade(totalScore), [totalScore]);
 
-  // Derive contextual feedback
-  const feedback = useMemo(() => {
-    return getFeedback(totalScore);
-  }, [totalScore]);
+  // Derive contextual feedback from the total score.
+  const feedback = useMemo(() => getFeedback(totalScore), [totalScore]);
 
-  // Count answered questions
-  const answeredCount = useMemo(() => {
-    return QUESTIONS.filter((question) => {
-      const value = answers[question.id];
+  // Count questions that currently have an answer.
+  const answeredCount = useMemo(
+    () =>
+      QUESTIONS.filter((question) => {
+        const value = answers[question.id];
 
-      if (question.type === "multi") {
-        return Array.isArray(value) && value.length > 0;
-      }
+        if (question.type === "multi") {
+          return Array.isArray(value) && value.length > 0;
+        }
 
-      return Boolean(value);
-    }).length;
-  }, [answers]);
+        return Boolean(value);
+      }).length,
+    [answers],
+  );
 
-  // Updates single question answer
+  // Update an answer and clear previous save feedback.
   const handleAnswerChange = (questionId, value) => {
     setAnswers((previousAnswers) => ({
       ...previousAnswers,
@@ -131,7 +137,7 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
     setSaveError("");
   };
 
-  // Populates answers using pre-configured demo user profile
+  // Load answers from a predefined demo profile.
   const loadDemo = (demoName) => {
     const selectedDemo = DEMO_USERS[demoName];
 
@@ -144,7 +150,7 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
     setSaveError("");
   };
 
-  // Resets all current form entries
+  // Reset all assessment answers and messages.
   const resetAssessment = () => {
     setAnswers({});
     setShowScoring(false);
@@ -152,7 +158,7 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
     setSaveError("");
   };
 
-  // Validates state and invokes context save routine
+  // Validate and persist the current assessment.
   const handleSaveAssessment = async () => {
     if (!user) {
       setSaveError("Please log in to save your lifestyle assessment.");
@@ -175,7 +181,7 @@ export default function useLifestyleAssessment({ user, saveAssessment }) {
       setSaveMessage("Your lifestyle assessment has been saved successfully.");
     } catch (error) {
       setSaveError(
-        error.message || "Unable to save your lifestyle assessment.",
+        error?.message || "Unable to save your lifestyle assessment.",
       );
 
       setSaveMessage("");

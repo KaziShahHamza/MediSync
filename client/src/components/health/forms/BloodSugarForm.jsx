@@ -1,5 +1,8 @@
 // client/src/components/health/BloodSugarForm.jsx
 
+// Provides a form for recording blood glucose readings.
+// Supports measurement date, timing, validation, and saving state.
+
 import { useMemo, useState } from "react";
 import { Droplets, Loader2, Save } from "lucide-react";
 
@@ -27,6 +30,7 @@ export default function BloodSugarForm({ onAdd }) {
   const [glucoseTiming, setGlucoseTiming] = useState("fasting");
   const [isSaving, setIsSaving] = useState(false);
 
+  // Generate the five most recent selectable measurement dates.
   const availableDates = useMemo(() => {
     const dates = [];
 
@@ -47,6 +51,7 @@ export default function BloodSugarForm({ onAdd }) {
 
   const [recordedAt, setRecordedAt] = useState(availableDates[0]?.value || "");
 
+  // Convert the entered glucose value into a number for critical checks.
   const numericGlucose = Number(glucose);
 
   const isCritical =
@@ -54,6 +59,7 @@ export default function BloodSugarForm({ onAdd }) {
     (numericGlucose < CRITICAL_LOW_GLUCOSE ||
       numericGlucose >= CRITICAL_HIGH_GLUCOSE);
 
+  // Validate and submit the blood sugar record.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,6 +82,13 @@ export default function BloodSugarForm({ onAdd }) {
       setIsSaving(false);
     }
   };
+
+  // Display the appropriate action text while saving or notifying.
+  const submitLabel = isSaving
+    ? isCritical
+      ? "Emailing emergency contacts..."
+      : "Saving blood sugar..."
+    : "Save Blood Sugar";
 
   return (
     <form onSubmit={handleSubmit} className="card space-y-6">
@@ -138,14 +151,12 @@ export default function BloodSugarForm({ onAdd }) {
         {isSaving ? (
           <>
             <Loader2 size={18} className="animate-spin" />
-            {isCritical
-              ? "Emailing emergency contacts..."
-              : "Saving blood sugar..."}
+            {submitLabel}
           </>
         ) : (
           <>
             <Save size={18} />
-            Save Blood Sugar
+            {submitLabel}
           </>
         )}
       </button>

@@ -1,26 +1,25 @@
 // client/src/context/MedicineContext.jsx
 
-// Provides medicine data and medicine API operations to protected pages.
-// Handles fetching, creating, updating, deleting, and Cloudinary image uploads.
+// Provides medicine state and API operations for authenticated users.
+// Handles medicine CRUD operations and Cloudinary image uploads.
 
 import { createContext, useCallback, useEffect, useState } from "react";
 
-// Creates Context object for managing medicine state globally.
 const MedicineContext = createContext(null);
 
 const API_URL = import.meta.env.VITE_API_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-// Manages and shares state for medicine records and backend API operations.
+// Provides medicine data and operations to child components.
 export function MedicineProvider({ children }) {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Retrieves authentication JWT token from local storage.
+  // Retrieves the current authentication token.
   const getToken = () => localStorage.getItem("token");
 
-  // Fetches all medicine records from backend API.
+  // Fetches all medicines belonging to the authenticated user.
   const fetchMedicines = useCallback(async () => {
     const token = getToken();
 
@@ -50,14 +49,7 @@ export function MedicineProvider({ children }) {
     }
   }, []);
 
-  // Triggers initial fetching of medicine list upon context mount.
-  useEffect(() => {
-    fetchMedicines().catch((error) => {
-      console.error("Failed to fetch medicines:", error);
-    });
-  }, [fetchMedicines]);
-
-  // Uploads image file directly to Cloudinary and returns secure URL.
+  // Uploads a medicine image directly to Cloudinary.
   async function uploadMedicineImage(file) {
     if (!file) {
       return null;
@@ -91,7 +83,7 @@ export function MedicineProvider({ children }) {
     return data.secure_url;
   }
 
-  // Handles payload formatting and backend API request for saving a medicine.
+  // Saves a new or existing medicine using the appropriate API method.
   async function saveMedicine(medicineData) {
     const token = getToken();
 
@@ -104,39 +96,28 @@ export function MedicineProvider({ children }) {
     try {
       let imageUrl = medicineData.imageUrl || "";
 
-      // Uploads new image to Cloudinary if file provided.
       if (medicineData.imageFile) {
         imageUrl = await uploadMedicineImage(medicineData.imageFile);
       }
 
       const isStrip = medicineData.pricingType === "strip";
 
-      // Prepares payload with pricing-type dependencies.
+      // Builds the backend payload according to pricing type.
       const payload = {
         name: medicineData.name,
         type: medicineData.type,
         pricingType: medicineData.pricingType,
-
         dosage: isStrip ? medicineData.dosage : [],
-
         pricePerStrip: isStrip ? medicineData.pricePerStrip : null,
-
         piecesPerStrip: isStrip ? medicineData.piecesPerStrip : null,
-
         pricePerUnit: isStrip ? null : medicineData.pricePerUnit,
-
         unitsPerMonth: isStrip ? null : medicineData.unitsPerMonth,
-
         imageUrl,
-
         startDate: medicineData.startDate,
-
         endDate: medicineData.isActive ? null : medicineData.endDate,
-
         isActive: medicineData.isActive,
       };
 
-      // Selects appropriate endpoint URL based on create or edit mode.
       const url = medicineData._id
         ? `${API_URL}/api/medicines/${medicineData._id}`
         : `${API_URL}/api/medicines`;
@@ -158,7 +139,6 @@ export function MedicineProvider({ children }) {
         throw new Error(data?.message || "Failed to save medicine.");
       }
 
-      // Refreshes medicine list state.
       await fetchMedicines();
 
       return data;
@@ -167,12 +147,12 @@ export function MedicineProvider({ children }) {
     }
   }
 
-  // Wrapper function to create new medicine entry.
+  // Creates a new medicine record.
   async function createMedicine(medicineData) {
     return saveMedicine(medicineData);
   }
 
-  // Wrapper function to update existing medicine entry.
+  // Updates an existing medicine record.
   async function updateMedicine(id, medicineData) {
     return saveMedicine({
       ...medicineData,
@@ -180,7 +160,7 @@ export function MedicineProvider({ children }) {
     });
   }
 
-  // Deletes medicine record from backend API.
+  // Deletes a medicine and removes it from local state.
   async function deleteMedicine(id) {
     const token = getToken();
 
@@ -204,7 +184,6 @@ export function MedicineProvider({ children }) {
         throw new Error(data?.message || "Failed to delete medicine.");
       }
 
-      // Removes deleted medicine from local state.
       setMedicines((current) =>
         current.filter((medicine) => medicine._id !== id),
       );
@@ -214,6 +193,13 @@ export function MedicineProvider({ children }) {
       setLoading(false);
     }
   }
+
+  // Loads medicines automatically when the provider mounts.
+  useEffect(() => {
+    fetchMedicines().catch((error) => {
+      console.error("Failed to fetch medicines:", error);
+    });
+  }, [fetchMedicines]);
 
   return (
     <MedicineContext.Provider

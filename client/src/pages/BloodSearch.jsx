@@ -1,3 +1,8 @@
+// client/src/pages/BloodSearch.jsx
+
+// Renders the blood donor search page.
+// Connects donor search state and filters to the search components.
+
 import { Droplets } from "lucide-react";
 
 import BloodSearchForm from "../components/blood/BloodSearchForm";
@@ -5,39 +10,31 @@ import DonorResults from "../components/blood/DonorResults";
 
 import useBloodSearch from "../hooks/useBloodSearch";
 
+// Provides donor search and result display functionality.
 export default function BloodSearch() {
   const {
     bloodGroup,
     setBloodGroup,
-
     district,
     setDistrict,
-
     upazila,
     setUpazila,
-
     compensation,
     setCompensation,
-
     donors,
     loading,
     searched,
     error,
-
     upazilas,
-
     handleSearch,
     handleReset,
   } = useBloodSearch();
 
   return (
     <main className="container py-10 lg:py-14">
-      {/* ====================================================
-          Page Header
-      ==================================================== */}
-
+      {/* Page heading and donor search introduction. */}
       <div className="page-header">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-sky-50 text-sky-600 mb-4">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
           <Droplets size={25} strokeWidth={2} />
         </div>
 
@@ -48,10 +45,7 @@ export default function BloodSearch() {
         </p>
       </div>
 
-      {/* ====================================================
-          Donor Search
-      ==================================================== */}
-
+      {/* Provides donor search filters and actions. */}
       <BloodSearchForm
         bloodGroup={bloodGroup}
         setBloodGroup={setBloodGroup}
@@ -67,16 +61,10 @@ export default function BloodSearch() {
         onReset={handleReset}
       />
 
-      {/* ====================================================
-          Error
-      ==================================================== */}
-
+      {/* Displays search errors. */}
       {error && <div className="alert alert-danger mb-8">{error}</div>}
 
-      {/* ====================================================
-          Donor Results
-      ==================================================== */}
-
+      {/* Displays matching donor results. */}
       <DonorResults
         donors={donors}
         searched={searched}

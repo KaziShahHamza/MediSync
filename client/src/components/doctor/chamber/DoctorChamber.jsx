@@ -1,6 +1,7 @@
 // client/src/components/doctor/DoctorChamber.jsx
 
-// Renders chamber details such as location, contact, fee, days, and visiting time.
+// Displays a doctor's chamber location, contact, fee, days, and visiting time.
+// Supports compact and standard display modes for different dashboard layouts.
 
 import {
   Building2,
@@ -13,34 +14,36 @@ import {
 
 import { formatVisitFee } from "../../../utils/doctor/doctorFunctions";
 
-// Displays one chamber with optional compact styling for cards.
 export default function DoctorChamber({ chamber, index = 0, compact = false }) {
+  // Avoid rendering when chamber data is unavailable.
   if (!chamber) {
     return null;
   }
 
+  // Normalize optional chamber collections before rendering.
   const visitingDays = chamber.visitingDays || [];
   const visitingTime = chamber.visitingTime || {};
 
-  // Only show visiting time when all four time fields are available.
+  // Show visiting time only when all required fields are available.
   const hasVisitingTime =
     visitingTime.startHour &&
     visitingTime.startPeriod &&
     visitingTime.endHour &&
     visitingTime.endPeriod;
 
+  // Determine whether a visit fee has been provided.
   const hasVisitFee =
     chamber.visitFee !== null &&
     chamber.visitFee !== undefined &&
     chamber.visitFee !== "";
 
+  // Render the chamber details using the selected display size.
   return (
     <div
       className={`rounded-xl border border-slate-200 bg-slate-50 ${
         compact ? "p-3" : "p-4"
       }`}
     >
-      {/* Chamber header */}
       <div className="flex items-start gap-3">
         <div className="mt-0.5 shrink-0 rounded-lg bg-white p-2 text-blue-600 shadow-sm">
           <Building2 size={compact ? 16 : 18} />
@@ -132,7 +135,6 @@ export default function DoctorChamber({ chamber, index = 0, compact = false }) {
         )}
       </div>
 
-      {/* Fallback shown when the chamber has no optional details. */}
       {!chamber.address &&
         !chamber.phone &&
         !chamber.serialNumber &&

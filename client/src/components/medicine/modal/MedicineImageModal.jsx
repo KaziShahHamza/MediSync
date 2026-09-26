@@ -1,6 +1,7 @@
 // client/src/components/medicine/modal/MedicineImageModal.jsx
 
-// Manages medicine modal state and delegates the modal UI to MedicineImageModalContent.
+// Manages medicine detail modal state and derived pricing information.
+// Delegates the visual presentation to MedicineImageModalContent.
 
 import { useEffect, useState } from "react";
 
@@ -13,23 +14,25 @@ import {
 
 import MedicineImageModalContent from "./MedicineImageModalContent";
 
-// Renders full medicine details inside a modal.
 export default function MedicineImageModal({ medicine, onClose }) {
-  // Manages image zoom level state.
+  // Tracks the current medicine image zoom level.
   const [zoom, setZoom] = useState(1);
 
-  // Resets zoom level when a new medicine is selected.
+  // Resets the zoom whenever the selected medicine changes.
   useEffect(() => {
-    if (!medicine) return;
+    if (!medicine) {
+      return;
+    }
 
     setZoom(1);
   }, [medicine]);
 
-  // Registers keyboard shortcut listener for Escape key to close modal.
+  // Registers keyboard handling for closing the active modal.
   useEffect(() => {
-    if (!medicine) return;
+    if (!medicine) {
+      return;
+    }
 
-    // Handles the Escape keypress event.
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         onClose();
@@ -43,14 +46,13 @@ export default function MedicineImageModal({ medicine, onClose }) {
     };
   }, [medicine, onClose]);
 
-  // Prevents rendering if no medicine is selected.
+  // Prevents rendering when no medicine has been selected.
   if (!medicine) {
     return null;
   }
 
-  // Determines medicine pricing structure.
+  // Calculates values required by the medicine detail presentation.
   const pricingType = getMedicinePricingType(medicine);
-
   const isStripMedicine = pricingType === "strip";
 
   const dosage = Array.isArray(medicine.dosage) ? medicine.dosage : [];
@@ -64,20 +66,19 @@ export default function MedicineImageModal({ medicine, onClose }) {
     : 0;
 
   const monthlyCost = getMedicineMonthlyCost(medicine);
-
   const isActive = medicine.isActive !== false;
 
-  // Increases image zoom scale up to maximum limit.
+  // Increases zoom while keeping it within the supported maximum.
   function handleZoomIn() {
     setZoom((current) => Math.min(current + 0.25, 3));
   }
 
-  // Decreases image zoom scale down to minimum limit.
+  // Decreases zoom while keeping it within the supported minimum.
   function handleZoomOut() {
     setZoom((current) => Math.max(current - 0.25, 0.5));
   }
 
-  // Closes modal when clicking directly on overlay backdrop.
+  // Closes the modal when the overlay itself receives the click.
   function handleOverlayClick(event) {
     if (event.target === event.currentTarget) {
       onClose();
