@@ -1,7 +1,7 @@
 // server/utils/aiChatContext.js
 
-// Builds normalized profile, lifestyle, health, doctor, and conversation context.
-// Keeps AI prompt preparation independent from Gemini execution.
+// Builds normalized health, profile, lifestyle, doctor, and conversation context.
+// Keeps AI context preparation independent from model execution.
 
 function calculateAge(dob) {
   if (!dob) return null;
@@ -28,7 +28,6 @@ function calculateAge(dob) {
   return age >= 0 ? age : null;
 }
 
-// Normalizes missing context values to the existing fallback string.
 function formatValue(value, fallback = "Not available") {
   if (value === null || value === undefined || value === "") {
     return fallback;
@@ -37,7 +36,7 @@ function formatValue(value, fallback = "Not available") {
   return value;
 }
 
-// Builds the personal profile section used by the AI context.
+// Build the normalized profile context.
 function buildProfileContext(profile) {
   if (!profile) {
     return {
@@ -78,7 +77,7 @@ function buildProfileContext(profile) {
   };
 }
 
-// Builds the lifestyle assessment section used by the AI context.
+// Build the normalized lifestyle assessment context.
 function buildLifestyleContext(lifestyle) {
   if (!lifestyle) {
     return {
@@ -97,7 +96,7 @@ function buildLifestyleContext(lifestyle) {
   };
 }
 
-// Builds the health metrics section used by the AI context.
+// Build the normalized health metrics context.
 function buildHealthContext(health) {
   if (!health) {
     return {
@@ -119,7 +118,7 @@ function buildHealthContext(health) {
   };
 }
 
-// Builds the doctor section without introducing unrelated information.
+// Build a limited doctor context for AI usage.
 function buildDoctorContext(doctors = []) {
   return doctors.map((doctor) => ({
     doctorId: doctor.doctorId,
@@ -143,7 +142,7 @@ function buildDoctorContext(doctors = []) {
   }));
 }
 
-// Combines synchronized data into the context consumed by the AI prompt.
+// Combine synchronized data into the AI context.
 export function buildAIContext(aiChatData) {
   return {
     profile: buildProfileContext(aiChatData.profile),
@@ -153,7 +152,7 @@ export function buildAIContext(aiChatData) {
   };
 }
 
-// Converts stored messages into Gemini conversation-history format.
+// Convert stored messages into Gemini history format.
 export function buildConversationHistory(messages = []) {
   return messages.map((message) => ({
     role: message.role === "assistant" ? "model" : "user",
@@ -165,7 +164,7 @@ export function buildConversationHistory(messages = []) {
   }));
 }
 
-// Finds doctors whose specialties match the requested specialties.
+// Match requested specialties against stored doctor specialties.
 export function findMatchingDoctors(doctors = [], specialties = []) {
   if (!specialties.length) {
     return [];

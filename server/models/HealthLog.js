@@ -1,7 +1,11 @@
 // server/models/HealthLog.js
 
+// Defines user health measurements and their recording metadata.
+// Supports blood pressure, blood sugar, and weight tracking.
+
 import mongoose from "mongoose";
 
+// Defines the health measurement document structure.
 const healthLogSchema = new mongoose.Schema(
   {
     user: {
@@ -16,11 +20,9 @@ const healthLogSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Blood Pressure
     High: Number,
     Low: Number,
 
-    // Blood Sugar
     glucose: Number,
     glucoseTiming: {
       type: String,
@@ -32,7 +34,6 @@ const healthLogSchema = new mongoose.Schema(
       match: /^\d{4}-\d{2}-\d{2}$/,
     },
 
-    // Weight
     weight: Number,
 
     note: String,

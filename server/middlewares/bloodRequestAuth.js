@@ -1,18 +1,18 @@
 // server/middlewares/bloodRequestAuth.js
 
-// Authentication and authorization utilities for managing blood requests.
-// Supports JWT token validation and guest token hash verification.
+// Provides authentication and authorization helpers for blood requests.
+// Supports logged-in users and public management tokens.
 
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
 import { normalizeString } from "../utils/blood/bloodRequestHelpers.js";
 
-// Extract user ID from Bearer token if valid authorization header exists
+// Resolves an authenticated user ID when a valid JWT is available.
 export function getOptionalAuthenticatedUser(req) {
   const authHeader = req.headers.authorization;
 
-  // Check for presence of Bearer scheme in auth header
+  // Ignore requests without the expected bearer authentication scheme.
   if (!authHeader?.startsWith("Bearer ")) {
     return null;
   }
@@ -20,7 +20,6 @@ export function getOptionalAuthenticatedUser(req) {
   try {
     const token = authHeader.split(" ")[1];
 
-    // Decode JWT token using environment secret key
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     return decoded.id || null;
@@ -29,11 +28,11 @@ export function getOptionalAuthenticatedUser(req) {
   }
 }
 
-// Verify if client is authorized via user account or management token
+// Checks ownership through either account authentication or management token.
 export function authorizeBloodRequest(req, request) {
   const authenticatedUserId = getOptionalAuthenticatedUser(req);
 
-  // Validate ownership for logged-in users matching request owner ID
+  // Allow the request owner to manage their authenticated request.
   if (
     authenticatedUserId &&
     request.user &&
@@ -44,7 +43,7 @@ export function authorizeBloodRequest(req, request) {
 
   const managementToken = normalizeString(req.body?.managementToken);
 
-  // Validate management token hash for non-authenticated guests
+  // Allow public management using the stored token hash.
   if (
     managementToken &&
     request.managementTokenHash &&
@@ -56,7 +55,7 @@ export function authorizeBloodRequest(req, request) {
   return false;
 }
 
-// Generate SHA-256 hash for raw public management tokens
+// Hashes public management tokens before comparison or storage.
 export function hashManagementToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }

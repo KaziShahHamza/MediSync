@@ -9,7 +9,6 @@ const CRITICAL_DIASTOLIC = 120;
 const CRITICAL_LOW_GLUCOSE = 3.0;
 const CRITICAL_HIGH_GLUCOSE = 22.2;
 
-// Export emergency threshold constants.
 export {
   CRITICAL_SYSTOLIC,
   CRITICAL_DIASTOLIC,

@@ -1,6 +1,6 @@
 // server/utils/medicine/medicineHelpers.js
 
-// Provides reusable medicine pricing and date normalization helpers.
+// Provides reusable helpers for medicine pricing classification and date validation.
 
 import { STRIP_MEDICINE_TYPES } from "./medicineConstants.js";
 
@@ -9,7 +9,7 @@ export function getPricingTypeForMedicine(type) {
   return STRIP_MEDICINE_TYPES.includes(type) ? "strip" : "unit";
 }
 
-// Converts a date-like value into a valid Date or null.
+// Converts a date-like value into a valid Date object or null.
 export function normalizeDate(value) {
   if (!value) {
     return null;
@@ -24,10 +24,11 @@ export function normalizeDate(value) {
   return date;
 }
 
-// Validates and normalizes medicine start and end dates.
+// Validates treatment start and end dates according to medicine status.
 export function validateMedicineDates({ startDate, endDate, isActive }) {
   const normalizedStartDate = normalizeDate(startDate);
 
+  // Require a valid treatment start date.
   if (!normalizedStartDate) {
     return {
       valid: false,
@@ -35,6 +36,7 @@ export function validateMedicineDates({ startDate, endDate, isActive }) {
     };
   }
 
+  // Completed medicines require a valid chronological end date.
   if (!isActive) {
     const normalizedEndDate = normalizeDate(endDate);
 

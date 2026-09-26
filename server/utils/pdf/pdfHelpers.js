@@ -1,11 +1,10 @@
 // server/utils/pdf/pdfHelpers.js
 
-// Provides reusable PDF formatting and image-loading helpers.
-// Keeps generic PDF preparation logic outside the PDF service.
+// Provides reusable date, value formatting, age calculation, and image loading helpers for PDF exports.
 
 import axios from "axios";
 
-// Calculates the user's age from their date of birth.
+// Calculates the current age from a date of birth.
 export function calculateAge(dob) {
   if (!dob) return null;
 
@@ -15,10 +14,9 @@ export function calculateAge(dob) {
   let age = today.getFullYear() - birthDate.getFullYear();
 
   const monthDifference = today.getMonth() - birthDate.getMonth();
-
   const dayDifference = today.getDate() - birthDate.getDate();
 
-  // Reduce the age when this year's birthday has not occurred.
+  // Adjust the result when the birthday has not occurred this year.
   if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
     age--;
   }
@@ -26,7 +24,7 @@ export function calculateAge(dob) {
   return age;
 }
 
-// Formats dates consistently throughout exported documents.
+// Formats dates consistently for generated PDF documents.
 export function formatDate(date) {
   if (!date) return "Not available";
 
@@ -37,14 +35,14 @@ export function formatDate(date) {
   });
 }
 
-// Provides a fallback for missing PDF values.
+// Returns a fallback value when the supplied value is empty.
 export function formatValue(value, fallback = "Not available") {
   return value !== null && value !== undefined && value !== ""
     ? value
     : fallback;
 }
 
-// Downloads a Cloudinary image for PDF embedding.
+// Downloads a remote image and converts it into a PDF-compatible buffer.
 export async function getImageBuffer(imageUrl) {
   try {
     const response = await axios.get(imageUrl, {

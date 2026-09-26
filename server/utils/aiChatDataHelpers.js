@@ -1,7 +1,7 @@
 // server/utils/aiChatDataHelpers.js
 
-// Provides reusable empty AI health-data structures.
-// Keeps AI projection defaults consistent across synchronization flows.
+// Provides reusable default AI health-data structures.
+// Keeps AI projection mapping consistent across synchronization flows.
 
 export function emptyHealthData() {
   return {
@@ -40,7 +40,6 @@ export function emptyHealthData() {
   };
 }
 
-// Returns the default lifestyle projection.
 export function emptyLifestyleData() {
   return {
     answers: {},
@@ -52,7 +51,6 @@ export function emptyLifestyleData() {
   };
 }
 
-// Returns the default profile projection.
 export function emptyProfileData() {
   return {
     dob: null,
@@ -80,12 +78,11 @@ export function emptyProfileData() {
   };
 }
 
-// Returns the default doctors projection.
 export function emptyDoctorsData() {
   return [];
 }
 
-// Maps a stored profile into the AI projection format.
+// Map stored profile data into the AI projection.
 export function mapProfileData(profile) {
   if (!profile) {
     return emptyProfileData();
@@ -122,7 +119,7 @@ export function mapProfileData(profile) {
   };
 }
 
-// Maps a lifestyle assessment into the AI projection format.
+// Map the latest lifestyle assessment into AI data.
 export function mapLifestyleData(latestAssessment) {
   if (!latestAssessment) {
     return emptyLifestyleData();
@@ -138,7 +135,7 @@ export function mapLifestyleData(latestAssessment) {
   };
 }
 
-// Maps stored doctors into the AI projection format.
+// Map stored doctors into the AI projection.
 export function mapDoctorData(doctors = []) {
   return doctors.map((doctor) => ({
     doctorId: doctor._id,

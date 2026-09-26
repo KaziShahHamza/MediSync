@@ -1,12 +1,12 @@
 // server/utils/medicine/medicineValidation.js
 
-// Validates medicine types, pricing data, dosage schedules, and quantities.
+// Validates medicine type, pricing, dosage schedules, and normalized quantities.
 
 import { MEDICINE_TYPES, DOSAGE_TIMES } from "./medicineConstants.js";
 
 import { getPricingTypeForMedicine } from "./medicineHelpers.js";
 
-// Validates all pricing and dosage fields for a medicine.
+// Validates and normalizes medicine pricing and dosage data.
 export function validateMedicineData({
   type,
   pricingType,
@@ -16,6 +16,7 @@ export function validateMedicineData({
   pricePerUnit,
   unitsPerMonth,
 }) {
+  // Validate the selected medicine type.
   if (!MEDICINE_TYPES.includes(type)) {
     return {
       valid: false,
@@ -25,6 +26,7 @@ export function validateMedicineData({
 
   const expectedPricingType = getPricingTypeForMedicine(type);
 
+  // Ensure pricing matches the selected medicine type.
   if (pricingType !== expectedPricingType) {
     return {
       valid: false,
@@ -84,7 +86,7 @@ export function validateMedicineData({
       });
     }
 
-    // Validate strip price.
+    // Validate the strip price.
     const normalizedPricePerStrip = Number(pricePerStrip);
 
     if (
@@ -97,7 +99,7 @@ export function validateMedicineData({
       };
     }
 
-    // Validate pieces contained in each strip.
+    // Validate the number of pieces contained in each strip.
     const normalizedPiecesPerStrip = Number(piecesPerStrip);
 
     if (
@@ -113,22 +115,17 @@ export function validateMedicineData({
 
     return {
       valid: true,
-
       type,
       pricingType: "strip",
-
       dosage: normalizedDosage,
-
       pricePerStrip: normalizedPricePerStrip,
-
       piecesPerStrip: normalizedPiecesPerStrip,
-
       pricePerUnit: null,
       unitsPerMonth: null,
     };
   }
 
-  // Unit medicines cannot use dosage schedules.
+  // Unit medicines must not contain dosage schedules.
   if (Array.isArray(dosage) && dosage.length > 0) {
     return {
       valid: false,
@@ -136,7 +133,7 @@ export function validateMedicineData({
     };
   }
 
-  // Validate unit price.
+  // Validate the unit price.
   const normalizedPricePerUnit = Number(pricePerUnit);
 
   if (!Number.isFinite(normalizedPricePerUnit) || normalizedPricePerUnit <= 0) {
@@ -146,7 +143,7 @@ export function validateMedicineData({
     };
   }
 
-  // Validate monthly unit quantity.
+  // Validate the required monthly unit quantity.
   const normalizedUnitsPerMonth = Number(unitsPerMonth);
 
   if (
@@ -162,17 +159,12 @@ export function validateMedicineData({
 
   return {
     valid: true,
-
     type,
     pricingType: "unit",
-
     dosage: [],
-
     pricePerStrip: null,
     piecesPerStrip: null,
-
     pricePerUnit: normalizedPricePerUnit,
-
     unitsPerMonth: normalizedUnitsPerMonth,
   };
 }

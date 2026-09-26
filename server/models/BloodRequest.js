@@ -1,10 +1,12 @@
+// server/models/BloodRequest.js
+
+// Defines blood request data, ownership, contact details, and expiration.
+// Stores private anti-spam and management information separately.
+
 import mongoose from "mongoose";
 
 const bloodRequestSchema = new mongoose.Schema(
   {
-    // Optional.
-    // Logged-in users are associated with their account.
-    // Public users leave this empty.
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -13,16 +15,7 @@ const bloodRequestSchema = new mongoose.Schema(
 
     bloodGroup: {
       type: String,
-      enum: [
-        "A+",
-        "A-",
-        "B+",
-        "B-",
-        "AB+",
-        "AB-",
-        "O+",
-        "O-",
-      ],
+      enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
       required: true,
       trim: true,
     },
@@ -34,8 +27,6 @@ const bloodRequestSchema = new mongoose.Schema(
       max: 20,
     },
 
-    // Whether the requester is willing to provide
-    // honorarium / travel / commute cost.
     compensationOffered: {
       type: Boolean,
       required: true,
@@ -78,7 +69,6 @@ const bloodRequestSchema = new mongoose.Schema(
       maxlength: 30,
     },
 
-    // Optional public-facing requester name.
     requesterName: {
       type: String,
       trim: true,
@@ -86,7 +76,6 @@ const bloodRequestSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Optional additional information.
     notes: {
       type: String,
       trim: true,
@@ -94,22 +83,18 @@ const bloodRequestSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Only public users need this.
-    // We never return the hash publicly.
     managementTokenHash: {
       type: String,
       default: null,
       select: false,
     },
 
-    // Private anti-spam information.
     requesterIpHash: {
       type: String,
       default: "",
       select: false,
     },
 
-    // Private browser/device identifier.
     deviceId: {
       type: String,
       default: "",
@@ -124,7 +109,6 @@ const bloodRequestSchema = new mongoose.Schema(
     expiresAt: {
       type: Date,
       required: true,
-      // index: true,
     },
   },
   {
@@ -132,13 +116,7 @@ const bloodRequestSchema = new mongoose.Schema(
   },
 );
 
-// MongoDB automatically removes the document after expiresAt.
-bloodRequestSchema.index(
-  { expiresAt: 1 },
-  { expireAfterSeconds: 0 },
-);
+// Automatically removes expired blood requests.
+bloodRequestSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-export default mongoose.model(
-  "BloodRequest",
-  bloodRequestSchema,
-);
+export default mongoose.model("BloodRequest", bloodRequestSchema);

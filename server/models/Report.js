@@ -1,5 +1,11 @@
+// server/models/Report.js
+
+// Defines medical report records owned by users.
+// Stores report metadata and optional AI-generated summaries.
+
 import mongoose from "mongoose";
 
+// Defines the report document structure.
 const reportSchema = new mongoose.Schema(
   {
     user: {

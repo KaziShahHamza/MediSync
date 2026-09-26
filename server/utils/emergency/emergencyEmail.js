@@ -1,7 +1,6 @@
 // server/utils/emergency/emergencyEmail.js
 
-// Builds emergency email content for supported alert types.
-// Keeps email formatting separate from email delivery logic.
+// Builds emergency email subjects and messages for critical health alerts.
 
 const timingLabels = {
   fasting: "Fasting",
@@ -9,11 +8,10 @@ const timingLabels = {
   postMeal: "2 hours after meal",
 };
 
-// Builds the blood pressure emergency email.
+// Builds the email content for a critical blood pressure alert.
 function buildBloodPressureEmail({ high, low, userName, pronouns }) {
   return {
     subject: `${userName}'s - Health Status`,
-
     text: `Please contact ${userName}.
 
 ${pronouns.possessive} blood pressure is very high:
@@ -23,7 +21,7 @@ Please check on ${pronouns.object} and help ${pronouns.object} get medical care 
   };
 }
 
-// Builds the blood sugar emergency email.
+// Builds the email content for a critical blood sugar alert.
 function buildBloodSugarEmail({
   glucose,
   glucoseTiming,
@@ -32,12 +30,10 @@ function buildBloodSugarEmail({
   pronouns,
 }) {
   const timing = timingLabels[glucoseTiming] || "Blood glucose";
-
   const level = direction === "low" ? "very low" : "very high";
 
   return {
     subject: `${userName}'s - Health Status`,
-
     text: `Please contact ${userName}.
 
     ${pronouns.possessive} blood sugar is ${level}:
@@ -49,7 +45,7 @@ function buildBloodSugarEmail({
   };
 }
 
-// Builds email content according to emergency type.
+// Selects the appropriate email builder for the emergency type.
 export function buildEmailContent(type, triggerData) {
   if (type === "bloodPressure") {
     return buildBloodPressureEmail(triggerData);

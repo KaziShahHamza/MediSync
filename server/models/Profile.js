@@ -1,7 +1,13 @@
+// server/models/Profile.js
+
+// Defines user profile, medical, location, and emergency contact data.
+// Applies validation rules for contacts, blood donation, and donor location.
+
 import mongoose from "mongoose";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Defines reusable emergency contact fields and email validation.
 const emergencyContactSchema = new mongoose.Schema(
   {
     relation: {
@@ -30,6 +36,7 @@ const emergencyContactSchema = new mongoose.Schema(
       validate: {
         validator: function (value) {
           if (!value) return true;
+
           return emailRegex.test(value);
         },
         message: "Please provide a valid email address.",
@@ -39,6 +46,7 @@ const emergencyContactSchema = new mongoose.Schema(
   { _id: false },
 );
 
+// Defines the complete user profile structure.
 const profileSchema = new mongoose.Schema(
   {
     user: {
@@ -48,14 +56,12 @@ const profileSchema = new mongoose.Schema(
       unique: true,
     },
 
-    // Profile photo
     profilePhotoUrl: {
       type: String,
       default: "",
       trim: true,
     },
 
-    // Personal information
     dob: Date,
 
     gender: {
@@ -69,6 +75,7 @@ const profileSchema = new mongoose.Schema(
         type: Number,
         default: null,
       },
+
       inches: {
         type: Number,
         default: null,
@@ -80,7 +87,6 @@ const profileSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Medical information
     allergies: {
       type: String,
       default: "",
@@ -96,7 +102,6 @@ const profileSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Emergency contacts
     emergencyContacts: {
       type: [emergencyContactSchema],
       default: [],
@@ -109,7 +114,6 @@ const profileSchema = new mongoose.Schema(
       },
     },
 
-    // Blood donation
     bloodDonorStatus: {
       type: String,
       enum: ["", "yes", "no", "willingly"],
@@ -141,7 +145,6 @@ const profileSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // Present location
     location: {
       streetAddress: {
         type: String,
@@ -150,8 +153,6 @@ const profileSchema = new mongoose.Schema(
         maxlength: 300,
       },
 
-      // Keep these fields unchanged.
-      // They are required for blood donor search.
       district: {
         type: String,
         default: "",
@@ -170,6 +171,7 @@ const profileSchema = new mongoose.Schema(
   },
 );
 
+// Validates emergency contacts and blood donor requirements.
 profileSchema.pre("validate", function () {
   for (const contact of this.emergencyContacts || []) {
     const hasPhone = Boolean(contact.phone?.trim());
@@ -186,6 +188,7 @@ profileSchema.pre("validate", function () {
   const isDonor =
     this.bloodDonorStatus === "yes" || this.bloodDonorStatus === "willingly";
 
+  // Require a contact number for users available to donate.
   if (isDonor && !this.bloodDonationContactNumber?.trim()) {
     this.invalidate(
       "bloodDonationContactNumber",
@@ -193,8 +196,7 @@ profileSchema.pre("validate", function () {
     );
   }
 
-  // Do NOT change this.
-  // Blood donor search depends on district and upazila.
+  // Require donor location fields for blood search.
   if (isDonor) {
     if (!this.location?.district) {
       this.invalidate("location.district", "Please select your district.");

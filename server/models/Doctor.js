@@ -1,7 +1,11 @@
 // server/models/Doctor.js
 
+// Defines doctor profiles and their chamber information.
+// Stores professional, contact, and appointment-related details.
+
 import mongoose from "mongoose";
 
+// Defines reusable chamber information for each doctor.
 const chamberSchema = new mongoose.Schema(
   {
     name: {
@@ -75,6 +79,8 @@ const chamberSchema = new mongoose.Schema(
   },
   { _id: true },
 );
+
+// Defines the main doctor record and user ownership.
 const doctorSchema = new mongoose.Schema(
   {
     user: {
@@ -83,7 +89,6 @@ const doctorSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Basic information
     name: {
       type: String,
       required: true,
@@ -96,7 +101,6 @@ const doctorSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // Professional qualifications
     degrees: {
       type: [String],
       default: [],
@@ -124,13 +128,11 @@ const doctorSchema = new mongoose.Schema(
       default: null,
     },
 
-    // Chamber information
     chambers: {
       type: [chamberSchema],
       default: [],
     },
 
-    // Contact information
     contactInfo: {
       phones: {
         type: [String],
@@ -140,24 +142,6 @@ const doctorSchema = new mongoose.Schema(
       emails: {
         type: [String],
         default: [],
-      },
-
-      website: {
-        type: String,
-        default: "",
-        trim: true,
-      },
-
-      facebook: {
-        type: String,
-        default: "",
-        trim: true,
-      },
-
-      linkedin: {
-        type: String,
-        default: "",
-        trim: true,
       },
     },
 

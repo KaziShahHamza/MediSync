@@ -1,13 +1,12 @@
 // server/utils/blood/bloodRequestHelpers.js
 
-// Utility functions for string sanitization, token generation,
-// IP extraction, and mapping public request payloads.
+// Provides reusable helpers for blood request normalization, hashing, and public data mapping.
 
 import crypto from "crypto";
 
 import { REQUEST_LIFETIME_MS } from "./bloodRequestConstants.js";
 
-// Compute salted SHA-256 hash for arbitrary string value
+// Creates a salted hash for sensitive string values.
 export function hashValue(value) {
   return crypto
     .createHash("sha256")
@@ -15,17 +14,17 @@ export function hashValue(value) {
     .digest("hex");
 }
 
-// Generate random hex token for non-authenticated request owners
+// Generates a secure management token for guest requests.
 export function generateManagementToken() {
   return crypto.randomBytes(32).toString("hex");
 }
 
-// Compute SHA-256 hash for guest management token
+// Hashes a guest management token before storage or comparison.
 export function hashManagementToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-// Extract origin IP address from request headers or socket connection
+// Extracts the originating client IP from the request.
 export function getClientIp(req) {
   const forwarded = req.headers["x-forwarded-for"];
 
@@ -36,7 +35,7 @@ export function getClientIp(req) {
   return req.socket?.remoteAddress || req.ip || "unknown";
 }
 
-// Sanitize string value by stripping whitespace
+// Normalizes string input for consistent request processing.
 export function normalizeString(value) {
   if (typeof value !== "string") {
     return "";
@@ -45,40 +44,28 @@ export function normalizeString(value) {
   return value.trim();
 }
 
-// Calculate timestamp when a new request will expire
+// Calculates the expiration timestamp for a blood request.
 export function getRequestExpiry() {
   return new Date(Date.now() + REQUEST_LIFETIME_MS);
 }
 
-// Transform request document into sanitized public object
+// Maps a request document to its safe public representation.
 export function publicRequestData(request) {
   return {
     id: request._id,
-
     bloodGroup: request.bloodGroup,
-
     bagsNeeded: request.bagsNeeded,
-
     compensationOffered: request.compensationOffered,
-
     district: request.location?.district || "",
-
     upazila: request.location?.upazila || "",
-
     hospital: {
       name: request.hospital?.name || "",
-
       address: request.hospital?.address || "",
     },
-
     contactPhone: request.contactPhone || "",
-
     requesterName: request.requesterName || "",
-
     notes: request.notes || "",
-
     createdAt: request.createdAt,
-
     expiresAt: request.expiresAt,
   };
 }

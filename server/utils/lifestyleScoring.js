@@ -1,14 +1,15 @@
 // server/utils/lifestyleScoring.js
 
+// Defines lifestyle scoring rules, category mappings, and score limits.
+// Provides validation, scoring, grading, and feedback for lifestyle assessments.
+
 const SCORING_RULES = {
   diet: {
     type: "multi",
     maxSelections: 3,
     options: {
-      "Mostly homemade meals, rice/roti with vegetables, dal, fish, chicken or eggs. (balanced meals)":
-        4,
-      "Frequently eat restaurant, burgers, pizza, biryani, kacchi or Calorie-rich foods":
-        0,
+      "Mostly homemade meals, rice/roti with vegetables, dal, fish, chicken or eggs. (balanced meals)": 4,
+      "Frequently eat restaurant, burgers, pizza, biryani, kacchi or Calorie-rich foods": 0,
       "Regular fish, eggs, chicken, dal or protein": 4,
       "Regular vegetables and fruits": 3,
       "Mostly homemade meals. (frequent fried/oily foods)": 1,
@@ -223,19 +224,14 @@ const CATEGORY_MAP = {
   junkFood: "Food & Sugar",
   oilyFood: "Food & Sugar",
   sweetDrinks: "Food & Sugar",
-
   water: "Hydration",
-
   screenTime: "Screen Time",
   scrolling: "Screen Time",
-
   sleepDuration: "Sleep & Schedule",
   sleepTime: "Sleep & Schedule",
   wakeTime: "Sleep & Schedule",
-
   walking: "Physical Activity",
   exercise: "Physical Activity",
-
   smoking: "Substances",
   alcohol: "Substances",
   drugs: "Substances",
@@ -253,14 +249,17 @@ const CATEGORY_LIMITS = {
 
 export const LIFESTYLE_TOTAL_MAX = 100;
 
+// Convert the total lifestyle score into its grade.
 export function getLifestyleGrade(score) {
   if (score >= 80) return "A+";
   if (score >= 70) return "A";
   if (score >= 60) return "A-";
   if (score >= 50) return "B";
+
   return "C";
 }
 
+// Generate feedback based on the calculated lifestyle score.
 export function getLifestyleFeedback(score) {
   if (score >= 90) {
     return "Your lifestyle pattern is very strong overall. Continue maintaining balanced eating, regular physical activity, healthy sleep habits, hydration, and low-risk daily routines while making small improvements where needed.";
@@ -281,6 +280,7 @@ export function getLifestyleFeedback(score) {
   return "Several lifestyle areas may benefit from meaningful improvement. Start with small sustainable changes, especially around food, physical activity, sleep, hydration, screen use, and substance-related habits, rather than trying to change everything at once.";
 }
 
+// Calculate the score for one lifestyle question.
 function calculateQuestionScore(questionId, value) {
   const rule = SCORING_RULES[questionId];
 
@@ -309,9 +309,7 @@ function calculateQuestionScore(questionId, value) {
       const points = rule.options[selectedLabel];
 
       if (points === undefined) {
-        throw new Error(
-          `Invalid answer for ${questionId}: ${selectedLabel}`,
-        );
+        throw new Error(`Invalid answer for ${questionId}: ${selectedLabel}`);
       }
 
       return total + points;
@@ -331,6 +329,7 @@ function calculateQuestionScore(questionId, value) {
   return points;
 }
 
+// Validate that every configured lifestyle question has an answer.
 export function validateLifestyleAnswers(answers) {
   if (!answers || typeof answers !== "object" || Array.isArray(answers)) {
     throw new Error("Lifestyle answers must be an object");
@@ -349,10 +348,7 @@ export function validateLifestyleAnswers(answers) {
       if (!Array.isArray(value) || value.length === 0) {
         throw new Error(`Missing answer for question: ${questionId}`);
       }
-    } else if (
-      typeof value !== "string" ||
-      value.trim().length === 0
-    ) {
+    } else if (typeof value !== "string" || value.trim().length === 0) {
       throw new Error(`Missing answer for question: ${questionId}`);
     }
   }
@@ -360,6 +356,7 @@ export function validateLifestyleAnswers(answers) {
   return true;
 }
 
+// Calculate category totals, overall score, grade, and feedback.
 export function calculateLifestyleScore(answers) {
   validateLifestyleAnswers(answers);
 

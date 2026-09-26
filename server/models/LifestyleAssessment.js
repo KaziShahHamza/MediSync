@@ -1,7 +1,11 @@
 // server/models/LifestyleAssessment.js
 
+// Defines stored lifestyle assessment results for each user.
+// Preserves answers, category scores, grade, and generated feedback.
+
 import mongoose from "mongoose";
 
+// Defines the lifestyle assessment document structure.
 const lifestyleAssessmentSchema = new mongoose.Schema(
   {
     user: {
@@ -50,12 +54,10 @@ const lifestyleAssessmentSchema = new mongoose.Schema(
   },
 );
 
+// Supports chronological retrieval of user assessments.
 lifestyleAssessmentSchema.index({
   user: 1,
   assessedAt: -1,
 });
 
-export default mongoose.model(
-  "LifestyleAssessment",
-  lifestyleAssessmentSchema,
-);
+export default mongoose.model("LifestyleAssessment", lifestyleAssessmentSchema);

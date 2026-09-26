@@ -1,7 +1,11 @@
 // server/models/AIChat.js
 
+// Defines the persistent AI chat conversation and message schemas.
+// Stores user-owned text and optional image attachments.
+
 import mongoose from "mongoose";
 
+// Defines the schema for individual conversation messages.
 const aiChatMessageSchema = new mongoose.Schema(
   {
     role: {
@@ -26,9 +30,10 @@ const aiChatMessageSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { _id: true }
+  { _id: true },
 );
 
+// Defines the schema for user-owned AI conversations.
 const aiChatSchema = new mongoose.Schema(
   {
     user: {
@@ -52,9 +57,10 @@ const aiChatSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
+// Supports efficient retrieval of a user's latest conversations.
 aiChatSchema.index({ user: 1, updatedAt: -1 });
 
 export default mongoose.model("AIChat", aiChatSchema);

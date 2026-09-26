@@ -1,10 +1,11 @@
 // server/utils/profileHelpers.js
 
-// Provides profile field extraction, name normalization, and Cloudinary photo cleanup.
+// Provides profile field extraction, name normalization, and photo cleanup.
+// Keeps reusable profile-related operations outside controllers and services.
 
 import { v2 as cloudinary } from "cloudinary";
 
-// Defines fields accepted by profile create and update requests.
+// Define fields accepted by profile create and update requests.
 export const allowedProfileFields = [
   "dob",
   "gender",
@@ -21,21 +22,16 @@ export const allowedProfileFields = [
   "bloodDonationContactNumber",
 ];
 
-// Extracts only fields permitted in profile data.
+// Extract only fields permitted in profile data.
 export function getProfileData(body) {
   return Object.fromEntries(
     allowedProfileFields
-      .filter((field) =>
-        Object.prototype.hasOwnProperty.call(body, field),
-      )
-      .map((field) => [
-        field,
-        body[field],
-      ]),
+      .filter((field) => Object.prototype.hasOwnProperty.call(body, field))
+      .map((field) => [field, body[field]]),
   );
 }
 
-// Normalizes optional user names before database updates.
+// Normalize an optional user name.
 export function getTrimmedName(name) {
   return name?.trim() || "";
 }
@@ -47,12 +43,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Removes a profile image using its Cloudinary public ID.
+// Remove a profile image from Cloudinary.
 export async function deleteProfilePhoto(publicId) {
-  return cloudinary.uploader.destroy(
-    publicId,
-    {
-      resource_type: "image",
-    },
-  );
+  return cloudinary.uploader.destroy(publicId, {
+    resource_type: "image",
+  });
 }

@@ -1,3 +1,8 @@
+// server/models/BloodRequestRateLimit.js
+
+// Defines temporary rate-limit records for blood request submissions.
+// Automatically removes records after their expiration window.
+
 import mongoose from "mongoose";
 
 const bloodRequestRateLimitSchema = new mongoose.Schema(
@@ -6,7 +11,6 @@ const bloodRequestRateLimitSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      // index: true,
     },
 
     count: {
@@ -30,11 +34,8 @@ const bloodRequestRateLimitSchema = new mongoose.Schema(
   },
 );
 
-// Remove rate-limit records after their 24-hour window.
-bloodRequestRateLimitSchema.index(
-  { expiresAt: 1 },
-  { expireAfterSeconds: 0 },
-);
+// Automatically removes expired rate-limit records.
+bloodRequestRateLimitSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model(
   "BloodRequestRateLimit",

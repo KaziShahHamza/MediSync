@@ -5,7 +5,6 @@
 
 import nodemailer from "nodemailer";
 
-// Create the shared Gmail email transporter.
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -14,5 +13,4 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Export the configured transporter.
 export default transporter;

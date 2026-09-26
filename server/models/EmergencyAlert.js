@@ -1,5 +1,11 @@
+// server/models/EmergencyAlert.js
+
+// Defines emergency alert records linked to health logs.
+// Tracks alert status, recipients, trigger data, and delivery errors.
+
 import mongoose from "mongoose";
 
+// Defines the emergency alert document structure.
 const emergencyAlertSchema = new mongoose.Schema(
   {
     user: {
@@ -48,10 +54,10 @@ const emergencyAlertSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-// Prevent the same health log from generating the same emergency alert twice.
+// Prevents duplicate alerts for the same health log and alert type.
 emergencyAlertSchema.index(
   {
     user: 1,
@@ -60,12 +66,9 @@ emergencyAlertSchema.index(
   },
   {
     unique: true,
-  }
+  },
 );
 
-const EmergencyAlert = mongoose.model(
-  "EmergencyAlert",
-  emergencyAlertSchema
-);
+const EmergencyAlert = mongoose.model("EmergencyAlert", emergencyAlertSchema);
 
 export default EmergencyAlert;

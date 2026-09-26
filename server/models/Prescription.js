@@ -1,7 +1,11 @@
 // server/models/Prescription.js
 
+// Defines prescription records owned by individual users.
+// Stores document metadata and optional AI-generated summaries.
+
 import mongoose from "mongoose";
 
+// Defines the prescription document structure.
 const prescriptionSchema = new mongoose.Schema(
   {
     user: {

@@ -1,7 +1,11 @@
 // server/models/User.js
 
+// Defines the core authenticated user account.
+// Stores identity, login credentials, and profile photo metadata.
+
 import mongoose from "mongoose";
 
+// Defines the user account document structure.
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -31,7 +35,6 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Profile photo
     profilePhotoUrl: {
       type: String,
       default: "",

@@ -1,7 +1,11 @@
 // server/models/Medicine.js
 
+// Defines medicines, dosage schedules, pricing, and treatment periods.
+// Supports both strip-priced and unit-priced medicine records.
+
 import mongoose from "mongoose";
 
+// Defines dosage timing and quantity information.
 const dosageSchema = new mongoose.Schema(
   {
     time: {
@@ -23,6 +27,7 @@ const dosageSchema = new mongoose.Schema(
   { _id: false },
 );
 
+// Defines the medicine document structure.
 const medicineSchema = new mongoose.Schema(
   {
     user: {
@@ -54,31 +59,11 @@ const medicineSchema = new mongoose.Schema(
       default: "tablet",
     },
 
-    /*
-     * ========================================================
-     * PRICING TYPE
-     * ========================================================
-     *
-     * tablet / capsule -> strip pricing
-     * everything else -> unit pricing
-     *
-     * This is stored explicitly so the frontend and backend
-     * can clearly understand how the medicine is priced.
-     */
-
     pricingType: {
       type: String,
       enum: ["strip", "unit"],
       required: true,
     },
-
-    /*
-     * ========================================================
-     * STRIP MEDICINE PRICING
-     * ========================================================
-     *
-     * Used only for tablet / capsule.
-     */
 
     pricePerStrip: {
       type: Number,
@@ -98,15 +83,6 @@ const medicineSchema = new mongoose.Schema(
       },
     },
 
-    /*
-     * ========================================================
-     * UNIT MEDICINE PRICING
-     * ========================================================
-     *
-     * Used for syrup, injection, cream, ointment, drops,
-     * inhaler, antibiotic and other unit-priced medicines.
-     */
-
     pricePerUnit: {
       type: Number,
       default: null,
@@ -124,16 +100,6 @@ const medicineSchema = new mongoose.Schema(
         message: "Units needed per month must be an integer.",
       },
     },
-
-    /*
-     * ========================================================
-     * DOSAGE
-     * ========================================================
-     *
-     * Used only for strip medicines.
-     *
-     * Unit medicines should have an empty dosage array.
-     */
 
     dosage: {
       type: [dosageSchema],

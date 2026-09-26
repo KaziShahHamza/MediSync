@@ -1,7 +1,6 @@
 // server/utils/emergency/emergencyChecks.js
 
-// Evaluates blood pressure and glucose readings.
-// Returns emergency trigger data when a critical threshold is reached.
+// Evaluates health readings against configured emergency thresholds.
 
 import {
   CRITICAL_SYSTOLIC,
@@ -10,12 +9,12 @@ import {
   CRITICAL_HIGH_GLUCOSE,
 } from "./emergencyConstants.js";
 
-// Determines whether a blood pressure reading is critical.
+// Checks whether blood pressure exceeds a critical threshold.
 export function checkBloodPressure(high, low) {
   const systolic = Number(high);
   const diastolic = Number(low);
 
-  // Ignore readings that cannot be converted to valid numbers.
+  // Ignore readings that are not valid numeric values.
   if (!Number.isFinite(systolic) || !Number.isFinite(diastolic)) {
     return null;
   }
@@ -33,11 +32,11 @@ export function checkBloodPressure(high, low) {
   return null;
 }
 
-// Determines whether a blood glucose reading is critical.
+// Checks whether blood glucose reaches a critical low or high threshold.
 export function checkBloodSugar(glucose, glucoseTiming) {
   const value = Number(glucose);
 
-  // Ignore readings that cannot be converted to valid numbers.
+  // Ignore glucose readings that are not valid numeric values.
   if (!Number.isFinite(value)) {
     return null;
   }

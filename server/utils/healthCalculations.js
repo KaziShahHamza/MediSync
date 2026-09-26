@@ -1,12 +1,15 @@
 // sever/utils/healthCalculations.js
 
+// Provides reusable health metric calculations.
+// Keeps BMI logic centralized for consistent application behavior.
+
+// Calculate BMI from weight and stored height values.
 export function calculateBMI(weightKg, height) {
   if (!weightKg || !height?.feet) {
     return null;
   }
 
-  const totalInches =
-    height.feet * 12 + (height.inches || 0);
+  const totalInches = height.feet * 12 + (height.inches || 0);
 
   const heightMeters = totalInches * 0.0254;
 
@@ -19,6 +22,7 @@ export function calculateBMI(weightKg, height) {
   return Number(bmi.toFixed(1));
 }
 
+// Convert a BMI value into its standard category.
 export function getBMICategory(bmi) {
   if (!bmi) return null;
 

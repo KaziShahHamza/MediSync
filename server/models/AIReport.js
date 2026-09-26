@@ -1,5 +1,11 @@
+// server/models/AIReport.js
+
+// Defines the cached AI-generated health report for a user.
+// Stores the generated summary and report timestamps.
+
 import mongoose from "mongoose";
 
+// Defines the single report document owned by each user.
 const aiReportSchema = new mongoose.Schema(
   {
     user: {
@@ -22,7 +28,7 @@ const aiReportSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model("AIReport", aiReportSchema);

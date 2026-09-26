@@ -1,7 +1,6 @@
 // server/utils/blood/bloodRequestRateLimit.js
 
-// Rate limiting module for blood request creations.
-// Tracks request frequency per IP/device pair in database.
+// Provides database-backed rate limiting for blood request submissions.
 
 import crypto from "crypto";
 
@@ -12,7 +11,7 @@ import {
   MAX_REQUESTS_PER_DAY,
 } from "./bloodRequestConstants.js";
 
-// Generate unique hash key for IP and device combination
+// Creates a private rate-limit key from client identifiers.
 function createRateLimitKey({ ipHash, deviceId }) {
   return crypto
     .createHash("sha256")
@@ -20,7 +19,7 @@ function createRateLimitKey({ ipHash, deviceId }) {
     .digest("hex");
 }
 
-// Evaluate and update submission count for a given client
+// Checks the active request window and updates its submission count.
 export async function checkAndUpdateRateLimit({ ipHash, deviceId }) {
   const now = new Date();
 
@@ -33,16 +32,14 @@ export async function checkAndUpdateRateLimit({ ipHash, deviceId }) {
     key,
   });
 
-  // Create or reset rate limit tracking window if missing/expired
+  // Start a fresh rate-limit window when no active record exists.
   if (!rateLimit || rateLimit.expiresAt <= now) {
     rateLimit = await BloodRequestRateLimit.findOneAndUpdate(
       { key },
       {
         $set: {
           count: 1,
-
           windowStart: now,
-
           expiresAt: new Date(now.getTime() + RATE_LIMIT_WINDOW_MS),
         },
       },
@@ -58,7 +55,7 @@ export async function checkAndUpdateRateLimit({ ipHash, deviceId }) {
     };
   }
 
-  // Deny request if daily creation threshold reached
+  // Reject submissions after the configured daily threshold.
   if (rateLimit.count >= MAX_REQUESTS_PER_DAY) {
     return {
       allowed: false,
@@ -66,7 +63,7 @@ export async function checkAndUpdateRateLimit({ ipHash, deviceId }) {
     };
   }
 
-  // Increment submission counter for active window
+  // Increment the active window submission counter.
   rateLimit.count += 1;
 
   await rateLimit.save();

@@ -1,7 +1,7 @@
 // server/server.js
 
-// Creates the MediSync Express server and configures middleware and API routes.
-// Establishes the MongoDB connection and starts the HTTP server.
+// Creates the MediSync Express server and configures application middleware.
+// Establishes MongoDB connectivity and registers all API route modules.
 
 import "dotenv/config";
 
@@ -28,7 +28,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Establish the MongoDB connection before serving application data.
+// Establish the MongoDB connection.
 async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -39,7 +39,7 @@ async function connectDB() {
   }
 }
 
-// Register API route modules.
+// Register application API routes.
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/export", exportRoutes);
@@ -53,7 +53,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/lifestyle", lifestyleRoutes);
 app.use("/api/blood", bloodRoutes);
 
-// Start the server after the database connection succeeds.
+// Start HTTP server after database initialization.
 const PORT = process.env.PORT || 5000;
 
 connectDB().then(() => {
