@@ -1,0 +1,41 @@
+/* client/src/styles/utilities/tables.css */
+
+/* Defines reusable table and list layouts used by data-heavy pages. */
+/* Keeps data presentation styles separate from cards and navigation. */
+/* Preserves the original responsive table overflow behavior. */
+
+.table-container {
+  @apply overflow-x-auto rounded-2xl border border-slate-200 bg-white;
+}
+
+.table {
+  @apply w-full border-collapse;
+}
+
+.table thead {
+  @apply bg-slate-50;
+}
+
+.table th {
+  @apply px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500;
+}
+
+.table td {
+  @apply px-6 py-4 text-sm text-slate-700 border-t border-slate-200;
+}
+
+.table tbody tr {
+  @apply transition-colors duration-150;
+}
+
+.table tbody tr:hover {
+  @apply bg-slate-50;
+}
+
+.list {
+  @apply flex flex-col divide-y divide-slate-200;
+}
+
+.list-item {
+  @apply py-4 flex items-center justify-between gap-4;
+}

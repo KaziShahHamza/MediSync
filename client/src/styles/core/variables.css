@@ -1,0 +1,27 @@
+/* client/src/styles/core/variables.css */
+
+/* Defines the MediSync design tokens used throughout the application. */
+/* Keeps brand colors, status colors, borders, and shadows centralized. */
+/* Hex values are used for color variables to simplify future maintenance. */
+
+:root {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-accent: #0ea5e9;
+
+  --color-bg: #f8fafc;
+  --color-card: #ffffff;
+
+  --color-text: #0f172a;
+  --color-secondary: #475569;
+  --color-muted: #64748b;
+
+  --color-border: #e2e8f0;
+
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-danger: #dc2626;
+
+  --shadow-card: 0 1px 2px #0f172a0d;
+  --shadow-card-hover: 0 8px 24px #0f172a14;
+}

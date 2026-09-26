@@ -1,6 +1,6 @@
 // src/hooks/useMedicineReminder.js
 import { useEffect } from "react";
-import { TIME_MAP } from "../utils/timeMap";
+import { TIME_MAP } from "../../utils/z.test/timeMap";
 
 const SLOT_LABEL = {
   morning: "Morning",

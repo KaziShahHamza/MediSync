@@ -1,0 +1,90 @@
+/* client/src/styles/utilities/utilities.css */
+
+/* Defines global accessibility, scrolling, selection, link, and print utilities. */
+/* Contains image preview scrolling and responsive-independent helper behavior. */
+/* Keeps miscellaneous global behavior out of feature-specific stylesheets. */
+
+:focus-visible {
+  @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+}
+
+button,
+a,
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+[role="button"] {
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+::selection {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+a {
+  @apply transition-colors duration-150;
+}
+
+.image-preview-scroll {
+  scrollbar-width: auto;
+}
+
+.image-preview-scroll::-webkit-scrollbar {
+  width: 20px;
+  height: 20px;
+}
+
+.image-preview-scroll::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 8px;
+}
+
+.image-preview-scroll::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 8px;
+}
+
+.image-preview-scroll::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}

@@ -1,0 +1,29 @@
+/* client/src/styles/core/typography.css */
+
+/* Defines reusable typography classes used across MediSync pages. */
+/* Keeps page, section, card, and supporting text styles consistent. */
+/* Component-specific typography can still be overridden with Tailwind in JSX. */
+
+.page-title {
+  @apply text-4xl font-bold tracking-tight text-slate-900;
+}
+
+.section-title {
+  @apply text-2xl font-semibold text-slate-900;
+}
+
+.card-title {
+  @apply text-xl font-semibold text-slate-900;
+}
+
+.subtitle {
+  @apply text-slate-600;
+}
+
+.text-muted {
+  @apply text-slate-500;
+}
+
+.small-label {
+  @apply text-[13px] font-medium text-slate-500;
+}

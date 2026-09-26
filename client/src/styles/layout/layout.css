@@ -1,0 +1,69 @@
+/* client/src/styles/layout/layout.css */
+
+/* Defines reusable page containers, sections, and responsive grid layouts. */
+/* Preserves the existing profile settings container class, including its spelling. */
+/* Keeps general page structure separate from navigation styling. */
+
+.container {
+  @apply max-w-7xl mx-auto px-5 md:px-6 lg:px-8;
+}
+
+.continer-profile-setting-page {
+  @apply max-w-4xl mx-auto px-5 md:px-6 lg:px-8;
+}
+
+.page {
+  @apply py-10 md:py-12 lg:py-14;
+}
+
+.section {
+  @apply mb-16;
+}
+
+.page-header {
+  @apply flex flex-col gap-2 mb-10;
+}
+
+.page-description {
+  @apply text-base text-slate-500 max-w-3xl;
+}
+
+.section-header {
+  @apply flex items-center justify-between gap-4 mb-6;
+}
+
+.content-grid {
+  @apply grid gap-6 lg:grid-cols-2;
+}
+
+.stats-grid {
+  @apply grid gap-6 sm:grid-cols-2 xl:grid-cols-4;
+}
+
+.form-grid {
+  @apply flex flex-col gap-5;
+}
+
+.dashboard-grid {
+  @apply grid gap-6 xl:grid-cols-4;
+}
+
+.summary-grid {
+  @apply grid gap-6 md:grid-cols-2 xl:grid-cols-3;
+}
+
+.metric-grid {
+  @apply grid gap-6 lg:grid-cols-3;
+}
+
+.two-column {
+  @apply grid gap-6 lg:grid-cols-2;
+}
+
+.three-column {
+  @apply grid gap-6 xl:grid-cols-3;
+}
+
+.four-column {
+  @apply grid gap-6 sm:grid-cols-2 xl:grid-cols-4;
+}

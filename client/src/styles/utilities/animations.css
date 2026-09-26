@@ -1,0 +1,58 @@
+/* client/src/styles/utilities/animations.css */
+
+/* Defines reusable application animations and motion-related helpers. */
+/* Keeps keyframes separate from component-specific styling. */
+/* Includes reduced-motion handling for the interactive degree hint. */
+
+@keyframes skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.degree-hint-icon {
+  @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600;
+
+  animation: degree-hint-pulse 2.5s ease-in-out infinite;
+}
+
+.degree-hint-key {
+  @apply rounded-md border border-blue-200 bg-white px-1.5 py-0.5 font-mono text-[11px] font-semibold text-blue-700 shadow-sm;
+}
+
+@keyframes degree-hint-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .degree-hint-icon {
+    animation: none;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 180ms ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

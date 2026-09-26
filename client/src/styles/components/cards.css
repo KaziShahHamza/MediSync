@@ -1,0 +1,107 @@
+/* client/src/styles/components/cards.css */
+
+/* Defines reusable card, surface, and icon container styles. */
+/* Keeps shared content surfaces visually consistent across MediSync. */
+/* Hover and shadow behavior remains identical to the original stylesheet. */
+
+.card {
+  @apply bg-white rounded-2xl border border-slate-200 p-4 transition-all duration-150;
+
+  box-shadow: var(--shadow-card);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.card-header {
+  @apply flex items-center justify-between gap-4 mb-6;
+}
+
+.card-content {
+  @apply space-y-5;
+}
+
+.stat-card {
+  @apply bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between gap-4 transition-all duration-150;
+
+  box-shadow: var(--shadow-card);
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.stat-value {
+  @apply text-3xl font-bold text-slate-900;
+}
+
+.stat-label {
+  @apply text-sm text-slate-500;
+}
+
+.image-card {
+  @apply rounded-2xl border border-slate-200 overflow-hidden bg-white;
+}
+
+.image-card img {
+  @apply w-full h-full object-cover;
+}
+
+.divider {
+  @apply border-t border-slate-200;
+}
+
+.hover-card {
+  @apply transition-shadow duration-150 hover:shadow-md;
+}
+
+.surface {
+  @apply bg-white border border-slate-200 rounded-2xl;
+}
+
+.surface-muted {
+  @apply bg-slate-50 border border-slate-200 rounded-2xl;
+}
+
+.icon-wrapper {
+  @apply w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center;
+}
+
+.icon-primary {
+  @apply text-blue-600;
+}
+
+.icon-success {
+  @apply text-green-600;
+}
+
+.icon-warning {
+  @apply text-amber-500;
+}
+
+.icon-danger {
+  @apply text-red-600;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  @apply inline-flex items-center justify-center gap-2 h-11 px-5 rounded-xl text-sm font-medium transition-all duration-150 whitespace-nowrap;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 shadow-sm;
+}
+
+.btn-secondary {
+  @apply bg-white border border-slate-300 text-slate-700 hover:bg-slate-50;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700;
+}
+
+.btn-icon {
+  @apply p-2 rounded-xl border border-slate-200 bg-white transition duration-150 hover:bg-slate-50;
+}

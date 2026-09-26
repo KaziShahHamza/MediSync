@@ -1,0 +1,33 @@
+/* client/src/styles/layout/navigation-mobile.css */
+
+/* Defines the mobile navigation toggle and expanded navigation menu. */
+/* Keeps mobile navigation behavior independent from desktop navigation. */
+/* Existing navigation class names are preserved for compatibility. */
+
+.navbar-mobile-toggle {
+  @apply flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 bg-white text-slate-600 transition-colors duration-150;
+}
+
+.navbar-mobile-toggle:hover {
+  @apply bg-blue-50 text-blue-600 border-blue-200;
+}
+
+.navbar-mobile-menu {
+  @apply border-t border-slate-200 bg-white;
+}
+
+.navbar-mobile-list {
+  @apply flex flex-col gap-1;
+}
+
+.navbar-mobile-list .nav-link {
+  @apply w-full justify-start border-b-0 px-4 py-3 h-auto rounded-xl;
+}
+
+.navbar-mobile-logout {
+  @apply text-red-500 mt-2;
+}
+
+.navbar-mobile-logout:hover {
+  @apply bg-red-50 text-red-600;
+}

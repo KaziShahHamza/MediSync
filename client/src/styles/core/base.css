@@ -1,0 +1,35 @@
+/* client/src/styles/core/base.css */
+
+/* Defines global browser normalization and application defaults. */
+/* Keeps document-level behavior independent from individual components. */
+/* Uses the shared MediSync design variables for page colors. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply antialiased;
+
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Inter", system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+img {
+  @apply max-w-full block;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
