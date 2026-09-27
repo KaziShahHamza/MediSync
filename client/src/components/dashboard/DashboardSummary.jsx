@@ -1,7 +1,7 @@
 // client/src/components/dashboard/DashboardSummary.jsx
 
 // Displays the AI health summary beside the lifestyle score assessment.
-// Handles AI summary cooldown state and generation controls.
+// Handles AI summary cooldown timing and generation controls.
 
 import { useEffect, useState } from "react";
 import { HeartPulse, RefreshCw } from "lucide-react";
@@ -20,9 +20,9 @@ export default function DashboardSummary({
   onGenerateSummary,
   latestAssessment,
 }) {
-  // Keep the dashboard summary sections in a responsive grid.
+  // Keep dashboard cards independent so each section manages its own state.
   return (
-    <div className="grid xl:grid-cols-[6fr_4fr] gap-6">
+    <div className="grid gap-6 xl:grid-cols-[6fr_4fr]">
       <AISummaryCard
         summary={aiSummary}
         generatedAt={aiGeneratedAt}
@@ -46,30 +46,30 @@ function AISummaryCard({
   message,
   onGenerate,
 }) {
-  const [remainingTime, setRemainingTime] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
 
-  // Update the cooldown timer whenever the latest generation changes.
+  // Update the current timestamp while a summary cooldown is active.
   useEffect(() => {
     if (!generatedAt) {
-      setRemainingTime(0);
-      return;
+      return undefined;
     }
 
-    const updateCooldown = () => {
-      const generatedTime = new Date(generatedAt).getTime();
-      const cooldownEndsAt = generatedTime + COOLDOWN_MS;
+    // Refresh the clock once per second for the visible countdown.
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
 
-      setRemainingTime(Math.max(0, cooldownEndsAt - Date.now()));
-    };
-
-    updateCooldown();
-
-    const interval = setInterval(updateCooldown, 1000);
-
+    // Stop the timer when the generated timestamp changes or the card unmounts.
     return () => clearInterval(interval);
   }, [generatedAt]);
 
-  // Track whether another AI summary request is currently blocked.
+  const generatedTime = generatedAt ? new Date(generatedAt).getTime() : 0;
+
+  const cooldownEndsAt = generatedTime + COOLDOWN_MS;
+
+  // Derive the remaining cooldown directly from the current timestamp.
+  const remainingTime = generatedAt ? Math.max(0, cooldownEndsAt - now) : 0;
+
   const cooldownActive = remainingTime > 0;
 
   // Format the remaining cooldown duration for the interface.
@@ -80,10 +80,9 @@ function AISummaryCard({
     return `${minutes} minutes`;
   };
 
-  // Render the summary content and generation controls.
   return (
     <div className="card">
-      <div className="flex items-center gap-3 mb-5">
+      <div className="mb-5 flex items-center gap-3">
         <div className="icon-wrapper">
           <HeartPulse size={22} className="text-blue-600" />
         </div>
@@ -94,7 +93,7 @@ function AISummaryCard({
       {loading ? (
         <p className="text-slate-500">Loading your health summary...</p>
       ) : summary ? (
-        <p className="text-slate-600 leading-relaxed whitespace-pre-line">
+        <p className="leading-relaxed whitespace-pre-line text-slate-600">
           {summary}
         </p>
       ) : (
@@ -104,19 +103,20 @@ function AISummaryCard({
         </p>
       )}
 
-      {message && <p className="text-sm text-red-600 mt-4">{message}</p>}
+      {message && <p className="mt-4 text-sm text-red-600">{message}</p>}
 
       {generatedAt && (
-        <p className="text-xs text-slate-400 mt-5">
+        <p className="mt-5 text-xs text-slate-400">
           Generated {new Date(generatedAt).toLocaleString()}
         </p>
       )}
 
       <div className="mt-5">
         <button
+          type="button"
           onClick={onGenerate}
           disabled={generating || cooldownActive}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
           title={cooldownActive ? `Try again in ${formatRemainingTime()}` : ""}
         >
           <RefreshCw size={16} className={generating ? "animate-spin" : ""} />
@@ -130,11 +130,11 @@ function AISummaryCard({
 
         {cooldownActive && (
           <>
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="mt-2 text-xs text-slate-400">
               Try again in {formatRemainingTime()}
             </p>
 
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="mt-2 text-xs text-slate-400">
               To prevent excessive AI requests, you can generate another summary
               after the cooldown period.
             </p>

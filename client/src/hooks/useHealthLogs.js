@@ -10,8 +10,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function useHealthLogs() {
   const [logs, setLogs] = useState([]);
 
-  // Fetch the authenticated user's health logs.
   const fetchLogs = useCallback(async () => {
+    // Read the current authentication token before making the request.
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -19,6 +19,7 @@ export default function useHealthLogs() {
       return;
     }
 
+    // Request the authenticated user's health records.
     const response = await fetch(`${API_URL}/api/health`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -31,12 +32,13 @@ export default function useHealthLogs() {
       throw new Error(data.message || "Failed to fetch health logs.");
     }
 
+    // Normalize both array and wrapped API response formats.
     setLogs(Array.isArray(data) ? data : data.logs || []);
   }, []);
 
-  // Create a new health log and refresh the local collection.
   const addLog = useCallback(
     async (data) => {
+      // Require authentication before creating a health record.
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -58,6 +60,7 @@ export default function useHealthLogs() {
         throw new Error(result.message || "Failed to save health log.");
       }
 
+      // Refresh the local collection after successfully saving the log.
       await fetchLogs();
 
       return result;
@@ -65,12 +68,49 @@ export default function useHealthLogs() {
     [fetchLogs],
   );
 
-  // Load health logs when the hook is mounted.
   useEffect(() => {
-    fetchLogs().catch((error) => {
-      console.error("Failed to fetch health logs:", error);
-    });
-  }, [fetchLogs]);
+    let cancelled = false;
+
+    async function loadHealthLogs() {
+      // Read authentication state when the initial request starts.
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      try {
+        // Keep the initial fetch asynchronous so the effect does not
+        // synchronously trigger the state-changing fetchLogs callback.
+        const response = await fetch(`${API_URL}/api/health`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json().catch(() => []);
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to fetch health logs.");
+        }
+
+        // Ignore responses that finish after the hook has unmounted.
+        if (!cancelled) {
+          setLogs(Array.isArray(data) ? data : data.logs || []);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Failed to fetch health logs:", error);
+        }
+      }
+    }
+
+    loadHealthLogs();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return {
     logs,

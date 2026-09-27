@@ -15,24 +15,18 @@ import {
 import MedicineImageModalContent from "./MedicineImageModalContent";
 
 export default function MedicineImageModal({ medicine, onClose }) {
-  // Tracks the current medicine image zoom level.
-  const [zoom, setZoom] = useState(1);
+  const [zoomState, setZoomState] = useState({
+    medicineId: null,
+    value: 1,
+  });
 
-  // Resets the zoom whenever the selected medicine changes.
+  // Register the Escape-key handler only while the modal has a medicine.
   useEffect(() => {
     if (!medicine) {
-      return;
+      return undefined;
     }
 
-    setZoom(1);
-  }, [medicine]);
-
-  // Registers keyboard handling for closing the active modal.
-  useEffect(() => {
-    if (!medicine) {
-      return;
-    }
-
+    // Close the modal when the user presses Escape.
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         onClose();
@@ -41,17 +35,21 @@ export default function MedicineImageModal({ medicine, onClose }) {
 
     document.addEventListener("keydown", handleKeyDown);
 
+    // Remove the listener when the modal closes or dependencies change.
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [medicine, onClose]);
 
-  // Prevents rendering when no medicine has been selected.
   if (!medicine) {
     return null;
   }
 
-  // Calculates values required by the medicine detail presentation.
+  const medicineId = medicine._id;
+
+  // Use the default zoom when this medicine has not been zoomed yet.
+  const zoom = zoomState.medicineId === medicineId ? zoomState.value : 1;
+
   const pricingType = getMedicinePricingType(medicine);
   const isStripMedicine = pricingType === "strip";
 
@@ -68,18 +66,24 @@ export default function MedicineImageModal({ medicine, onClose }) {
   const monthlyCost = getMedicineMonthlyCost(medicine);
   const isActive = medicine.isActive !== false;
 
-  // Increases zoom while keeping it within the supported maximum.
   function handleZoomIn() {
-    setZoom((current) => Math.min(current + 0.25, 3));
+    // Increase zoom only for the currently displayed medicine.
+    setZoomState({
+      medicineId,
+      value: Math.min(zoom + 0.25, 3),
+    });
   }
 
-  // Decreases zoom while keeping it within the supported minimum.
   function handleZoomOut() {
-    setZoom((current) => Math.max(current - 0.25, 0.5));
+    // Prevent the image from becoming smaller than the minimum zoom level.
+    setZoomState({
+      medicineId,
+      value: Math.max(zoom - 0.25, 0.5),
+    });
   }
 
-  // Closes the modal when the overlay itself receives the click.
   function handleOverlayClick(event) {
+    // Close the modal only when the backdrop itself receives the click.
     if (event.target === event.currentTarget) {
       onClose();
     }

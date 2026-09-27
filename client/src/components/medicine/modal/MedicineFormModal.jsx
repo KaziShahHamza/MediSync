@@ -14,12 +14,13 @@ export default function MedicineFormModal({
   onClose,
   loading = false,
 }) {
-  // Registers and cleans up the Escape-key listener while the modal is active.
+  // Register the Escape-key handler only while the modal is active.
   useEffect(() => {
     if (!editing) {
       return;
     }
 
+    // Close the modal when the user presses Escape.
     function handleKeyDown(event) {
       if (event.key === "Escape") {
         onClose();
@@ -28,19 +29,20 @@ export default function MedicineFormModal({
 
     document.addEventListener("keydown", handleKeyDown);
 
+    // Remove the global listener when the modal becomes inactive.
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [editing, onClose]);
 
-  // Closes the modal only when the backdrop itself is clicked.
+  // Close the modal only when the backdrop itself receives the click.
   function handleBackdropClick(event) {
     if (event.target === event.currentTarget) {
       onClose();
     }
   }
 
-  // Avoids mounting modal content when the modal is inactive.
+  // Avoid mounting modal content when the modal is inactive.
   if (!editing) {
     return null;
   }
@@ -55,8 +57,9 @@ export default function MedicineFormModal({
     >
       <div className="flex min-h-full items-start justify-center sm:items-center">
         <div className="w-full max-w-3xl">
-          {/* Renders the reusable medicine form inside the modal. */}
+          {/* The key creates a fresh form state for each medicine. */}
           <MedicineForm
+            key={medicine?._id ?? "new"}
             onSave={onSave}
             editing={medicine}
             onCancel={onClose}
