@@ -7,7 +7,7 @@ import MedicineBasicInfo from "../MedicineBasicInfo";
 import MedicinePricing from "../MedicinePricing";
 import MedicineTreatment from "../MedicineTreatment";
 
-import useMedicineForm from "../../../hooks/useMedicineForm";
+import useMedicineForm from "../../../hooks/medicine-form/useMedicineForm";
 
 export default function MedicineForm({
   onSave,

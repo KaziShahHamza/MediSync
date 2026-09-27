@@ -8,9 +8,9 @@ import { Clock, Droplets, Phone, Pencil, Trash2 } from "lucide-react";
 import {
   formatExpiry,
   formatTimeAgo,
-} from "../../utils/blood/bloodRequestHelpers";
+} from "../../../utils/blood/bloodRequestHelpers";
 
-import { getManagementToken } from "../../utils/blood/bloodRequestStorage";
+import { getManagementToken } from "../../../utils/blood/bloodRequestStorage";
 
 export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
   // Retrieve anonymous management authorization from local storage.

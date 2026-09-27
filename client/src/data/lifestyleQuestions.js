@@ -1,4 +1,4 @@
-// src/pages/lifestyle/lifestyleQuestions.js
+// client/src/data/lifestyleQuestions.js
 
 export { QUESTIONS, DEMO_USERS };
 

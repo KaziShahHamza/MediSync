@@ -3,8 +3,10 @@
 // Validates medicine form data before submission.
 // Centralizes field, dosage, pricing, and treatment-date validation.
 
-import { DOSAGE_TIME_VALUES } from "../../data/medicine/dosageOptions";
-import { isStripMedicineType } from "../../data/medicine/medicineTypes";
+import {
+  DOSAGE_TIME_VALUES,
+  isStripMedicineType,
+} from "../../data/medicineOptions";
 
 // Checks whether a value is a valid positive number.
 function isPositiveNumber(value) {

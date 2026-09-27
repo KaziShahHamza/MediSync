@@ -5,8 +5,8 @@
 
 import { Droplets, Plus } from "lucide-react";
 
-import BloodRequestList from "../components/blood/BloodRequestList";
-import BloodRequestModal from "../components/blood/BloodRequestModal";
+import BloodRequestList from "../components/blood/blood-request/BloodRequestList";
+import BloodRequestModal from "../components/blood/blood-request/BloodRequestModal";
 
 import useBloodRequests from "../hooks/blood-request/useBloodRequests";
 

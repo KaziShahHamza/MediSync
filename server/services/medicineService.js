@@ -1,6 +1,7 @@
 // server/services/medicineService.js
 
-// Handles database operations for user-owned medicines.
+// Provides database operations for authenticated user medicines.
+// Keeps Mongoose queries separate from HTTP request and validation logic.
 
 import Medicine from "../models/Medicine.js";
 
@@ -19,7 +20,7 @@ export async function createMedicine(medicineData) {
   return Medicine.create(medicineData);
 }
 
-// Finds a medicine belonging to a specific user.
+// Finds a medicine only when it belongs to the specified user.
 export async function findMedicineById(id, userId) {
   return Medicine.findOne({
     _id: id,
@@ -27,14 +28,14 @@ export async function findMedicineById(id, userId) {
   });
 }
 
-// Saves an already loaded medicine document.
+// Saves an already loaded and validated medicine document.
 export async function saveMedicine(medicine) {
   await medicine.save();
 
   return medicine;
 }
 
-// Deletes a medicine owned by the authenticated user.
+// Deletes a medicine only when it belongs to the specified user.
 export async function deleteMedicine(id, userId) {
   return Medicine.findOneAndDelete({
     _id: id,

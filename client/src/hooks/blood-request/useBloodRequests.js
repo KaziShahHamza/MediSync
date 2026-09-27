@@ -13,7 +13,7 @@ import hospitalsData from "../../data/hospitalsData";
 import {
   EMPTY_BLOOD_REQUEST_FORM,
   OTHER_HOSPITAL,
-} from "../../utils/blood/bloodConstants";
+} from "../../utils/blood/bloodRequestHelpers";
 
 import { getDeviceId } from "../../utils/blood/bloodRequestStorage";
 

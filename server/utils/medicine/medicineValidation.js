@@ -1,10 +1,13 @@
 // server/utils/medicine/medicineValidation.js
 
-// Validates medicine type, pricing, dosage schedules, and normalized quantities.
+// Validates and normalizes medicine type, pricing, dosage schedules, and quantities.
+// Keeps medicine input rules centralized for both create and update operations.
 
-import { MEDICINE_TYPES, DOSAGE_TIMES } from "./medicineConstants.js";
-
-import { getPricingTypeForMedicine } from "./medicineHelpers.js";
+import {
+  MEDICINE_TYPES,
+  DOSAGE_TIMES,
+  getPricingTypeForMedicine,
+} from "./medicineHelpers.js";
 
 // Validates and normalizes medicine pricing and dosage data.
 export function validateMedicineData({
@@ -26,7 +29,7 @@ export function validateMedicineData({
 
   const expectedPricingType = getPricingTypeForMedicine(type);
 
-  // Ensure pricing matches the selected medicine type.
+  // Ensure the pricing type matches the selected medicine type.
   if (pricingType !== expectedPricingType) {
     return {
       valid: false,
@@ -34,7 +37,7 @@ export function validateMedicineData({
     };
   }
 
-  // Validate dosage and strip-specific pricing.
+  // Validate strip-based medicine dosage and pricing.
   if (pricingType === "strip") {
     if (!Array.isArray(dosage)) {
       return {
@@ -51,15 +54,18 @@ export function validateMedicineData({
     }
 
     const normalizedDosage = [];
+    const dosageTimes = new Set();
 
     for (const item of dosage) {
-      if (!item || typeof item !== "object") {
+      // Reject malformed dosage entries.
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
         return {
           valid: false,
           error: "Invalid dosage entry.",
         };
       }
 
+      // Validate the dosage time.
       if (!DOSAGE_TIMES.includes(item.time)) {
         return {
           valid: false,
@@ -67,8 +73,19 @@ export function validateMedicineData({
         };
       }
 
+      // Prevent duplicate dosage times in the same schedule.
+      if (dosageTimes.has(item.time)) {
+        return {
+          valid: false,
+          error: "Each dosage time can only be selected once.",
+        };
+      }
+
+      dosageTimes.add(item.time);
+
       const quantity = Number(item.quantity);
 
+      // Require each dosage quantity to be a positive integer.
       if (
         !Number.isFinite(quantity) ||
         !Number.isInteger(quantity) ||
@@ -86,7 +103,7 @@ export function validateMedicineData({
       });
     }
 
-    // Validate the strip price.
+    // Validate the price of one medicine strip.
     const normalizedPricePerStrip = Number(pricePerStrip);
 
     if (
@@ -95,11 +112,11 @@ export function validateMedicineData({
     ) {
       return {
         valid: false,
-        error: "Please enter a valid price per strip/পাতা.",
+        error: "Please enter a valid price per strip.",
       };
     }
 
-    // Validate the number of pieces contained in each strip.
+    // Validate the number of pieces contained in one strip.
     const normalizedPiecesPerStrip = Number(piecesPerStrip);
 
     if (
@@ -109,7 +126,7 @@ export function validateMedicineData({
     ) {
       return {
         valid: false,
-        error: "Pieces per strip/পাতা must be a positive integer.",
+        error: "Pieces per strip must be a positive integer.",
       };
     }
 
@@ -125,7 +142,7 @@ export function validateMedicineData({
     };
   }
 
-  // Unit medicines must not contain dosage schedules.
+  // Unit-priced medicines should not contain a dosage schedule.
   if (Array.isArray(dosage) && dosage.length > 0) {
     return {
       valid: false,
@@ -133,7 +150,15 @@ export function validateMedicineData({
     };
   }
 
-  // Validate the unit price.
+  // Reject malformed dosage values for unit medicines.
+  if (dosage !== undefined && !Array.isArray(dosage)) {
+    return {
+      valid: false,
+      error: "Dosage schedule must be an array.",
+    };
+  }
+
+  // Validate the price of one unit.
   const normalizedPricePerUnit = Number(pricePerUnit);
 
   if (!Number.isFinite(normalizedPricePerUnit) || normalizedPricePerUnit <= 0) {

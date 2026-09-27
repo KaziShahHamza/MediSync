@@ -1,6 +1,17 @@
 // server/utils/emergency/emergencyEmail.js
 
-// Builds emergency email subjects and messages for critical health alerts.
+// Creates the Gmail transporter and builds email content for critical health alerts.
+// Keeps email formatting and external mail configuration separate from delivery logic.
+
+import nodemailer from "nodemailer";
+
+export const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
 
 const timingLabels = {
   fasting: "Fasting",
@@ -8,16 +19,23 @@ const timingLabels = {
   postMeal: "2 hours after meal",
 };
 
+const DEFAULT_PRONOUNS = {
+  possessive: "Their",
+  object: "them",
+};
+
 // Builds the email content for a critical blood pressure alert.
 function buildBloodPressureEmail({ high, low, userName, pronouns }) {
+  const safePronouns = pronouns || DEFAULT_PRONOUNS;
+
   return {
     subject: `${userName}'s - Health Status`,
     text: `Please contact ${userName}.
 
-${pronouns.possessive} blood pressure is very high:
-${high}/${low} mmHg
+    ${safePronouns.possessive} blood pressure is very high:
+    ${high}/${low} mmHg
 
-Please check on ${pronouns.object} and help ${pronouns.object} get medical care if needed.`,
+    Please check on ${safePronouns.object} and help ${safePronouns.object} get medical care if needed.`,
   };
 }
 
@@ -29,6 +47,7 @@ function buildBloodSugarEmail({
   userName,
   pronouns,
 }) {
+  const safePronouns = pronouns || DEFAULT_PRONOUNS;
   const timing = timingLabels[glucoseTiming] || "Blood glucose";
   const level = direction === "low" ? "very low" : "very high";
 
@@ -36,12 +55,12 @@ function buildBloodSugarEmail({
     subject: `${userName}'s - Health Status`,
     text: `Please contact ${userName}.
 
-    ${pronouns.possessive} blood sugar is ${level}:
+    ${safePronouns.possessive} blood sugar is ${level}:
     ${glucose} mmol/L
 
     Measurement Type: ${timing}
 
-    Please check on ${pronouns.object} and help ${pronouns.object} get medical care if needed.`,
+    Please check on ${safePronouns.object} and help ${safePronouns.object} get medical care if needed.`,
   };
 }
 

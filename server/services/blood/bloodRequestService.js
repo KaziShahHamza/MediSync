@@ -11,9 +11,8 @@ import BloodRequest from "../../models/BloodRequest.js";
 import {
   BLOOD_GROUPS,
   REQUEST_LIFETIME_MS,
-} from "../../utils/blood/bloodRequestConstants.js";
-
-import { normalizeString } from "../../utils/blood/bloodRequestHelpers.js";
+  normalizeString,
+} from "../../utils/blood/bloodRequestHelpers.js";
 
 // Generate random management token string
 function generateManagementToken() {

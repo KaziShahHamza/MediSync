@@ -3,8 +3,7 @@
 // Renders medical history settings within the profile form.
 // Manages chronic illness selections, allergies, and previous surgeries.
 
-import ProfileSection from "../profile/ProfileSection";
-import ProfileInput from "../profile/ProfileInput";
+import { ProfileInput, ProfileSection } from "../profile/ProfileFields";
 import { illnessOptions } from "../../data/settingsData";
 
 export default function MedicalInfoSection({

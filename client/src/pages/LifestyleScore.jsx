@@ -14,11 +14,11 @@ import { Questionnaire } from "../components/lifestyle/QuestionnaireSection";
 import {
   AssessmentResult,
   GradeReference,
-} from "../components/lifestyle/AssessmentResults";
-import AssessmentControls from "../components/lifestyle/AssessmentControls";
-import AssessmentHistory from "../components/lifestyle/AssessmentHistory";
+} from "../components/lifestyle/assessment/AssessmentResults";
+import AssessmentControls from "../components/lifestyle/assessment/AssessmentControls";
+import AssessmentHistory from "../components/lifestyle/assessment/AssessmentHistory";
 
-import { QUESTIONS } from "../data/lifestyle/lifestyleQuestions";
+import { QUESTIONS } from "../data/lifestyleQuestions";
 
 // Provides the complete lifestyle assessment workflow.
 export default function LifestyleScore() {

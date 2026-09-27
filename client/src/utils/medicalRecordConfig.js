@@ -1,4 +1,4 @@
-// client/src/config/medicalRecordConfig.js
+// client/src/utils/medicalRecordConfig.js
 
 // Defines shared configuration for prescription and medical report pages.
 // Keeps labels, descriptions, storage folders, and API paths centralized.

@@ -5,8 +5,8 @@
 
 import { useMemo, useState } from "react";
 
-import { DEMO_USERS, QUESTIONS } from "../data/lifestyle/lifestyleQuestions";
-import { getFeedback, getGrade } from "../utils/lifestyle/lifestyleScoring";
+import { DEMO_USERS, QUESTIONS } from "../data/lifestyleQuestions";
+import { getFeedback, getGrade } from "../utils/lifestyleScoring";
 
 export default function useLifestyleAssessment({ user, saveAssessment }) {
   const [answers, setAnswers] = useState({});

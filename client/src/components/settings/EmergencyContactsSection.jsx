@@ -3,9 +3,11 @@
 // Renders the emergency contacts section within profile settings.
 // Supports adding, editing, and removing up to three emergency contacts.
 
-import ProfileSection from "../profile/ProfileSection";
-import ProfileInput from "../profile/ProfileInput";
-import ProfileSelect from "../profile/ProfileSelect";
+import {
+  ProfileInput,
+  ProfileSelect,
+  ProfileSection,
+} from "../profile/ProfileFields";
 import { relationOptions } from "../../data/settingsData";
 
 export default function EmergencyContactsSection({

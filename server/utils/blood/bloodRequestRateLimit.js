@@ -9,7 +9,7 @@ import BloodRequestRateLimit from "../../models/BloodRequestRateLimit.js";
 import {
   RATE_LIMIT_WINDOW_MS,
   MAX_REQUESTS_PER_DAY,
-} from "./bloodRequestConstants.js";
+} from "./bloodRequestHelpers.js";
 
 // Creates a private rate-limit key from client identifiers.
 function createRateLimitKey({ ipHash, deviceId }) {

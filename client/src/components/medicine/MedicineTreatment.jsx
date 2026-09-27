@@ -5,7 +5,7 @@
 
 import { CalendarDays } from "lucide-react";
 
-import { MEDICINE_MONTHS } from "../../data/medicine/medicineMonths";
+import { MEDICINE_MONTHS } from "../../data/medicineOptions";
 
 export default function MedicineTreatment({
   startMonth,

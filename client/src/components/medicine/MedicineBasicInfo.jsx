@@ -5,8 +5,10 @@
 
 import { ImagePlus, Pill, X } from "lucide-react";
 
-import { isStripMedicineType } from "../../data/medicine/medicineTypes";
-import { DOSAGE_OPTIONS } from "../../data/medicine/dosageOptions";
+import {
+  isStripMedicineType,
+  DOSAGE_OPTIONS,
+} from "../../data/medicineOptions";
 
 export default function MedicineBasicInfo({
   name,

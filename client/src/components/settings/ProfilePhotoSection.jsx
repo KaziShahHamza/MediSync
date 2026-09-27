@@ -5,7 +5,7 @@
 
 import { Camera, Trash2, Upload } from "lucide-react";
 
-import ProfileSection from "../profile/ProfileSection";
+import { ProfileSection } from "../profile/ProfileFields";
 import { getInitials } from "../../utils/settings/settingsHelpers";
 
 export default function ProfilePhotoSection({

@@ -1,13 +1,14 @@
 // server/services/emergencyEmailService.js
 
-// Handles emergency email delivery through Gmail.
-// Builds email content and returns delivery results.
+// Sends emergency health alerts through the configured Gmail account.
+// Validates recipients, builds alert content, and returns delivery results.
 
-import transporter from "../utils/emergency/emailTransporter.js";
+import {
+  transporter,
+  buildEmailContent,
+} from "../utils/emergency/emergencyEmail.js";
 
-import { buildEmailContent } from "../utils/emergency/emergencyEmail.js";
-
-// Sends emergency emails to the configured emergency contacts.
+// Sends an emergency email to all valid emergency contacts using BCC.
 export async function sendEmergencyEmails({
   recipients,
   type,
@@ -15,18 +16,30 @@ export async function sendEmergencyEmails({
   userName,
   pronouns,
 }) {
-  // Validate the required Gmail configuration.
+  // Validate the required Gmail configuration before attempting delivery.
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     throw new Error(
       "Gmail credentials are not configured in environment variables.",
     );
   }
 
-  // Skip delivery when no email contacts are available.
-  if (!recipients || recipients.length === 0) {
+  // Keep only non-empty, unique email addresses from the provided recipients.
+  const validRecipients = [
+    ...new Set(
+      (recipients || [])
+        .filter((recipient) => typeof recipient === "string")
+        .map((recipient) => recipient.trim())
+        .filter(Boolean),
+    ),
+  ];
+
+  // Skip delivery when no emergency contacts with email addresses are available.
+  if (validRecipients.length === 0) {
     return {
       sent: false,
       recipients: [],
+      failedRecipients: [],
+      results: [],
       reason: "No emergency contacts with email addresses were found.",
     };
   }
@@ -38,20 +51,20 @@ export async function sendEmergencyEmails({
   });
 
   try {
-    // Send one email with all contacts hidden in BCC.
+    // Send one email while keeping all emergency contacts hidden in BCC.
     const info = await transporter.sendMail({
       from: `"${process.env.GMAIL_USER}" <${process.env.GMAIL_USER}>`,
       to: process.env.GMAIL_USER,
-      bcc: recipients,
+      bcc: validRecipients,
       subject: email.subject,
       text: email.text,
     });
 
     return {
       sent: true,
-      recipients,
+      recipients: validRecipients,
       failedRecipients: [],
-      results: recipients.map((recipient) => ({
+      results: validRecipients.map((recipient) => ({
         recipient,
         success: true,
         messageId: info.messageId,
@@ -60,12 +73,12 @@ export async function sendEmergencyEmails({
   } catch (error) {
     console.error("Failed to send emergency email:", error);
 
-    // Return failed delivery information without throwing.
+    // Return delivery failure information without crashing the calling request.
     return {
       sent: false,
       recipients: [],
-      failedRecipients: recipients,
-      results: recipients.map((recipient) => ({
+      failedRecipients: validRecipients,
+      results: validRecipients.map((recipient) => ({
         recipient,
         success: false,
         error: error.message,

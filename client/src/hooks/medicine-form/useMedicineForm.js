@@ -1,11 +1,11 @@
-// client/src/hooks/useMedicineForm.js
+// client/src/hooks/medicine-form/useMedicineForm.js
 
 // Manages medicine form state, initialization, derived values, and submission.
 // Delegates reusable field actions and image handling to useMedicineFormActions.
 
 import { useEffect, useMemo, useState } from "react";
 
-import { isStripMedicineType } from "../data/medicine/medicineTypes";
+import { isStripMedicineType } from "../../data/medicineOptions";
 
 import {
   createDateFromParts,
@@ -13,9 +13,9 @@ import {
   getPricingTypeForType,
   getYearOptions,
   normalizeDosage,
-} from "../utils/medicine/medicineHelpers";
+} from "../../utils/medicine/medicineHelpers";
 
-import { validateMedicineForm } from "../utils/medicine/medicineValidation";
+import { validateMedicineForm } from "../../utils/medicine/medicineValidation";
 
 import useMedicineFormActions from "./useMedicineFormActions";
 

@@ -1,9 +1,9 @@
-// client/src/hooks/useMedicineFormActions.js
+// client/src/hooks/medicine-form/useMedicineFormActions.js
 
 // Handles medicine field updates, resets, dosage changes, and image selection.
 // Keeps reusable form actions separate from medicine initialization and submission.
 
-import { getPricingTypeForType } from "../utils/medicine/medicineHelpers";
+import { getPricingTypeForType } from "../../utils/medicine/medicineHelpers";
 
 export default function useMedicineFormActions({
   setName,

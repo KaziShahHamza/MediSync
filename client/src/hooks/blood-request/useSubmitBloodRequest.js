@@ -8,7 +8,7 @@ import {
   saveManagementToken,
 } from "../../utils/blood/bloodRequestStorage";
 
-import { EMPTY_BLOOD_REQUEST_FORM } from "../../utils/blood/bloodConstants";
+import { EMPTY_BLOOD_REQUEST_FORM } from "../../utils/blood/bloodRequestHelpers";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

@@ -3,9 +3,11 @@
 // Renders blood donation settings within the profile form.
 // Manages donor availability, contact information, donation date, and compensation preferences.
 
-import ProfileSection from "../profile/ProfileSection";
-import ProfileInput from "../profile/ProfileInput";
-import ProfileSelect from "../profile/ProfileSelect";
+import {
+  ProfileInput,
+  ProfileSelect,
+  ProfileSection,
+} from "../profile/ProfileFields";
 import { months, years } from "../../data/settingsData";
 
 export default function BloodDonationSection({

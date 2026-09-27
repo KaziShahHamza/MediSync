@@ -18,7 +18,7 @@ import {
   createPhoto,
 } from "./emergencyCardHelpers";
 
-import { getStyles } from "./emergencyCardStyles";
+import { getStyles } from "./styles/emergencyCardStyles";
 
 // Generates the front-side emergency card HTML.
 export const buildFrontHtml = ({ profile, userInfo, frontContacts }) => {

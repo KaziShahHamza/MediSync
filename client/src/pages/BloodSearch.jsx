@@ -5,8 +5,8 @@
 
 import { Droplets } from "lucide-react";
 
-import BloodSearchForm from "../components/blood/BloodSearchForm";
-import DonorResults from "../components/blood/DonorResults";
+import BloodSearchForm from "../components/blood/find-donor/BloodSearchForm";
+import DonorResults from "../components/blood/find-donor/DonorResults";
 
 import useBloodSearch from "../hooks/useBloodSearch";
 

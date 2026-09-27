@@ -3,11 +3,13 @@
 // Renders personal profile settings and physical information.
 // Manages identity fields, height, blood group, and dependent location selections.
 
-import ProfileSection from "../profile/ProfileSection";
-import ProfileInput from "../profile/ProfileInput";
-import ProfileSelect from "../profile/ProfileSelect";
+import {
+  ProfileInput,
+  ProfileSelect,
+  ProfileSection,
+} from "../profile/ProfileFields";
 import { districtsData } from "../../data/districtsData";
-import { bloodGroups } from "../../data/settingsData";
+import { BLOOD_GROUPS } from "../../utils/blood/bloodRequestHelpers";
 
 export default function PersonalInfoSection({
   userInfo,
@@ -96,7 +98,7 @@ export default function PersonalInfoSection({
           value={form.bloodGroup}
           onChange={onChange}
         >
-          {bloodGroups.map((group) => (
+          {BLOOD_GROUPS.map((group) => (
             <option key={group} value={group}>
               {group || "Select"}
             </option>

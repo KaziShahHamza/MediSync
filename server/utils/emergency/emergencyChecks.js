@@ -1,25 +1,32 @@
 // server/utils/emergency/emergencyChecks.js
 
-// Evaluates health readings against configured emergency thresholds.
+// Evaluates blood pressure and glucose readings against configured critical thresholds.
+// Rejects invalid values before creating an emergency trigger.
 
-import {
-  CRITICAL_SYSTOLIC,
-  CRITICAL_DIASTOLIC,
-  CRITICAL_LOW_GLUCOSE,
-  CRITICAL_HIGH_GLUCOSE,
-} from "./emergencyConstants.js";
+const CRITICAL_SYSTOLIC = 180;
+const CRITICAL_DIASTOLIC = 120;
 
-// Checks whether blood pressure exceeds a critical threshold.
+const CRITICAL_LOW_GLUCOSE = 3.0;
+const CRITICAL_HIGH_GLUCOSE = 22.2;
+
+const VALID_GLUCOSE_TIMINGS = new Set(["fasting", "random", "postMeal"]);
+
+// Checks whether blood pressure reaches or exceeds a critical threshold.
 export function checkBloodPressure(high, low) {
   const systolic = Number(high);
   const diastolic = Number(low);
 
-  // Ignore readings that are not valid numeric values.
-  if (!Number.isFinite(systolic) || !Number.isFinite(diastolic)) {
+  // Ignore missing, non-numeric, or non-positive blood pressure values.
+  if (
+    !Number.isFinite(systolic) ||
+    !Number.isFinite(diastolic) ||
+    systolic <= 0 ||
+    diastolic <= 0
+  ) {
     return null;
   }
 
-  if (systolic > CRITICAL_SYSTOLIC || diastolic > CRITICAL_DIASTOLIC) {
+  if (systolic >= CRITICAL_SYSTOLIC || diastolic >= CRITICAL_DIASTOLIC) {
     return {
       type: "bloodPressure",
       triggerData: {
@@ -36,8 +43,13 @@ export function checkBloodPressure(high, low) {
 export function checkBloodSugar(glucose, glucoseTiming) {
   const value = Number(glucose);
 
-  // Ignore glucose readings that are not valid numeric values.
-  if (!Number.isFinite(value)) {
+  // Ignore missing, non-numeric, or negative glucose values.
+  if (!Number.isFinite(value) || value < 0) {
+    return null;
+  }
+
+  // Ignore unsupported glucose measurement types.
+  if (!VALID_GLUCOSE_TIMINGS.has(glucoseTiming)) {
     return null;
   }
 

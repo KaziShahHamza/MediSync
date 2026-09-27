@@ -15,8 +15,9 @@ import {
   initialForm,
   createFormFromProfile,
   buildProfilePayload,
-  validateSettingsForm,
-} from "../../utils/settings/settingsHelpers";
+} from "../../utils/settings/settingsForm";
+
+import { validateSettingsForm } from "../../utils/settings/settingsHelpers";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

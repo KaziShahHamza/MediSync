@@ -1,51 +1,7 @@
 // client/src/utils/settings/settingsHelpers.js
 
-// Provides reusable settings form state, formatting, validation, and payload helpers.
-// Handles profile normalization and Bangladesh-specific emergency contact actions.
-
-// Creates the default structure for an emergency contact.
-export const createEmptyContact = () => ({
-  relation: "",
-  name: "",
-  phone: "",
-  email: "",
-});
-
-// Defines the default settings form state.
-export const initialForm = {
-  name: "",
-  dob: "",
-  gender: "",
-
-  height: {
-    feet: "",
-    inches: "",
-  },
-
-  bloodGroup: "",
-
-  location: {
-    district: "",
-    upazila: "",
-    streetAddress: "",
-  },
-
-  allergies: "",
-  chronicIllnesses: [],
-  surgeries: "",
-
-  emergencyContacts: [],
-
-  bloodDonorStatus: "",
-  bloodDonationCompensation: "",
-
-  lastBloodDonation: {
-    month: "",
-    year: "",
-  },
-
-  bloodDonationContactNumber: "",
-};
+// Provides reusable settings validation, date conversion, and display helpers.
+// Keeps generic settings utilities independent from form-state management.
 
 // Converts a stored donation date into month and year form values.
 export function getDonationMonthYear(value) {
@@ -101,7 +57,6 @@ export function validateSettingsForm(form) {
     ? form.emergencyContacts
     : [];
 
-  // Validate each configured emergency contact.
   for (const contact of emergencyContacts) {
     const relation = contact?.relation?.trim() || "";
     const name = contact?.name?.trim() || "";
@@ -128,12 +83,10 @@ export function validateSettingsForm(form) {
   const month = form?.lastBloodDonation?.month || "";
   const year = form?.lastBloodDonation?.year || "";
 
-  // Require both month and year when a donation date is provided.
   if ((month && !year) || (!month && year)) {
     return "Please select both the month and year of the last blood donation.";
   }
 
-  // Prevent the recorded donation date from being in the future.
   if (month && year) {
     const selectedDate = new Date(Number(year), Number(month) - 1, 1);
 
@@ -147,109 +100,3 @@ export function validateSettingsForm(form) {
 
   return null;
 }
-
-// Maps profile and user information into the settings form structure.
-export function createFormFromProfile(profile, userInfo) {
-  return {
-    name: userInfo?.name || "",
-
-    dob: profile?.dob ? new Date(profile.dob).toISOString().split("T")[0] : "",
-
-    gender: profile?.gender || "",
-
-    height: {
-      feet: profile?.height?.feet ?? "",
-      inches: profile?.height?.inches ?? "",
-    },
-
-    bloodGroup: profile?.bloodGroup || "",
-
-    location: {
-      district: profile?.location?.district || "",
-      upazila: profile?.location?.upazila || "",
-      streetAddress: profile?.location?.streetAddress || "",
-    },
-
-    allergies: profile?.allergies || "",
-
-    chronicIllnesses: Array.isArray(profile?.chronicIllnesses)
-      ? profile.chronicIllnesses
-      : [],
-
-    surgeries: profile?.surgeries || "",
-
-    emergencyContacts: Array.isArray(profile?.emergencyContacts)
-      ? profile.emergencyContacts.map((contact) => ({
-          relation: contact?.relation || "",
-          name: contact?.name || "",
-          phone: contact?.phone || "",
-          email: contact?.email || "",
-        }))
-      : [],
-
-    bloodDonorStatus: profile?.bloodDonorStatus || "",
-
-    bloodDonationCompensation: profile?.bloodDonationCompensation || "",
-
-    lastBloodDonation: getDonationMonthYear(profile?.lastBloodDonation),
-
-    bloodDonationContactNumber: profile?.bloodDonationContactNumber || "",
-  };
-}
-
-// Transforms settings form state into the profile API payload.
-export function buildProfilePayload(form) {
-  const emergencyContacts = Array.isArray(form?.emergencyContacts)
-    ? form.emergencyContacts
-    : [];
-
-  const chronicIllnesses = Array.isArray(form?.chronicIllnesses)
-    ? form.chronicIllnesses
-    : [];
-
-  return {
-    name: form.name,
-
-    dob: form.dob || null,
-
-    gender: form.gender,
-
-    height: {
-      feet: form.height.feet === "" ? null : Number(form.height.feet),
-      inches: form.height.inches === "" ? null : Number(form.height.inches),
-    },
-
-    bloodGroup: form.bloodGroup,
-
-    allergies: form.allergies,
-
-    chronicIllnesses,
-
-    surgeries: form.surgeries,
-
-    emergencyContacts: emergencyContacts.map((contact) => ({
-      relation: contact.relation.trim(),
-      name: contact.name.trim(),
-      phone: contact.phone.trim(),
-      email: contact.email.trim(),
-    })),
-
-    bloodDonorStatus: form.bloodDonorStatus,
-
-    bloodDonationCompensation: form.bloodDonationCompensation,
-
-    lastBloodDonation: buildDonationDate(
-      form.lastBloodDonation.month,
-      form.lastBloodDonation.year,
-    ),
-
-    location: {
-      district: form.location.district,
-      upazila: form.location.upazila,
-      streetAddress: form.location.streetAddress.trim(),
-    },
-
-    bloodDonationContactNumber: form.bloodDonationContactNumber.trim(),
-  };
-}
-

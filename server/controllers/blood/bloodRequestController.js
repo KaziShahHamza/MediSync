@@ -17,14 +17,11 @@ import {
   hashValue,
   normalizeString,
   publicRequestData,
+  MAX_ACTIVE_REQUESTS_PER_USER,
+  REQUEST_COOLDOWN_MS,
 } from "../../utils/blood/bloodRequestHelpers.js";
 
 import { checkAndUpdateRateLimit } from "../../utils/blood/bloodRequestRateLimit.js";
-
-import {
-  MAX_ACTIVE_REQUESTS_PER_USER,
-  REQUEST_COOLDOWN_MS,
-} from "../../utils/blood/bloodRequestConstants.js";
 
 import { getOptionalAuthenticatedUser } from "../../middlewares/bloodRequestAuth.js";
 

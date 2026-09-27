@@ -9,7 +9,7 @@ import MedicalRecordPage from "../components/medical-record/MedicalRecordPage";
 
 import useMedicalRecordPage from "../hooks/useMedicalRecordPage";
 
-import { medicalRecordConfig } from "../utils/medicalRecord/medicalRecordConfig";
+import { medicalRecordConfig } from "../utils/medicalRecordConfig";
 
 const config = medicalRecordConfig.report;
 

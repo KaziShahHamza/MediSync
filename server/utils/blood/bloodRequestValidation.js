@@ -2,9 +2,7 @@
 
 // Validates blood request payloads including blood groups, contact details, and locations.
 
-import { BLOOD_GROUPS } from "./bloodRequestConstants.js";
-
-import { normalizeString } from "./bloodRequestHelpers.js";
+import { BLOOD_GROUPS, normalizeString } from "./bloodRequestHelpers.js";
 
 // Checks whether a blood group belongs to the supported values.
 export function isValidBloodGroup(value) {

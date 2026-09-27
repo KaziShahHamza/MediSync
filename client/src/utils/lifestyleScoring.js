@@ -1,4 +1,4 @@
-// client/src/pages/lifestyle/lifestyleScoring.js
+// client/src/utils/lifestyleScoring.js
 
 // Provides lifestyle score grading and user-facing feedback utilities.
 // Maps numerical scores to grades and actionable lifestyle feedback.

@@ -16,19 +16,6 @@ export const illnessOptions = [
   "Arthritis / Joint Pain (বাতব্যথা)",
 ];
 
-// Supported blood group selections
-export const bloodGroups = [
-  "",
-  "A+",
-  "A-",
-  "B+",
-  "B-",
-  "AB+",
-  "AB-",
-  "O+",
-  "O-",
-];
-
 // Standard relationship types for emergency contacts
 export const relationOptions = [
   "Son",
