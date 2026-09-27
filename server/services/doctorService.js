@@ -5,7 +5,7 @@
 
 import Doctor from "../models/Doctor.js";
 
-import { syncDoctorsToAIChatData } from "./aiChatDataService.js";
+import { syncDoctorsToAIChatData } from "./aiChatDataSyncService.js";
 
 // Find all doctors owned by a user.
 export async function findDoctors(userId) {

@@ -771,16 +771,6 @@ export default function BloodNeed() {
         request,
       );
 
-      const matchingHospital =
-        (
-          hospitalsData[
-            request.district
-          ] || []
-        ).find(
-          (hospital) =>
-            hospital.name ===
-            request.hospital?.name,
-        );
 
       setRequestForm({
         bloodGroup:

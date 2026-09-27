@@ -65,7 +65,7 @@ export default function DashboardQuickActions() {
 }
 
 // Render an individual shortcut card with its navigation target.
-function QuickActionCard({ title, description, path, icon: Icon }) {
+function QuickActionCard({ title, description, path}) {
   // Keep each shortcut card fully clickable through the route link.
   return (
     <Link to={path} className="card group">

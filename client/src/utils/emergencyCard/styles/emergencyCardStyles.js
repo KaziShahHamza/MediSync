@@ -3,9 +3,9 @@
 // Combines emergency-card fonts, colors, layout, and content-specific styling.
 // Exposes one style generator for the emergency-card rendering workflow.
 
-import { getFontStyles } from "./styles/emergencyCardFonts";
-import { getColorStyles } from "./styles/emergencyCardColors";
-import { getLayoutStyles } from "./styles/emergencyCardLayout";
+import { getFontStyles } from "./emergencyCardFonts";
+import { getColorStyles } from "./emergencyCardColors";
+import { getLayoutStyles } from "./emergencyCardLayout";
 
 export function getStyles() {
   return `

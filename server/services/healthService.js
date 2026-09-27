@@ -5,7 +5,7 @@
 
 import HealthLog from "../models/HealthLog.js";
 
-import { syncHealthToAIChatData } from "./aiChatDataService.js";
+import { syncHealthToAIChatData } from "./aiChatDataSyncService.js";
 import { checkHealthLogForEmergency } from "./emergencyService.js";
 
 // Creates a health log and runs related background processing.

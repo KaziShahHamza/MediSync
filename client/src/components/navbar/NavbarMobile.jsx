@@ -37,7 +37,7 @@ export default function NavbarMobile({
   };
 
   // Creates a reusable mobile navigation link.
-  const navItem = (path, label, Icon) => (
+  const navItem = (path, label) => (
     <Link to={path} onClick={handleNavigation} className="nav-link">
       <Icon size={18} strokeWidth={2} />
       <span>{label}</span>

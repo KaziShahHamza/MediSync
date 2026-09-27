@@ -28,18 +28,6 @@ export default function DoctorForm({
   setForm,
   onClose,
 }) {
-  // Update one phone or email entry inside contact information.
-  function updateContact(type, index, value) {
-    setForm((previousForm) => ({
-      ...previousForm,
-      contactInfo: {
-        ...previousForm.contactInfo,
-        [type]: previousForm.contactInfo[type].map((item, itemIndex) =>
-          itemIndex === index ? value : item,
-        ),
-      },
-    }));
-  }
 
   // Update a multi-select field with all selected values.
   function updateMultiSelect(field, event) {

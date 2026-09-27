@@ -51,7 +51,7 @@ export default function NavbarDesktop({
     location.pathname === "/profile" || location.pathname === "/settings";
 
   // Creates a reusable styled navigation link.
-  const navItem = (path, label, Icon) => (
+  const navItem = (path, label) => (
     <Link
       to={path}
       onClick={onNavigation}

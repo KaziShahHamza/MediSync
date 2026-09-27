@@ -4,7 +4,7 @@
 
 import Report from "../models/Report.js";
 
-import { generateMedicalDocumentSummary } from "../services/medicalDocumentAIService.js";
+import { generateMedicalDocumentSummary } from "../services/medicalDocumentAiService.js";
 
 // Fetch all reports belonging to the authenticated user.
 export async function getReports(req, res) {

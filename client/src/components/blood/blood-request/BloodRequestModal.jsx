@@ -20,7 +20,6 @@ export default function BloodRequestModal({
   requestSuccess,
   requestSubmitting,
 
-  managementToken,
   copied,
 
   onRequestChange,

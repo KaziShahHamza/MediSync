@@ -44,7 +44,7 @@ export default function DashboardHealthOverview({ health }) {
 }
 
 // Render one reusable health metric card with its associated icon.
-function HealthMetricCard({ title, value, subtitle, icon: Icon }) {
+function HealthMetricCard({ title, value, subtitle }) {
   // Display the metric value or a fallback when no reading exists.
   return (
     <div className="card">

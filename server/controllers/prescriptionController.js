@@ -4,7 +4,7 @@
 
 import Prescription from "../models/Prescription.js";
 
-import { generateMedicalDocumentSummary } from "../services/medicalDocumentAIService.js";
+import { generateMedicalDocumentSummary } from "../services/medicalDocumentAiService.js";
 
 // Fetch all prescriptions belonging to the authenticated user.
 export async function getPrescriptions(req, res) {

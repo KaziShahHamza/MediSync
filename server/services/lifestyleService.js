@@ -7,7 +7,7 @@ import LifestyleAssessment from "../models/LifestyleAssessment.js";
 
 import { calculateLifestyleScore } from "../utils/lifestyleScoring.js";
 
-import { syncLifestyleToAIChatData } from "./aiChatDataService.js";
+import { syncLifestyleToAIChatData } from "./aiChatDataSyncService.js";
 
 const MAX_ASSESSMENTS = 10;
 

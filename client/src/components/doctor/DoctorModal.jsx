@@ -1,7 +1,7 @@
 // client/src/components/doctor/DoctorModal.jsx
 
 // Displays complete doctor information in a modal.
-// Reuses DoctorInfo and DoctorChamber for consistent doctor details.
+// Reuses stable section, DoctorInfo, and DoctorChamber components for doctor details.
 
 import {
   BadgeCheck,
@@ -14,6 +14,19 @@ import {
 
 import DoctorChamber from "./chamber/DoctorChamber";
 import DoctorInfo from "./DoctorInfo";
+
+// Renders a reusable section with a consistent heading style.
+function Section({ title, children }) {
+  return (
+    <section>
+      {" "}
+      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+        {title}{" "}
+      </h3>
+      {children}
+    </section>
+  );
+}
 
 export default function DoctorModal({ doctor, onClose, onEdit }) {
   // Do not render the modal when no doctor is selected.
@@ -39,19 +52,6 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
     onEdit(doctor);
   }
 
-  // Render a reusable content section with a consistent heading.
-  function Section({ title, children }) {
-    return (
-      <section>
-        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
-          {title}
-        </h3>
-
-        {children}
-      </section>
-    );
-  }
-
   // Render the selected doctor's complete details modal.
   return (
     <div
@@ -65,21 +65,22 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
         className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-xl"
         onMouseDown={(event) => event.stopPropagation()}
       >
+        {" "}
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 sm:px-6">
+          {" "}
           <div className="min-w-0">
+            {" "}
             <h2
               id="doctor-modal-title"
               className="text-xl font-semibold text-slate-900"
             >
-              {doctor.name}
+              {doctor.name}{" "}
             </h2>
-
             {doctor.designation && (
               <p className="mt-1 text-sm text-slate-500">
                 {doctor.designation}
               </p>
             )}
-
             {specialities.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {specialities.map((speciality) => (
@@ -93,7 +94,6 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
               </div>
             )}
           </div>
-
           <button
             type="button"
             onClick={onClose}
@@ -103,7 +103,6 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
             <X size={20} />
           </button>
         </div>
-
         <div className="space-y-7 p-5 sm:p-6">
           {hasProfessionalInfo && (
             <Section title="Professional Information">
@@ -157,7 +156,6 @@ export default function DoctorModal({ doctor, onClose, onEdit }) {
             </Section>
           )}
         </div>
-
         <div className="sticky bottom-0 flex justify-end gap-3 border-t border-slate-200 bg-white px-5 py-4 sm:px-6">
           <button
             type="button"
