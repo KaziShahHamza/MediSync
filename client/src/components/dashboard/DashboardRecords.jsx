@@ -40,7 +40,7 @@ export default function DashboardRecords({ summary }) {
 }
 
 // Render a reusable record count card with its associated icon.
-function RecordCard({ title, count, linkText }) {
+function RecordCard({ title, count, linkText, icon: Icon }) {
   // Display the record count and its available shortcut action.
   return (
     <div className="card">

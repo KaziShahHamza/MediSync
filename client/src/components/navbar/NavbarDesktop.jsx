@@ -49,9 +49,7 @@ export default function NavbarDesktop({
   // Groups profile and settings routes under the account state.
   const isAccountActive =
     location.pathname === "/profile" || location.pathname === "/settings";
-
-  // Creates a reusable styled navigation link.
-  const navItem = (path, label) => (
+  const navItem = (path, label, Icon) => (
     <Link
       to={path}
       onClick={onNavigation}
