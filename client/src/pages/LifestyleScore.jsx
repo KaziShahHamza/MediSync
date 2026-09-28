@@ -1,7 +1,7 @@
 // client/src/pages/LifestyleScore.jsx
 
 // Renders the MediSync lifestyle assessment page.
-// Connects assessment state, scoring, results, saving, and history components.
+// Organizes the questionnaire and assessment information into a responsive two-column layout.
 
 import { useAuth } from "../context/AuthContext";
 import { useLifestyle } from "../context/LifestyleContext";
@@ -56,84 +56,95 @@ export default function LifestyleScore() {
     <main className="container page">
       <LifestyleHeader />
 
-      {/* Explains the purpose and limitations of the assessment. */}
-      <section className="section">
-        <div className="card">
-          <div className="card-content">
-            <p className="small-label">MediSync Lifestyle Assessment</p>
+      {/* Responsive assessment workspace with questions and supporting information. */}
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)] lg:gap-8">
+        {/* Main questionnaire column. */}
+        <div className="min-w-0">
+          <section>
+            <div className="mb-6">
+              <div className="card">
+                <div className="card-content">
+                  <p className="small-label">Lifestyle Assessment</p>
 
-            <h2 className="section-title mt-2">Lifestyle Score</h2>
+                  <h2 className="section-title mt-2">
+                    Complete your assessment
+                  </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
-              Complete the questionnaire based on your usual daily habits. Your
-              score is a lifestyle indicator and is not a medical diagnosis or
-              clinical health assessment.
-            </p>
-          </div>
+                  <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
+                    Answer the questions based on your usual daily habits.
+                    Select the options that best describe your lifestyle.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Displays the interactive lifestyle questionnaire. */}
+            <Questionnaire
+              categories={categories}
+              questions={QUESTIONS}
+              answers={answers}
+              categoryResults={categoryResults}
+              showScoring={showScoring}
+              onAnswerChange={handleAnswerChange}
+            />
+          </section>
         </div>
-      </section>
 
-      {/* Displays assessment progress and current score. */}
-      <section className="section">
-        <StickyScoreBar
-          totalScore={totalScore}
-          grade={grade}
-          answeredCount={answeredCount}
-          totalQuestions={QUESTIONS.length}
-        />
-      </section>
+        {/* Supporting assessment information column. */}
+        <aside className="min-w-0 lg:sticky lg:top-24">
+          <div className="space-y-6">
+            {/* Displays assessment progress and current score. */}
+            <section>
+              <StickyScoreBar
+                totalScore={totalScore}
+                grade={grade}
+                answeredCount={answeredCount}
+                totalQuestions={QUESTIONS.length}
+              />
+            </section>
 
-      {/* Displays the interactive lifestyle questionnaire. */}
-      <section className="section">
-        <Questionnaire
-          categories={categories}
-          questions={QUESTIONS}
-          answers={answers}
-          categoryResults={categoryResults}
-          showScoring={showScoring}
-          onAnswerChange={handleAnswerChange}
-        />
-      </section>
+            {/* Displays calculated assessment results and feedback. */}
+            <section>
+              <AssessmentResult
+                totalScore={totalScore}
+                grade={grade}
+                feedback={feedback}
+                categoryResults={categoryResults}
+              />
+            </section>
 
-      {/* Displays calculated assessment results and feedback. */}
-      <section className="section">
-        <AssessmentResult
-          totalScore={totalScore}
-          grade={grade}
-          feedback={feedback}
-          categoryResults={categoryResults}
-        />
-      </section>
+            {/* Displays the score grading reference. */}
+            <section>
+              <GradeReference />
+            </section>
 
-      {/* Displays the score grading reference. */}
-      <section className="section">
-        <GradeReference />
-      </section>
+            {/* Provides assessment saving and reset controls. */}
+            <section>
+              <AssessmentControls
+                user={user}
+                saving={saving}
+                showScoring={showScoring}
+                saveMessage={saveMessage}
+                saveError={saveError}
+                lifestyleError={lifestyleError}
+                onShowScoringChange={setShowScoring}
+                onSave={handleSaveAssessment}
+                onReset={resetAssessment}
+              />
+            </section>
 
-      {/* Provides assessment saving and reset controls. */}
-      <section className="section">
-        <AssessmentControls
-          user={user}
-          saving={saving}
-          showScoring={showScoring}
-          saveMessage={saveMessage}
-          saveError={saveError}
-          lifestyleError={lifestyleError}
-          onShowScoringChange={setShowScoring}
-          onSave={handleSaveAssessment}
-          onReset={resetAssessment}
-        />
-      </section>
-
-      {/* Displays saved assessment history for authenticated users. */}
-      {user && (
-        <section className="section">
-          <AssessmentHistory
-            latestAssessment={latestAssessment}
-            assessments={assessments}
-          />
-        </section>
-      )}
+            {/* Displays saved assessment history for authenticated users. */}
+            {user && (
+              <section>
+                <AssessmentHistory
+                  latestAssessment={latestAssessment}
+                  assessments={assessments}
+                />
+              </section>
+            )}
+          </div>
+        </aside>
+      </div>
     </main>
   );
 }

@@ -18,7 +18,7 @@ export function AssessmentResult({
   return (
     <section className="card">
       <div className="card-header">
-        <div className="flex items-start justify-between gap-6">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div>
             <div className="flex items-center gap-3">
               <div className="icon-wrapper">
@@ -35,10 +35,10 @@ export function AssessmentResult({
             </p>
           </div>
 
-          <div className="text-right shrink-0">
+          <div className="text-left sm:text-right shrink-0">
             <p className="small-label">Total Score</p>
 
-            <div className="flex items-baseline justify-end gap-1 mt-1">
+            <div className="flex items-baseline justify-start sm:justify-end gap-1 mt-1">
               <strong className="text-4xl font-bold text-slate-900">
                 {totalScore}
               </strong>

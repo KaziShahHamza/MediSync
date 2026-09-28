@@ -8,6 +8,7 @@ env/
 
 # notes
 .notes/
+.docs_2/
 
 *.txt
 
