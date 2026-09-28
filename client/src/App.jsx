@@ -20,6 +20,8 @@ import Navbar, {
   ScrollToTop,
 } from "./components/navbar/Navbar";
 
+import Footer from "./components/footer/Footer";
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -64,40 +66,50 @@ export default function App() {
 
                       <Navbar />
 
-                      <Routes>
-                        {/* Public application routes. */}
-                        <Route path="/" element={<Home />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/signup" element={<Signup />} />
-                        <Route path="/lifestyle" element={<LifestyleScore />} />
-                        <Route path="/blood-search" element={<BloodSearch />} />
-                        <Route
-                          path="/blood-request"
-                          element={<BloodRequest />}
-                        />
-
-                        {/* Protected application routes. */}
-                        <Route
-                          element={
-                            <ProtectedRoute>
-                              <Outlet />
-                            </ProtectedRoute>
-                          }
-                        >
-                          <Route path="/dashboard" element={<Dashboard />} />
-                          <Route path="/medicines" element={<Medicines />} />
-                          <Route path="/health" element={<Health />} />
+                      <main>
+                        <Routes>
+                          {/* Public application routes. */}
+                          <Route path="/" element={<Home />} />
+                          <Route path="/login" element={<Login />} />
+                          <Route path="/signup" element={<Signup />} />
                           <Route
-                            path="/prescriptions"
-                            element={<Prescriptions />}
+                            path="/lifestyle"
+                            element={<LifestyleScore />}
                           />
-                          <Route path="/assistant" element={<Assistant />} />
-                          <Route path="/reports" element={<Reports />} />
-                          <Route path="/doctors" element={<Doctors />} />
-                          <Route path="/profile" element={<Profile />} />
-                          <Route path="/settings" element={<Settings />} />
-                        </Route>
-                      </Routes>
+                          <Route
+                            path="/blood-search"
+                            element={<BloodSearch />}
+                          />
+                          <Route
+                            path="/blood-request"
+                            element={<BloodRequest />}
+                          />
+
+                          {/* Protected application routes. */}
+                          <Route
+                            element={
+                              <ProtectedRoute>
+                                <Outlet />
+                              </ProtectedRoute>
+                            }
+                          >
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/medicines" element={<Medicines />} />
+                            <Route path="/health" element={<Health />} />
+                            <Route
+                              path="/prescriptions"
+                              element={<Prescriptions />}
+                            />
+                            <Route path="/assistant" element={<Assistant />} />
+                            <Route path="/reports" element={<Reports />} />
+                            <Route path="/doctors" element={<Doctors />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/settings" element={<Settings />} />
+                          </Route>
+                        </Routes>
+                      </main>
+
+                      <Footer />
                     </BrowserRouter>
                   </ChatbotProvider>
                 </DoctorProvider>

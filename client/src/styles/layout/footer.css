@@ -1,0 +1,87 @@
+/* client/src/styles/layout/footer.css */
+
+/* Defines the global MediSync footer layout and visual styling. */
+/* Uses the existing slate, blue, white, and spacing conventions from the application. */
+/* Keeps footer-specific styles isolated from general layout and navigation styles. */
+
+.site-footer {
+  @apply border-t border-slate-200 bg-slate-50;
+}
+
+.site-footer-main {
+  @apply grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-12 lg:py-14;
+}
+
+.site-footer-brand {
+  @apply md:col-span-2 lg:col-span-2;
+}
+
+.site-footer-logo {
+  @apply inline-flex items-center gap-3;
+}
+
+.site-footer-logo-image {
+  @apply h-12 w-12 rounded-xl object-cover;
+}
+
+.site-footer-title {
+  @apply text-lg font-bold leading-tight text-slate-900;
+}
+
+.site-footer-tagline {
+  @apply mt-0.5 text-xs text-slate-500;
+}
+
+.site-footer-description {
+  @apply mt-5 max-w-md text-sm leading-relaxed text-slate-600;
+}
+
+.site-footer-security {
+  @apply mt-5 inline-flex items-center gap-2 text-xs font-medium text-slate-500;
+}
+
+.site-footer-security svg {
+  @apply shrink-0 text-blue-600;
+}
+
+.site-footer-column {
+  @apply min-w-0;
+}
+
+.site-footer-heading {
+  @apply text-sm font-semibold text-slate-900;
+}
+
+.site-footer-links {
+  @apply mt-4 flex flex-col gap-2;
+}
+
+.site-footer-link {
+  @apply inline-flex w-fit items-center gap-2 rounded-lg py-1 text-sm text-slate-500 transition-colors duration-150;
+}
+
+.site-footer-link:hover {
+  @apply text-blue-600;
+}
+
+.site-footer-link svg {
+  @apply shrink-0;
+}
+
+.site-footer-bottom {
+  @apply flex flex-col gap-3 border-t border-slate-200 py-6 text-xs text-slate-500 md:flex-row md:items-center md:justify-between;
+}
+
+.site-footer-disclaimer {
+  @apply max-w-2xl leading-relaxed md:text-right;
+}
+
+@media (max-width: 639px) {
+  .site-footer-main {
+    @apply gap-8 py-10;
+  }
+
+  .site-footer-bottom {
+    @apply gap-4;
+  }
+}

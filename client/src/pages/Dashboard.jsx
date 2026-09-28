@@ -12,6 +12,7 @@ import DashboardHeader from "../components/dashboard/DashboardHeader";
 import DashboardSummary from "../components/dashboard/DashboardSummary";
 import DashboardHealthOverview from "../components/dashboard/DashboardHealthOverview";
 import DashboardRecords from "../components/dashboard/DashboardRecords";
+import DashboardNearbyServices from "../components/dashboard/DashboardNearbyServices";
 import DashboardQuickActions from "../components/dashboard/DashboardQuickActions";
 
 // Provides the aggregated dashboard view for authenticated users.
@@ -78,6 +79,11 @@ export default function Dashboard() {
       {/* Record counts and recent health records. */}
       <section className="section">
         <DashboardRecords summary={data.summary} />
+      </section>
+
+      {/* Quick access to nearby healthcare services through Google Maps. */}
+      <section className="section">
+        <DashboardNearbyServices />
       </section>
 
       {/* Navigation shortcuts for common dashboard actions. */}

@@ -12,6 +12,7 @@
 @import "./styles/layout/layout.css";
 @import "./styles/layout/navigation-desktop.css";
 @import "./styles/layout/navigation-mobile.css";
+@import "./styles/layout/footer.css";
 
 @import "./styles/components/cards.css";
 @import "./styles/components/forms.css";
