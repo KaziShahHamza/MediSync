@@ -3,7 +3,13 @@
 // Configures application providers, routing, navigation, and global browser behavior.
 // Defines public and protected application routes.
 
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Outlet,
+  useLocation,
+} from "react-router-dom";
 import { useEffect } from "react";
 
 import { AuthProvider } from "./context/AuthContext";
@@ -37,6 +43,17 @@ import LifestyleScore from "./pages/LifestyleScore";
 import Assistant from "./pages/Assistant";
 import BloodSearch from "./pages/BloodSearch";
 import BloodRequest from "./pages/BloodRequest";
+
+// Renders the global footer on every page except the assistant workspace.
+function AppFooter() {
+  const { pathname } = useLocation();
+
+  if (pathname === "/assistant") {
+    return null;
+  }
+
+  return <Footer />;
+}
 
 export default function App() {
   // Request notification permission once when browser support is available.
@@ -109,7 +126,7 @@ export default function App() {
                         </Routes>
                       </main>
 
-                      <Footer />
+                      <AppFooter />
                     </BrowserRouter>
                   </ChatbotProvider>
                 </DoctorProvider>

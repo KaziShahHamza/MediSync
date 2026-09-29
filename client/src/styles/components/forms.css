@@ -31,11 +31,30 @@ label {
 .input,
 select,
 textarea {
-  @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-slate-800 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-slate-800 transition-all duration-150;
 }
 
-textarea {
-  @apply min-h-32 resize-y;
+.input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #1d4ed8;
+  box-shadow: none;
+}
+
+/* Removes all native and global form borders from the AI chat textarea. */
+.ai-chat-textarea {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+}
+
+.ai-chat-textarea:focus {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 input::placeholder,

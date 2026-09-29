@@ -1,11 +1,10 @@
 // client/src/components/ai-assistant/ChatEmptyState.jsx
 
-// Displays the initial assistant state before a conversation begins.
-// Provides common health-related prompts that start a new chat.
+// Displays the welcome state for an empty assistant conversation.
+// Provides predefined health-related prompts that populate the message composer.
 
 import { Activity, HeartPulse, MessageCircle, ShieldCheck } from "lucide-react";
 
-// Defines the reusable conversation suggestions shown to users.
 const suggestions = [
   {
     icon: HeartPulse,
@@ -24,11 +23,10 @@ const suggestions = [
   },
 ];
 
-export default function ChatEmptyState({ onNewChat }) {
-  // Starts a new assistant conversation from a suggestion.
+export default function ChatEmptyState({ onSuggestion }) {
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-10 sm:px-6">
-      <div className="w-full max-w-2xl text-center">
+      <div className="w-full max-w-3xl text-center">
         {/* Render the assistant introduction icon. */}
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
           <MessageCircle size={27} />
@@ -46,15 +44,14 @@ export default function ChatEmptyState({ onNewChat }) {
         {/* Render predefined prompts for common assistant use cases. */}
         <div className="mt-8 grid gap-3 text-left sm:grid-cols-3">
           {suggestions.map((suggestion) => {
-            // Resolve the configured icon component for each suggestion.
             const Icon = suggestion.icon;
 
             return (
               <button
                 key={suggestion.title}
                 type="button"
-                onClick={onNewChat}
-                className="rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-blue-200 hover:bg-blue-50/40"
+                onClick={() => onSuggestion?.(suggestion.text)}
+                className="rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-blue-200 hover:bg-blue-50/40 focus:outline-none focus:ring-2 focus:ring-blue-100"
               >
                 <Icon size={19} className="text-blue-600" />
 

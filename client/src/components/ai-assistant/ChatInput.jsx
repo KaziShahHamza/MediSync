@@ -1,23 +1,42 @@
 // client/src/components/ai-assistant/ChatInput.jsx
 
-// Manages text entry, image selection, and message submission.
-// Provides keyboard handling, textarea resizing, and attachment controls.
+// Manages text entry and message submission for the health assistant.
+// Provides keyboard handling, textarea resizing, autofocus, and loading states.
 
 import { useEffect, useRef, useState } from "react";
-import { ImagePlus, Send, X } from "lucide-react";
+import { Send } from "lucide-react";
 
 export default function ChatInput({
   disabled = false,
   loading = false,
+  initialContent = "",
   onSend,
 }) {
-  const [content, setContent] = useState("");
-  const [imageUrls, setImageUrls] = useState([]);
+  const [content, setContent] = useState(initialContent);
 
   const textareaRef = useRef(null);
-  const fileInputRef = useRef(null);
 
-  // Focus the message field whenever the input becomes available.
+  // Updates the composer when a predefined suggestion is selected.
+  useEffect(() => {
+    if (!initialContent) return;
+
+    setContent(initialContent);
+
+    requestAnimationFrame(() => {
+      const textarea = textareaRef.current;
+
+      if (!textarea) return;
+
+      textarea.focus();
+      textarea.style.height = "auto";
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 100)}px`;
+
+      const length = textarea.value.length;
+      textarea.setSelectionRange(length, length);
+    });
+  }, [initialContent]);
+
+  // Focuses the message field whenever the input becomes available.
   useEffect(() => {
     if (!disabled) {
       textareaRef.current?.focus();
@@ -28,17 +47,15 @@ export default function ChatInput({
   const handleSubmit = async () => {
     const trimmedContent = content.trim();
 
-    if (disabled || loading || (!trimmedContent && imageUrls.length === 0)) {
+    if (disabled || loading || !trimmedContent) {
       return;
     }
 
     await onSend({
       content: trimmedContent,
-      imageUrls,
     });
 
     setContent("");
-    setImageUrls([]);
 
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -55,101 +72,41 @@ export default function ChatInput({
 
   // Updates content and dynamically adjusts textarea height.
   const handleInput = (event) => {
-    setContent(event.target.value);
+    const textarea = event.target;
 
-    event.target.style.height = "auto";
+    setContent(textarea.value);
 
-    event.target.style.height = `${Math.min(event.target.scrollHeight, 160)}px`;
-  };
-
-  // Resets file selection until image upload support is connected.
-  const handleFiles = (event) => {
-    const files = Array.from(event.target.files || []);
-
-    if (!files.length) return;
-
-    event.target.value = "";
+    textarea.style.height = "auto";
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 100)}px`;
   };
 
   return (
-    <div className="rounded-2xl border border-slate-300 bg-white shadow-sm transition focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100">
-      {/* Display selected image previews when attachments exist. */}
-      {imageUrls.length > 0 && (
-        <div className="flex gap-2 px-3 pt-3">
-          {imageUrls.map((url, index) => (
-            <div key={`${url}-${index}`} className="relative">
-              <img
-                src={url}
-                alt={`Attachment ${index + 1}`}
-                className="h-16 w-16 rounded-lg object-cover"
-              />
+    <div className="mx-auto w-full max-w-[680px] rounded-2xl border border-slate-300 bg-white shadow-sm transition-colors focus-within:border-blue-700">
+      {/* Provides the primary message composition field. */}
+      <div className="flex items-end gap-2 px-1.5">
+        <textarea
+          ref={textareaRef}
+          value={content}
+          onChange={handleInput}
+          onKeyDown={handleKeyDown}
+          disabled={disabled || loading}
+          rows={1}
+          placeholder="Ask about your health..."
+          className="ai-chat-textarea block h-auto max-h-[100px] min-h-[44px] min-w-0 flex-1 resize-none overflow-x-hidden overflow-y-auto border-0 bg-transparent px-1 py-1 text-sm leading-6 text-slate-800 placeholder:text-slate-400 focus:border-0 focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-60"
+        />
 
-              <button
-                type="button"
-                onClick={() =>
-                  setImageUrls((previous) =>
-                    previous.filter((_, imageIndex) => imageIndex !== index),
-                  )
-                }
-                className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-slate-800 text-white"
-                aria-label="Remove image"
-              >
-                <X size={12} />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Provide the primary message composition field. */}
-      <textarea
-        ref={textareaRef}
-        value={content}
-        onChange={handleInput}
-        onKeyDown={handleKeyDown}
-        disabled={disabled || loading}
-        rows={1}
-        placeholder="Ask about your health..."
-        className="block max-h-40 min-h-[52px] w-full resize-none border-0 bg-transparent px-4 py-3.5 text-sm leading-6 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-60"
-      />
-
-      {/* Provide attachment and message submission controls. */}
-      <div className="flex items-center justify-between px-3 pb-3">
-        <div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={handleFiles}
-          />
-
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={disabled || loading}
-            className="btn-icon text-slate-500 hover:text-blue-600"
-            aria-label="Attach image"
-            title="Attach image"
-          >
-            <ImagePlus size={19} />
-          </button>
-        </div>
-
+        {/* Message submission button. */}
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={
-            disabled || loading || (!content.trim() && imageUrls.length === 0)
-          }
-          className="btn-primary flex h-10 w-10 items-center justify-center rounded-xl p-0 disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={disabled || loading || !content.trim()}
+          className="flex h-8 w-8 my-auto shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           aria-label="Send message"
         >
           {loading ? (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
           ) : (
-            <Send size={17} />
+            <Send size={18} strokeWidth={2} />
           )}
         </button>
       </div>

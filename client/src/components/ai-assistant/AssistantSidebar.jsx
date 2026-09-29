@@ -1,9 +1,27 @@
+
 // client/src/components/ai-assistant/AssistantSidebar.jsx
 
 // Renders the conversation history sidebar for the health assistant.
-// Handles chat selection, creation, deletion, and mobile sidebar closing.
+// Handles conversation selection, creation, deletion, and mobile closing.
+// Displays the last activity date for each conversation.
 
 import { MessageSquare, Plus, Trash2, X } from "lucide-react";
+
+// Formats the conversation's last activity date for compact sidebar display.
+function formatChatDate(date) {
+  if (!date) return "";
+
+  const value = new Date(date);
+
+  if (Number.isNaN(value.getTime())) {
+    return "";
+  }
+
+  return value.toLocaleDateString([], {
+    day: "numeric",
+    month: "short",
+  });
+}
 
 export default function AssistantSidebar({
   chats = [],
@@ -15,7 +33,7 @@ export default function AssistantSidebar({
   onDeleteChat,
   onClose,
 }) {
-  // Handles chat deletion without triggering chat selection.
+  // Handles chat deletion without triggering conversation selection.
   const handleDelete = async (event, chatId) => {
     event.stopPropagation();
 
@@ -27,7 +45,7 @@ export default function AssistantSidebar({
   return (
     <div className="flex h-full min-h-0 flex-col">
       {/* Render sidebar heading and mobile close control. */}
-      <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-4">
+      <div className="flex h-14 shrink-0 items-center justify-between border-b border-slate-200 px-4 sm:h-16">
         <div>
           <h2 className="text-sm font-semibold text-slate-900">
             Health Assistant
@@ -84,7 +102,6 @@ export default function AssistantSidebar({
         ) : (
           <div className="space-y-1">
             {chats.map((chat) => {
-              // Determine whether the conversation is currently selected.
               const active = currentChat?._id === chat._id;
 
               return (
@@ -108,9 +125,17 @@ export default function AssistantSidebar({
                       }`}
                     />
 
-                    <span className="min-w-0 flex-1 truncate text-sm font-medium">
-                      {chat.title || "New Chat"}
-                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">
+                        {chat.title || "New Chat"}
+                      </p>
+
+                      {chat.updatedAt && (
+                        <p className="mt-0.5 text-[10px] text-slate-400">
+                          {formatChatDate(chat.updatedAt)}
+                        </p>
+                      )}
+                    </div>
                   </button>
 
                   {onDeleteChat && (

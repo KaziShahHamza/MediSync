@@ -6,7 +6,7 @@
 import { Bot, User } from "lucide-react";
 import { openEmergencyWhatsApp } from "../../utils/emergencyWhatsApp";
 
-// Formats message timestamps for compact chat display.
+// Formats message timestamps with date and 12-hour time.
 function formatTime(date) {
   if (!date) return "";
 
@@ -16,10 +16,18 @@ function formatTime(date) {
     return "";
   }
 
-  return value.toLocaleTimeString([], {
+  const time = value.toLocaleTimeString([], {
     hour: "numeric",
     minute: "2-digit",
+    hour12: true,
   });
+
+  const day = value.toLocaleDateString([], {
+    day: "numeric",
+    month: "short",
+  });
+
+  return `${time}, ${day}`;
 }
 
 // Converts assistant phone numbers into clickable WhatsApp actions.

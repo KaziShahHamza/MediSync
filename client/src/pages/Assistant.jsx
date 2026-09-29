@@ -1,10 +1,10 @@
 // client/src/pages/Assistant.jsx
 
-// Renders the AI health assistant page and conversation interface.
-// Connects chat state and actions to desktop and mobile assistant components.
+// Renders the AI health assistant workspace and conversation interface.
+// Initializes conversations and keeps the active conversation scrolled to the latest message.
+// Connects chat actions to the assistant sidebar, messages, and composer.
 
-import { useEffect, useState } from "react";
-import { Menu, PanelLeft } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { useChatbot } from "../context/ChatbotContext";
 
@@ -13,7 +13,6 @@ import ChatMessage from "../components/ai-assistant/ChatMessage";
 import ChatInput from "../components/ai-assistant/ChatInput";
 import ChatEmptyState from "../components/ai-assistant/ChatEmptyState";
 
-// Provides the main assistant conversation experience.
 export default function Assistant() {
   const {
     chats,
@@ -30,38 +29,120 @@ export default function Assistant() {
   } = useChatbot();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [suggestedPrompt, setSuggestedPrompt] = useState("");
 
-  // Loads available conversations when the page mounts.
+  const initializationRef = useRef(false);
+  const messagesContainerRef = useRef(null);
+  const previousChatIdRef = useRef(null);
+  const previousMessageCountRef = useRef(0);
+
+  // Scrolls the conversation container to the latest message.
+  function scrollToBottom(behavior = "auto") {
+    const container = messagesContainerRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior,
+    });
+  }
+
+  // Loads or creates the active conversation when the assistant is opened.
   useEffect(() => {
-    loadChats();
-  }, [loadChats]);
+    if (initializationRef.current || currentChat?._id) {
+      return;
+    }
+
+    initializationRef.current = true;
+
+    async function initializeAssistant() {
+      const loadedChats = await loadChats();
+
+      if (loadedChats.length > 0) {
+        await loadChat(loadedChats[0]._id);
+        return;
+      }
+
+      await createChat();
+    }
+
+    initializeAssistant();
+  }, [currentChat?._id, loadChats, loadChat, createChat]);
+
+  // Keeps the conversation positioned at the latest message when a chat is opened.
+  useEffect(() => {
+    const chatId = currentChat?._id;
+    const messageCount = currentChat?.messages?.length || 0;
+
+    if (!chatId || loadingChat) {
+      return;
+    }
+
+    const chatChanged = previousChatIdRef.current !== chatId;
+    const messagesChanged = previousMessageCountRef.current !== messageCount;
+
+    if (chatChanged || messagesChanged) {
+      requestAnimationFrame(() => {
+        scrollToBottom("auto");
+      });
+    }
+
+    previousChatIdRef.current = chatId;
+    previousMessageCountRef.current = messageCount;
+  }, [currentChat, loadingChat]);
+
+  // Keeps the view at the bottom while the assistant response is being generated.
+  useEffect(() => {
+    if (!sending) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      scrollToBottom("smooth");
+    });
+  }, [sending]);
 
   // Opens the selected conversation and closes the mobile sidebar.
   async function handleSelectChat(chatId) {
+    setSuggestedPrompt("");
+
     await loadChat(chatId);
+
     setSidebarOpen(false);
   }
 
   // Creates a new conversation and closes the mobile sidebar.
   async function handleNewChat() {
+    setSuggestedPrompt("");
+
     await createChat();
+
     setSidebarOpen(false);
   }
 
-  // Sends a user message with any selected image attachments.
-  async function handleSendMessage({ content, imageUrls = [] }) {
+  // Places a predefined health question into the message composer.
+  function handleSuggestion(prompt) {
+    setSuggestedPrompt(prompt);
+  }
+
+  // Sends a text message through the active conversation.
+  async function handleSendMessage({ content }) {
     await sendMessage({
       content,
-      imageUrls,
     });
+
+    setSuggestedPrompt("");
   }
 
   return (
-    <main className="page">
-      <div className="container">
-        <div className="flex h-[calc(100vh-8rem)] min-h-[600px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <main className="h-[calc(100vh-67px)] overflow-hidden bg-slate-50">
+      <div className="mx-auto h-full w-full max-w-[1600px] overflow-hidden">
+        <div className="flex h-full min-h-0 overflow-hidden bg-white">
           {/* Desktop assistant sidebar. */}
-          <aside className="hidden w-72 shrink-0 border-r border-slate-200 bg-slate-50 lg:flex lg:flex-col">
+          <aside className="hidden w-72 shrink-0 overflow-hidden border-r border-slate-200 bg-slate-50 lg:flex lg:flex-col">
             <AssistantSidebar
               chats={chats}
               currentChat={currentChat}
@@ -82,7 +163,7 @@ export default function Assistant() {
                 onClick={() => setSidebarOpen(false)}
               />
 
-              <aside className="relative flex h-full w-[85%] max-w-sm flex-col bg-white shadow-xl">
+              <aside className="relative flex h-full w-[85%] max-w-sm flex-col overflow-hidden bg-white shadow-xl">
                 <AssistantSidebar
                   chats={chats}
                   currentChat={currentChat}
@@ -98,57 +179,27 @@ export default function Assistant() {
           )}
 
           {/* Main conversation area. */}
-          <section className="flex min-w-0 flex-1 flex-col bg-white">
-            {/* Conversation header. */}
-            <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-4 sm:px-6">
-              <div className="flex min-w-0 items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setSidebarOpen(true)}
-                  className="btn-icon lg:hidden"
-                  aria-label="Open chat history"
-                >
-                  <Menu size={20} />
-                </button>
-
-                <div className="min-w-0">
-                  <h1 className="truncate text-base font-semibold text-slate-900 sm:text-lg">
-                    {currentChat?.title || "Health Assistant"}
-                  </h1>
-
-                  <p className="hidden text-xs text-slate-500 sm:block">
-                    AI health information assistant
-                  </p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSidebarOpen(true)}
-                className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 lg:flex"
-              >
-                <PanelLeft size={17} />
-                Chat history
-              </button>
-            </header>
-
+          <section className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-white">
             {/* Displays assistant errors when present. */}
             {error && (
-              <div className="border-b border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700 sm:px-6">
+              <div className="shrink-0 border-b border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700 sm:px-6">
                 {error}
               </div>
             )}
 
             {/* Displays the active conversation or empty state. */}
-            <div className="min-h-0 flex-1 overflow-y-auto">
-              {loadingChat ? (
+            <div
+              ref={messagesContainerRef}
+              className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+            >
+              {loadingChat || loadingChats ? (
                 <div className="flex h-full items-center justify-center px-6">
                   <div className="text-sm text-slate-500">
                     Loading conversation...
                   </div>
                 </div>
               ) : currentChat?.messages?.length > 0 ? (
-                <div className="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
+                <div className="mx-auto w-full max-w-[680px] px-4 py-6 sm:px-6 sm:py-8">
                   <div className="space-y-6">
                     {currentChat.messages.map((message) => (
                       <ChatMessage
@@ -170,22 +221,23 @@ export default function Assistant() {
                   </div>
                 </div>
               ) : (
-                <ChatEmptyState onNewChat={handleNewChat} />
+                <ChatEmptyState onSuggestion={handleSuggestion} />
               )}
             </div>
 
-            {/* Provides the message input area. */}
+            {/* Provides the fixed message composer at the bottom of the workspace. */}
             <div className="shrink-0 border-t border-slate-200 bg-white">
-              <div className="mx-auto w-full max-w-4xl px-4 py-3 sm:px-6 sm:py-4">
+              <div className="mx-auto w-full max-w-[680px] px-4 py-3 sm:px-6 sm:py-4">
                 <ChatInput
-                  disabled={!currentChat || sending}
+                  disabled={!currentChat || loadingChat}
                   loading={sending}
+                  initialContent={suggestedPrompt}
                   onSend={handleSendMessage}
                 />
 
-                <p className="mt-2 text-center text-[11px] leading-4 text-slate-400">
+                <p className="mt-2 text-center text-[11px] leading-4 text-red-400">
                   MediSync Health Assistant provides general health information
-                  and is not a substitute for a doctor.
+                  and is not an alternative for a doctor.
                 </p>
               </div>
             </div>
@@ -195,4 +247,3 @@ export default function Assistant() {
     </main>
   );
 }
-
