@@ -1,31 +1,17 @@
 // server/middlewares/aiChatValidation.js
 
-// Validates AI chat messages and image attachment limits.
-// Keeps request validation separate from controller logic.
+// Validates AI chat message content before it reaches the controller.
+// Keeps text validation separate from AI chat processing logic.
 
 export function validateAIChatMessage(req, res, next) {
-  const { content, imageUrls = [] } = req.body;
+  const { content } = req.body;
 
   const message = typeof content === "string" ? content.trim() : "";
 
-  // Require text content or at least one image.
-  if (!message && imageUrls.length === 0) {
+  // Require non-empty text content.
+  if (!message) {
     return res.status(400).json({
-      message: "Message or image is required.",
-    });
-  }
-
-  // Ensure image attachments use an array.
-  if (!Array.isArray(imageUrls)) {
-    return res.status(400).json({
-      message: "imageUrls must be an array.",
-    });
-  }
-
-  // Limit each message to two image attachments.
-  if (imageUrls.length > 2) {
-    return res.status(400).json({
-      message: "A maximum of 2 images can be attached to one message.",
+      message: "Message is required.",
     });
   }
 

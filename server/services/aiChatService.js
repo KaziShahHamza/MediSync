@@ -4,9 +4,7 @@
 // Handles AI context loading, prompt construction, conversation history, and Gemini execution.
 
 import { GoogleGenAI } from "@google/genai";
-
 import AIChatData from "../models/AIChatData.js";
-
 import { syncAllAIChatData } from "./aiChatDataSyncService.js";
 
 import {
@@ -33,7 +31,6 @@ async function getOrCreateAIChatData(userId) {
     user: userId,
   }).lean();
 
-  // Build the projection before attempting to load missing AI context.
   if (!aiChatData) {
     await syncAllAIChatData(userId);
 
@@ -46,7 +43,11 @@ async function getOrCreateAIChatData(userId) {
 }
 
 // Generates a Gemini response using the user's synchronized health context.
-export async function generateChatResponse({ userId, chat, userMessage }) {
+export async function generateChatResponse({
+  userId,
+  chat,
+  userMessage,
+}) {
   const aiChatData = await getOrCreateAIChatData(userId);
 
   if (!aiChatData) {
@@ -55,9 +56,11 @@ export async function generateChatResponse({ userId, chat, userMessage }) {
 
   const aiContext = buildAIContext(aiChatData);
   const contextPrompt = buildContextPrompt(aiContext);
-  const conversationHistory = buildConversationHistory(chat.messages);
 
-  // Preserve the existing Gemini content ordering.
+  const conversationHistory = buildConversationHistory(
+    chat.messages,
+  );
+
   const contents = [
     {
       role: "user",
@@ -80,12 +83,9 @@ export async function generateChatResponse({ userId, chat, userMessage }) {
     },
   ];
 
-  // Execute the Gemini request with the existing generation configuration.
   const response = await ai.models.generateContent({
     model: MODEL,
-
     contents,
-
     config: {
       systemInstruction: SYSTEM_INSTRUCTION,
       temperature: 0.3,
@@ -97,10 +97,7 @@ export async function generateChatResponse({ userId, chat, userMessage }) {
     response.text?.trim() ||
     "I'm sorry, but I couldn't generate a response right now.";
 
-  return {
-    text,
-    doctors: [],
-  };
+  return text;
 }
 
 export { calculateAge, buildAIContext, findMatchingDoctors };

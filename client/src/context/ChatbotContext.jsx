@@ -1,7 +1,7 @@
 // client/src/context/ChatbotContext.jsx
 
 // Manages AI assistant conversations, active chat state, and chat actions.
-// Connects the assistant UI to the authenticated AI chat API.
+// Connects the assistant UI to the authenticated text-only AI chat API.
 
 import { createContext, useCallback, useContext, useState } from "react";
 
@@ -26,7 +26,7 @@ export function ChatbotProvider({ children }) {
     };
   }, []);
 
-  // Loads the user's recent conversations and returns them to the caller.
+  // Loads the user's recent conversations and their stored message counts.
   const loadChats = useCallback(async () => {
     setLoadingChats(true);
     setError("");
@@ -89,7 +89,7 @@ export function ChatbotProvider({ children }) {
     [getAuthHeaders],
   );
 
-  // Creates a new conversation and makes it the active chat.
+  // Creates a new text conversation and makes it the active chat.
   const createChat = useCallback(async () => {
     setError("");
 
@@ -112,7 +112,13 @@ export function ChatbotProvider({ children }) {
           (chat) => chat._id !== data._id,
         );
 
-        return [data, ...withoutDuplicate];
+        return [
+          {
+            ...data,
+            userMessageCount: 0,
+          },
+          ...withoutDuplicate,
+        ];
       });
 
       return data;
@@ -156,22 +162,32 @@ export function ChatbotProvider({ children }) {
           throw new Error(data.message || "Failed to send message.");
         }
 
-        // The message endpoint returns { chat, message }.
         const updatedChat = data.chat;
 
         if (!updatedChat) {
           throw new Error("Invalid chat response from the server.");
         }
 
-        // Keep the complete chat object as the active conversation.
         setCurrentChat(updatedChat);
+
+        // Prefer the count calculated by the backend.
+        const userMessageCount =
+          typeof data.userMessageCount === "number"
+            ? data.userMessageCount
+            : Array.isArray(updatedChat.messages)
+              ? updatedChat.messages.filter(
+                  (message) => message.role === "user",
+                ).length
+              : 0;
 
         // Move the updated conversation to the top of the sidebar.
         setChats((previous) => {
           const updatedSummary = {
             _id: updatedChat._id,
             title: updatedChat.title,
+            createdAt: updatedChat.createdAt,
             updatedAt: updatedChat.updatedAt,
+            userMessageCount,
           };
 
           const withoutCurrent = previous.filter(
@@ -221,7 +237,7 @@ export function ChatbotProvider({ children }) {
 
         return true;
       } catch (err) {
-        setError(err.message || "Failed to delete conversation.");
+        setError(err.message || "Failed to delete chat.");
         return false;
       }
     },

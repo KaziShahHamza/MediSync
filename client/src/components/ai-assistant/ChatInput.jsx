@@ -18,14 +18,18 @@ export default function ChatInput({
 
   // Updates the composer when a predefined suggestion is selected.
   useEffect(() => {
-    if (!initialContent) return;
+    if (!initialContent) {
+      return;
+    }
 
     setContent(initialContent);
 
     requestAnimationFrame(() => {
       const textarea = textareaRef.current;
 
-      if (!textarea) return;
+      if (!textarea) {
+        return;
+      }
 
       textarea.focus();
       textarea.style.height = "auto";
@@ -43,7 +47,7 @@ export default function ChatInput({
     }
   }, [disabled]);
 
-  // Validates and sends the current message content.
+  // Validates and sends the current text message.
   const handleSubmit = async () => {
     const trimmedContent = content.trim();
 
@@ -82,7 +86,7 @@ export default function ChatInput({
 
   return (
     <div className="mx-auto w-full max-w-[680px] rounded-2xl border border-slate-300 bg-white shadow-sm transition-colors focus-within:border-blue-700">
-      {/* Provides the primary message composition field. */}
+      {/* Provides the text-only message composition field. */}
       <div className="flex items-end gap-2 px-1.5">
         <textarea
           ref={textareaRef}
@@ -95,12 +99,12 @@ export default function ChatInput({
           className="ai-chat-textarea block h-auto max-h-[100px] min-h-[44px] min-w-0 flex-1 resize-none overflow-x-hidden overflow-y-auto border-0 bg-transparent px-1 py-1 text-sm leading-6 text-slate-800 placeholder:text-slate-400 focus:border-0 focus:outline-none focus:ring-0 disabled:cursor-not-allowed disabled:opacity-60"
         />
 
-        {/* Message submission button. */}
+        {/* Submits the current text message. */}
         <button
           type="button"
           onClick={handleSubmit}
           disabled={disabled || loading || !content.trim()}
-          className="flex h-8 w-8 my-auto shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="my-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           aria-label="Send message"
         >
           {loading ? (

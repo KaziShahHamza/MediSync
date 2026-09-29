@@ -1,9 +1,8 @@
-
 // client/src/components/ai-assistant/AssistantSidebar.jsx
 
 // Renders the conversation history sidebar for the health assistant.
 // Handles conversation selection, creation, deletion, and mobile closing.
-// Displays the last activity date for each conversation.
+// Displays the last activity date and user-message count for each conversation.
 
 import { MessageSquare, Plus, Trash2, X } from "lucide-react";
 
@@ -51,7 +50,9 @@ export default function AssistantSidebar({
             Health Assistant
           </h2>
 
-          <p className="mt-0.5 text-xs text-slate-500">Your conversations</p>
+          <p className="mt-0.5 text-xs text-slate-500">
+            Conversations · {chats.length}
+          </p>
         </div>
 
         {mobile && (
@@ -103,6 +104,7 @@ export default function AssistantSidebar({
           <div className="space-y-1">
             {chats.map((chat) => {
               const active = currentChat?._id === chat._id;
+              const messageCount = chat.userMessageCount ?? 0;
 
               return (
                 <div
@@ -130,11 +132,12 @@ export default function AssistantSidebar({
                         {chat.title || "New Chat"}
                       </p>
 
-                      {chat.updatedAt && (
-                        <p className="mt-0.5 text-[10px] text-slate-400">
-                          {formatChatDate(chat.updatedAt)}
-                        </p>
-                      )}
+                      <p className="mt-0.5 text-[10px] text-slate-400">
+                        {formatChatDate(chat.updatedAt)}
+                        {" · "}
+                        {messageCount}{" "}
+                        {messageCount === 1 ? "message" : "messages"}
+                      </p>
                     </div>
                   </button>
 

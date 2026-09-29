@@ -1,7 +1,7 @@
 // server/utils/aiChatContext.js
 
 // Builds normalized health, profile, lifestyle, doctor, and conversation context.
-// Keeps AI context preparation independent from model execution.
+// Keeps AI context preparation independent from Gemini model execution.
 
 function calculateAge(dob) {
   if (!dob) return null;
@@ -36,7 +36,7 @@ function formatValue(value, fallback = "Not available") {
   return value;
 }
 
-// Build the normalized profile context.
+// Builds the normalized profile context.
 function buildProfileContext(profile) {
   if (!profile) {
     return {
@@ -77,7 +77,7 @@ function buildProfileContext(profile) {
   };
 }
 
-// Build the normalized lifestyle assessment context.
+// Builds the normalized lifestyle assessment context.
 function buildLifestyleContext(lifestyle) {
   if (!lifestyle) {
     return {
@@ -96,7 +96,7 @@ function buildLifestyleContext(lifestyle) {
   };
 }
 
-// Build the normalized health metrics context.
+// Builds the normalized health metrics context.
 function buildHealthContext(health) {
   if (!health) {
     return {
@@ -118,7 +118,7 @@ function buildHealthContext(health) {
   };
 }
 
-// Build a limited doctor context for AI usage.
+// Builds a limited doctor context for AI usage.
 function buildDoctorContext(doctors = []) {
   return doctors.map((doctor) => ({
     doctorId: doctor.doctorId,
@@ -142,29 +142,36 @@ function buildDoctorContext(doctors = []) {
   }));
 }
 
-// Combine synchronized data into the AI context.
+// Combines synchronized data into the AI context.
 export function buildAIContext(aiChatData) {
   return {
-    profile: buildProfileContext(aiChatData.profile),
-    lifestyle: buildLifestyleContext(aiChatData.lifestyle),
-    health: buildHealthContext(aiChatData.health),
-    doctors: buildDoctorContext(aiChatData.doctors),
+    profile: buildProfileContext(aiChatData?.profile),
+    lifestyle: buildLifestyleContext(aiChatData?.lifestyle),
+    health: buildHealthContext(aiChatData?.health),
+    doctors: buildDoctorContext(aiChatData?.doctors),
   };
 }
 
-// Convert stored messages into Gemini history format.
+// Converts stored text messages into Gemini conversation roles.
 export function buildConversationHistory(messages = []) {
-  return messages.map((message) => ({
-    role: message.role === "assistant" ? "model" : "user",
-    parts: [
-      {
-        text: message.content,
-      },
-    ],
-  }));
+  return messages
+    .filter(
+      (message) =>
+        (message.role === "user" || message.role === "assistant") &&
+        typeof message.content === "string" &&
+        message.content.trim(),
+    )
+    .map((message) => ({
+      role: message.role === "assistant" ? "model" : "user",
+      parts: [
+        {
+          text: message.content.trim(),
+        },
+      ],
+    }));
 }
 
-// Match requested specialties against stored doctor specialties.
+// Matches requested specialties against stored doctor specialties.
 export function findMatchingDoctors(doctors = [], specialties = []) {
   if (!specialties.length) {
     return [];

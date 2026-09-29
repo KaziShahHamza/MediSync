@@ -65,13 +65,12 @@ export async function createAIChat(req, res) {
 // Generates and stores an assistant response for an existing AI chat.
 export async function sendAIChatMessage(req, res) {
   try {
-    const { content, imageUrls = [] } = req.body;
+    const { content } = req.body;
 
     const result = await addAIChatMessage({
       userId: req.userId,
       chatId: req.params.chatId,
       content,
-      imageUrls,
     });
 
     if (result.notFound) {

@@ -1,7 +1,7 @@
 // server/models/AIChat.js
 
 // Defines the persistent AI chat conversation and message schemas.
-// Stores user-owned text and optional image attachments.
+// Stores user-owned text conversations without image attachments.
 
 import mongoose from "mongoose";
 
@@ -18,11 +18,6 @@ const aiChatMessageSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-    },
-
-    imageUrls: {
-      type: [String],
-      default: [],
     },
 
     createdAt: {

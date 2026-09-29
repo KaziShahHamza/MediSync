@@ -1,6 +1,6 @@
 // client/src/components/ai-assistant/ChatMessage.jsx
 
-// Renders individual user and assistant messages with timestamps.
+// Renders individual user and assistant text messages with timestamps.
 // Converts recognized assistant phone numbers into WhatsApp actions.
 
 import { Bot, User } from "lucide-react";
@@ -8,7 +8,9 @@ import { openEmergencyWhatsApp } from "../../utils/emergencyWhatsApp";
 
 // Formats message timestamps with date and 12-hour time.
 function formatTime(date) {
-  if (!date) return "";
+  if (!date) {
+    return "";
+  }
 
   const value = new Date(date);
 
@@ -32,7 +34,9 @@ function formatTime(date) {
 
 // Converts assistant phone numbers into clickable WhatsApp actions.
 function renderText(text, isUser) {
-  if (!text) return null;
+  if (!text) {
+    return null;
+  }
 
   if (isUser) {
     return text;
@@ -45,7 +49,7 @@ function renderText(text, isUser) {
   const parts = [];
   let lastIndex = 0;
 
-  // Preserve normal text while replacing recognized phone numbers.
+  // Preserves normal text while replacing recognized phone numbers.
   for (const match of text.matchAll(phoneRegex)) {
     const phone = match[0];
     const start = match.index;
@@ -79,7 +83,7 @@ function renderText(text, isUser) {
 export default function ChatMessage({ message, loading = false }) {
   const isUser = message.role === "user";
 
-  // Render the assistant typing state while a response is loading.
+  // Renders the assistant typing state while a response is loading.
   if (loading) {
     return (
       <div className="flex items-start gap-3">
@@ -98,12 +102,11 @@ export default function ChatMessage({ message, loading = false }) {
     );
   }
 
-  // Render the message with direction and styling based on its role.
+  // Renders the text message according to its role.
   return (
     <div
       className={`flex items-start gap-3 ${isUser ? "flex-row-reverse" : ""}`}
     >
-      {/* Render the role-specific message avatar. */}
       <div
         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
           isUser ? "bg-slate-100 text-slate-600" : "bg-blue-50 text-blue-600"
@@ -112,7 +115,6 @@ export default function ChatMessage({ message, loading = false }) {
         {isUser ? <User size={18} /> : <Bot size={18} />}
       </div>
 
-      {/* Render message content and its optional timestamp. */}
       <div
         className={`min-w-0 max-w-[85%] sm:max-w-[75%] ${
           isUser ? "items-end" : "items-start"
