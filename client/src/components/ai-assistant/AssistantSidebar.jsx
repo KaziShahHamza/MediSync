@@ -2,7 +2,7 @@
 
 // Renders the conversation history sidebar for the health assistant.
 // Handles conversation selection, creation, deletion, and mobile closing.
-// Displays the last activity date and user-message count for each conversation.
+// Displays conversation counts and the daily chat creation limit.
 
 import { MessageSquare, Plus, Trash2, X } from "lucide-react";
 
@@ -27,11 +27,16 @@ export default function AssistantSidebar({
   currentChat,
   loading = false,
   mobile = false,
+  dailyChatsCreated = 0,
+  dailyChatLimit = 2,
   onSelectChat,
   onNewChat,
   onDeleteChat,
   onClose,
 }) {
+  const dailyLimitReached = dailyChatsCreated >= dailyChatLimit;
+  const remainingDailyChats = Math.max(dailyChatLimit - dailyChatsCreated, 0);
+
   // Handles chat deletion without triggering conversation selection.
   const handleDelete = async (event, chatId) => {
     event.stopPropagation();
@@ -51,7 +56,7 @@ export default function AssistantSidebar({
           </h2>
 
           <p className="mt-0.5 text-xs text-slate-500">
-            Conversations · {chats.length}
+            Conversations · {chats.length}/10
           </p>
         </div>
 
@@ -72,11 +77,42 @@ export default function AssistantSidebar({
         <button
           type="button"
           onClick={onNewChat}
-          className="btn-primary flex w-full items-center justify-center gap-2"
+          disabled={dailyLimitReached}
+          className="btn-primary flex w-full items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Plus size={18} />
           New Chat
         </button>
+
+        <div className="mt-2 text-center">
+          {dailyLimitReached ? (
+            <>
+              <p className="text-[11px] font-medium text-amber-700">
+                Daily chat limit reached
+              </p>
+
+              <p className="mt-0.5 text-[10px] leading-4 text-slate-400">
+                You can create up to {dailyChatLimit} new chats per day.
+              </p>
+            </>
+          ) : dailyChatsCreated > 0 ? (
+            <>
+              <p className="text-[11px] font-medium text-slate-500">
+                {dailyChatsCreated} of {dailyChatLimit} chats created today
+              </p>
+
+              <p className="mt-0.5 text-[10px] leading-4 text-amber-600">
+                {remainingDailyChats === 1
+                  ? "You have 1 new chat remaining today."
+                  : `You have ${remainingDailyChats} new chats remaining today.`}
+              </p>
+            </>
+          ) : (
+            <p className="text-[10px] leading-4 text-slate-400">
+              You can create up to {dailyChatLimit} new chats per day.
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Render loading, empty, or available conversation states. */}
@@ -105,6 +141,7 @@ export default function AssistantSidebar({
             {chats.map((chat) => {
               const active = currentChat?._id === chat._id;
               const messageCount = chat.userMessageCount ?? 0;
+              const chatLimitReached = messageCount >= 20;
 
               return (
                 <div
@@ -135,9 +172,15 @@ export default function AssistantSidebar({
                       <p className="mt-0.5 text-[10px] text-slate-400">
                         {formatChatDate(chat.updatedAt)}
                         {" · "}
-                        {messageCount}{" "}
+                        {messageCount}/20{" "}
                         {messageCount === 1 ? "message" : "messages"}
                       </p>
+
+                      {chatLimitReached && (
+                        <p className="mt-0.5 text-[10px] font-medium text-amber-600">
+                          Chat limit reached
+                        </p>
+                      )}
                     </div>
                   </button>
 

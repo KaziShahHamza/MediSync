@@ -1,7 +1,7 @@
 // server/controllers/aiChatController.js
 
 // Handles HTTP requests for AI chat creation, retrieval, messaging, and deletion.
-// Delegates chat persistence and AI generation to dedicated services.
+// Delegates chat persistence, quota enforcement, and AI generation to services.
 
 import {
   listAIChats,
@@ -11,12 +11,12 @@ import {
   addAIChatMessage,
 } from "../services/aiChatStorageService.js";
 
-// Returns the user's ten most recently updated AI chats.
+// Returns the user's recent AI chats and current chat usage.
 export async function getAIChats(req, res) {
   try {
-    const chats = await listAIChats(req.userId);
+    const result = await listAIChats(req.userId);
 
-    res.json(chats);
+    res.json(result);
   } catch (error) {
     console.error("Failed to fetch AI chats:", error);
 
@@ -37,7 +37,16 @@ export async function getAIChat(req, res) {
       });
     }
 
-    res.json(chat);
+    const userMessageCount = chat.messages.filter(
+      (message) => message.role === "user",
+    ).length;
+
+    res.json({
+      ...chat,
+      userMessageCount,
+      messageLimit: 20,
+      reachedMessageLimit: userMessageCount >= 20,
+    });
   } catch (error) {
     console.error("Failed to fetch AI chat:", error);
 
@@ -47,14 +56,27 @@ export async function getAIChat(req, res) {
   }
 }
 
-// Creates a new AI chat while preserving the existing fifty-chat limit.
+// Creates a new AI chat while enforcing daily and total limits.
 export async function createAIChat(req, res) {
   try {
     const chat = await createNewAIChat(req.userId);
 
-    res.status(201).json(chat);
+    res.status(201).json({
+      ...chat.toObject(),
+      userMessageCount: 0,
+      messageLimit: 20,
+      reachedMessageLimit: false,
+    });
   } catch (error) {
     console.error("Failed to create AI chat:", error);
+
+    if (error.code === "DAILY_CHAT_LIMIT") {
+      return res.status(429).json({
+        message:
+          "You have reached today's chat creation limit. You can create new chats again tomorrow.",
+        code: "DAILY_CHAT_LIMIT",
+      });
+    }
 
     res.status(500).json({
       message: "Failed to create chat.",
@@ -82,6 +104,14 @@ export async function sendAIChatMessage(req, res) {
     res.json(result);
   } catch (error) {
     console.error("Failed to send AI chat message:", error);
+
+    if (error.code === "CHAT_MESSAGE_LIMIT") {
+      return res.status(429).json({
+        message:
+          "This chat has reached its 20-message limit. Please create a new chat.",
+        code: "CHAT_MESSAGE_LIMIT",
+      });
+    }
 
     res.status(500).json({
       message: "Failed to generate assistant response.",

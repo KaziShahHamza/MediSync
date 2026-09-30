@@ -1,7 +1,7 @@
 // client/src/pages/Assistant.jsx
 
 // Renders the AI health assistant workspace and conversation interface.
-// Initializes conversations and keeps the active conversation scrolled to the latest message.
+// Enforces conversation message limits and communicates daily chat usage.
 // Connects chat actions to the assistant sidebar, messages, and composer.
 
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +12,41 @@ import AssistantSidebar from "../components/ai-assistant/AssistantSidebar";
 import ChatMessage from "../components/ai-assistant/ChatMessage";
 import ChatInput from "../components/ai-assistant/ChatInput";
 import ChatEmptyState from "../components/ai-assistant/ChatEmptyState";
+
+const MAX_USER_MESSAGES_PER_CHAT = 20;
+const DAILY_CHAT_LIMIT = 2;
+
+// Returns the number of conversations created today using the local date.
+function getChatsCreatedToday(chats = []) {
+  const now = new Date();
+
+  return chats.filter((chat) => {
+    if (!chat.createdAt) {
+      return false;
+    }
+
+    const createdAt = new Date(chat.createdAt);
+
+    if (Number.isNaN(createdAt.getTime())) {
+      return false;
+    }
+
+    return (
+      createdAt.getFullYear() === now.getFullYear() &&
+      createdAt.getMonth() === now.getMonth() &&
+      createdAt.getDate() === now.getDate()
+    );
+  }).length;
+}
+
+// Counts only user messages because the conversation limit is based on user input.
+function getUserMessageCount(chat) {
+  if (!chat?.messages) {
+    return 0;
+  }
+
+  return chat.messages.filter((message) => message.role === "user").length;
+}
 
 export default function Assistant() {
   const {
@@ -35,6 +70,13 @@ export default function Assistant() {
   const messagesContainerRef = useRef(null);
   const previousChatIdRef = useRef(null);
   const previousMessageCountRef = useRef(0);
+
+  const dailyChatsCreated = getChatsCreatedToday(chats);
+  const dailyLimitReached = dailyChatsCreated >= DAILY_CHAT_LIMIT;
+
+  const currentUserMessageCount = getUserMessageCount(currentChat);
+  const conversationLimitReached =
+    currentUserMessageCount >= MAX_USER_MESSAGES_PER_CHAT;
 
   // Scrolls the conversation container to the latest message.
   function scrollToBottom(behavior = "auto") {
@@ -114,8 +156,12 @@ export default function Assistant() {
     setSidebarOpen(false);
   }
 
-  // Creates a new conversation and closes the mobile sidebar.
+  // Creates a new conversation when the daily creation limit has not been reached.
   async function handleNewChat() {
+    if (dailyLimitReached) {
+      return;
+    }
+
     setSuggestedPrompt("");
 
     await createChat();
@@ -125,11 +171,19 @@ export default function Assistant() {
 
   // Places a predefined health question into the message composer.
   function handleSuggestion(prompt) {
+    if (conversationLimitReached) {
+      return;
+    }
+
     setSuggestedPrompt(prompt);
   }
 
   // Sends a text message through the active conversation.
   async function handleSendMessage({ content }) {
+    if (conversationLimitReached) {
+      return;
+    }
+
     await sendMessage({
       content,
     });
@@ -147,6 +201,8 @@ export default function Assistant() {
               chats={chats}
               currentChat={currentChat}
               loading={loadingChats}
+              dailyChatsCreated={dailyChatsCreated}
+              dailyChatLimit={DAILY_CHAT_LIMIT}
               onSelectChat={handleSelectChat}
               onNewChat={handleNewChat}
               onDeleteChat={deleteChat}
@@ -169,6 +225,8 @@ export default function Assistant() {
                   currentChat={currentChat}
                   loading={loadingChats}
                   mobile
+                  dailyChatsCreated={dailyChatsCreated}
+                  dailyChatLimit={DAILY_CHAT_LIMIT}
                   onSelectChat={handleSelectChat}
                   onNewChat={handleNewChat}
                   onDeleteChat={deleteChat}
@@ -228,14 +286,34 @@ export default function Assistant() {
             {/* Provides the fixed message composer at the bottom of the workspace. */}
             <div className="shrink-0 border-t border-slate-200 bg-white">
               <div className="mx-auto w-full max-w-[680px] px-4 py-3 sm:px-6 sm:py-4">
+                {conversationLimitReached && (
+                  <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-center">
+                    <p className="text-xs font-medium text-amber-800">
+                      This chat has reached its 20-message limit.
+                    </p>
+
+                    <p className="mt-0.5 text-[11px] text-amber-700">
+                      Create a new chat to continue your conversation.
+                    </p>
+                  </div>
+                )}
+
+                <p className="mb-1  text-center text-[11px] leading-4 text-slate-400">
+                  {conversationLimitReached
+                    ? "Create a new chat to continue."
+                    : `${currentUserMessageCount}/${MAX_USER_MESSAGES_PER_CHAT} messages used in this chat.`}
+                </p>
+
                 <ChatInput
-                  disabled={!currentChat || loadingChat}
+                  disabled={
+                    !currentChat || loadingChat || conversationLimitReached
+                  }
                   loading={sending}
                   initialContent={suggestedPrompt}
                   onSend={handleSendMessage}
                 />
 
-                <p className="mt-2 text-center text-[11px] leading-4 text-red-400">
+                <p className="mt-1 text-center text-[11px] leading-4 text-red-400">
                   MediSync Health Assistant provides general health information
                   and is not an alternative for a doctor.
                 </p>

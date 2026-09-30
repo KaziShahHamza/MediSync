@@ -1,17 +1,35 @@
 // client/src/context/ChatbotContext.jsx
 
-// Manages AI assistant conversations, active chat state, and chat actions.
+// Manages AI assistant conversations, quotas, active chat state, and chat actions.
 // Connects the assistant UI to the authenticated text-only AI chat API.
 
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
 const ChatbotContext = createContext(null);
 
 const API_URL = `${import.meta.env.VITE_API_URL}/api/ai`;
 
+const DEFAULT_MESSAGE_LIMIT = 20;
+const DEFAULT_DAILY_CHAT_LIMIT = 2;
+const DEFAULT_TOTAL_CHAT_LIMIT = 10;
+
 export function ChatbotProvider({ children }) {
   const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
+  const [chatUsage, setChatUsage] = useState({
+    dailyChatCount: 0,
+    dailyChatLimit: DEFAULT_DAILY_CHAT_LIMIT,
+    dailyChatsRemaining: DEFAULT_DAILY_CHAT_LIMIT,
+    totalChatCount: 0,
+    totalChatLimit: DEFAULT_TOTAL_CHAT_LIMIT,
+  });
+
   const [loadingChats, setLoadingChats] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
   const [sending, setSending] = useState(false);
@@ -26,7 +44,7 @@ export function ChatbotProvider({ children }) {
     };
   }, []);
 
-  // Loads the user's recent conversations and their stored message counts.
+  // Loads conversations and the server-enforced chat usage state.
   const loadChats = useCallback(async () => {
     setLoadingChats(true);
     setError("");
@@ -42,9 +60,13 @@ export function ChatbotProvider({ children }) {
         throw new Error(data.message || "Failed to load conversations.");
       }
 
-      const loadedChats = Array.isArray(data) ? data : [];
+      const loadedChats = Array.isArray(data.chats) ? data.chats : [];
 
       setChats(loadedChats);
+
+      if (data.usage) {
+        setChatUsage(data.usage);
+      }
 
       return loadedChats;
     } catch (err) {
@@ -89,7 +111,7 @@ export function ChatbotProvider({ children }) {
     [getAuthHeaders],
   );
 
-  // Creates a new text conversation and makes it the active chat.
+  // Creates a new conversation when the server quota allows it.
   const createChat = useCallback(async () => {
     setError("");
 
@@ -102,33 +124,48 @@ export function ChatbotProvider({ children }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to create conversation.");
+        const error = new Error(
+          data.message || "Failed to create conversation.",
+        );
+
+        error.code = data.code;
+
+        throw error;
       }
 
       setCurrentChat(data);
 
-      setChats((previous) => {
-        const withoutDuplicate = previous.filter(
-          (chat) => chat._id !== data._id,
-        );
+      setChats((previous) => [
+        {
+          ...data,
+          userMessageCount: 0,
+          messageLimit: DEFAULT_MESSAGE_LIMIT,
+          reachedMessageLimit: false,
+        },
+        ...previous.filter((chat) => chat._id !== data._id),
+      ]);
 
-        return [
-          {
-            ...data,
-            userMessageCount: 0,
-          },
-          ...withoutDuplicate,
-        ];
-      });
+      setChatUsage((previous) => ({
+        ...previous,
+        dailyChatCount: Math.min(
+          previous.dailyChatCount + 1,
+          previous.dailyChatLimit,
+        ),
+        dailyChatsRemaining: Math.max(previous.dailyChatsRemaining - 1, 0),
+        totalChatCount: Math.min(
+          previous.totalChatCount + 1,
+          previous.totalChatLimit,
+        ),
+      }));
 
       return data;
     } catch (err) {
-      setError(err.message || "Failed to create conversation.");
+      setError(err.message || "Failed to create chat.");
       return null;
     }
   }, [getAuthHeaders]);
 
-  // Sends a text message through the active conversation.
+  // Sends a text message while respecting the conversation message limit.
   const sendMessage = useCallback(
     async ({ content }) => {
       if (!currentChat?._id) {
@@ -138,6 +175,24 @@ export function ChatbotProvider({ children }) {
       const trimmedContent = content?.trim();
 
       if (!trimmedContent) {
+        return null;
+      }
+
+      const currentUserMessageCount =
+        typeof currentChat.userMessageCount === "number"
+          ? currentChat.userMessageCount
+          : currentChat.messages?.filter((message) => message.role === "user")
+              .length || 0;
+
+      if (currentUserMessageCount >= DEFAULT_MESSAGE_LIMIT) {
+        const message =
+          "This chat has reached its 20-message limit. Please create a new chat.";
+
+        setError(message);
+
+        const error = new Error(message);
+        error.code = "CHAT_MESSAGE_LIMIT";
+
         return null;
       }
 
@@ -159,7 +214,11 @@ export function ChatbotProvider({ children }) {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Failed to send message.");
+          const error = new Error(data.message || "Failed to send message.");
+
+          error.code = data.code;
+
+          throw error;
         }
 
         const updatedChat = data.chat;
@@ -168,19 +227,20 @@ export function ChatbotProvider({ children }) {
           throw new Error("Invalid chat response from the server.");
         }
 
-        setCurrentChat(updatedChat);
-
-        // Prefer the count calculated by the backend.
         const userMessageCount =
           typeof data.userMessageCount === "number"
             ? data.userMessageCount
-            : Array.isArray(updatedChat.messages)
-              ? updatedChat.messages.filter(
-                  (message) => message.role === "user",
-                ).length
-              : 0;
+            : currentUserMessageCount + 1;
 
-        // Move the updated conversation to the top of the sidebar.
+        setCurrentChat({
+          ...updatedChat,
+          userMessageCount,
+          messageLimit: data.messageLimit || DEFAULT_MESSAGE_LIMIT,
+          reachedMessageLimit:
+            data.reachedMessageLimit ||
+            userMessageCount >= DEFAULT_MESSAGE_LIMIT,
+        });
+
         setChats((previous) => {
           const updatedSummary = {
             _id: updatedChat._id,
@@ -188,6 +248,10 @@ export function ChatbotProvider({ children }) {
             createdAt: updatedChat.createdAt,
             updatedAt: updatedChat.updatedAt,
             userMessageCount,
+            messageLimit: data.messageLimit || DEFAULT_MESSAGE_LIMIT,
+            reachedMessageLimit:
+              data.reachedMessageLimit ||
+              userMessageCount >= DEFAULT_MESSAGE_LIMIT,
           };
 
           const withoutCurrent = previous.filter(
@@ -208,7 +272,7 @@ export function ChatbotProvider({ children }) {
     [currentChat, getAuthHeaders],
   );
 
-  // Deletes a conversation and clears it when it is currently selected.
+  // Deletes a conversation without restoring its daily creation allowance.
   const deleteChat = useCallback(
     async (chatId) => {
       if (!chatId) {
@@ -231,6 +295,11 @@ export function ChatbotProvider({ children }) {
 
         setChats((previous) => previous.filter((chat) => chat._id !== chatId));
 
+        setChatUsage((previous) => ({
+          ...previous,
+          totalChatCount: Math.max(previous.totalChatCount - 1, 0),
+        }));
+
         if (currentChat?._id === chatId) {
           setCurrentChat(null);
         }
@@ -249,6 +318,26 @@ export function ChatbotProvider({ children }) {
     setCurrentChat(null);
   }, []);
 
+  const currentChatMessageCount = useMemo(() => {
+    if (!currentChat) {
+      return 0;
+    }
+
+    if (typeof currentChat.userMessageCount === "number") {
+      return currentChat.userMessageCount;
+    }
+
+    return (
+      currentChat.messages?.filter((message) => message.role === "user")
+        .length || 0
+    );
+  }, [currentChat]);
+
+  const currentChatReachedLimit =
+    currentChatMessageCount >= DEFAULT_MESSAGE_LIMIT;
+
+  const canCreateChat = chatUsage.dailyChatsRemaining > 0;
+
   return (
     <ChatbotContext.Provider
       value={{
@@ -258,6 +347,13 @@ export function ChatbotProvider({ children }) {
         loadingChat,
         sending,
         error,
+
+        chatUsage,
+        canCreateChat,
+        currentChatMessageCount,
+        currentChatReachedLimit,
+        chatMessageLimit: DEFAULT_MESSAGE_LIMIT,
+
         loadChats,
         loadChat,
         createChat,
