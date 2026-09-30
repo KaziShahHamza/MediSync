@@ -1,6 +1,7 @@
 // client/src/context/ChatbotContext.jsx
 
 // Manages AI assistant conversations, quotas, active chat state, and chat actions.
+// Provides optimistic user-message rendering while the assistant response is generated.
 // Connects the assistant UI to the authenticated text-only AI chat API.
 
 import {
@@ -19,9 +20,30 @@ const DEFAULT_MESSAGE_LIMIT = 20;
 const DEFAULT_DAILY_CHAT_LIMIT = 2;
 const DEFAULT_TOTAL_CHAT_LIMIT = 10;
 
+function getFriendlyChatError(data, status) {
+  if (data?.code === "AI_TIMEOUT") {
+    return "The response is taking longer than expected. Please try asking a shorter or more focused question.";
+  }
+
+  if (data?.code === "AI_RATE_LIMIT") {
+    return "The assistant is temporarily busy. Please wait a moment and try again.";
+  }
+
+  if (data?.code === "AI_EMPTY_RESPONSE") {
+    return "I couldn't generate a useful response. Please try rephrasing your question.";
+  }
+
+  if (status >= 500) {
+    return "I couldn't generate a response right now. Please try again in a moment.";
+  }
+
+  return data?.message || "Something went wrong. Please try again.";
+}
+
 export function ChatbotProvider({ children }) {
   const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
+
   const [chatUsage, setChatUsage] = useState({
     dailyChatCount: 0,
     dailyChatLimit: DEFAULT_DAILY_CHAT_LIMIT,
@@ -57,7 +79,11 @@ export function ChatbotProvider({ children }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to load conversations.");
+        const error = new Error(getFriendlyChatError(data, response.status));
+
+        error.code = data.code;
+
+        throw error;
       }
 
       const loadedChats = Array.isArray(data.chats) ? data.chats : [];
@@ -165,10 +191,10 @@ export function ChatbotProvider({ children }) {
     }
   }, [getAuthHeaders]);
 
-  // Sends a text message while respecting the conversation message limit.
+  // Sends a text message and immediately displays the user's message while the response is generated.
   const sendMessage = useCallback(
     async ({ content }) => {
-      if (!currentChat?._id) {
+      if (!currentChat?._id || sending) {
         return null;
       }
 
@@ -195,6 +221,29 @@ export function ChatbotProvider({ children }) {
 
         return null;
       }
+
+      const optimisticMessageId = `optimistic-${Date.now()}`;
+
+      const optimisticMessage = {
+        _id: optimisticMessageId,
+        role: "user",
+        content: trimmedContent,
+        createdAt: new Date().toISOString(),
+      };
+
+      const optimisticUserMessageCount = currentUserMessageCount + 1;
+
+      const optimisticChat = {
+        ...currentChat,
+        messages: [...(currentChat.messages || []), optimisticMessage],
+        userMessageCount: optimisticUserMessageCount,
+        messageLimit: DEFAULT_MESSAGE_LIMIT,
+        reachedMessageLimit:
+          optimisticUserMessageCount >= DEFAULT_MESSAGE_LIMIT,
+      };
+
+      // Immediately show the user's message before waiting for Gemini.
+      setCurrentChat(optimisticChat);
 
       setSending(true);
       setError("");
@@ -230,15 +279,17 @@ export function ChatbotProvider({ children }) {
         const userMessageCount =
           typeof data.userMessageCount === "number"
             ? data.userMessageCount
-            : currentUserMessageCount + 1;
+            : optimisticUserMessageCount;
 
+        const reachedMessageLimit =
+          data.reachedMessageLimit || userMessageCount >= DEFAULT_MESSAGE_LIMIT;
+
+        // Replace the optimistic state with the authoritative server state.
         setCurrentChat({
           ...updatedChat,
           userMessageCount,
           messageLimit: data.messageLimit || DEFAULT_MESSAGE_LIMIT,
-          reachedMessageLimit:
-            data.reachedMessageLimit ||
-            userMessageCount >= DEFAULT_MESSAGE_LIMIT,
+          reachedMessageLimit,
         });
 
         setChats((previous) => {
@@ -249,9 +300,7 @@ export function ChatbotProvider({ children }) {
             updatedAt: updatedChat.updatedAt,
             userMessageCount,
             messageLimit: data.messageLimit || DEFAULT_MESSAGE_LIMIT,
-            reachedMessageLimit:
-              data.reachedMessageLimit ||
-              userMessageCount >= DEFAULT_MESSAGE_LIMIT,
+            reachedMessageLimit,
           };
 
           const withoutCurrent = previous.filter(
@@ -263,13 +312,32 @@ export function ChatbotProvider({ children }) {
 
         return updatedChat;
       } catch (err) {
+        // Remove the optimistic message if the request fails.
+        setCurrentChat((previous) => {
+          if (!previous || previous._id !== currentChat._id) {
+            return previous;
+          }
+
+          return {
+            ...previous,
+            messages: (previous.messages || []).filter(
+              (message) => message._id !== optimisticMessageId,
+            ),
+            userMessageCount: currentUserMessageCount,
+            messageLimit: DEFAULT_MESSAGE_LIMIT,
+            reachedMessageLimit:
+              currentUserMessageCount >= DEFAULT_MESSAGE_LIMIT,
+          };
+        });
+
         setError(err.message || "Failed to send message.");
+
         return null;
       } finally {
         setSending(false);
       }
     },
-    [currentChat, getAuthHeaders],
+    [currentChat, getAuthHeaders, sending],
   );
 
   // Deletes a conversation without restoring its daily creation allowance.

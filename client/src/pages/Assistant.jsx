@@ -6,6 +6,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { X } from "lucide-react";
+
 import { useChatbot } from "../context/ChatbotContext";
 
 import AssistantSidebar from "../components/ai-assistant/AssistantSidebar";
@@ -65,6 +67,7 @@ export default function Assistant() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [suggestedPrompt, setSuggestedPrompt] = useState("");
+  const [errorDismissed, setErrorDismissed] = useState(false);
 
   const initializationRef = useRef(false);
   const messagesContainerRef = useRef(null);
@@ -114,7 +117,7 @@ export default function Assistant() {
     initializeAssistant();
   }, [currentChat?._id, loadChats, loadChat, createChat]);
 
-  // Keeps the conversation positioned at the latest message when a chat is opened.
+  // Keeps the conversation positioned at the latest message when the chat or message list changes.
   useEffect(() => {
     const chatId = currentChat?._id;
     const messageCount = currentChat?.messages?.length || 0;
@@ -147,6 +150,12 @@ export default function Assistant() {
     });
   }, [sending]);
 
+  useEffect(() => {
+    if (error) {
+      setErrorDismissed(false);
+    }
+  }, [error]);
+
   // Opens the selected conversation and closes the mobile sidebar.
   async function handleSelectChat(chatId) {
     setSuggestedPrompt("");
@@ -171,7 +180,7 @@ export default function Assistant() {
 
   // Places a predefined health question into the message composer.
   function handleSuggestion(prompt) {
-    if (conversationLimitReached) {
+    if (conversationLimitReached || sending) {
       return;
     }
 
@@ -180,7 +189,7 @@ export default function Assistant() {
 
   // Sends a text message through the active conversation.
   async function handleSendMessage({ content }) {
-    if (conversationLimitReached) {
+    if (conversationLimitReached || sending) {
       return;
     }
 
@@ -239,9 +248,19 @@ export default function Assistant() {
           {/* Main conversation area. */}
           <section className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-white">
             {/* Displays assistant errors when present. */}
-            {error && (
-              <div className="shrink-0 border-b border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700 sm:px-6">
-                {error}
+            {error && !errorDismissed && (
+              <div className="flex shrink-0 items-start gap-3 border-b border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700 sm:px-6">
+                <p className="min-w-0 flex-1 leading-5">{error}</p>
+
+                <button
+                  type="button"
+                  onClick={() => setErrorDismissed(true)}
+                  className="shrink-0 rounded-md p-1 text-red-400 transition hover:bg-red-100 hover:text-red-700"
+                  aria-label="Dismiss error"
+                  title="Dismiss"
+                >
+                  <X size={16} />
+                </button>
               </div>
             )}
 
@@ -266,6 +285,7 @@ export default function Assistant() {
                       />
                     ))}
 
+                    {/* Shows the assistant typing state directly below the optimistic user message. */}
                     {sending && (
                       <ChatMessage
                         message={{
@@ -298,7 +318,7 @@ export default function Assistant() {
                   </div>
                 )}
 
-                <p className="mb-1  text-center text-[11px] leading-4 text-slate-400">
+                <p className="mb-1 text-center text-[11px] leading-4 text-slate-400">
                   {conversationLimitReached
                     ? "Create a new chat to continue."
                     : `${currentUserMessageCount}/${MAX_USER_MESSAGES_PER_CHAT} messages used in this chat.`}

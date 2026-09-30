@@ -11,6 +11,8 @@ import {
   addAIChatMessage,
 } from "../services/aiChatStorageService.js";
 
+import { AI_CHAT_MESSAGE_LIMIT } from "../models/AIChat.js";
+
 // Returns the user's recent AI chats and current chat usage.
 export async function getAIChats(req, res) {
   try {
@@ -44,8 +46,8 @@ export async function getAIChat(req, res) {
     res.json({
       ...chat,
       userMessageCount,
-      messageLimit: 20,
-      reachedMessageLimit: userMessageCount >= 20,
+      messageLimit: AI_CHAT_MESSAGE_LIMIT,
+      reachedMessageLimit: userMessageCount >= AI_CHAT_MESSAGE_LIMIT,
     });
   } catch (error) {
     console.error("Failed to fetch AI chat:", error);
@@ -64,7 +66,7 @@ export async function createAIChat(req, res) {
     res.status(201).json({
       ...chat.toObject(),
       userMessageCount: 0,
-      messageLimit: 20,
+      messageLimit: AI_CHAT_MESSAGE_LIMIT,
       reachedMessageLimit: false,
     });
   } catch (error) {
@@ -73,13 +75,14 @@ export async function createAIChat(req, res) {
     if (error.code === "DAILY_CHAT_LIMIT") {
       return res.status(429).json({
         message:
-          "You have reached today's chat creation limit. You can create new chats again tomorrow.",
+          "You've reached today's 2-chat limit. You can create a new conversation tomorrow.",
         code: "DAILY_CHAT_LIMIT",
       });
     }
 
     res.status(500).json({
-      message: "Failed to create chat.",
+      message: "We couldn't create a new chat right now. Please try again.",
+      code: "CHAT_CREATION_FAILED",
     });
   }
 }
@@ -98,6 +101,7 @@ export async function sendAIChatMessage(req, res) {
     if (result.notFound) {
       return res.status(404).json({
         message: "Chat not found.",
+        code: "CHAT_NOT_FOUND",
       });
     }
 
@@ -107,14 +111,55 @@ export async function sendAIChatMessage(req, res) {
 
     if (error.code === "CHAT_MESSAGE_LIMIT") {
       return res.status(429).json({
-        message:
-          "This chat has reached its 20-message limit. Please create a new chat.",
+        message: `This chat has reached its ${AI_CHAT_MESSAGE_LIMIT}-message limit. Please create a new chat to continue.`,
         code: "CHAT_MESSAGE_LIMIT",
       });
     }
 
+    if (error.code === "AI_TIMEOUT") {
+      return res.status(504).json({
+        message:
+          "The assistant is taking longer than expected. Please try a shorter or more focused question.",
+        code: "AI_TIMEOUT",
+      });
+    }
+
+    if (error.code === "AI_RATE_LIMIT") {
+      return res.status(429).json({
+        message:
+          "The assistant is temporarily busy. Please wait a moment and try again.",
+        code: "AI_RATE_LIMIT",
+      });
+    }
+
+    if (error.code === "AI_EMPTY_RESPONSE") {
+      return res.status(502).json({
+        message:
+          "I couldn't generate a useful answer this time. Please try rephrasing your question.",
+        code: "AI_EMPTY_RESPONSE",
+      });
+    }
+
+    if (error.code === "AI_CONTEXT_UNAVAILABLE") {
+      return res.status(503).json({
+        message:
+          "Your health information is temporarily unavailable. Please try again in a moment.",
+        code: "AI_CONTEXT_UNAVAILABLE",
+      });
+    }
+
+    if (error.code === "AI_GENERATION_FAILED") {
+      return res.status(502).json({
+        message:
+          "I couldn't answer that right now. Please try again in a moment.",
+        code: "AI_GENERATION_FAILED",
+      });
+    }
+
     res.status(500).json({
-      message: "Failed to generate assistant response.",
+      message:
+        "I couldn't generate a response right now. Please try again in a moment.",
+      code: "AI_CHAT_FAILED",
     });
   }
 }

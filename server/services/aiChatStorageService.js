@@ -1,12 +1,13 @@
 // server/services/aiChatStorageService.js
 
 // Handles AI chat quotas, persistence, retrieval, messaging, and deletion.
-// Enforces daily creation, conversation, and message limits at the server layer.
+// Enforces daily creation, conversation, message, and message-length limits.
 
 import AIChat, {
   AI_CHAT_LIMIT,
   AI_CHAT_DAILY_CREATE_LIMIT,
   AI_CHAT_MESSAGE_LIMIT,
+  AI_CHAT_USER_MESSAGE_MAX_LENGTH,
 } from "../models/AIChat.js";
 
 import AIChatDailyUsage from "../models/AIChatDailyUsage.js";
@@ -71,7 +72,7 @@ async function consumeDailyChatCreation(userId) {
       return usage;
     }
 
-    // Create the daily record when the user has not created a chat today.
+    // Creates the daily record when the user has not created a chat today.
     const created = await AIChatDailyUsage.create({
       user: userId,
       dateKey,
@@ -80,8 +81,7 @@ async function consumeDailyChatCreation(userId) {
 
     return created.toObject();
   } catch (error) {
-    // A duplicate-key race means another request created the same daily
-    // usage record first. Re-check the record before rejecting the request.
+    // Handles a concurrent request that created today's usage record first.
     if (error?.code === 11000) {
       const usage = await AIChatDailyUsage.findOne({
         user: userId,
@@ -114,6 +114,7 @@ async function consumeDailyChatCreation(userId) {
 
       const limitError = new Error("Daily chat creation limit reached.");
       limitError.code = "DAILY_CHAT_LIMIT";
+
       throw limitError;
     }
 
@@ -183,21 +184,17 @@ export async function createNewAIChat(userId) {
   if (dailyUsage.chatCount >= AI_CHAT_DAILY_CREATE_LIMIT) {
     const error = new Error("Daily chat creation limit reached.");
     error.code = "DAILY_CHAT_LIMIT";
+
     throw error;
   }
 
-  const consumedUsage = await consumeDailyChatCreation(userId);
-
-  if (consumedUsage.chatCount > AI_CHAT_DAILY_CREATE_LIMIT) {
-    const error = new Error("Daily chat creation limit reached.");
-    error.code = "DAILY_CHAT_LIMIT";
-    throw error;
-  }
+  await consumeDailyChatCreation(userId);
 
   const chatCount = await AIChat.countDocuments({
     user: userId,
   });
 
+  // Removes the oldest active chat before creating a new one.
   if (chatCount >= AI_CHAT_LIMIT) {
     const oldestChat = await AIChat.findOne({
       user: userId,
@@ -240,7 +237,7 @@ export async function addAIChatMessage({ userId, chatId, content }) {
 
   if (userMessageCount >= AI_CHAT_MESSAGE_LIMIT) {
     const error = new Error(
-      "This chat has reached its 20-message limit. Please create a new chat.",
+      `This chat has reached its ${AI_CHAT_MESSAGE_LIMIT}-message limit.`,
     );
 
     error.code = "CHAT_MESSAGE_LIMIT";
@@ -248,13 +245,38 @@ export async function addAIChatMessage({ userId, chatId, content }) {
     throw error;
   }
 
-  const trimmedContent = content.trim();
+  const trimmedContent = typeof content === "string" ? content.trim() : "";
 
+  if (!trimmedContent) {
+    const error = new Error("Message is required.");
+    error.code = "INVALID_CHAT_MESSAGE";
+
+    throw error;
+  }
+
+  if (trimmedContent.length > AI_CHAT_USER_MESSAGE_MAX_LENGTH) {
+    const error = new Error(
+      `Message must be ${AI_CHAT_USER_MESSAGE_MAX_LENGTH} characters or fewer.`,
+    );
+
+    error.code = "CHAT_MESSAGE_TOO_LONG";
+
+    throw error;
+  }
+
+  // Generates the assistant response before changing the stored conversation.
   const assistantResponse = await generateChatResponse({
     userId,
     chat,
     userMessage: trimmedContent,
   });
+
+  if (!assistantResponse?.trim()) {
+    const error = new Error("AI returned an empty response.");
+    error.code = "AI_EMPTY_RESPONSE";
+
+    throw error;
+  }
 
   chat.messages.push({
     role: "user",
@@ -263,7 +285,7 @@ export async function addAIChatMessage({ userId, chatId, content }) {
 
   chat.messages.push({
     role: "assistant",
-    content: assistantResponse,
+    content: assistantResponse.trim(),
   });
 
   const updatedUserMessageCount = chat.messages.filter(
@@ -283,7 +305,7 @@ export async function addAIChatMessage({ userId, chatId, content }) {
 
   return {
     chat: savedChat,
-    message: assistantResponse,
+    message: assistantResponse.trim(),
     userMessageCount: updatedUserMessageCount,
     messageLimit: AI_CHAT_MESSAGE_LIMIT,
     reachedMessageLimit: updatedUserMessageCount >= AI_CHAT_MESSAGE_LIMIT,

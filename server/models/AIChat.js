@@ -9,6 +9,9 @@ export const AI_CHAT_LIMIT = 10;
 export const AI_CHAT_DAILY_CREATE_LIMIT = 2;
 export const AI_CHAT_MESSAGE_LIMIT = 20;
 
+export const AI_CHAT_USER_MESSAGE_MAX_LENGTH = 350;
+export const AI_CHAT_ASSISTANT_MESSAGE_MAX_LENGTH = 800;
+
 // Defines the schema for individual conversation messages.
 const aiChatMessageSchema = new mongoose.Schema(
   {
@@ -22,7 +25,25 @@ const aiChatMessageSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      maxlength: 350,
+      validate: {
+        validator(value) {
+          const maxLength =
+            this.role === "assistant"
+              ? AI_CHAT_ASSISTANT_MESSAGE_MAX_LENGTH
+              : AI_CHAT_USER_MESSAGE_MAX_LENGTH;
+
+          return value.length <= maxLength;
+        },
+
+        message(props) {
+          const maxLength =
+            props.value?.length > AI_CHAT_ASSISTANT_MESSAGE_MAX_LENGTH
+              ? AI_CHAT_ASSISTANT_MESSAGE_MAX_LENGTH
+              : AI_CHAT_USER_MESSAGE_MAX_LENGTH;
+
+          return `Message cannot exceed ${maxLength} characters.`;
+        },
+      },
     },
 
     createdAt: {

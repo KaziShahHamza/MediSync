@@ -25,12 +25,17 @@ function formatTime(date) {
   });
 
   const day = value.toLocaleDateString([], {
+    weekday: "short",
+  });
+
+  const dateText = value.toLocaleDateString([], {
     day: "numeric",
     month: "short",
   });
 
-  return `${time}, ${day}`;
+  return `${time}, ${day}, ${dateText}`;
 }
+
 
 // Converts assistant phone numbers into clickable WhatsApp actions.
 function renderText(text, isUser) {
