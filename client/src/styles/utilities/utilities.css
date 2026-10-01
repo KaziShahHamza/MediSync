@@ -20,6 +20,17 @@ input[type="reset"],
   cursor: pointer;
 }
 
+button:not(:disabled),
+a,
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 ::-webkit-scrollbar {
   width: 14px;
   height: 14px;

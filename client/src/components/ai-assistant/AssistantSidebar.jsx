@@ -2,7 +2,7 @@
 
 // Renders the conversation history sidebar for the health assistant.
 // Handles conversation selection, creation, deletion, and mobile closing.
-// Displays conversation counts and the daily chat creation limit.
+// Displays server-backed conversation counts and daily chat creation usage.
 
 import { MessageSquare, Plus, Trash2, X } from "lucide-react";
 
@@ -48,7 +48,7 @@ export default function AssistantSidebar({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      {/* Render sidebar heading and mobile close control. */}
+      {/* Renders sidebar heading and mobile close control. */}
       <div className="flex h-14 shrink-0 items-center justify-between border-b border-slate-200 px-4 sm:h-16">
         <div>
           <h2 className="text-sm font-semibold text-slate-900">
@@ -56,7 +56,7 @@ export default function AssistantSidebar({
           </h2>
 
           <p className="mt-0.5 text-xs text-slate-500">
-            Conversations · {chats.length}/10
+            Conversations · {chats.length} of 10
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function AssistantSidebar({
         )}
       </div>
 
-      {/* Provide the action for starting a new conversation. */}
+      {/* Provides the action for starting a new conversation. */}
       <div className="p-3">
         <button
           type="button"
@@ -115,7 +115,7 @@ export default function AssistantSidebar({
         </div>
       </div>
 
-      {/* Render loading, empty, or available conversation states. */}
+      {/* Renders loading, empty, or available conversation states. */}
       <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-3">
         {loading ? (
           <div className="space-y-2 px-2 py-2">
@@ -201,7 +201,7 @@ export default function AssistantSidebar({
         )}
       </div>
 
-      {/* Keep the emergency guidance visible below conversation history. */}
+      {/* Keeps the emergency guidance visible below conversation history. */}
       <div className="shrink-0 border-t border-slate-200 p-3">
         <div className="rounded-xl bg-slate-100 px-3 py-2.5">
           <p className="text-[11px] leading-4 text-slate-500">

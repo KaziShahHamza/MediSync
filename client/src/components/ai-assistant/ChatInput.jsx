@@ -82,10 +82,10 @@ export default function ChatInput({
 
   // Focuses the message field whenever the input becomes available.
   useEffect(() => {
-    if (!disabled) {
+    if (!disabled && !loading) {
       textareaRef.current?.focus();
     }
-  }, [disabled]);
+  }, [disabled, loading]);
 
   // Validates the current message before sending it to the context.
   const validateMessage = (value) => {

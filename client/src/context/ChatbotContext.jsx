@@ -2,7 +2,7 @@
 
 // Manages AI assistant conversations, quotas, active chat state, and chat actions.
 // Provides optimistic user-message rendering while the assistant response is generated.
-// Connects the assistant UI to the authenticated text-only AI chat API.
+// Uses server-backed daily chat usage as the authoritative creation limit.
 
 import {
   createContext,
@@ -21,6 +21,22 @@ const DEFAULT_DAILY_CHAT_LIMIT = 2;
 const DEFAULT_TOTAL_CHAT_LIMIT = 10;
 
 function getFriendlyChatError(data, status) {
+  if (data?.code === "DAILY_CHAT_LIMIT") {
+    return "You've reached today's 2-chat limit. You can create a new conversation tomorrow.";
+  }
+
+  if (data?.code === "CHAT_MESSAGE_LIMIT") {
+    return "This chat has reached its 20-message limit. Please create a new chat to continue.";
+  }
+
+  if (data?.code === "CHAT_MESSAGE_TOO_LONG") {
+    return "Your message is too long. Please keep it within 350 characters.";
+  }
+
+  if (data?.code === "INVALID_CHAT_MESSAGE") {
+    return "Please enter a valid health question.";
+  }
+
   if (data?.code === "AI_TIMEOUT") {
     return "The response is taking longer than expected. Please try asking a shorter or more focused question.";
   }
@@ -31,6 +47,14 @@ function getFriendlyChatError(data, status) {
 
   if (data?.code === "AI_EMPTY_RESPONSE") {
     return "I couldn't generate a useful response. Please try rephrasing your question.";
+  }
+
+  if (data?.code === "AI_CONTEXT_UNAVAILABLE") {
+    return "Your health information is temporarily unavailable. Please try again in a moment.";
+  }
+
+  if (data?.code === "AI_GENERATION_FAILED") {
+    return "I couldn't answer that right now. Please try again in a moment.";
   }
 
   if (status >= 500) {
@@ -91,7 +115,28 @@ export function ChatbotProvider({ children }) {
       setChats(loadedChats);
 
       if (data.usage) {
-        setChatUsage(data.usage);
+        setChatUsage({
+          dailyChatCount:
+            typeof data.usage.dailyChatCount === "number"
+              ? data.usage.dailyChatCount
+              : 0,
+          dailyChatLimit:
+            typeof data.usage.dailyChatLimit === "number"
+              ? data.usage.dailyChatLimit
+              : DEFAULT_DAILY_CHAT_LIMIT,
+          dailyChatsRemaining:
+            typeof data.usage.dailyChatsRemaining === "number"
+              ? data.usage.dailyChatsRemaining
+              : DEFAULT_DAILY_CHAT_LIMIT,
+          totalChatCount:
+            typeof data.usage.totalChatCount === "number"
+              ? data.usage.totalChatCount
+              : 0,
+          totalChatLimit:
+            typeof data.usage.totalChatLimit === "number"
+              ? data.usage.totalChatLimit
+              : DEFAULT_TOTAL_CHAT_LIMIT,
+        });
       }
 
       return loadedChats;
@@ -121,7 +166,11 @@ export function ChatbotProvider({ children }) {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Failed to load conversation.");
+          const error = new Error(getFriendlyChatError(data, response.status));
+
+          error.code = data.code;
+
+          throw error;
         }
 
         setCurrentChat(data);
@@ -137,7 +186,7 @@ export function ChatbotProvider({ children }) {
     [getAuthHeaders],
   );
 
-  // Creates a new conversation when the server quota allows it.
+  // Creates a new conversation while keeping the persistent daily usage state intact after deletion.
   const createChat = useCallback(async () => {
     setError("");
 
@@ -150,9 +199,7 @@ export function ChatbotProvider({ children }) {
       const data = await response.json();
 
       if (!response.ok) {
-        const error = new Error(
-          data.message || "Failed to create conversation.",
-        );
+        const error = new Error(getFriendlyChatError(data, response.status));
 
         error.code = data.code;
 
@@ -161,16 +208,21 @@ export function ChatbotProvider({ children }) {
 
       setCurrentChat(data);
 
-      setChats((previous) => [
-        {
-          ...data,
-          userMessageCount: 0,
-          messageLimit: DEFAULT_MESSAGE_LIMIT,
-          reachedMessageLimit: false,
-        },
-        ...previous.filter((chat) => chat._id !== data._id),
-      ]);
+      setChats((previous) => {
+        const updatedChats = [
+          {
+            ...data,
+            userMessageCount: 0,
+            messageLimit: DEFAULT_MESSAGE_LIMIT,
+            reachedMessageLimit: false,
+          },
+          ...previous.filter((chat) => chat._id !== data._id),
+        ];
 
+        return updatedChats.slice(0, DEFAULT_TOTAL_CHAT_LIMIT);
+      });
+
+      // A successful server response means one daily creation allowance was consumed.
       setChatUsage((previous) => ({
         ...previous,
         dailyChatCount: Math.min(
@@ -263,7 +315,7 @@ export function ChatbotProvider({ children }) {
         const data = await response.json();
 
         if (!response.ok) {
-          const error = new Error(data.message || "Failed to send message.");
+          const error = new Error(getFriendlyChatError(data, response.status));
 
           error.code = data.code;
 
@@ -273,7 +325,13 @@ export function ChatbotProvider({ children }) {
         const updatedChat = data.chat;
 
         if (!updatedChat) {
-          throw new Error("Invalid chat response from the server.");
+          const error = new Error(
+            "I couldn't update the conversation right now.",
+          );
+
+          error.code = "CHAT_UPDATE_FAILED";
+
+          throw error;
         }
 
         const userMessageCount =
@@ -307,7 +365,10 @@ export function ChatbotProvider({ children }) {
             (chat) => chat._id !== updatedChat._id,
           );
 
-          return [updatedSummary, ...withoutCurrent];
+          return [updatedSummary, ...withoutCurrent].slice(
+            0,
+            DEFAULT_TOTAL_CHAT_LIMIT,
+          );
         });
 
         return updatedChat;
@@ -358,11 +419,16 @@ export function ChatbotProvider({ children }) {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Failed to delete conversation.");
+          const error = new Error(getFriendlyChatError(data, response.status));
+
+          error.code = data.code;
+
+          throw error;
         }
 
         setChats((previous) => previous.filter((chat) => chat._id !== chatId));
 
+        // Deleting a chat changes active chat count, not today's creation count.
         setChatUsage((previous) => ({
           ...previous,
           totalChatCount: Math.max(previous.totalChatCount - 1, 0),

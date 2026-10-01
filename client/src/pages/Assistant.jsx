@@ -1,7 +1,7 @@
 // client/src/pages/Assistant.jsx
 
 // Renders the AI health assistant workspace and conversation interface.
-// Enforces conversation message limits and communicates daily chat usage.
+// Enforces conversation message limits and communicates server-backed daily chat usage.
 // Connects chat actions to the assistant sidebar, messages, and composer.
 
 import { useEffect, useRef, useState } from "react";
@@ -16,30 +16,6 @@ import ChatInput from "../components/ai-assistant/ChatInput";
 import ChatEmptyState from "../components/ai-assistant/ChatEmptyState";
 
 const MAX_USER_MESSAGES_PER_CHAT = 20;
-const DAILY_CHAT_LIMIT = 2;
-
-// Returns the number of conversations created today using the local date.
-function getChatsCreatedToday(chats = []) {
-  const now = new Date();
-
-  return chats.filter((chat) => {
-    if (!chat.createdAt) {
-      return false;
-    }
-
-    const createdAt = new Date(chat.createdAt);
-
-    if (Number.isNaN(createdAt.getTime())) {
-      return false;
-    }
-
-    return (
-      createdAt.getFullYear() === now.getFullYear() &&
-      createdAt.getMonth() === now.getMonth() &&
-      createdAt.getDate() === now.getDate()
-    );
-  }).length;
-}
 
 // Counts only user messages because the conversation limit is based on user input.
 function getUserMessageCount(chat) {
@@ -58,6 +34,8 @@ export default function Assistant() {
     loadingChat,
     sending,
     error,
+    chatUsage,
+    canCreateChat,
     loadChats,
     loadChat,
     createChat,
@@ -74,8 +52,9 @@ export default function Assistant() {
   const previousChatIdRef = useRef(null);
   const previousMessageCountRef = useRef(0);
 
-  const dailyChatsCreated = getChatsCreatedToday(chats);
-  const dailyLimitReached = dailyChatsCreated >= DAILY_CHAT_LIMIT;
+  const dailyChatsCreated = chatUsage.dailyChatCount;
+  const dailyChatLimit = chatUsage.dailyChatLimit;
+  const dailyLimitReached = !canCreateChat;
 
   const currentUserMessageCount = getUserMessageCount(currentChat);
   const conversationLimitReached =
@@ -150,6 +129,7 @@ export default function Assistant() {
     });
   }, [sending]);
 
+  // Reopens the error banner whenever a new error is received.
   useEffect(() => {
     if (error) {
       setErrorDismissed(false);
@@ -165,7 +145,7 @@ export default function Assistant() {
     setSidebarOpen(false);
   }
 
-  // Creates a new conversation when the daily creation limit has not been reached.
+  // Creates a new conversation only when the server-backed daily quota allows it.
   async function handleNewChat() {
     if (dailyLimitReached) {
       return;
@@ -173,9 +153,11 @@ export default function Assistant() {
 
     setSuggestedPrompt("");
 
-    await createChat();
+    const createdChat = await createChat();
 
-    setSidebarOpen(false);
+    if (createdChat) {
+      setSidebarOpen(false);
+    }
   }
 
   // Places a predefined health question into the message composer.
@@ -211,7 +193,7 @@ export default function Assistant() {
               currentChat={currentChat}
               loading={loadingChats}
               dailyChatsCreated={dailyChatsCreated}
-              dailyChatLimit={DAILY_CHAT_LIMIT}
+              dailyChatLimit={dailyChatLimit}
               onSelectChat={handleSelectChat}
               onNewChat={handleNewChat}
               onDeleteChat={deleteChat}
@@ -235,7 +217,7 @@ export default function Assistant() {
                   loading={loadingChats}
                   mobile
                   dailyChatsCreated={dailyChatsCreated}
-                  dailyChatLimit={DAILY_CHAT_LIMIT}
+                  dailyChatLimit={dailyChatLimit}
                   onSelectChat={handleSelectChat}
                   onNewChat={handleNewChat}
                   onDeleteChat={deleteChat}
