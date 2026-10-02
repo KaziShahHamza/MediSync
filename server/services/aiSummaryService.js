@@ -5,7 +5,7 @@
 
 import AIReport from "../models/AIReport.js";
 
-import { getAIHealthData } from "./dashboardService.js";
+import { getAIHealthData } from "./aiHealthDataService.js";
 import { generateAIHealthSummary } from "./aiService.js";
 
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;

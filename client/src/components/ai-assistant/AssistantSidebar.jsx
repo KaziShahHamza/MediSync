@@ -6,6 +6,8 @@
 
 import { MessageSquare, Plus, Trash2, X } from "lucide-react";
 
+import { DEFAULT_MESSAGE_LIMIT } from "../../utils/chatbotHelpers";
+
 // Formats the conversation's last activity date for compact sidebar display.
 function formatChatDate(date) {
   if (!date) return "";
@@ -141,7 +143,8 @@ export default function AssistantSidebar({
             {chats.map((chat) => {
               const active = currentChat?._id === chat._id;
               const messageCount = chat.userMessageCount ?? 0;
-              const chatLimitReached = messageCount >= 20;
+
+              const chatLimitReached = messageCount >= DEFAULT_MESSAGE_LIMIT;
 
               return (
                 <div
@@ -172,7 +175,7 @@ export default function AssistantSidebar({
                       <p className="mt-0.5 text-[10px] text-slate-400">
                         {formatChatDate(chat.updatedAt)}
                         {" · "}
-                        {messageCount}/20{" "}
+                        {messageCount}/{DEFAULT_MESSAGE_LIMIT}{" "}
                         {messageCount === 1 ? "message" : "messages"}
                       </p>
 

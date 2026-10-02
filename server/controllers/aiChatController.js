@@ -8,8 +8,9 @@ import {
   findAIChat,
   createNewAIChat,
   deleteAIChatById,
-  addAIChatMessage,
 } from "../services/aiChatStorageService.js";
+
+import { addAIChatMessage } from "../services/aiChatMessageService.js";
 
 import { AI_CHAT_MESSAGE_LIMIT } from "../models/AIChat.js";
 
