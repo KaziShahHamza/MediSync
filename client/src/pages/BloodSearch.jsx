@@ -1,7 +1,7 @@
 // client/src/pages/BloodSearch.jsx
 
 // Renders the blood donor search page.
-// Connects donor search state and filters to the search components.
+// Connects donor search state, filters, pagination, and result components.
 
 import { Droplets } from "lucide-react";
 
@@ -10,7 +10,7 @@ import DonorResults from "../components/blood/find-donor/DonorResults";
 
 import useBloodSearch from "../hooks/useBloodSearch";
 
-// Provides donor search and result display functionality.
+// Provides donor search, pagination, and result display functionality.
 export default function BloodSearch() {
   const {
     bloodGroup,
@@ -22,12 +22,16 @@ export default function BloodSearch() {
     compensation,
     setCompensation,
     donors,
+    totalDonors,
     loading,
     searched,
     error,
     upazilas,
+    currentPage,
+    totalPages,
     handleSearch,
     handleReset,
+    handlePageChange,
   } = useBloodSearch();
 
   return (
@@ -64,12 +68,16 @@ export default function BloodSearch() {
       {/* Displays search errors. */}
       {error && <div className="alert alert-danger mb-8">{error}</div>}
 
-      {/* Displays matching donor results. */}
+      {/* Displays matching donor results and pagination. */}
       <DonorResults
         donors={donors}
+        totalDonors={totalDonors}
         searched={searched}
         loading={loading}
         error={error}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
       />
     </main>
   );

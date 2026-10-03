@@ -18,21 +18,37 @@ import { authorizeBloodRequest } from "../../middlewares/bloodRequestAuth.js";
 
 import { findDonors } from "../../services/blood/bloodDonorService.js";
 
-// Retrieves list of eligible donors matching criteria
+// Retrieves a paginated list of eligible donors matching criteria.
 export async function getDonors(req, res) {
   try {
     const { bloodGroup, district, upazila, compensation } = req.query;
 
-    // Fetch matching donors from service layer
-    const donors = await findDonors({
+    const page = Number.parseInt(req.query.page, 10) || 1;
+
+    const limit = 20;
+
+    // Prevent invalid page numbers from reaching the service layer.
+    const currentPage = Math.max(page, 1);
+
+    // Fetch the requested donor page and pagination metadata.
+    const result = await findDonors({
       bloodGroup,
       district,
       upazila,
       compensation,
+      page: currentPage,
+      limit,
     });
 
     return res.json({
-      donors,
+      donors: result.donors,
+
+      pagination: {
+        currentPage: result.currentPage,
+        totalPages: result.totalPages,
+        totalDonors: result.totalDonors,
+        limit: result.limit,
+      },
     });
   } catch (error) {
     console.error("Failed to fetch blood donors:", error);
@@ -43,7 +59,7 @@ export async function getDonors(req, res) {
   }
 }
 
-// Updates an existing blood request if valid and authorized
+// Updates an existing blood request if valid and authorized.
 export async function updateBloodRequest(req, res) {
   try {
     const { id } = req.params;
@@ -56,7 +72,7 @@ export async function updateBloodRequest(req, res) {
       });
     }
 
-    // Retrieve active record to ensure existence
+    // Retrieve active record to ensure existence.
     const request = await findRequestForUpdate(id);
 
     if (!request) {
@@ -65,14 +81,14 @@ export async function updateBloodRequest(req, res) {
       });
     }
 
-    // Reject modifications to expired requests
+    // Reject modifications to expired requests.
     if (request.expiresAt <= new Date()) {
       return res.status(404).json({
         message: "This blood request has expired.",
       });
     }
 
-    // Check modifying permissions via bearer token or guest token
+    // Check modifying permissions via bearer token or guest token.
     const authorized = authorizeBloodRequest(req, request);
 
     if (!authorized) {
@@ -81,7 +97,7 @@ export async function updateBloodRequest(req, res) {
       });
     }
 
-    // Save updated request data to storage
+    // Save updated request data to storage.
     const updatedRequest = await updateRequest(request, req.body);
 
     return res.json({
@@ -98,7 +114,7 @@ export async function updateBloodRequest(req, res) {
   }
 }
 
-// Deletes a blood request record after passing authorization
+// Deletes a blood request record after passing authorization.
 export async function deleteBloodRequest(req, res) {
   try {
     const { id } = req.params;
@@ -111,7 +127,7 @@ export async function deleteBloodRequest(req, res) {
       });
     }
 
-    // Confirm permissions before performing deletion
+    // Confirm permissions before performing deletion.
     const authorized = authorizeBloodRequest(req, request);
 
     if (!authorized) {
@@ -120,7 +136,7 @@ export async function deleteBloodRequest(req, res) {
       });
     }
 
-    // Remove blood request entry
+    // Remove blood request entry.
     await deleteRequest(request);
 
     return res.json({
