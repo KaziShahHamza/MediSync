@@ -1,11 +1,14 @@
-// client/src/hooks/useBloodRequestActions.js
+// client/src/hooks/blood-request/useBloodRequestActions.js
 
 // Manages blood request form, modal, editing, deletion, and token actions.
 // Delegates request submission to the dedicated submission hook.
 
+import { useState } from "react";
+
 import {
   getManagementToken,
   removeManagementToken,
+  saveManagementToken,
 } from "../../utils/blood/bloodRequestStorage";
 
 import {
@@ -36,6 +39,18 @@ export default function useBloodRequestActions({
   fetchBloodRequests,
   isEditingRequestRef,
 }) {
+  const [managementTokenModalOpen, setManagementTokenModalOpen] =
+    useState(false);
+
+  const [managementTokenRequest, setManagementTokenRequest] = useState(null);
+
+  const [managementTokenAction, setManagementTokenAction] = useState(null);
+
+  const [managementTokenSubmitting, setManagementTokenSubmitting] =
+    useState(false);
+
+  const [managementTokenError, setManagementTokenError] = useState("");
+
   // Updates form fields from user input.
   const handleRequestChange = (event) => {
     const { name, value } = event.target;
@@ -108,14 +123,92 @@ export default function useBloodRequestActions({
     fetchBloodRequests,
   });
 
-  // Loads an existing request into the editable form.
-  const handleEditRequest = (request) => {
-    const savedToken = getManagementToken(request.id);
+  // Opens token authorization when guest management access is required.
+  const openManagementTokenModal = (request, action) => {
+    setManagementTokenRequest(request);
+    setManagementTokenAction(action);
+    setManagementTokenError("");
+    setManagementTokenModalOpen(true);
+  };
 
-    if (!user && !savedToken) {
-      setRequestError(
-        "You do not have the management access for this request.",
+  // Closes the management token modal and clears its temporary state.
+  const closeManagementTokenModal = () => {
+    if (managementTokenSubmitting) return;
+
+    setManagementTokenModalOpen(false);
+    setManagementTokenRequest(null);
+    setManagementTokenAction(null);
+    setManagementTokenError("");
+  };
+
+  // Verifies and stores a guest management token before continuing the action.
+  const handleManagementTokenSubmit = async (token) => {
+    const normalizedToken = token.trim();
+
+    if (!managementTokenRequest || !normalizedToken) {
+      return;
+    }
+
+    try {
+      setManagementTokenSubmitting(true);
+      setManagementTokenError("");
+
+      const response = await fetch(
+        `${API_URL}/api/blood/requests/${managementTokenRequest.id}/authorize`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            managementToken: normalizedToken,
+          }),
+        },
       );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Invalid management token.");
+      }
+
+      saveManagementToken(managementTokenRequest.id, normalizedToken);
+
+      setManagementToken(normalizedToken);
+
+      const request = managementTokenRequest;
+      const action = managementTokenAction;
+
+      setManagementTokenModalOpen(false);
+      setManagementTokenRequest(null);
+      setManagementTokenAction(null);
+
+      if (action === "edit") {
+        handleEditRequest(request, normalizedToken);
+      }
+
+      if (action === "delete") {
+        await handleDeleteRequest(request, normalizedToken);
+      }
+    } catch (err) {
+      console.error("Blood request token verification failed:", err);
+
+      setManagementTokenError(
+        err.message || "Unable to verify management token.",
+      );
+    } finally {
+      setManagementTokenSubmitting(false);
+    }
+  };
+
+  // Loads an existing request into the editable form.
+  const handleEditRequest = (request, authorizedToken = null) => {
+    const savedToken = authorizedToken || getManagementToken(request.id);
+
+    const isOwner = Boolean(user && request.isOwner);
+
+    if (!isOwner && !savedToken) {
+      openManagementTokenModal(request, "edit");
 
       return;
     }
@@ -145,11 +238,13 @@ export default function useBloodRequestActions({
   };
 
   // Deletes a request after verifying management access.
-  const handleDeleteRequest = async (request) => {
-    const savedToken = getManagementToken(request.id);
+  const handleDeleteRequest = async (request, authorizedToken = null) => {
+    const savedToken = authorizedToken || getManagementToken(request.id);
 
-    if (!user && !savedToken) {
-      window.alert("You do not have permission to delete this request.");
+    const isOwner = Boolean(user && request.isOwner);
+
+    if (!isOwner && !savedToken) {
+      openManagementTokenModal(request, "delete");
 
       return;
     }
@@ -221,5 +316,13 @@ export default function useBloodRequestActions({
     handleEditRequest,
     handleDeleteRequest,
     copyManagementToken,
+
+    managementTokenModalOpen,
+    managementTokenRequest,
+    managementTokenAction,
+    managementTokenSubmitting,
+    managementTokenError,
+    handleManagementTokenSubmit,
+    closeManagementTokenModal,
   };
 }

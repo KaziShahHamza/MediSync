@@ -135,6 +135,14 @@ export default function useBloodRequests() {
     handleEditRequest,
     handleDeleteRequest,
     copyManagementToken,
+
+    managementTokenModalOpen,
+    managementTokenRequest,
+    managementTokenAction,
+    managementTokenSubmitting,
+    managementTokenError,
+    handleManagementTokenSubmit,
+    closeManagementTokenModal,
   } = useBloodRequestActions({
     user,
     requestForm,
@@ -189,5 +197,13 @@ export default function useBloodRequests() {
     managementToken,
     copied,
     copyManagementToken,
+
+    managementTokenModalOpen,
+    managementTokenRequest,
+    managementTokenAction,
+    managementTokenSubmitting,
+    managementTokenError,
+    handleManagementTokenSubmit,
+    closeManagementTokenModal,
   };
 }

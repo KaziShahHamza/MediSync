@@ -7,6 +7,7 @@ import { Droplets, Plus } from "lucide-react";
 
 import BloodRequestList from "../components/blood/blood-request/BloodRequestList";
 import BloodRequestModal from "../components/blood/blood-request/BloodRequestModal";
+import ManagementTokenModal from "../components/blood/blood-request/ManagementTokenModal";
 
 import useBloodRequests from "../hooks/blood-request/useBloodRequests";
 
@@ -35,6 +36,14 @@ export default function BloodRequest() {
     managementToken,
     copied,
     copyManagementToken,
+
+    managementTokenModalOpen,
+    managementTokenRequest,
+    managementTokenAction,
+    managementTokenSubmitting,
+    managementTokenError,
+    handleManagementTokenSubmit,
+    closeManagementTokenModal,
   } = useBloodRequests();
 
   return (
@@ -114,6 +123,18 @@ export default function BloodRequest() {
           onSubmit={submitBloodRequest}
           onCopyToken={copyManagementToken}
           onClose={closeRequestModal}
+        />
+      )}
+
+      {/* Displays the management token verification modal when guest access is required. */}
+      {managementTokenModalOpen && (
+        <ManagementTokenModal
+          request={managementTokenRequest}
+          action={managementTokenAction}
+          submitting={managementTokenSubmitting}
+          error={managementTokenError}
+          onSubmit={handleManagementTokenSubmit}
+          onClose={closeManagementTokenModal}
         />
       )}
     </main>

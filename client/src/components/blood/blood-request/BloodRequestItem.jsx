@@ -1,7 +1,8 @@
 // client/src/components/blood/BloodRequestItem.jsx
 
 // Renders an individual blood request with responsive desktop and mobile layouts.
-// Provides contact and authorized request management actions.
+// Highlights requests the current user can manage and provides responsive
+// contact, edit, and delete actions.
 
 import { Clock, Droplets, Phone, Pencil, Trash2 } from "lucide-react";
 
@@ -13,15 +14,23 @@ import {
 import { getManagementToken } from "../../../utils/blood/bloodRequestStorage";
 
 export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
-  // Retrieve anonymous management authorization from local storage.
-  const savedToken = getManagementToken(request.id);
+  const isOwner = Boolean(user && request.isOwner);
+  const hasVerifiedManagementToken = Boolean(
+    !user && getManagementToken(request.id),
+  );
 
-  // Determine whether the current user can modify this request.
-  const canManage = Boolean(savedToken) || Boolean(user && request.isOwner);
+  const canManage = isOwner || hasVerifiedManagementToken;
+
+  const managementActionClass =
+    "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 shadow-sm transition-opacity hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700 lg:opacity-0 lg:pointer-events-none lg:group-hover:opacity-100 lg:group-hover:pointer-events-auto lg:group-focus-within:opacity-100 lg:group-focus-within:pointer-events-auto";
 
   return (
-    <div className="px-5 py-5 md:px-6">
-      {/* Render the full-width desktop request layout. */}
+    <div
+      className={`group px-5 py-5 md:px-6 ${
+        canManage ? "border-l-4 border-blue-500 bg-blue-50" : ""
+      }`}
+    >
+      {/* Desktop request layout. */}
       <div className="hidden lg:grid lg:grid-cols-[1fr_1fr_1.5fr_1.8fr_1fr_1fr] gap-4 items-center">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
@@ -34,6 +43,12 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
             </p>
 
             <p className="text-xs text-slate-500">Blood group</p>
+
+            {canManage && (
+              <span className="text-xs mt-1 p-1.5 rounded-2xl bg-gray-400/50 text-gray-800">
+                My request
+              </span>
+            )}
           </div>
         </div>
 
@@ -72,7 +87,6 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
           </p>
         </div>
 
-        {/* Display creation and expiration information. */}
         <div>
           <p className="text-xs text-slate-500">
             {formatTimeAgo(request.createdAt)}
@@ -83,8 +97,28 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
           </p>
         </div>
 
-        {/* Provide direct contact access on desktop. */}
-        <div className="flex justify-end">
+        {/* Contact and management actions stay on the same line. */}
+        <div className="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => onEdit(request)}
+            className={managementActionClass}
+            aria-label="Edit blood request"
+            title="Edit request"
+          >
+            <Pencil size={16} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onDelete(request)}
+            className={`${managementActionClass} hover:border-red-200 hover:bg-red-50 hover:text-red-600`}
+            aria-label="Delete blood request"
+            title="Delete request"
+          >
+            <Trash2 size={16} />
+          </button>
+
           <a href={`tel:${request.contactPhone}`} className="btn-primary">
             <Phone size={16} />
             Call
@@ -92,7 +126,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
         </div>
       </div>
 
-      {/* Render the compact stacked mobile request layout. */}
+      {/* Mobile request layout. */}
       <div className="lg:hidden">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -109,6 +143,12 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
                 {request.bagsNeeded} bag
                 {request.bagsNeeded !== 1 ? "s" : ""}
               </p>
+
+              {canManage && (
+                <span className="text-xs mt-1 p-1.5 rounded-2xl bg-gray-400/50 text-gray-800">
+                  My request
+                </span>
+              )}
             </div>
           </div>
 
@@ -140,7 +180,6 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
             </p>
           </div>
 
-          {/* Display compensation and expiration status together. */}
           <div className="flex flex-wrap items-center gap-2">
             <span
               className={`badge ${
@@ -154,44 +193,42 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
 
             <span className="badge">
               <Clock size={13} />
-
               {formatExpiry(request.expiresAt)}
             </span>
           </div>
         </div>
 
-        {/* Provide direct requester contact access on mobile. */}
-        <a
-          href={`tel:${request.contactPhone}`}
-          className="btn-primary w-full mt-5"
-        >
-          <Phone size={17} />
-          Call Requester
-        </a>
-      </div>
-
-      {/* Show modification actions only for authorized users. */}
-      {canManage && (
-        <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-slate-100">
+        {/* Contact and management actions stay on the same line on mobile. */}
+        <div className="mt-5 flex items-center gap-2">
           <button
             type="button"
             onClick={() => onEdit(request)}
-            className="btn-secondary h-10 px-4"
+            className={managementActionClass}
+            aria-label="Edit blood request"
+            title="Edit request"
           >
-            <Pencil size={15} />
-            Edit
+            <Pencil size={16} />
           </button>
 
           <button
             type="button"
             onClick={() => onDelete(request)}
-            className="btn-danger h-10 px-4"
+            className={`${managementActionClass} hover:border-red-200 hover:bg-red-50 hover:text-red-600`}
+            aria-label="Delete blood request"
+            title="Delete request"
           >
-            <Trash2 size={15} />
-            Delete
+            <Trash2 size={16} />
           </button>
+
+          <a
+            href={`tel:${request.contactPhone}`}
+            className="btn-primary flex-1"
+          >
+            <Phone size={17} />
+            Call Requester
+          </a>
         </div>
-      )}
+      </div>
     </div>
   );
 }

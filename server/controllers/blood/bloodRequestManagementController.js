@@ -18,6 +18,8 @@ import { authorizeBloodRequest } from "../../middlewares/bloodRequestAuth.js";
 
 import { findDonors } from "../../services/blood/bloodDonorService.js";
 
+import { hashManagementToken } from "../../utils/blood/bloodRequestHelpers.js";
+
 // Retrieves a paginated list of eligible donors matching criteria.
 export async function getDonors(req, res) {
   try {
@@ -147,6 +149,58 @@ export async function deleteBloodRequest(req, res) {
 
     return res.status(500).json({
       message: "Failed to delete blood request.",
+    });
+  }
+}
+
+// Verifies a public management token without exposing the stored token hash.
+export async function authorizeBloodRequestManagement(req, res) {
+  try {
+    const { id } = req.params;
+
+    const managementToken =
+      typeof req.body?.managementToken === "string"
+        ? req.body.managementToken.trim()
+        : "";
+
+    if (!managementToken) {
+      return res.status(400).json({
+        message: "Management token is required.",
+      });
+    }
+
+    const request = await findRequestForUpdate(id);
+
+    if (!request) {
+      return res.status(404).json({
+        message: "Blood request not found.",
+      });
+    }
+
+    if (request.expiresAt <= new Date()) {
+      return res.status(404).json({
+        message: "This blood request has expired.",
+      });
+    }
+
+    if (
+      !request.managementTokenHash ||
+      hashManagementToken(managementToken) !== request.managementTokenHash
+    ) {
+      return res.status(403).json({
+        message: "Invalid management token.",
+      });
+    }
+
+    return res.json({
+      authorized: true,
+      message: "Management access verified.",
+    });
+  } catch (error) {
+    console.error("Failed to verify blood request management token:", error);
+
+    return res.status(500).json({
+      message: "Failed to verify management token.",
     });
   }
 }

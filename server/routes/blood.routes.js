@@ -11,6 +11,7 @@ import {
 } from "../controllers/blood/bloodRequestController.js";
 
 import {
+  authorizeBloodRequestManagement,
   getDonors,
   updateBloodRequest,
   deleteBloodRequest,
@@ -26,6 +27,9 @@ router.post("/requests", createBloodRequest);
 
 // Route to fetch all active blood donation requests
 router.get("/requests", getBloodRequests);
+
+// Route to verify a public blood request management token
+router.post("/requests/:id/authorize", authorizeBloodRequestManagement);
 
 // Route to update an existing blood request by ID
 router.put("/requests/:id", updateBloodRequest);
