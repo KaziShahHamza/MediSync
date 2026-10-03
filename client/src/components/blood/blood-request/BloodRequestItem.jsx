@@ -17,7 +17,7 @@ export default function BloodRequestItem({ request, user, onEdit, onDelete }) {
   const savedToken = getManagementToken(request.id);
 
   // Determine whether the current user can modify this request.
-  const canManage = Boolean(savedToken) || Boolean(user && request.hasAccount);
+  const canManage = Boolean(savedToken) || Boolean(user && request.isOwner);
 
   return (
     <div className="px-5 py-5 md:px-6">

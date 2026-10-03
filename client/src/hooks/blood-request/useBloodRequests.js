@@ -85,7 +85,15 @@ export default function useBloodRequests() {
       setRequestsLoading(true);
       setRequestsError("");
 
-      const response = await fetch(`${API_URL}/api/blood/requests`);
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`${API_URL}/api/blood/requests`, {
+        headers: token
+          ? {
+              Authorization: `Bearer ${token}`,
+            }
+          : {},
+      });
 
       const data = await response.json();
 
@@ -103,13 +111,9 @@ export default function useBloodRequests() {
     }
   }, []);
 
-  // Loads requests initially and refreshes them every minute.
+  // Loads requests once when the blood request page initializes.
   useEffect(() => {
     fetchBloodRequests();
-
-    const interval = setInterval(fetchBloodRequests, 60000);
-
-    return () => clearInterval(interval);
   }, [fetchBloodRequests]);
 
   // Determines whether the selected hospital is predefined.

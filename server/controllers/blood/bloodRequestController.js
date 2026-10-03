@@ -159,6 +159,8 @@ export async function getBloodRequests(req, res) {
   try {
     const { bloodGroup, district, upazila, compensation } = req.query;
 
+    const authenticatedUserId = getOptionalAuthenticatedUser(req);
+
     const requests = await findActiveRequests({
       bloodGroup,
       district,
@@ -166,11 +168,15 @@ export async function getBloodRequests(req, res) {
       compensation,
     });
 
-    // Sanitize output data to remove sensitive fields before sending
+    // Sanitize output data and expose only current-user ownership.
     const publicRequests = requests.map((request) => ({
       ...publicRequestData(request),
 
-      hasAccount: Boolean(request.user),
+      isOwner: Boolean(
+        authenticatedUserId &&
+        request.user &&
+        request.user.toString() === authenticatedUserId,
+      ),
     }));
 
     return res.json({

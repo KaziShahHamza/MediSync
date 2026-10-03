@@ -82,7 +82,12 @@ export default function useSubmitBloodRequest({
       if (editingRequest) {
         setBloodRequests((previous) =>
           previous.map((item) =>
-            item.id === editingRequest.id ? data.request : item,
+            item.id === editingRequest.id
+              ? {
+                  ...data.request,
+                  isOwner: item.isOwner,
+                }
+              : item,
           ),
         );
 
