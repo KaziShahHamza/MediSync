@@ -1,10 +1,12 @@
-// server/controllers/prescriptionController.js
+// client/src/components/medical-record/MedicalRecordPage.jsx
 
 // Handles prescription CRUD operations and AI analysis requests.
 
 import Prescription from "../models/Prescription.js";
 
 import { generateMedicalDocumentSummary } from "../services/medicalDocumentAiService.js";
+
+const MAX_PRESCRIPTIONS_PER_USER = 5;
 
 // Fetch all prescriptions belonging to the authenticated user.
 export async function getPrescriptions(req, res) {
@@ -24,6 +26,16 @@ export async function getPrescriptions(req, res) {
 // Create a new prescription for the authenticated user.
 export async function createPrescription(req, res) {
   try {
+    const prescriptionCount = await Prescription.countDocuments({
+      user: req.userId,
+    });
+
+    if (prescriptionCount >= MAX_PRESCRIPTIONS_PER_USER) {
+      return res.status(400).json({
+        message: `You can add a maximum of ${MAX_PRESCRIPTIONS_PER_USER} prescriptions.`,
+      });
+    }
+
     const { title, imageUrl } = req.body;
 
     const prescription = await Prescription.create({

@@ -15,6 +15,8 @@ const ReportContext = createContext(null);
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+export const MAX_REPORTS_PER_USER = 5;
+
 // Provides report state and backend report operations.
 export function ReportProvider({ children }) {
   const [reports, setReports] = useState([]);
@@ -60,6 +62,8 @@ export function ReportProvider({ children }) {
     });
   }, [fetchReports]);
 
+  const reportLimitReached = reports.length >= MAX_REPORTS_PER_USER;
+
   return (
     <ReportContext.Provider
       value={{
@@ -67,6 +71,8 @@ export function ReportProvider({ children }) {
         setReports,
         loading,
         fetchReports,
+        reportLimitReached,
+        maxReports: MAX_REPORTS_PER_USER,
       }}
     >
       {children}

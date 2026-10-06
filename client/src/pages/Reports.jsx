@@ -15,13 +15,16 @@ const config = medicalRecordConfig.report;
 
 export default function Reports() {
   // Load report records and the refresh function from context.
-  const { reports, fetchReports } = useReports();
+  const { reports, fetchReports, reportLimitReached, maxReports } =
+    useReports();
 
   // Initialize shared medical record page state and handlers.
   const page = useMedicalRecordPage({
     records: reports,
     fetchRecords: fetchReports,
     config,
+    limitReached: reportLimitReached,
+    maxRecords: maxReports,
   });
 
   // Render the reusable medical record interface.
@@ -35,6 +38,8 @@ export default function Reports() {
       loading={page.loading}
       uploadStatus={page.uploadStatus}
       zoom={page.zoom}
+      limitReached={page.limitReached}
+      maxRecords={page.maxRecords}
       onTitleChange={page.setTitle}
       onFileChange={page.handleFileChange}
       onUpload={page.handleUpload}

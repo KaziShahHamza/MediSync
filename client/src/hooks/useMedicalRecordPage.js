@@ -13,6 +13,8 @@ export default function useMedicalRecordPage({
   records,
   fetchRecords,
   config,
+  limitReached = false,
+  maxRecords = null,
 }) {
   const [title, setTitle] = useState("");
   const [file, setFile] = useState(null);
@@ -51,6 +53,13 @@ export default function useMedicalRecordPage({
 
   // Upload an image, save its record, and trigger AI analysis.
   async function handleUpload() {
+    if (limitReached) {
+      alert(
+        `You can add a maximum of ${maxRecords} ${config.plural}. Delete an existing ${config.singular} to add a new one.`,
+      );
+      return;
+    }
+
     if (!title.trim() || !file) {
       alert(`Select an image and enter a ${config.singular} title.`);
       return;
@@ -211,5 +220,8 @@ export default function useMedicalRecordPage({
     handleFileChange,
     handleUpload,
     deleteRecord,
+
+    limitReached,
+    maxRecords,
   };
 }

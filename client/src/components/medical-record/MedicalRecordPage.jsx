@@ -1,4 +1,4 @@
-// client/src/components/medical-records/MedicalRecordPage.jsx
+// client/src/components/medical-record/MedicalRecordPage.jsx
 
 // Provides the main medical record gallery and upload layout.
 // Connects record cards, upload controls, and the detail modal.
@@ -19,6 +19,8 @@ export default function MedicalRecordPage({
   loading,
   uploadStatus,
   zoom,
+  limitReached,
+  maxRecords,
   onTitleChange,
   onFileChange,
   onUpload,
@@ -40,19 +42,24 @@ export default function MedicalRecordPage({
         <p className="subtitle mt-2">{config.pageDescription}</p>
       </div>
 
-      {/* Organizes the record gallery beside the upload form. */}
-      <div className="grid lg:grid-cols-[1.7fr_0.8fr] gap-8 items-start">
+      <div className="grid items-start gap-8 lg:grid-cols-[1.7fr_0.8fr]">
         <section>
-          <div className="flex justify-between items-center mb-5">
-            <p className="text-sm text-slate-500 mt-1">
-              {records.length} record
+          <div className="mb-5 flex items-center justify-between">
+            <p className="mt-1 text-sm text-slate-500">
+              {records.length}
+              {maxRecords ? ` / ${maxRecords}` : ""} record
               {records.length !== 1 && "s"}
             </p>
+
+            {limitReached && (
+              <p className="text-sm font-medium text-slate-500">
+                Maximum reached
+              </p>
+            )}
           </div>
 
-          {/* Renders existing records or the configured empty state. */}
           {hasRecords ? (
-            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {records.map((record) => (
                 <MedicalRecordCard
                   key={record._id}
@@ -83,13 +90,13 @@ export default function MedicalRecordPage({
           file={file}
           loading={loading}
           uploadStatus={uploadStatus}
+          disabled={limitReached}
           onTitleChange={onTitleChange}
           onFileChange={onFileChange}
           onUpload={onUpload}
         />
       </div>
 
-      {/* Opens the selected record in the detailed image viewer. */}
       <MedicalRecordModal
         record={selected}
         zoom={zoom}

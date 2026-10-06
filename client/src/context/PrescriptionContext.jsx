@@ -1,4 +1,4 @@
-// src/context/PrescriptionContext.jsx
+// client/src/context/PrescriptionContext.jsx
 
 // Provides prescription records and prescription API operations.
 // Keeps prescription state synchronized with the backend.
@@ -14,6 +14,8 @@ import {
 const PrescriptionContext = createContext(null);
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+export const MAX_PRESCRIPTIONS_PER_USER = 5;
 
 // Provides prescription state and operations to child components.
 export function PrescriptionProvider({ children }) {
@@ -60,6 +62,9 @@ export function PrescriptionProvider({ children }) {
     });
   }, [fetchPrescriptions]);
 
+  const prescriptionLimitReached =
+    prescriptions.length >= MAX_PRESCRIPTIONS_PER_USER;
+
   return (
     <PrescriptionContext.Provider
       value={{
@@ -67,6 +72,8 @@ export function PrescriptionProvider({ children }) {
         setPrescriptions,
         loading,
         fetchPrescriptions,
+        prescriptionLimitReached,
+        maxPrescriptions: MAX_PRESCRIPTIONS_PER_USER,
       }}
     >
       {children}

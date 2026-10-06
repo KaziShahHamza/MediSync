@@ -1,10 +1,12 @@
-// server/controllers/reportController.js
+// client/src/components/medical-record/MedicalRecordPage.jsx
 
 // Handles report CRUD operations and AI analysis requests.
 
 import Report from "../models/Report.js";
 
 import { generateMedicalDocumentSummary } from "../services/medicalDocumentAiService.js";
+
+const MAX_REPORTS_PER_USER = 5;
 
 // Fetch all reports belonging to the authenticated user.
 export async function getReports(req, res) {
@@ -24,6 +26,16 @@ export async function getReports(req, res) {
 // Create a new report for the authenticated user.
 export async function createReport(req, res) {
   try {
+    const reportCount = await Report.countDocuments({
+      user: req.userId,
+    });
+
+    if (reportCount >= MAX_REPORTS_PER_USER) {
+      return res.status(400).json({
+        message: `You can add a maximum of ${MAX_REPORTS_PER_USER} reports.`,
+      });
+    }
+
     const { title, imageUrl } = req.body;
 
     const report = await Report.create({

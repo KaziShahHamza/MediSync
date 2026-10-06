@@ -15,12 +15,19 @@ const config = medicalRecordConfig.prescription;
 
 // Provides the prescription management page.
 export default function Prescriptions() {
-  const { prescriptions, fetchPrescriptions } = usePrescriptions();
+  const {
+    prescriptions,
+    fetchPrescriptions,
+    prescriptionLimitReached,
+    maxPrescriptions,
+  } = usePrescriptions();
 
   const page = useMedicalRecordPage({
     records: prescriptions,
     fetchRecords: fetchPrescriptions,
     config,
+    limitReached: prescriptionLimitReached,
+    maxRecords: maxPrescriptions,
   });
 
   return (
@@ -33,6 +40,8 @@ export default function Prescriptions() {
       loading={page.loading}
       uploadStatus={page.uploadStatus}
       zoom={page.zoom}
+      limitReached={page.limitReached}
+      maxRecords={page.maxRecords}
       onTitleChange={page.setTitle}
       onFileChange={page.handleFileChange}
       onUpload={page.handleUpload}
