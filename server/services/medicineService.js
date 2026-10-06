@@ -1,3 +1,5 @@
+// server/services/medicineService.js
+
 // Provides database operations for authenticated user medicines.
 // Keeps Mongoose queries separate from HTTP request and validation logic.
 

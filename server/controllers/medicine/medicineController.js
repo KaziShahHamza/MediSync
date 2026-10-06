@@ -1,3 +1,5 @@
+// server/controllers/medicine/medicineController.js
+
 // Handles HTTP requests for creating and retrieving medicines.
 // Delegates database operations and validation to reusable services and utilities.
 

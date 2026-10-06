@@ -1,3 +1,5 @@
+// client/src/pages/Doctors.jsx
+
 // Renders the doctor management page.
 // Handles doctor listing, creation, editing, deletion, and details.
 

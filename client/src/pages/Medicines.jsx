@@ -1,3 +1,5 @@
+// client/src/pages/Medicines.jsx
+
 // Renders the medicine management page.
 // Handles medicine creation, editing, deletion, and modal state.
 

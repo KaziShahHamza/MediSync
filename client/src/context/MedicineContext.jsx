@@ -1,3 +1,5 @@
+// client/src/context/MedicineContext.jsx
+
 // Provides medicine state and API operations for authenticated users.
 // Handles medicine CRUD operations and Cloudinary image uploads.
 

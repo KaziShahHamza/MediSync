@@ -1,3 +1,5 @@
+// server/services/doctorService.js
+
 // Handles doctor database operations and AI chat synchronization.
 // Keeps doctor persistence logic outside HTTP controllers.
 

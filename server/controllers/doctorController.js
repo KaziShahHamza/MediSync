@@ -1,3 +1,5 @@
+// server/controllers/doctorController.js
+
 // Handles doctor HTTP requests and response formatting.
 // Delegates database operations to the doctor service.
 

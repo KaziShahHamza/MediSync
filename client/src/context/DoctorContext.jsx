@@ -1,3 +1,5 @@
+// client/src/context/DoctorContext.jsx
+
 // Provides global doctor data and doctor API access.
 // Loads the authenticated user's doctors and exposes shared state.
 
