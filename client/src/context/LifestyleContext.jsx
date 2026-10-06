@@ -16,6 +16,7 @@ import { useAuth } from "./AuthContext";
 const LifestyleContext = createContext(null);
 
 const API_URL = import.meta.env.VITE_API_URL;
+const MAX_ASSESSMENTS = 7;
 
 export function LifestyleProvider({ children }) {
   const { user } = useAuth();
@@ -57,9 +58,9 @@ export function LifestyleProvider({ children }) {
         throw new Error(data.message || "Failed to load lifestyle assessments");
       }
 
-      setAssessments(data.assessments || []);
+      setAssessments((data.assessments || []).slice(0, MAX_ASSESSMENTS));
 
-      return data.assessments || [];
+      return (data.assessments || []).slice(0, MAX_ASSESSMENTS);
     } catch (error) {
       console.error("Fetch lifestyle assessments error:", error);
 
@@ -147,7 +148,7 @@ export function LifestyleProvider({ children }) {
             ),
           ];
 
-          return updatedAssessments.slice(0, 10);
+          return updatedAssessments.slice(0, MAX_ASSESSMENTS);
         });
 
         return savedAssessment;

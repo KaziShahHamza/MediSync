@@ -20,13 +20,13 @@ export default function AssessmentControls({
         <h2 className="card-title">Assessment Controls</h2>
 
         <p className="text-sm text-slate-500 mt-1">
-          Review your score details, save your assessment, or start again.
+          Save your result, or start again.
         </p>
       </div>
 
       <div className="card-content">
         {/* Control whether detailed scoring information is displayed. */}
-        <label className="flex items-center gap-3 cursor-pointer">
+        {/* <label className="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
             checked={showScoring}
@@ -37,7 +37,7 @@ export default function AssessmentControls({
           <span className="text-sm font-medium text-slate-700">
             Show scoring details
           </span>
-        </label>
+        </label> */}
 
         {/* Render save and reset actions based on authentication state. */}
         <div className="flex flex-wrap items-center gap-3 mt-6">

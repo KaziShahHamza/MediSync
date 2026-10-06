@@ -1,7 +1,7 @@
 // client/src/components/lifestyle/AssessmentHistory.jsx
 
 // Displays the latest saved lifestyle assessment.
-// Provides a chronological list of previously saved assessments.
+// Provides a chronological list of the user's last 7 saved assessments.
 
 function LatestAssessment({ assessment }) {
   // Hide the latest-assessment card when no saved result exists.
@@ -16,7 +16,7 @@ function LatestAssessment({ assessment }) {
           <div>
             <h2 className="card-title">Latest Saved Assessment</h2>
 
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="mt-1 text-sm text-slate-500">
               Your most recently saved lifestyle assessment.
             </p>
           </div>
@@ -31,11 +31,11 @@ function LatestAssessment({ assessment }) {
             {assessment.totalScore}
           </strong>
 
-          <span className="text-sm text-slate-500 mb-1">/ 100</span>
+          <span className="mb-1 text-sm text-slate-500">/ 100</span>
         </div>
 
         {assessment.assessedAt && (
-          <p className="text-sm text-slate-500 mt-3">
+          <p className="mt-3 text-sm text-slate-500">
             Saved on {new Date(assessment.assessedAt).toLocaleDateString()}
           </p>
         )}
@@ -55,8 +55,12 @@ function HistoryList({ assessments }) {
       <div className="card-header">
         <h2 className="card-title">Assessment History</h2>
 
-        <p className="text-sm text-slate-500 mt-1">
+        {/* <p className="mt-1 text-sm text-slate-500">
           Your saved Lifestyle Score assessments.
+        </p> */}
+
+        <p className="mt-2 text-xs font-medium text-slate-400">
+          Showing your last 7 scores
         </p>
       </div>
 

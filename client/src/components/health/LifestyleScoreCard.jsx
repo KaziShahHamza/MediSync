@@ -31,7 +31,7 @@ function getScoreStatus(score) {
 
   if (score >= 50) {
     return {
-      label: "Needs Improvement",
+      label: "Needs Focus",
       badgeClass: "badge-warning",
     };
   }

@@ -1,7 +1,7 @@
 // server/services/lifestyleService.js
 
 // Handles lifestyle assessment persistence and business operations.
-// Calculates scores, syncs AI data, and maintains assessment history.
+// Calculates scores, syncs AI data, and maintains the latest 7 assessment records.
 
 import LifestyleAssessment from "../models/LifestyleAssessment.js";
 
@@ -9,7 +9,7 @@ import { calculateLifestyleScore } from "../utils/lifestyleScoring.js";
 
 import { syncLifestyleToAIChatData } from "./aiChatDataSyncService.js";
 
-const MAX_ASSESSMENTS = 10;
+const MAX_ASSESSMENTS = 7;
 
 // Creates a lifestyle assessment using the provided answers.
 export async function createAssessment(userId, answers) {
@@ -25,14 +25,7 @@ export async function createAssessment(userId, answers) {
     assessedAt: new Date(),
   });
 
-  // Sync the latest lifestyle data with AI chat data.
-  try {
-    await syncLifestyleToAIChatData(userId);
-  } catch (error) {
-    console.error("Failed to sync lifestyle to AI chat data:", error);
-  }
-
-  // Fetch assessments so only the newest records are retained.
+  // Fetch assessments so only the newest 7 records are retained.
   const assessmentsToKeep = await LifestyleAssessment.find({
     user: userId,
   })
@@ -49,6 +42,13 @@ export async function createAssessment(userId, answers) {
       _id: { $in: idsToDelete },
       user: userId,
     });
+  }
+
+  // Sync the latest lifestyle data with AI chat data.
+  try {
+    await syncLifestyleToAIChatData(userId);
+  } catch (error) {
+    console.error("Failed to sync lifestyle to AI chat data:", error);
   }
 
   return assessment;

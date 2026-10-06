@@ -120,7 +120,7 @@ export function GradeReference() {
     ["A+", "80–100", "Excellent"],
     ["A", "70–79", "Very good"],
     ["A-", "60–69", "Good"],
-    ["B", "50–59", "Needs improvement"],
+    ["B", "50–59", "Needs Focus"],
     ["C", "0–49", "Focus on healthy changes"],
   ];
 
