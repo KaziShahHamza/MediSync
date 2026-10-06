@@ -1,12 +1,15 @@
 // server/utils/blood/bloodRequestHelpers.js
 
-// Provides reusable helpers for blood request normalization, hashing, and public data mapping.
+// Provides reusable helpers for blood request normalization, hashing,
+// expiration calculation, and public data mapping.
 
 import crypto from "crypto";
 
 export const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
-export const REQUEST_LIFETIME_MS = 24 * 60 * 60 * 1000;
+export const MIN_REQUEST_DURATION_DAYS = 1;
+
+export const MAX_REQUEST_DURATION_DAYS = 7;
 
 export const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000;
 
@@ -15,7 +18,6 @@ export const MAX_REQUESTS_PER_DAY = 3;
 export const MAX_ACTIVE_REQUESTS_PER_USER = 3;
 
 export const REQUEST_COOLDOWN_MS = 5 * 60 * 1000;
-
 
 // Creates a salted hash for sensitive string values.
 export function hashValue(value) {
@@ -55,9 +57,11 @@ export function normalizeString(value) {
   return value.trim();
 }
 
-// Calculates the expiration timestamp for a blood request.
-export function getRequestExpiry() {
-  return new Date(Date.now() + REQUEST_LIFETIME_MS);
+// Calculates the expiration timestamp from a duration and anchor date.
+export function getRequestExpiry(neededWithinDays, startDate = new Date()) {
+  const durationMs = Number(neededWithinDays) * 24 * 60 * 60 * 1000;
+
+  return new Date(new Date(startDate).getTime() + durationMs);
 }
 
 // Maps a request document to its safe public representation.
@@ -66,6 +70,7 @@ export function publicRequestData(request) {
     id: request._id,
     bloodGroup: request.bloodGroup,
     bagsNeeded: request.bagsNeeded,
+    neededWithinDays: request.neededWithinDays,
     compensationOffered: request.compensationOffered,
     district: request.location?.district || "",
     upazila: request.location?.upazila || "",

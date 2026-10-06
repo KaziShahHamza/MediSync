@@ -1,7 +1,5 @@
-// client/src/utils/blood/bloodRequestHelpers.js
-
-// Provides relative time and expiration formatting for blood requests.
-// Keeps date presentation logic separate from blood request components.
+// Provides blood request constants, form defaults, and relative time/expiration formatting.
+// Keeps shared request presentation and default values separate from components.
 
 export const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -10,6 +8,7 @@ export const OTHER_HOSPITAL = "__other__";
 export const EMPTY_BLOOD_REQUEST_FORM = {
   bloodGroup: "",
   bagsNeeded: "1",
+  neededWithinDays: "",
   compensationOffered: "",
   district: "",
   upazila: "",
@@ -30,7 +29,6 @@ export function formatTimeAgo(dateString) {
   const diff = Date.now() - date.getTime();
   const minutes = Math.floor(diff / 60000);
 
-  // Format elapsed time using the most appropriate unit.
   if (minutes < 1) {
     return "Just now";
   }
@@ -57,7 +55,6 @@ export function formatExpiry(dateString) {
 
   const diff = expiresAt.getTime() - Date.now();
 
-  // Return an expiration label based on remaining time.
   if (diff <= 0) {
     return "Expired";
   }
@@ -70,5 +67,11 @@ export function formatExpiry(dateString) {
 
   const hours = Math.ceil(minutes / 60);
 
-  return `Expires in ${hours} hr`;
+  if (hours < 24) {
+    return `Expires in ${hours} hr`;
+  }
+
+  const days = Math.ceil(hours / 24);
+
+  return `Expires in ${days} day${days !== 1 ? "s" : ""}`;
 }

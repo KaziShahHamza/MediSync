@@ -25,10 +25,9 @@ import { checkAndUpdateRateLimit } from "../../utils/blood/bloodRequestRateLimit
 
 import { getOptionalAuthenticatedUser } from "../../middlewares/bloodRequestAuth.js";
 
-// Handles creation of a new blood request with rate limiting and limits
+// Handles creation of a new blood request with rate limiting and limits.
 export async function createBloodRequest(req, res) {
   try {
-    // Validate request body fields before processing
     const validationError = validateBloodRequest(req.body);
 
     if (validationError) {
@@ -40,6 +39,7 @@ export async function createBloodRequest(req, res) {
     const {
       bloodGroup,
       bagsNeeded,
+      neededWithinDays,
       compensationOffered,
       district,
       upazila,
@@ -54,11 +54,11 @@ export async function createBloodRequest(req, res) {
     const cleanDeviceId =
       typeof deviceId === "string" ? deviceId.trim().slice(0, 100) : "";
 
-    // Extract client IP and generate hash for tracking
+    // Extract client IP and generate hash for tracking.
     const ip = getClientIp(req);
     const ipHash = hashValue(ip);
 
-    // Verify client has not exceeded daily creation rate limits
+    // Verify client has not exceeded daily rate limits.
     const rateLimitResult = await checkAndUpdateRateLimit({
       ipHash,
       deviceId: cleanDeviceId,
@@ -73,7 +73,7 @@ export async function createBloodRequest(req, res) {
 
     const cooldownSince = new Date(Date.now() - REQUEST_COOLDOWN_MS);
 
-    // Prevent spam by enforcing a cool-down window between requests
+    // Prevent repeated submissions within the cooldown window.
     const recentRequest = await findRecentRequest({
       requesterIpHash: ipHash,
       deviceId: cleanDeviceId,
@@ -89,7 +89,7 @@ export async function createBloodRequest(req, res) {
 
     const authenticatedUserId = getOptionalAuthenticatedUser(req);
 
-    // Check maximum active post quota for authenticated account
+    // Enforce active request quota for authenticated users.
     if (authenticatedUserId) {
       const activeUserRequests =
         await countUserActiveRequests(authenticatedUserId);
@@ -102,7 +102,6 @@ export async function createBloodRequest(req, res) {
       }
     }
 
-    // Construct standardized request payload
     const requestData = {
       user: authenticatedUserId,
 
@@ -110,17 +109,17 @@ export async function createBloodRequest(req, res) {
 
       bagsNeeded: Number(bagsNeeded),
 
+      neededWithinDays: Number(neededWithinDays),
+
       compensationOffered,
 
       location: {
         district: normalizeString(district),
-
         upazila: normalizeString(upazila),
       },
 
       hospital: {
         name: normalizeString(hospitalName),
-
         address: normalizeString(hospitalAddress),
       },
 
@@ -135,7 +134,6 @@ export async function createBloodRequest(req, res) {
       deviceId: cleanDeviceId,
     };
 
-    // Save request and retrieve generated guest access token
     const { request, managementToken } = await createRequest(requestData);
 
     return res.status(201).json({
@@ -154,7 +152,7 @@ export async function createBloodRequest(req, res) {
   }
 }
 
-// Fetches active blood requests filtered by search parameters
+// Fetches active blood requests filtered by search parameters.
 export async function getBloodRequests(req, res) {
   try {
     const { bloodGroup, district, upazila, compensation } = req.query;
@@ -168,7 +166,6 @@ export async function getBloodRequests(req, res) {
       compensation,
     });
 
-    // Sanitize output data and expose only current-user ownership.
     const publicRequests = requests.map((request) => ({
       ...publicRequestData(request),
 

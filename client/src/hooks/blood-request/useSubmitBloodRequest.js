@@ -1,7 +1,7 @@
-// client/src/hooks/useSubmitBloodRequest.js
+// client/src/hooks/blood-request/useSubmitBloodRequest.js
 
 // Handles creation and updating of blood requests through the backend API.
-// Manages submission state, success feedback, and guest management tokens.
+// Manages submission state, success feedback, guest management tokens, and pagination refreshes.
 
 import {
   getDeviceId,
@@ -25,8 +25,10 @@ export default function useSubmitBloodRequest({
   setManagementToken,
   setRequestForm,
   fetchBloodRequests,
+  currentPage,
+  pagination,
+  setCurrentPage,
 }) {
-  // Submits a new blood request or updates an existing one.
   const submitBloodRequest = async (event) => {
     event.preventDefault();
 
@@ -37,10 +39,10 @@ export default function useSubmitBloodRequest({
       const deviceId = getDeviceId();
       const token = localStorage.getItem("token");
 
-      // Builds the backend payload from the current form state.
       const body = {
         bloodGroup: requestForm.bloodGroup,
         bagsNeeded: Number(requestForm.bagsNeeded),
+        neededWithinDays: Number(requestForm.neededWithinDays),
         compensationOffered: requestForm.compensationOffered === "yes",
         district: requestForm.district,
         upazila: requestForm.upazila,
@@ -52,7 +54,6 @@ export default function useSubmitBloodRequest({
         deviceId,
       };
 
-      // Adds the guest management token when editing.
       if (!user && managementToken) {
         body.managementToken = managementToken;
       }
@@ -78,19 +79,7 @@ export default function useSubmitBloodRequest({
         throw new Error(data.message || "Failed to save blood request.");
       }
 
-      // Updates the local list after an existing request is edited.
       if (editingRequest) {
-        setBloodRequests((previous) =>
-          previous.map((item) =>
-            item.id === editingRequest.id
-              ? {
-                  ...data.request,
-                  isOwner: item.isOwner,
-                }
-              : item,
-          ),
-        );
-
         setRequestSuccess({
           type: "updated",
           message: "Your blood request was updated successfully.",
@@ -99,17 +88,19 @@ export default function useSubmitBloodRequest({
         setEditingRequest(null);
         setRequestForm(EMPTY_BLOOD_REQUEST_FORM);
 
+        // Re-fetch the current server page so the updated expiration
+        // and pagination state are authoritative.
+        await fetchBloodRequests(currentPage);
+
         return;
       }
 
-      // Saves the management token for newly created guest requests.
       if (data.managementToken) {
         saveManagementToken(data.request.id, data.managementToken);
 
         setManagementToken(data.managementToken);
       }
 
-      // Stores creation feedback and request details.
       setRequestSuccess({
         type: "created",
         message: "Your blood request has been posted successfully.",
@@ -119,8 +110,10 @@ export default function useSubmitBloodRequest({
 
       setRequestForm(EMPTY_BLOOD_REQUEST_FORM);
 
-      // Refreshes the request list after successful creation.
-      await fetchBloodRequests();
+      // New requests are sorted first, so return to page 1.
+      setCurrentPage(1);
+
+      await fetchBloodRequests(1);
     } catch (err) {
       console.error("Blood request submission failed:", err);
 

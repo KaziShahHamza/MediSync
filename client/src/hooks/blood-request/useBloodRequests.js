@@ -1,6 +1,4 @@
-// client/src/hooks/useBloodRequests.js
-
-// Manages blood request state, location data, fetching, and derived values.
+// Manages blood request state, location data, fetching, pagination, and derived values.
 // Delegates request actions to the blood request action hook.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -20,35 +18,38 @@ import { getDeviceId } from "../../utils/blood/bloodRequestStorage";
 import useBloodRequestActions from "./useBloodRequestActions";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const REQUESTS_PER_PAGE = 20;
 
 export default function useBloodRequests() {
-  // Retrieves the currently authenticated user.
   const { user } = useAuth();
 
-  // Stores request form and modal state.
   const [requestForm, setRequestForm] = useState(EMPTY_BLOOD_REQUEST_FORM);
   const [requestModalOpen, setRequestModalOpen] = useState(false);
 
-  // Stores request submission status and feedback.
   const [requestSubmitting, setRequestSubmitting] = useState(false);
   const [requestError, setRequestError] = useState("");
   const [requestSuccess, setRequestSuccess] = useState(null);
 
-  // Stores fetched requests and their loading state.
   const [bloodRequests, setBloodRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(false);
   const [requestsError, setRequestsError] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalRequests: 0,
+    limit: REQUESTS_PER_PAGE,
+  });
+
   const [editingRequest, setEditingRequest] = useState(null);
 
-  // Stores guest management token and clipboard state.
   const [managementToken, setManagementToken] = useState("");
   const [copied, setCopied] = useState(false);
 
-  // Tracks request editing to preserve loaded location values.
   const isEditingRequestRef = useRef(false);
 
-  // Finds the selected district and its available upazilas.
   const selectedDistrict = useMemo(
     () => districtsData.find((item) => item.name === requestForm.district),
     [requestForm.district],
@@ -58,7 +59,6 @@ export default function useBloodRequests() {
 
   const selectedHospitalList = hospitalsData[requestForm.district] || [];
 
-  // Clears dependent location fields after manual district changes.
   useEffect(() => {
     if (isEditingRequestRef.current) {
       isEditingRequestRef.current = false;
@@ -74,49 +74,95 @@ export default function useBloodRequests() {
     }));
   }, [requestForm.district]);
 
-  // Initializes the device identifier used by guest requests.
   useEffect(() => {
     getDeviceId();
   }, []);
 
-  // Fetches active blood requests from the backend.
-  const fetchBloodRequests = useCallback(async () => {
-    try {
-      setRequestsLoading(true);
-      setRequestsError("");
+  // Fetches one server-side page of active blood requests.
+  const fetchBloodRequests = useCallback(
+    async (page = currentPage) => {
+      try {
+        setRequestsLoading(true);
+        setRequestsError("");
 
-      const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
-      const response = await fetch(`${API_URL}/api/blood/requests`, {
-        headers: token
-          ? {
-              Authorization: `Bearer ${token}`,
-            }
-          : {},
-      });
+        const params = new URLSearchParams();
+        params.set("page", page);
+        params.set("limit", REQUESTS_PER_PAGE);
 
-      const data = await response.json();
+        const response = await fetch(
+          `${API_URL}/api/blood/requests?${params.toString()}`,
+          {
+            headers: token
+              ? {
+                  Authorization: `Bearer ${token}`,
+                }
+              : {},
+          },
+        );
 
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to load blood requests.");
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to load blood requests.");
+        }
+
+        const requests = Array.isArray(data.requests) ? data.requests : [];
+        const responsePagination = data.pagination || {};
+
+        const resolvedPage = responsePagination.currentPage || page;
+
+        setBloodRequests(requests);
+
+        setPagination({
+          currentPage: resolvedPage,
+          totalPages: responsePagination.totalPages || 1,
+          totalRequests: responsePagination.totalRequests || 0,
+          limit: responsePagination.limit || REQUESTS_PER_PAGE,
+        });
+
+        setCurrentPage(resolvedPage);
+      } catch (err) {
+        console.error("Blood request fetch failed:", err);
+
+        setBloodRequests([]);
+        setPagination({
+          currentPage: 1,
+          totalPages: 1,
+          totalRequests: 0,
+          limit: REQUESTS_PER_PAGE,
+        });
+        setCurrentPage(1);
+
+        setRequestsError(err.message || "Unable to load blood requests.");
+      } finally {
+        setRequestsLoading(false);
       }
+    },
+    [currentPage],
+  );
 
-      setBloodRequests(Array.isArray(data.requests) ? data.requests : []);
-    } catch (err) {
-      console.error("Blood request fetch failed:", err);
-
-      setRequestsError(err.message || "Unable to load blood requests.");
-    } finally {
-      setRequestsLoading(false);
-    }
+  useEffect(() => {
+    fetchBloodRequests(1);
   }, []);
 
-  // Loads requests once when the blood request page initializes.
-  useEffect(() => {
-    fetchBloodRequests();
-  }, [fetchBloodRequests]);
+  const handlePageChange = useCallback(
+    (page) => {
+      if (
+        requestsLoading ||
+        page < 1 ||
+        page > pagination.totalPages ||
+        page === currentPage
+      ) {
+        return;
+      }
 
-  // Determines whether the selected hospital is predefined.
+      fetchBloodRequests(page);
+    },
+    [requestsLoading, pagination.totalPages, currentPage, fetchBloodRequests],
+  );
+
   const isHospitalFromList = selectedHospitalList.some(
     (hospital) => hospital.name === requestForm.hospitalName,
   );
@@ -125,7 +171,6 @@ export default function useBloodRequests() {
     ? requestForm.hospitalName
     : OTHER_HOSPITAL;
 
-  // Connects request state with form and CRUD actions.
   const {
     handleRequestChange,
     handleHospitalChange,
@@ -161,9 +206,11 @@ export default function useBloodRequests() {
     setCopied,
     fetchBloodRequests,
     isEditingRequestRef,
+    currentPage,
+    pagination,
+    setCurrentPage,
   });
 
-  // Exposes state and actions required by the blood request page.
   return {
     user,
 
@@ -171,6 +218,12 @@ export default function useBloodRequests() {
     requestsLoading,
     requestsError,
     fetchBloodRequests,
+
+    currentPage,
+    totalPages: pagination.totalPages,
+    totalRequests: pagination.totalRequests,
+    requestPagination: pagination,
+    handlePageChange,
 
     requestForm,
     setRequestForm,

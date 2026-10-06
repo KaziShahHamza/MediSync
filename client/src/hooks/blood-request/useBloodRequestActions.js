@@ -1,5 +1,3 @@
-// client/src/hooks/blood-request/useBloodRequestActions.js
-
 // Manages blood request form, modal, editing, deletion, and token actions.
 // Delegates request submission to the dedicated submission hook.
 
@@ -38,6 +36,9 @@ export default function useBloodRequestActions({
   setCopied,
   fetchBloodRequests,
   isEditingRequestRef,
+  currentPage,
+  pagination,
+  setCurrentPage,
 }) {
   const [managementTokenModalOpen, setManagementTokenModalOpen] =
     useState(false);
@@ -51,7 +52,6 @@ export default function useBloodRequestActions({
 
   const [managementTokenError, setManagementTokenError] = useState("");
 
-  // Updates form fields from user input.
   const handleRequestChange = (event) => {
     const { name, value } = event.target;
 
@@ -61,7 +61,6 @@ export default function useBloodRequestActions({
     }));
   };
 
-  // Updates hospital details based on the selected hospital.
   const handleHospitalChange = (event) => {
     const value = event.target.value;
 
@@ -84,21 +83,18 @@ export default function useBloodRequestActions({
     }));
   };
 
-  // Resets the request form and editing state.
   const resetRequestForm = () => {
     setRequestForm(EMPTY_BLOOD_REQUEST_FORM);
     setRequestError("");
     setEditingRequest(null);
   };
 
-  // Opens the modal with a fresh request form.
   const openRequestModal = () => {
     resetRequestForm();
     setRequestSuccess(null);
     setRequestModalOpen(true);
   };
 
-  // Closes the modal unless submission is currently in progress.
   const closeRequestModal = () => {
     if (requestSubmitting) return;
 
@@ -106,7 +102,6 @@ export default function useBloodRequestActions({
     resetRequestForm();
   };
 
-  // Provides submission logic for creating and updating requests.
   const { submitBloodRequest } = useSubmitBloodRequest({
     user,
     requestForm,
@@ -121,9 +116,11 @@ export default function useBloodRequestActions({
     setManagementToken,
     setRequestForm,
     fetchBloodRequests,
+    currentPage,
+    pagination,
+    setCurrentPage,
   });
 
-  // Opens token authorization when guest management access is required.
   const openManagementTokenModal = (request, action) => {
     setManagementTokenRequest(request);
     setManagementTokenAction(action);
@@ -131,7 +128,6 @@ export default function useBloodRequestActions({
     setManagementTokenModalOpen(true);
   };
 
-  // Closes the management token modal and clears its temporary state.
   const closeManagementTokenModal = () => {
     if (managementTokenSubmitting) return;
 
@@ -141,7 +137,6 @@ export default function useBloodRequestActions({
     setManagementTokenError("");
   };
 
-  // Verifies and stores a guest management token before continuing the action.
   const handleManagementTokenSubmit = async (token) => {
     const normalizedToken = token.trim();
 
@@ -201,7 +196,6 @@ export default function useBloodRequestActions({
     }
   };
 
-  // Loads an existing request into the editable form.
   const handleEditRequest = (request, authorizedToken = null) => {
     const savedToken = authorizedToken || getManagementToken(request.id);
 
@@ -216,12 +210,12 @@ export default function useBloodRequestActions({
     setManagementToken(savedToken || "");
     setEditingRequest(request);
 
-    // Prevents the district effect from clearing loaded location fields.
     isEditingRequestRef.current = true;
 
     setRequestForm({
       bloodGroup: request.bloodGroup,
       bagsNeeded: String(request.bagsNeeded),
+      neededWithinDays: String(request.neededWithinDays || ""),
       compensationOffered: request.compensationOffered ? "yes" : "no",
       district: request.district,
       upazila: request.upazila,
@@ -237,7 +231,6 @@ export default function useBloodRequestActions({
     setRequestModalOpen(true);
   };
 
-  // Deletes a request after verifying management access.
   const handleDeleteRequest = async (request, authorizedToken = null) => {
     const savedToken = authorizedToken || getManagementToken(request.id);
 
@@ -278,11 +271,24 @@ export default function useBloodRequestActions({
         throw new Error(data.message || "Failed to delete blood request.");
       }
 
-      setBloodRequests((previous) =>
-        previous.filter((item) => item.id !== request.id),
+      removeManagementToken(request.id);
+
+      // Refresh the current server page so pagination metadata stays correct.
+      const nextTotalRequests = Math.max(
+        (pagination.totalRequests || 0) - 1,
+        0,
       );
 
-      removeManagementToken(request.id);
+      const nextTotalPages = Math.max(
+        Math.ceil(nextTotalRequests / (pagination.limit || 20)),
+        1,
+      );
+
+      const targetPage = Math.min(currentPage, nextTotalPages);
+
+      setCurrentPage(targetPage);
+
+      await fetchBloodRequests(targetPage);
     } catch (err) {
       console.error("Blood request deletion failed:", err);
 
@@ -290,7 +296,6 @@ export default function useBloodRequestActions({
     }
   };
 
-  // Copies the active guest management token to the clipboard.
   const copyManagementToken = async () => {
     if (!managementToken) return;
 

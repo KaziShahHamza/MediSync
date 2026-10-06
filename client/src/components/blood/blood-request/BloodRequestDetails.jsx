@@ -1,6 +1,4 @@
-// client/src/components/blood/BloodRequestDetails.jsx
-
-// Renders blood requirement, requester contact, and additional information fields.
+// Renders blood requirement, requester contact, expiration, and additional information fields.
 // Keeps request-specific input sections separate from location and hospital logic.
 
 import { Droplets, Phone, ShieldCheck } from "lucide-react";
@@ -71,23 +69,52 @@ export default function BloodRequestDetails({
           </div>
         </div>
 
-        <div className="mt-5">
-          <label htmlFor="compensation-offered" className="mb-2 block">
-            Will you provide honorarium / travel cost? *
-          </label>
+        <div className="mt-5 grid gap-5 md:grid-cols-2">
+          <div>
+            <label htmlFor="needed-within-days" className="mb-2 block">
+              By when would you need these bloods? *
+            </label>
 
-          <select
-            id="compensation-offered"
-            name="compensationOffered"
-            value={requestForm.compensationOffered}
-            onChange={onRequestChange}
-            className="input"
-            required
-          >
-            <option value="">Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
+            <select
+              id="needed-within-days"
+              name="neededWithinDays"
+              value={requestForm.neededWithinDays}
+              onChange={onRequestChange}
+              className="input"
+              required
+            >
+              <option value="">Select timeframe</option>
+
+              {Array.from({ length: 7 }, (_, index) => {
+                const days = index + 1;
+
+                return (
+                  <option key={days} value={days}>
+                    {days} day{days !== 1 ? "s" : ""}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="compensation-offered" className="mb-2 block">
+              Will you provide honorarium / travel cost? *
+            </label>
+
+            <select
+              id="compensation-offered"
+              name="compensationOffered"
+              value={requestForm.compensationOffered}
+              onChange={onRequestChange}
+              className="input"
+              required
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
         </div>
       </div>
 

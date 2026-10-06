@@ -1,97 +1,50 @@
 // server/services/bloodRequestService.js
 
-// Service managing CRUD operations for blood donation requests.
-// Handles token generation, active listing queries, and request modifications.
+// Service responsible for creating and retrieving blood requests.
+// Management operations are handled by bloodRequestManagementService.js.
 
 import crypto from "crypto";
 
-import Profile from "../../models/Profile.js";
 import BloodRequest from "../../models/BloodRequest.js";
 
 import {
   BLOOD_GROUPS,
-  REQUEST_LIFETIME_MS,
-  normalizeString,
+  getRequestExpiry,
 } from "../../utils/blood/bloodRequestHelpers.js";
 
-// Generate random management token string
+// Generate a secure random management token for guest requests.
 function generateManagementToken() {
   return crypto.randomBytes(32).toString("hex");
 }
 
-// Compute SHA-256 hash for raw management token
+// Hash management tokens before storing them.
 function hashManagementToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-// Search donor profiles by location and blood group criteria
-export async function findDonors({
-  bloodGroup,
-  district,
-  upazila,
-  compensation,
-}) {
-  const query = {
-    bloodDonorStatus: {
-      $in: ["yes", "willingly"],
-    },
-  };
-
-  if (bloodGroup?.trim()) {
-    query.bloodGroup = bloodGroup.trim();
-  }
-
-  if (district?.trim()) {
-    query["location.district"] = district.trim();
-  }
-
-  if (upazila?.trim()) {
-    query["location.upazila"] = upazila.trim();
-  }
-
-  if (compensation === "yes") {
-    query.bloodDonationCompensation = "500";
-  }
-
-  if (compensation === "no") {
-    query.bloodDonationCompensation = "none";
-  }
-
-  const donors = await Profile.find(query)
-    .select(
-      "bloodGroup location.district location.upazila bloodDonationContactNumber -_id",
-    )
-    .lean();
-
-  return donors.map((donor) => ({
-    bloodGroup: donor.bloodGroup || "",
-
-    district: donor.location?.district || "",
-
-    upazila: donor.location?.upazila || "",
-
-    bloodDonationContactNumber: donor.bloodDonationContactNumber || "",
-  }));
-}
-
-// Persist a new blood request document to MongoDB
+// Persist a new blood request document to MongoDB.
 export async function createRequest(requestData) {
   let managementToken = null;
   let managementTokenHash = null;
 
-  // Generate tokens for non-authenticated guests
+  // Guests receive a management token.
   if (!requestData.user) {
     managementToken = generateManagementToken();
 
     managementTokenHash = hashManagementToken(managementToken);
   }
 
+  // Use one timestamp as the creation/expiration anchor.
+  const createdAt = new Date();
+
   const request = await BloodRequest.create({
     ...requestData,
 
+    createdAt,
+
     managementTokenHash,
 
-    expiresAt: new Date(Date.now() + REQUEST_LIFETIME_MS),
+    expiresAt: getRequestExpiry(requestData.neededWithinDays, createdAt),
   });
 
   return {
@@ -100,7 +53,7 @@ export async function createRequest(requestData) {
   };
 }
 
-// Locate recent post created within cooldown window
+// Locate recent posts created within the cooldown window.
 export async function findRecentRequest({
   requesterIpHash,
   deviceId,
@@ -119,7 +72,7 @@ export async function findRecentRequest({
     .lean();
 }
 
-// Count active unexpired requests for a specific user ID
+// Count active unexpired requests for a specific user.
 export async function countUserActiveRequests(userId) {
   return BloodRequest.countDocuments({
     user: userId,
@@ -129,7 +82,7 @@ export async function countUserActiveRequests(userId) {
   });
 }
 
-// Query all active unexpired blood requests with optional filters
+// Query all active unexpired blood requests with optional filters.
 export async function findActiveRequests({
   bloodGroup,
   district,
@@ -164,58 +117,10 @@ export async function findActiveRequests({
 
   return BloodRequest.find(query)
     .select(
-      "_id bloodGroup bagsNeeded compensationOffered location hospital contactPhone requesterName notes createdAt expiresAt user",
+      "_id bloodGroup bagsNeeded neededWithinDays compensationOffered location hospital contactPhone requesterName notes createdAt expiresAt user",
     )
     .sort({
       createdAt: -1,
     })
     .lean();
-}
-
-// Retrieve blood request including sensitive authorization fields
-export async function findRequestForUpdate(id) {
-  return BloodRequest.findById(id).select(
-    "+managementTokenHash +requesterIpHash +deviceId",
-  );
-}
-
-// Save updated request fields back to the database
-export async function updateRequest(request, body) {
-  request.bloodGroup = normalizeString(body.bloodGroup);
-
-  request.bagsNeeded = Number(body.bagsNeeded);
-
-  request.compensationOffered = body.compensationOffered;
-
-  request.location = {
-    district: normalizeString(body.district),
-
-    upazila: normalizeString(body.upazila),
-  };
-
-  request.hospital = {
-    name: normalizeString(body.hospitalName),
-
-    address: normalizeString(body.hospitalAddress),
-  };
-
-  request.contactPhone = normalizeString(body.contactPhone);
-
-  request.requesterName = normalizeString(body.requesterName);
-
-  request.notes = normalizeString(body.notes);
-
-  await request.save();
-
-  return request;
-}
-
-// Fetch request record with token hash for deletion check
-export async function findRequestForDelete(id) {
-  return BloodRequest.findById(id).select("+managementTokenHash");
-}
-
-// Remove blood request document from collection
-export async function deleteRequest(request) {
-  await request.deleteOne();
 }

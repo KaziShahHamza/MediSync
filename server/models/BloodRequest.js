@@ -27,6 +27,13 @@ const bloodRequestSchema = new mongoose.Schema(
       max: 20,
     },
 
+    neededWithinDays: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 7,
+    },
+
     compensationOffered: {
       type: Boolean,
       required: true,
@@ -83,12 +90,15 @@ const bloodRequestSchema = new mongoose.Schema(
       default: "",
     },
 
+    // Only guests receive a management token.
+    // Authenticated users are authorized through their account.
     managementTokenHash: {
       type: String,
       default: null,
       select: false,
     },
 
+    // Private anti-spam information.
     requesterIpHash: {
       type: String,
       default: "",
@@ -106,6 +116,7 @@ const bloodRequestSchema = new mongoose.Schema(
       default: Date.now,
     },
 
+    // Used by MongoDB TTL to automatically remove expired requests.
     expiresAt: {
       type: Date,
       required: true,
