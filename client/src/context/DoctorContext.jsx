@@ -1,5 +1,3 @@
-// client/src/context/DoctorContext.jsx
-
 // Provides global doctor data and doctor API access.
 // Loads the authenticated user's doctors and exposes shared state.
 
@@ -14,6 +12,8 @@ import {
 const DoctorContext = createContext(null);
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+export const MAX_DOCTORS_PER_USER = 5;
 
 export function DoctorProvider({ children }) {
   const [doctors, setDoctors] = useState([]);
@@ -51,6 +51,8 @@ export function DoctorProvider({ children }) {
     fetchDoctors();
   }, [fetchDoctors]);
 
+  const doctorLimitReached = doctors.length >= MAX_DOCTORS_PER_USER;
+
   // Exposes doctor state and refresh operations to consumers.
   return (
     <DoctorContext.Provider
@@ -58,6 +60,8 @@ export function DoctorProvider({ children }) {
         doctors,
         setDoctors,
         fetchDoctors,
+        doctorLimitReached,
+        maxDoctors: MAX_DOCTORS_PER_USER,
       }}
     >
       {children}
