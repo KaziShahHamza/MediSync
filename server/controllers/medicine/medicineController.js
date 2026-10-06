@@ -1,11 +1,11 @@
-// server/controllers/medicine/medicineController.js
-
 // Handles HTTP requests for creating and retrieving medicines.
 // Delegates database operations and validation to reusable services and utilities.
 
 import {
   findMedicinesByUser,
   createMedicine,
+  countMedicinesByUser,
+  MAX_MEDICINES_PER_USER,
 } from "../../services/medicineService.js";
 
 import { validateMedicineDates } from "../../utils/medicine/medicineHelpers.js";
@@ -30,6 +30,15 @@ export async function getMedicines(req, res) {
 // Creates a new medicine after validating its data.
 export async function createMedicineController(req, res) {
   try {
+    // Enforce the maximum number of medicines per user.
+    const medicineCount = await countMedicinesByUser(req.userId);
+
+    if (medicineCount >= MAX_MEDICINES_PER_USER) {
+      return res.status(400).json({
+        message: `You can add a maximum of ${MAX_MEDICINES_PER_USER} medicines.`,
+      });
+    }
+
     const {
       name,
       type = "tablet",

@@ -1,9 +1,10 @@
-// server/services/medicineService.js
-
 // Provides database operations for authenticated user medicines.
 // Keeps Mongoose queries separate from HTTP request and validation logic.
 
 import Medicine from "../models/Medicine.js";
+
+// Maximum number of medicines a user can have.
+export const MAX_MEDICINES_PER_USER = 10;
 
 // Fetches all medicines belonging to the authenticated user.
 export async function findMedicinesByUser(userId) {
@@ -12,6 +13,13 @@ export async function findMedicinesByUser(userId) {
   }).sort({
     isActive: -1,
     startDate: -1,
+  });
+}
+
+// Counts all medicines belonging to the authenticated user.
+export async function countMedicinesByUser(userId) {
+  return Medicine.countDocuments({
+    user: userId,
   });
 }
 

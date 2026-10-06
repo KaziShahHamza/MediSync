@@ -1,5 +1,3 @@
-// client/src/pages/Medicines.jsx
-
 // Renders the medicine management page.
 // Handles medicine creation, editing, deletion, and modal state.
 
@@ -14,14 +12,25 @@ import useMedicines from "../hooks/useMedicines";
 
 // Provides the main medicine management interface.
 export default function Medicines() {
-  const { medicines, loading, createMedicine, updateMedicine, deleteMedicine } =
-    useMedicines();
+  const {
+    medicines,
+    loading,
+    createMedicine,
+    updateMedicine,
+    deleteMedicine,
+    medicineLimitReached,
+    maxMedicines,
+  } = useMedicines();
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
 
   // Opens the form in create mode.
   function openAddForm() {
+    if (medicineLimitReached) {
+      return;
+    }
+
     setEditing(null);
     setFormOpen(true);
   }
@@ -44,14 +53,19 @@ export default function Medicines() {
 
   // Saves either a new medicine or an existing medicine.
   async function handleSave(medicineData) {
-    if (editing?._id) {
-      await updateMedicine(editing._id, medicineData);
-    } else {
-      await createMedicine(medicineData);
-    }
+    try {
+      if (editing?._id) {
+        await updateMedicine(editing._id, medicineData);
+      } else {
+        await createMedicine(medicineData);
+      }
 
-    setFormOpen(false);
-    setEditing(null);
+      setFormOpen(false);
+      setEditing(null);
+    } catch (error) {
+      console.error("Failed to save medicine:", error);
+      window.alert(error?.message || "Failed to save medicine.");
+    }
   }
 
   // Confirms and removes a medicine record.
@@ -96,14 +110,22 @@ export default function Medicines() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={openAddForm}
-          className="btn-primary inline-flex items-center justify-center gap-2"
-        >
-          <PlusCircle size={18} />
-          Add Medicine
-        </button>
+        <div className="flex flex-col items-stretch gap-2 sm:items-end">
+          <button
+            type="button"
+            onClick={openAddForm}
+            disabled={medicineLimitReached || loading}
+            className="btn-primary inline-flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <PlusCircle size={18} />
+
+            {medicineLimitReached ? "Medicine Limit Reached" : "Add Medicine"}
+          </button>
+
+          <p className="text-center mt-2 text-md text-slate-500 sm:text-right">
+            {medicines.length}/{maxMedicines} medicines
+          </p>
+        </div>
       </header>
 
       {/* Displays the calculated monthly medicine cost. */}

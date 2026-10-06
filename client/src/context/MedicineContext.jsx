@@ -1,5 +1,3 @@
-// client/src/context/MedicineContext.jsx
-
 // Provides medicine state and API operations for authenticated users.
 // Handles medicine CRUD operations and Cloudinary image uploads.
 
@@ -10,6 +8,8 @@ const MedicineContext = createContext(null);
 const API_URL = import.meta.env.VITE_API_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+export const MAX_MEDICINES_PER_USER = 10;
 
 // Provides medicine data and operations to child components.
 export function MedicineProvider({ children }) {
@@ -89,6 +89,14 @@ export function MedicineProvider({ children }) {
 
     if (!token) {
       throw new Error("You must be logged in to save a medicine.");
+    }
+
+    // Only enforce the limit when creating a new medicine.
+    // Existing medicines can always be edited.
+    if (!medicineData._id && medicines.length >= MAX_MEDICINES_PER_USER) {
+      throw new Error(
+        `You can add a maximum of ${MAX_MEDICINES_PER_USER} medicines.`,
+      );
     }
 
     setLoading(true);
@@ -201,6 +209,8 @@ export function MedicineProvider({ children }) {
     });
   }, [fetchMedicines]);
 
+  const medicineLimitReached = medicines.length >= MAX_MEDICINES_PER_USER;
+
   return (
     <MedicineContext.Provider
       value={{
@@ -211,6 +221,8 @@ export function MedicineProvider({ children }) {
         createMedicine,
         updateMedicine,
         deleteMedicine,
+        medicineLimitReached,
+        maxMedicines: MAX_MEDICINES_PER_USER,
       }}
     >
       {children}
