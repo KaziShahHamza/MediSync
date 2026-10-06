@@ -29,7 +29,7 @@ export default function BMIChart({ logs, height }) {
   // Keep only the latest ten weight records for BMI calculations.
   const weightLogs = (logs || [])
     .filter((log) => log.type === "weight")
-    .slice(-10);
+    .slice(-7);
 
   // Normalize profile height values before calculating total height.
   const feet = Number(height?.feet) || 0;

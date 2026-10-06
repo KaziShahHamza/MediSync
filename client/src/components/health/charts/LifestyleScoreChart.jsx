@@ -30,7 +30,7 @@ export default function LifestyleScoreChart({ assessments }) {
   const lifestyleAssessments = [...(assessments || [])]
     .filter((assessment) => assessment?.assessedAt)
     .sort((a, b) => new Date(a.assessedAt) - new Date(b.assessedAt))
-    .slice(-10);
+    .slice(-7);
 
   // Prepare chart labels and score values from the selected assessments.
   const chartData = {

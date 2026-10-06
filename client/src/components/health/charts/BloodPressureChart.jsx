@@ -27,7 +27,7 @@ ChartJS.register(
 
 export default function BloodPressureChart({ logs }) {
   // Keep only blood pressure records and limit the chart to the latest ten.
-  const bpLogs = logs.filter((log) => log.type === "bp").slice(-10);
+  const bpLogs = logs.filter((log) => log.type === "bp").slice(-7);
 
   // Build chart labels and datasets from the filtered blood pressure records.
   const chartData = {

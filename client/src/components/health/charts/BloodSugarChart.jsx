@@ -105,7 +105,7 @@ export default function BloodSugarChart({ logs }) {
   // Sort dates chronologically and display only the latest ten.
   const dates = Object.keys(groupedByDate)
     .sort((a, b) => a.localeCompare(b))
-    .slice(-10);
+    .slice(-7);
 
   // Build separate chart series for each supported glucose timing.
   const chartData = {
