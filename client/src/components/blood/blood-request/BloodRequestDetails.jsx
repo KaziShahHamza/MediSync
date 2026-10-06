@@ -1,3 +1,5 @@
+// client/src/components/blood/blood-request/BloodRequestDetails.jsx
+
 // Renders blood requirement, requester contact, expiration, and additional information fields.
 // Keeps request-specific input sections separate from location and hospital logic.
 

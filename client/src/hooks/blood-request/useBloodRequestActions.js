@@ -1,12 +1,12 @@
-// Manages blood request form, modal, editing, deletion, and token actions.
-// Delegates request submission to the dedicated submission hook.
+// client/src/hooks/blood-request/useBloodRequestActions.js
 
-import { useState } from "react";
+// Manages blood request form, modal, editing, and deletion.
+// Delegates token management to the dedicated token action hook.
+// Delegates request submission to the dedicated submission hook.
 
 import {
   getManagementToken,
   removeManagementToken,
-  saveManagementToken,
 } from "../../utils/blood/bloodRequestStorage";
 
 import {
@@ -14,6 +14,7 @@ import {
   OTHER_HOSPITAL,
 } from "../../utils/blood/bloodRequestHelpers";
 
+import useBloodRequestTokenActions from "./useBloodRequestTokenActions";
 import useSubmitBloodRequest from "./useSubmitBloodRequest";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -40,18 +41,6 @@ export default function useBloodRequestActions({
   pagination,
   setCurrentPage,
 }) {
-  const [managementTokenModalOpen, setManagementTokenModalOpen] =
-    useState(false);
-
-  const [managementTokenRequest, setManagementTokenRequest] = useState(null);
-
-  const [managementTokenAction, setManagementTokenAction] = useState(null);
-
-  const [managementTokenSubmitting, setManagementTokenSubmitting] =
-    useState(false);
-
-  const [managementTokenError, setManagementTokenError] = useState("");
-
   const handleRequestChange = (event) => {
     const { name, value } = event.target;
 
@@ -102,100 +91,6 @@ export default function useBloodRequestActions({
     resetRequestForm();
   };
 
-  const { submitBloodRequest } = useSubmitBloodRequest({
-    user,
-    requestForm,
-    requestSubmitting,
-    setRequestSubmitting,
-    setRequestError,
-    setRequestSuccess,
-    setBloodRequests,
-    editingRequest,
-    setEditingRequest,
-    managementToken,
-    setManagementToken,
-    setRequestForm,
-    fetchBloodRequests,
-    currentPage,
-    pagination,
-    setCurrentPage,
-  });
-
-  const openManagementTokenModal = (request, action) => {
-    setManagementTokenRequest(request);
-    setManagementTokenAction(action);
-    setManagementTokenError("");
-    setManagementTokenModalOpen(true);
-  };
-
-  const closeManagementTokenModal = () => {
-    if (managementTokenSubmitting) return;
-
-    setManagementTokenModalOpen(false);
-    setManagementTokenRequest(null);
-    setManagementTokenAction(null);
-    setManagementTokenError("");
-  };
-
-  const handleManagementTokenSubmit = async (token) => {
-    const normalizedToken = token.trim();
-
-    if (!managementTokenRequest || !normalizedToken) {
-      return;
-    }
-
-    try {
-      setManagementTokenSubmitting(true);
-      setManagementTokenError("");
-
-      const response = await fetch(
-        `${API_URL}/api/blood/requests/${managementTokenRequest.id}/authorize`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            managementToken: normalizedToken,
-          }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Invalid management token.");
-      }
-
-      saveManagementToken(managementTokenRequest.id, normalizedToken);
-
-      setManagementToken(normalizedToken);
-
-      const request = managementTokenRequest;
-      const action = managementTokenAction;
-
-      setManagementTokenModalOpen(false);
-      setManagementTokenRequest(null);
-      setManagementTokenAction(null);
-
-      if (action === "edit") {
-        handleEditRequest(request, normalizedToken);
-      }
-
-      if (action === "delete") {
-        await handleDeleteRequest(request, normalizedToken);
-      }
-    } catch (err) {
-      console.error("Blood request token verification failed:", err);
-
-      setManagementTokenError(
-        err.message || "Unable to verify management token.",
-      );
-    } finally {
-      setManagementTokenSubmitting(false);
-    }
-  };
-
   const handleEditRequest = (request, authorizedToken = null) => {
     const savedToken = authorizedToken || getManagementToken(request.id);
 
@@ -232,7 +127,7 @@ export default function useBloodRequestActions({
   };
 
   const handleDeleteRequest = async (request, authorizedToken = null) => {
-    const savedToken = authorizedToken || getManagementToken(request.id);
+    const savedToken = authorizedToken || getRequestToken(request);
 
     const isOwner = Boolean(user && request.isOwner);
 
@@ -296,21 +191,43 @@ export default function useBloodRequestActions({
     }
   };
 
-  const copyManagementToken = async () => {
-    if (!managementToken) return;
+  const {
+    getRequestToken,
+    openManagementTokenModal,
+    closeManagementTokenModal,
+    handleManagementTokenSubmit,
+    copyManagementToken,
+    managementTokenModalOpen,
+    managementTokenRequest,
+    managementTokenAction,
+    managementTokenSubmitting,
+    managementTokenError,
+  } = useBloodRequestTokenActions({
+    managementToken,
+    setManagementToken,
+    setCopied,
+    onEditRequest: handleEditRequest,
+    onDeleteRequest: handleDeleteRequest,
+  });
 
-    try {
-      await navigator.clipboard.writeText(managementToken);
-
-      setCopied(true);
-
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    } catch {
-      setCopied(false);
-    }
-  };
+  const { submitBloodRequest } = useSubmitBloodRequest({
+    user,
+    requestForm,
+    requestSubmitting,
+    setRequestSubmitting,
+    setRequestError,
+    setRequestSuccess,
+    setBloodRequests,
+    editingRequest,
+    setEditingRequest,
+    managementToken,
+    setManagementToken,
+    setRequestForm,
+    fetchBloodRequests,
+    currentPage,
+    pagination,
+    setCurrentPage,
+  });
 
   return {
     handleRequestChange,
