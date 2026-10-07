@@ -1,5 +1,3 @@
-// server/services/authService.js
-
 // Handles authentication database operations, password hashing, and JWT creation.
 
 import bcrypt from "bcryptjs";
@@ -22,7 +20,7 @@ export function createSafeUserData(user) {
 export async function signupUser({ name, username, email, password }) {
   // Check whether the username is already registered.
   const existingUsername = await User.findOne({
-    username: username.toLowerCase(),
+    username,
   });
 
   if (existingUsername) {
@@ -74,7 +72,7 @@ export async function loginUser({ identifier, password }) {
     });
   } else {
     user = await User.findOne({
-      username: identifier.toLowerCase(),
+      username: identifier,
     });
   }
 

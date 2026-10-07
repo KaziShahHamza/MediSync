@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
 import AuthLayout from "../components/AuthLayout";
+import { validateSignupForm } from "../utils/auth/authValidation";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -18,6 +19,7 @@ export default function Signup() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
   // Submits registration data to the authentication endpoint.
   async function submit(event) {
@@ -25,26 +27,42 @@ export default function Signup() {
 
     const form = event.currentTarget;
 
+    // Validate and normalize account details before contacting the API.
+    const validation = validateSignupForm({
+      name: form.name.value,
+      username: form.username.value,
+      email: form.email.value,
+      password: form.password.value,
+    });
+
+    if (Object.keys(validation.errors).length > 0) {
+      setFieldErrors(validation.errors);
+      setError("");
+      return;
+    }
+
     setLoading(true);
     setError("");
+    setFieldErrors({});
 
+    // Submit the normalized registration data to the signup endpoint.
     try {
       const response = await fetch(`${API_URL}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name: form.name.value,
-          username: form.username.value,
-          email: form.email.value,
-          password: form.password.value,
-        }),
+        body: JSON.stringify(validation.values),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        const nextFieldErrors = Object.fromEntries(
+          (data?.errors || []).map(({ field, message }) => [field, message]),
+        );
+
+        setFieldErrors(nextFieldErrors);
         throw new Error(data?.message || "Signup failed.");
       }
 
@@ -77,6 +95,9 @@ export default function Signup() {
           autoComplete="name"
           required
         />
+        {fieldErrors.name && (
+          <p className="text-sm text-red-600">{fieldErrors.name}</p>
+        )}
 
         <input
           name="username"
@@ -86,6 +107,9 @@ export default function Signup() {
           autoComplete="username"
           required
         />
+        {fieldErrors.username && (
+          <p className="text-sm text-red-600">{fieldErrors.username}</p>
+        )}
 
         <input
           name="email"
@@ -95,6 +119,9 @@ export default function Signup() {
           autoComplete="email"
           required
         />
+        {fieldErrors.email && (
+          <p className="text-sm text-red-600">{fieldErrors.email}</p>
+        )}
 
         <input
           name="password"
@@ -105,6 +132,9 @@ export default function Signup() {
           minLength={8}
           required
         />
+        {fieldErrors.password && (
+          <p className="text-sm text-red-600">{fieldErrors.password}</p>
+        )}
 
         <button
           type="submit"

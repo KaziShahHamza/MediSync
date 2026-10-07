@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
 import AuthLayout from "../components/AuthLayout";
+import { validateLoginForm } from "../utils/auth/authValidation";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -18,6 +19,7 @@ export default function Login() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
   // Submits credentials to the authentication endpoint.
   async function submit(event) {
@@ -25,24 +27,40 @@ export default function Login() {
 
     const form = event.currentTarget;
 
+    // Validate and normalize credentials before contacting the API.
+    const validation = validateLoginForm({
+      identifier: form.identifier.value,
+      password: form.password.value,
+    });
+
+    if (Object.keys(validation.errors).length > 0) {
+      setFieldErrors(validation.errors);
+      setError("");
+      return;
+    }
+
     setLoading(true);
     setError("");
+    setFieldErrors({});
 
+    // Submit the normalized credentials to the login endpoint.
     try {
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          identifier: form.identifier.value,
-          password: form.password.value,
-        }),
+        body: JSON.stringify(validation.values),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        const nextFieldErrors = Object.fromEntries(
+          (data?.errors || []).map(({ field, message }) => [field, message]),
+        );
+
+        setFieldErrors(nextFieldErrors);
         throw new Error(data?.message || "Login failed.");
       }
 
@@ -76,6 +94,9 @@ export default function Login() {
           autoComplete="username"
           required
         />
+        {fieldErrors.identifier && (
+          <p className="text-sm text-red-600">{fieldErrors.identifier}</p>
+        )}
 
         <input
           name="password"
@@ -85,6 +106,9 @@ export default function Login() {
           autoComplete="current-password"
           required
         />
+        {fieldErrors.password && (
+          <p className="text-sm text-red-600">{fieldErrors.password}</p>
+        )}
 
         <button
           type="submit"

@@ -4,28 +4,10 @@
 
 import { signupUser, loginUser } from "../services/authService.js";
 
-// Validate the minimum password requirement.
-export function validateSignupPassword(password) {
-  if (!password || password.length < 8) {
-    return "Password must be at least 8 characters long";
-  }
-
-  return null;
-}
-
 // Handle user registration requests.
 export async function signup(req, res) {
   try {
     const { name, username, email, password } = req.body;
-
-    // Validate the minimum password requirement.
-    const passwordError = validateSignupPassword(password);
-
-    if (passwordError) {
-      return res.status(400).json({
-        message: passwordError,
-      });
-    }
 
     // Create the account through the auth service.
     const result = await signupUser({
@@ -39,8 +21,8 @@ export async function signup(req, res) {
   } catch (error) {
     console.error("Signup error:", error);
 
-    return res.status(500).json({
-      message: "Signup failed",
+    return res.status(error.status || 500).json({
+      message: error.status === 400 ? error.message : "Signup failed",
     });
   }
 }
