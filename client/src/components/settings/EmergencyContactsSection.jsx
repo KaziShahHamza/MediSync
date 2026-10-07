@@ -71,8 +71,13 @@ export default function EmergencyContactsSection({
               <ProfileInput
                 label="Phone Number"
                 type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={15}
                 value={contact.phone}
-                onChange={(e) => onChange(index, "phone", e.target.value)}
+                onChange={(e) =>
+                  onChange(index, "phone", e.target.value.replace(/\D/g, ""))
+                }
               />
 
               <ProfileInput

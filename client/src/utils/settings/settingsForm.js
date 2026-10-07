@@ -49,34 +49,41 @@ export const initialForm = {
 
 // Maps profile and user information into the settings form structure.
 export function createFormFromProfile(profile, userInfo) {
+  let lastBloodDonation = {
+    month: "",
+    year: "",
+  };
+
+  if (profile?.lastBloodDonation) {
+    const donationDate = new Date(profile.lastBloodDonation);
+
+    if (!Number.isNaN(donationDate.getTime())) {
+      lastBloodDonation = {
+        month: String(donationDate.getUTCMonth() + 1),
+        year: String(donationDate.getUTCFullYear()),
+      };
+    }
+  }
+
   return {
     name: userInfo?.name || "",
-
     dob: profile?.dob ? new Date(profile.dob).toISOString().split("T")[0] : "",
-
     gender: profile?.gender || "",
-
     height: {
       feet: profile?.height?.feet ?? "",
       inches: profile?.height?.inches ?? "",
     },
-
     bloodGroup: profile?.bloodGroup || "",
-
     location: {
       district: profile?.location?.district || "",
       upazila: profile?.location?.upazila || "",
       streetAddress: profile?.location?.streetAddress || "",
     },
-
     allergies: profile?.allergies || "",
-
     chronicIllnesses: Array.isArray(profile?.chronicIllnesses)
       ? profile.chronicIllnesses
       : [],
-
     surgeries: profile?.surgeries || "",
-
     emergencyContacts: Array.isArray(profile?.emergencyContacts)
       ? profile.emergencyContacts.map((contact) => ({
           relation: contact?.relation || "",
@@ -85,16 +92,9 @@ export function createFormFromProfile(profile, userInfo) {
           email: contact?.email || "",
         }))
       : [],
-
     bloodDonorStatus: profile?.bloodDonorStatus || "",
-
     bloodDonationCompensation: profile?.bloodDonationCompensation || "",
-
-    lastBloodDonation: {
-      month: "",
-      year: "",
-    },
-
+    lastBloodDonation,
     bloodDonationContactNumber: profile?.bloodDonationContactNumber || "",
   };
 }

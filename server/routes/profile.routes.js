@@ -1,10 +1,11 @@
 // server/routes/profile.routes.js
 
-// Defines authenticated routes for profile and profile-photo operations.
+// Defines authenticated profile and profile-photo API endpoints.
 
 import express from "express";
 
 import auth from "../middlewares/auth.js";
+import validate from "../middlewares/validate.js";
 
 import {
   getProfile,
@@ -14,21 +15,24 @@ import {
   removeProfilePhotoController,
 } from "../controllers/profileController.js";
 
+import { profileSchema } from "../validators/profile.schema.js";
+import { profilePhotoSchema } from "../validators/profilePhoto.schema.js";
+
 const router = express.Router();
 
-// Fetch the authenticated user's profile.
 router.get("/", auth, getProfile);
 
-// Create a new profile.
-router.post("/", auth, createProfileController);
+router.post("/", auth, validate(profileSchema), createProfileController);
 
-// Update the existing profile.
-router.put("/", auth, updateProfileController);
+router.put("/", auth, validate(profileSchema), updateProfileController);
 
-// Update profile photo metadata.
-router.put("/photo", auth, updateProfilePhotoController);
+router.put(
+  "/photo",
+  auth,
+  validate(profilePhotoSchema),
+  updateProfilePhotoController,
+);
 
-// Remove the current profile photo.
 router.delete("/photo", auth, removeProfilePhotoController);
 
 export default router;

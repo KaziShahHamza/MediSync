@@ -43,6 +43,9 @@ export default function BloodDonationSection({
           <ProfileInput
             label="Contact Number"
             type="tel"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={15}
             name="bloodDonationContactNumber"
             value={form.bloodDonationContactNumber}
             onChange={onChange}
