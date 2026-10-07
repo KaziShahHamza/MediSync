@@ -16,6 +16,8 @@ import {
   updateBloodRequest,
   deleteBloodRequest,
 } from "../controllers/blood/bloodRequestManagementController.js";
+import validate from "../middlewares/validate.js";
+import { bloodRequestSchema } from "../validators/bloodRequest.schema.js";
 
 const router = express.Router();
 
@@ -23,7 +25,7 @@ const router = express.Router();
 router.get("/donors", getDonors);
 
 // Route to create a new blood donation request
-router.post("/requests", createBloodRequest);
+router.post("/requests", validate(bloodRequestSchema), createBloodRequest);
 
 // Route to fetch all active blood donation requests
 router.get("/requests", getBloodRequests);
@@ -32,7 +34,7 @@ router.get("/requests", getBloodRequests);
 router.post("/requests/:id/authorize", authorizeBloodRequestManagement);
 
 // Route to update an existing blood request by ID
-router.put("/requests/:id", updateBloodRequest);
+router.put("/requests/:id", validate(bloodRequestSchema), updateBloodRequest);
 
 // Route to delete a blood request by ID
 router.delete("/requests/:id", deleteBloodRequest);

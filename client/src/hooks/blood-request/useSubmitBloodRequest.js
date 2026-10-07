@@ -9,6 +9,7 @@ import {
 } from "../../utils/blood/bloodRequestStorage";
 
 import { EMPTY_BLOOD_REQUEST_FORM } from "../../utils/blood/bloodRequestHelpers";
+import { validateBloodRequestForm } from "../../utils/blood/bloodRequestValidation";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -58,6 +59,13 @@ export default function useSubmitBloodRequest({
         body.managementToken = managementToken;
       }
 
+      const validation = validateBloodRequestForm(body);
+
+      if (Object.keys(validation.errors).length > 0) {
+        setRequestError(Object.values(validation.errors)[0]);
+        return;
+      }
+
       const url = editingRequest
         ? `${API_URL}/api/blood/requests/${editingRequest.id}`
         : `${API_URL}/api/blood/requests`;
@@ -70,7 +78,7 @@ export default function useSubmitBloodRequest({
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(validation.values),
       });
 
       const data = await response.json();

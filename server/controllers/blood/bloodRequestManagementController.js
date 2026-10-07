@@ -11,8 +11,6 @@ import {
   findDonors,
 } from "../../services/blood/bloodRequestManagementService.js";
 
-import { validateBloodRequest } from "../../utils/blood/bloodRequestValidation.js";
-
 import {
   publicRequestData,
   hashManagementToken,
@@ -64,14 +62,6 @@ export async function getDonors(req, res) {
 export async function updateBloodRequest(req, res) {
   try {
     const { id } = req.params;
-
-    const validationError = validateBloodRequest(req.body);
-
-    if (validationError) {
-      return res.status(400).json({
-        message: validationError,
-      });
-    }
 
     const request = await findRequestForUpdate(id);
 

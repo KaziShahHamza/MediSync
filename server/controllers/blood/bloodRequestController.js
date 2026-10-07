@@ -10,8 +10,6 @@ import {
   findActiveRequests,
 } from "../../services/blood/bloodRequestService.js";
 
-import { validateBloodRequest } from "../../utils/blood/bloodRequestValidation.js";
-
 import {
   getClientIp,
   hashValue,
@@ -28,14 +26,6 @@ import { getOptionalAuthenticatedUser } from "../../middlewares/bloodRequestAuth
 // Handles creation of a new blood request with rate limiting and limits.
 export async function createBloodRequest(req, res) {
   try {
-    const validationError = validateBloodRequest(req.body);
-
-    if (validationError) {
-      return res.status(400).json({
-        message: validationError,
-      });
-    }
-
     const {
       bloodGroup,
       bagsNeeded,
