@@ -4,10 +4,10 @@
 
 import { BLOOD_GROUPS } from "./bloodRequestHelpers";
 
-const PHONE_PATTERN = /^[+]?[\d\s()-]{7,20}$/;
+const PHONE_PATTERN = /^\d{7,20}$/;
 
 export function normalizeBloodRequestPhone(value) {
-  return typeof value === "string" ? value.replace(/[^\d+()\s-]/g, "") : "";
+  return typeof value === "string" ? value.replace(/\D/g, "") : "";
 }
 
 function addError(errors, field, message) {

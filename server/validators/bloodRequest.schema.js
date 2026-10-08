@@ -37,7 +37,7 @@ const phoneSchema = z.preprocess(
     .trim()
     .min(1, { message: "Contact phone is required." })
     .max(30, { message: "Contact phone is too long." })
-    .refine((value) => !value || /^[+]?[\d\s()-]{7,20}$/.test(value), {
+    .refine((value) => !value || /^\d{7,20}$/.test(value), {
       message: "Please provide a valid contact phone number.",
     }),
 );

@@ -151,7 +151,8 @@ export default function BloodRequestDetails({
               onChange={onRequestChange}
               className="input"
               placeholder="01XXXXXXXXX"
-              maxLength="30"
+              maxLength="20"
+              inputMode="numeric"
               required
             />
           </div>
@@ -169,7 +170,7 @@ export default function BloodRequestDetails({
               onChange={onRequestChange}
               className="input"
               placeholder="Optional"
-              maxLength="100"
+              maxLength="50"
             />
           </div>
         </div>
