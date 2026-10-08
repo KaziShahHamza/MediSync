@@ -6,6 +6,10 @@ import { BLOOD_GROUPS } from "./bloodRequestHelpers";
 
 const PHONE_PATTERN = /^[+]?[\d\s()-]{7,20}$/;
 
+export function normalizeBloodRequestPhone(value) {
+  return typeof value === "string" ? value.replace(/[^\d+()\s-]/g, "") : "";
+}
+
 function addError(errors, field, message) {
   if (!errors[field]) {
     errors[field] = message;
@@ -37,7 +41,7 @@ export function validateBloodRequestForm(values) {
     upazila: values?.upazila?.trim() || "",
     hospitalName: values?.hospitalName?.trim() || "",
     hospitalAddress: values?.hospitalAddress?.trim() || "",
-    contactPhone: values?.contactPhone?.trim() || "",
+    contactPhone: normalizeBloodRequestPhone(values?.contactPhone).trim(),
     requesterName: values?.requesterName?.trim() || "",
     notes: values?.notes?.trim() || "",
     deviceId: values?.deviceId?.trim().slice(0, 100) || "",

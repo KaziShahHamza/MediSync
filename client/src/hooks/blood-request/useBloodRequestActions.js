@@ -13,6 +13,7 @@ import {
   EMPTY_BLOOD_REQUEST_FORM,
   OTHER_HOSPITAL,
 } from "../../utils/blood/bloodRequestHelpers";
+import { normalizeBloodRequestPhone } from "../../utils/blood/bloodRequestValidation";
 
 import useBloodRequestTokenActions from "./useBloodRequestTokenActions";
 import useSubmitBloodRequest from "./useSubmitBloodRequest";
@@ -43,10 +44,12 @@ export default function useBloodRequestActions({
 }) {
   const handleRequestChange = (event) => {
     const { name, value } = event.target;
+    const normalizedValue =
+      name === "contactPhone" ? normalizeBloodRequestPhone(value) : value;
 
     setRequestForm((previous) => ({
       ...previous,
-      [name]: value,
+      [name]: normalizedValue,
     }));
   };
 

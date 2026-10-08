@@ -44,7 +44,7 @@ export default function useSubmitBloodRequest({
         bloodGroup: requestForm.bloodGroup,
         bagsNeeded: Number(requestForm.bagsNeeded),
         neededWithinDays: Number(requestForm.neededWithinDays),
-        compensationOffered: requestForm.compensationOffered === "yes",
+        compensationOffered: requestForm.compensationOffered,
         district: requestForm.district,
         upazila: requestForm.upazila,
         hospitalName: requestForm.hospitalName,
