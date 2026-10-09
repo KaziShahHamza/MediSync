@@ -5,6 +5,7 @@
 
 import {
   DOSAGE_TIME_VALUES,
+  MEDICINE_TYPES,
   isStripMedicineType,
 } from "../../data/medicineOptions";
 
@@ -25,7 +26,7 @@ function hasValue(value) {
 
 // Validates the medicine name.
 export function validateMedicineName(name) {
-  if (!name || !name.trim()) {
+  if (typeof name !== "string" || !name.trim()) {
     return "Medicine name is required.";
   }
 
@@ -34,7 +35,7 @@ export function validateMedicineName(name) {
 
 // Validates the selected medicine type.
 export function validateMedicineType(type) {
-  if (!type) {
+  if (!type || !MEDICINE_TYPES.some((option) => option.value === type)) {
     return "Medicine type is required.";
   }
 
@@ -47,10 +48,18 @@ export function validateDosage(dosage) {
     return "Select at least one dosage time.";
   }
 
+  const dosageTimes = new Set();
+
   for (const item of dosage) {
     if (!item || !DOSAGE_TIME_VALUES.includes(item.time)) {
       return "Invalid dosage time.";
     }
+
+    if (dosageTimes.has(item.time)) {
+      return "Each dosage time can only be selected once.";
+    }
+
+    dosageTimes.add(item.time);
 
     if (!isPositiveInteger(item.quantity)) {
       return "Dosage quantity must be a positive integer.";

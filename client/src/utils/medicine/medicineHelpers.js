@@ -123,13 +123,19 @@ export function formatDateForPreview(month, year) {
 }
 
 // Generates array of consecutive year values around the current year.
-export function getYearOptions(range = 10) {
+export function getYearOptions() {
   const currentYear = new Date().getFullYear();
 
-  return Array.from(
-    { length: range * 2 + 1 },
-    (_, index) => currentYear - range + index,
-  );
+  return {
+    start: Array.from(
+      { length: 11 },
+      (_, index) => currentYear - 10 + index,
+    ),
+    end: Array.from(
+      { length: 10 },
+      (_, index) => currentYear + 1 + index,
+    ),
+  };
 }
 
 // Sanitizes and structures dosage items to ensure valid timings and positive quantities.

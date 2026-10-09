@@ -1,14 +1,14 @@
 # MediSync Project Size Audit
 
-Audit date: 2026-09-28
+Audit date: 2026-10-09
 
 ## Summary
 
 | Area      |   Files | Physical Lines | Code Lines |
 | --------- | ------: | -------------: | ---------: |
-| Client    |     170 |         29,222 |     24,239 |
-| Server    |      99 |         11,791 |      8,900 |
-| **Total** | **269** |     **41,013** | **33,139** |
+| Client    |     175 |         27,754 |     23,066 |
+| Server    |     107 |         12,226 |      9,525 |
+| **Total** | **282** |     **39,980** | **32,591** |
 
 `Code Lines` means physical lines excluding blank lines and comment-only lines.
 
@@ -16,25 +16,25 @@ Audit date: 2026-09-28
 
 | Extension/category |   Files | Physical Lines |     Blank | Comment-only | Code Lines |
 | ------------------ | ------: | -------------: | --------: | -----------: | ---------: |
-| `.js`              |      46 |          8,528 |     1,111 |          425 |      6,992 |
-| `.jsx`             |     105 |         14,916 |     2,213 |          672 |     12,031 |
-| `.css`             |      14 |          1,901 |       380 |          161 |      1,360 |
+| `.js`              |      52 |          9,779 |     1,375 |          429 |      7,975 |
+| `.jsx`             |     104 |         13,215 |     1,952 |          647 |     10,616 |
+| `.css`             |      14 |            883 |       204 |           60 |        619 |
 | `.json`            |       2 |          3,821 |         0 |            0 |      3,821 |
 | `.html`            |       1 |             24 |         4 |            3 |         17 |
 | `.env`             |       1 |              8 |         2 |            3 |          3 |
 | `.gitignore`       |       1 |             24 |         2 |            7 |         15 |
-| **Total**          | **170** |     **29,222** | **3,712** |    **1,271** | **24,239** |
+| **Total**          | **175** |     **27,754** | **3,539** |    **1,149** | **23,066** |
 
 No client `.ts`, `.tsx`, or other counted source-language files were present.
 
 ## Server File Breakdown
 
-| Extension/category |  Files | Physical Lines |     Blank | Comment-only | Code Lines |
-| ------------------ | -----: | -------------: | --------: | -----------: | ---------: |
-| `.js`              |     96 |          9,768 |     1,958 |          931 |      6,879 |
-| `.json`            |      2 |          2,012 |         0 |            0 |      2,012 |
-| `.env`             |      1 |             11 |         1 |            1 |          9 |
-| **Total**          | **99** |     **11,791** | **1,959** |      **932** |  **8,900** |
+| Extension/category |   Files | Physical Lines |     Blank | Comment-only | Code Lines |
+| ------------------ | ------: | -------------: | --------: | -----------: | ---------: |
+| `.js`              |     104 |         10,192 |     1,941 |          758 |      7,493 |
+| `.json`            |       2 |          2,023 |         0 |            0 |      2,023 |
+| `.env`             |       1 |             11 |         1 |            1 |          9 |
+| **Total**          | **107** |     **12,226** | **1,942** |      **759** |  **9,525** |
 
 No server `.mjs` or `.ts` files were present.
 
@@ -68,4 +68,4 @@ No unreadable files were encountered. No symlink traversal was required for the 
 
    `physical lines - blank lines - comment-only lines`
 
-The counts are filesystem results from the repository state at the audit date, not estimates from the visible editor tree.
+The counts are filesystem results from the repository state at the audit date, not estimates from the visible editor tree. The refreshed scan encountered 0 unreadable files and did not require symlink traversal.

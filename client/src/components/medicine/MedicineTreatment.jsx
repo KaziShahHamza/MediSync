@@ -80,7 +80,7 @@ export default function MedicineTreatment({
           >
             <option value="">Select year</option>
 
-            {yearOptions.map((year) => (
+            {yearOptions.start.map((year) => (
               <option key={year} value={year}>
                 {year}
               </option>
@@ -140,7 +140,7 @@ export default function MedicineTreatment({
             >
               <option value="">Select year</option>
 
-              {yearOptions.map((year) => (
+              {yearOptions.end.map((year) => (
                 <option key={year} value={year}>
                   {year}
                 </option>

@@ -6,6 +6,11 @@
 import express from "express";
 
 import auth from "../middlewares/auth.js";
+import validate from "../middlewares/validate.js";
+import {
+  createMedicineSchema,
+  updateMedicineSchema,
+} from "../validators/medicine.schema.js";
 
 import {
   getMedicines,
@@ -23,10 +28,10 @@ const router = express.Router();
 router.get("/", auth, getMedicines);
 
 // Creates a new medicine for the authenticated user.
-router.post("/", auth, createMedicineController);
+router.post("/", auth, validate(createMedicineSchema), createMedicineController);
 
 // Updates an existing medicine owned by the authenticated user.
-router.put("/:id", auth, updateMedicine);
+router.put("/:id", auth, validate(updateMedicineSchema), updateMedicine);
 
 // Deletes an existing medicine owned by the authenticated user.
 router.delete("/:id", auth, deleteMedicineController);
